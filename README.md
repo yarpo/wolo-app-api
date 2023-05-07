@@ -38,8 +38,11 @@ Run
 ```bash
   ./gradlew bootRun
 ```
-The entry point address of the backend API is at http://localhost:8080
 
+Mapping
+
+http://localhost:8080/persons
+http://localhost:8080/health
 
 
 
