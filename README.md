@@ -41,8 +41,8 @@ Run
 
 Mapping
 
-http://localhost:8080/persons
-http://localhost:8080/health
+- http://localhost:8080/persons
+- http://localhost:8080/health
 
 
 
