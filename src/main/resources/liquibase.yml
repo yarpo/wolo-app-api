@@ -1,0 +1,11 @@
+
+  # Konfiguracja połączenia z bazą danych PostgreSQL
+  url: jdbc:postgresql://localhost:5432/postgres
+  username: postgres
+  password: Qwe123
+
+  # Konfiguracja sterownika bazy danych
+  driver: org.postgresql.Driver
+
+  # Ścieżka do plików changelog (skrypty zmian bazy danych)
+  changelogFile: classpath:db/changelog/liquibase-changelog.xml
