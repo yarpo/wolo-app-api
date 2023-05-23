@@ -1,0 +1,62 @@
+name: Gradle CI/CD
+
+on:
+  push:
+    branches: [ actions ]
+  pull_request:
+    branches: [ actions ]
+
+jobs:
+  build_and_test:
+  
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: Qwe123
+          POSTGRES_USER: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 19
+      uses: actions/setup-java@v3
+      with:
+        java-version: 19
+        distribution: "adopt"
+        
+    - name: Setup config
+      run: |
+        mkdir config
+        echo 'spring.datasource.url=jdbc:postgresql://postgres:5432' > config/application.properties
+          
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    
+    - name: Build with Gradle (except tests)
+      run: ./gradlew build -x test
+      
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+        restore-keys: ${{ runner.os }}-gradle
+    
+    - name: Run PMD check
+      run: ./gradlew pmdMain
+      
+    - name: Run OWASP check
+      run: ./gradlew dependencyCheckAnalyze
+      
+    - name: Run unit tests
+      run: ./gradlew test --tests "WoloAppApiUnitTests.testTrue"
+      
+    - name: Run Rest Assured tests
+      run: ./gradlew testRestAssured

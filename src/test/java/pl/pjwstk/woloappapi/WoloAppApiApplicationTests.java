@@ -9,16 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class WoloAppApiApplicationTests {
 
 	@Test
-	public void testTrue() {
-		assertTrue(true);
-	}
-
-	@Test
 	public void testHealthEndpoint() {
 		given()
 				.when().get("/health")
 				.then()
 				.statusCode(200);
 	}
-
 }
