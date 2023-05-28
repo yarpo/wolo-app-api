@@ -9,8 +9,6 @@ import pl.pjwstk.woloappapi.controller.DatabaseInitializer;
 public class WoloAppApiApplication {
 
 	public static void main(String[] args) {
-
-
-		ConfigurableApplicationContext context = SpringApplication.run(WoloAppApiApplication.class, args);
+		SpringApplication.run(WoloAppApiApplication.class, args);
 	}
 }
