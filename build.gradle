@@ -2,6 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.0.6'
 	id 'io.spring.dependency-management' version '1.1.0'
+	id 'pmd'
+	id 'org.owasp.dependencycheck' version '8.2.1'
 }
 
 group = 'pl.pjwstk'
@@ -30,8 +32,23 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+	testImplementation 'io.rest-assured:rest-assured:4.3.3'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
+    include '**/*BasicUnitTest.class'
+}
+
+task testRestAssured(type: Test) {
+    useJUnitPlatform()
+    include '**/*RestAssuredTest.class'
+}
+
+pmd {
+    consoleOutput = true
+    toolVersion = "6.21.0"
+    rulesMinimumPriority = 5
+    ruleSets = ["category/java/errorprone.xml", "category/java/bestpractices.xml"]
 }
