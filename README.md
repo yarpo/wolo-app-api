@@ -2,10 +2,7 @@
 
 # Wolo-app-api
 
- 
- 
 REST API for web Application for Regional Volunteer Centre in Gdańsk, which helps volunteers find and partake in events.
-
 
 ## Tech Stack
 
@@ -14,9 +11,6 @@ REST API for web Application for Regional Volunteer Centre in Gdańsk, which hel
 - Postgresql
 - Liquibase
 - REST Assured
-
-
-
 
 ## Run Locally
 
@@ -31,7 +25,6 @@ Go to the project directory
 ```bash
   cd wolo-app-api
 ```
-
 
 Run
 
