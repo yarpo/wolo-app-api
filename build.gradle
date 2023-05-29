@@ -52,3 +52,19 @@ pmd {
     rulesMinimumPriority = 5
     ruleSets = ["category/java/errorprone.xml", "category/java/bestpractices.xml"]
 }
+
+tasks.withType(Download) {
+	doFirst {
+		def trustStore = file("${System.getProperty('java.home')}/lib/security/cacerts")
+		if (!trustStore.exists()) {
+			throw new Exception("Keystore does not exist: ${trustStore}")
+		}
+
+		ant.importBuild('trustStore') {
+			truststore(
+					file: trustStore,
+					password: 'changeit'
+			)
+		}
+	}
+}
