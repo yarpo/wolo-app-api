@@ -1,8 +1,8 @@
 
   # Konfiguracja połączenia z bazą danych PostgreSQL
-  url: jdbc:postgresql://localhost:5432/postgres
+  url: jdbc:postgresql://dbpostgresql:5432/mydb
   username: postgres
-  password: Qwe123
+  password: password
 
   # Konfiguracja sterownika bazy danych
   driver: org.postgresql.Driver
