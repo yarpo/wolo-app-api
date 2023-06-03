@@ -1,17 +1,21 @@
 package pl.pjwstk.woloappapi.model;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Data;
-
-@Data
 @Entity
-@Table(name="role")
-
+@Table(name = "role")
 public class Role {
+
     @Id
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @ManyToMany(mappedBy = "roles")
+    private List<User> users = new ArrayList<>();
 }
