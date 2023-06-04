@@ -2,7 +2,7 @@ package pl.pjwstk.woloappapi.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -51,7 +51,7 @@ public class Organisation {
     @Valid
     private User moderator;
 
-    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
     private List<Event> events;
 
 }

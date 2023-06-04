@@ -2,8 +2,10 @@ package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.pjwstk.woloappapi.model.Category;
 import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.model.Organisation;
+import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 
@@ -15,6 +17,8 @@ import java.util.Optional;
 public class EventService {
     private final EventRepository eventRepository;
     private final OrganisationRepository organisationRepository;
+
+    private final CategoryRepository categoryRepository;
 
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
@@ -48,5 +52,13 @@ public class EventService {
             throw new IllegalArgumentException("Organisation with ID " + organisation + " does not exist");
         }
         return eventRepository.getEventsByOrganisation(organisationById);
+    }
+
+    public List<Event> getByCategory(Long category) {
+        Optional<Category> categoryById = categoryRepository.findById(category);
+        if(categoryById.isEmpty()){
+            throw new IllegalArgumentException("Category does not exist");
+        }
+        return eventRepository.getEventsByCategory(categoryById);
     }
 }

@@ -2,7 +2,7 @@ package pl.pjwstk.woloappapi.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +37,9 @@ public class User {
 
     @Column(name = "is_agreement_signed", nullable = false)
     private boolean isAgreementSigned;
+
+    @Column(name = "is_adult", nullable = false)
+    private boolean isAdult;
 
     @ManyToOne
     @JoinColumn(name = "organization_id", referencedColumnName = "id")

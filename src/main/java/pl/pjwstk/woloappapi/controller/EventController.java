@@ -35,16 +35,19 @@ public class EventController {
     }
 
     @GetMapping("/{organisation}")
-    public ResponseEntity<List<Event>> getEventByOrganisation(@PathVariable Long organisation){
+    public ResponseEntity<List<Event>> getEventsByOrganisation(@PathVariable Long organisation){
         return new ResponseEntity<>(eventService.getByOrganisation(organisation), HttpStatus.OK);
+    }
 
+    @GetMapping("/{category}")
+    public ResponseEntity<List<Event>> getEventsByCategory(@PathVariable Long category){
+        return new ResponseEntity<>(eventService.getByCategory(category), HttpStatus.OK);
     }
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addEvent(@RequestBody Event event){
         eventService.createEvent(event);
             return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
 
 }
 

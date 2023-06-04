@@ -1,6 +1,6 @@
 package pl.pjwstk.woloappapi.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -8,14 +8,10 @@ import pl.pjwstk.woloappapi.model.Category;
 import pl.pjwstk.woloappapi.repository.CategoryRepository;
 
 @RestController
+@AllArgsConstructor
 public class CategoryController {
 
     private CategoryRepository CategoryRepository;
-
-    @Autowired
-    public CategoryController(CategoryRepository CategoryRepository) {
-        this.CategoryRepository = CategoryRepository;
-    }
 
     @GetMapping("/Category/all")
     Iterable<Category> all() {
