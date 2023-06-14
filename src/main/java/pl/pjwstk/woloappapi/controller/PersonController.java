@@ -1,22 +1,29 @@
 package pl.pjwstk.woloappapi.controller;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import pl.pjwstk.woloappapi.model.Person;
-import pl.pjwstk.woloappapi.repository.PersonRepository;
+import pl.pjwstk.woloappapi.model.entity.Person;
+import pl.pjwstk.woloappapi.service.PersonService;
 
 @RestController
+@RequiredArgsConstructor
 public class PersonController {
 
+    final private PersonService personService;
 
-
-    PersonRepository repo;
+    /**
+     * To jest tu tymczasowo. Powinno zostać usunięte, gdy zacznie się używać właściwej metody po strinie frontendu
+     */
     @PostMapping("/addPerson")
-    public void addPerson(@RequestBody Person person){
-        repo.save(person);
+    @Deprecated
+    public void addPerson(@RequestBody Person person) {
+        this.createPerson(person);
     }
 
+    @PostMapping("/persons")
+    public Person createPerson(@RequestBody Person person) {
+        return personService.createPerson(person);
+    }
 }
