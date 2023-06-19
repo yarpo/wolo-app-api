@@ -6,10 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.User;
 import pl.pjwstk.woloappapi.service.UserService;
-import pl.pjwstk.woloappapi.utils.UserNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -26,15 +24,10 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id){
-        Optional<User> optionalUser = userService.getUserById(id);
-        if (optionalUser.isPresent()){
-            return new ResponseEntity<>(optionalUser.get(), HttpStatus.OK);
-        } else {
-            throw new UserNotFoundException("User id not found!");
-        }
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/{role}")
+    @GetMapping("/role/{role}")
     public ResponseEntity<List<User>> getUsersByRole(@PathVariable Long role){
         return new ResponseEntity<>(userService.getByRole(role), HttpStatus.OK);
     }

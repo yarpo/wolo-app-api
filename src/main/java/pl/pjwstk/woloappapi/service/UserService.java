@@ -3,11 +3,11 @@ package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.pjwstk.woloappapi.model.User;
 import pl.pjwstk.woloappapi.model.Role;
-import pl.pjwstk.woloappapi.repository.UserRepository;
+import pl.pjwstk.woloappapi.model.User;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
-
+import pl.pjwstk.woloappapi.repository.UserRepository;
+import pl.pjwstk.woloappapi.utils.UserNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +22,9 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User id not found!"));
     }
 
     public void createUser(User user) {

@@ -22,7 +22,7 @@ public class Event {
 
     @Column(name = "name", nullable = false)
     @NotBlank(message = "Name is required")
-    @Size(max = 40, message = "Name cannot exceed 40 characters")
+    @Size(max = 250, message = "Name cannot exceed 250 characters")
     private String name;
 
     @Column(name = "description", nullable = false)
@@ -37,7 +37,6 @@ public class Event {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
-    @NotNull(message = "Category ID is required")
     private Category category;
 
     @Column(name = "is_pesel_ver_req", nullable = false)

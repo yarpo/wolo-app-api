@@ -8,6 +8,7 @@ import pl.pjwstk.woloappapi.model.Organisation;
 import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
+import pl.pjwstk.woloappapi.utils.EventNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,8 +25,9 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-    public Optional<Event> getEventById(Long id) {
-        return eventRepository.findById(id);
+    public Event getEventById(Long id) {
+        return eventRepository.findById(id)
+                .orElseThrow(() -> new EventNotFoundException("Event id not found!"));
     }
 
     public void createEvent(Event event) {
