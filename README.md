@@ -1,4 +1,4 @@
-![Logo](https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81pDUC-p27-JgkYha-SJLH3VCntUJGGnNXBSmvo_K8iBFZYgmUJsGL7wPyqGyQoMokWFDQWM735seWNP3NsM9PqEeHGV_w=w1920-h941)
+![Logo](https://raw.githubusercontent.com/yarpo/wolo-app/e4cf379186c21a687389fc9755146fadbbef095c/src/images/logo.svg)
 
 # Wolo-app-api
 
