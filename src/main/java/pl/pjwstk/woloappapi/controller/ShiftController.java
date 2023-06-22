@@ -1,36 +1,44 @@
 package pl.pjwstk.woloappapi.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.pjwstk.woloappapi.model.Shift;
+import pl.pjwstk.woloappapi.model.Shift;
 import pl.pjwstk.woloappapi.repository.ShiftRepository;
+import pl.pjwstk.woloappapi.service.ShiftService;
+
+import java.util.List;
 
 @RestController
+@AllArgsConstructor
+@RequestMapping("/shift")
 public class ShiftController {
 
-    private ShiftRepository TermRepository;
+    private final ShiftService shiftService;
 
-    @Autowired
-    public ShiftController(ShiftRepository TermRepository) {
-        this.TermRepository = TermRepository;
+    @GetMapping("/all")
+    public ResponseEntity<List<Shift>> getShifts(){
+        List<Shift> Shifts = shiftService.getAllShifts();
+        return new ResponseEntity<>(Shifts, HttpStatus.OK);
     }
 
-    @GetMapping("/Term/all")
-    Iterable<Shift> all() {
-        return TermRepository.findAll();
+    @GetMapping("/{id}")
+    public ResponseEntity<Shift> getShiftById(@PathVariable Long id){
+        return new ResponseEntity<>(shiftService.getShiftById(id), HttpStatus.OK);
     }
-
-    @GetMapping("/Term/{id}")
-    Shift TermById(@PathVariable Long id) {
-        return TermRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND));
+    @PostMapping("/add")
+    public ResponseEntity<HttpStatus> addShift(@RequestBody Shift Shift){
+        shiftService.createShift(Shift);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
-    @PostMapping("/Term/save")
-    Shift save(@RequestBody Shift Term) {
-        return TermRepository.save(Term);
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteShift(@PathVariable Long id){
+        shiftService.deleteShift(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
