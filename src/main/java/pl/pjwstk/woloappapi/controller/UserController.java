@@ -5,8 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.User;
-import pl.pjwstk.woloappapi.model.User;
-import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.service.UserService;
 
 import java.util.List;

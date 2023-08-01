@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.service.EventService;
+import pl.pjwstk.woloappapi.utils.EventNotFoundException;
 
 import java.util.List;
 
@@ -24,23 +25,20 @@ public class EventController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable Long id){
-        return new ResponseEntity<>(eventService.getEventById(id), HttpStatus.OK);
+        try {
+            Event event = eventService.getEventById(id);
+            return new ResponseEntity<>(event, HttpStatus.OK);
+        } catch (EventNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
-    @GetMapping("/org/{organisation}")
-    public ResponseEntity<List<Event>> getEventsByOrganisation(@PathVariable Long organisation){
-        return new ResponseEntity<>(eventService.getByOrganisation(organisation), HttpStatus.OK);
-    }
-
-    @GetMapping("/cat/{category}")
-    public ResponseEntity<List<Event>> getEventsByCategory(@PathVariable Long category){
-        return new ResponseEntity<>(eventService.getByCategory(category), HttpStatus.OK);
-    }
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addEvent(@RequestBody Event event){
         eventService.createEvent(event);
             return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
 
 }
 
