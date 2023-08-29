@@ -1,34 +1,38 @@
 package pl.pjwstk.woloappapi.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import pl.pjwstk.woloappapi.model.Organisation;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 
 @RestController
+@AllArgsConstructor
+@RequestMapping("/organisation")
 public class OrganisationController {
 
-    private OrganisationRepository OrganisationRepository;
+    private final OrganisationRepository OrganisationRepository;
 
-    @Autowired
-    public OrganisationController(OrganisationRepository OrganisationRepository) {
-        this.OrganisationRepository = OrganisationRepository;
-    }
-
-    @GetMapping("/Organisation/all")
+    @GetMapping("/all")
     Iterable<Organisation> all() {
         return OrganisationRepository.findAll();
     }
 
-    @GetMapping("/Organisation/{id}")
+    @GetMapping("/{id}")
     Organisation OrganisationById(@PathVariable Long id) {
-        return OrganisationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND));
+        return OrganisationRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/Organisation/save")
+    @PostMapping("/save")
     Organisation save(@RequestBody Organisation Organisation) {
         return OrganisationRepository.save(Organisation);
     }

@@ -1,34 +1,39 @@
 package pl.pjwstk.woloappapi.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import org.springframework.web.server.ResponseStatusException;
 import pl.pjwstk.woloappapi.model.Shift;
 import pl.pjwstk.woloappapi.repository.ShiftRepository;
 
 @RestController
+@AllArgsConstructor
+@RequestMapping("/term")
+
 public class ShiftController {
 
-    private ShiftRepository TermRepository;
+    private final ShiftRepository TermRepository;
 
-    @Autowired
-    public ShiftController(ShiftRepository TermRepository) {
-        this.TermRepository = TermRepository;
-    }
-
-    @GetMapping("/Term/all")
+    @GetMapping("/all")
     Iterable<Shift> all() {
         return TermRepository.findAll();
     }
 
-    @GetMapping("/Term/{id}")
+    @GetMapping("/{id}")
     Shift TermById(@PathVariable Long id) {
-        return TermRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND));
+        return TermRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/Term/save")
+    @PostMapping("/save")
     Shift save(@RequestBody Shift Term) {
         return TermRepository.save(Term);
     }

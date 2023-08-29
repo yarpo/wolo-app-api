@@ -26,5 +26,4 @@ public class ShiftToUser {
     @Column(name = "is_leader", nullable = false)
     private boolean isLeader;
 
-
 }

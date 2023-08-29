@@ -3,7 +3,6 @@ package pl.pjwstk.woloappapi.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-
 @Entity
 @Data
 @Table(name = "address_to_event")
@@ -23,4 +22,3 @@ public class AddressToEvent {
     private Address address;
 
 }
-

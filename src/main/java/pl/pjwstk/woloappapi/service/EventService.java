@@ -50,7 +50,7 @@ public class EventService {
 
     public List<Event> getByOrganisation(Long organisation) {
         Optional<Organisation> organisationById = organisationRepository.findById(organisation);
-        if(organisationById.isEmpty()){
+        if (organisationById.isEmpty()) {
             throw new IllegalArgumentException("Organisation with ID " + organisation + " does not exist");
         }
         return eventRepository.getEventsByOrganisation(organisationById);
@@ -58,7 +58,7 @@ public class EventService {
 
     public List<Event> getByCategory(Long category) {
         Optional<Category> categoryById = categoryRepository.findById(category);
-        if(categoryById.isEmpty()){
+        if (categoryById.isEmpty()) {
             throw new IllegalArgumentException("Category does not exist");
         }
         return eventRepository.getEventsByCategory(categoryById);

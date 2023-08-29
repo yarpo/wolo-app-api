@@ -1,6 +1,5 @@
 package pl.pjwstk.woloappapi.service;
 
-
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.Role;
@@ -47,7 +46,7 @@ public class UserService {
 
     public List<User> getByRole(Long role) {
         Optional<Role> roleById = roleRepository.findById(role);
-        if(roleById.isEmpty()){
+        if (roleById.isEmpty()) {
             throw new IllegalArgumentException("Role does not exist");
         }
         return userRepository.getUsersByRole(roleById);

@@ -9,22 +9,24 @@ import pl.pjwstk.woloappapi.repository.CategoryRepository;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/category")
 public class CategoryController {
 
-    private CategoryRepository CategoryRepository;
+    private final CategoryRepository CategoryRepository;
 
-    @GetMapping("/Category/all")
+    @GetMapping("/all")
     Iterable<Category> all() {
         return CategoryRepository.findAll();
     }
 
-    @GetMapping("/Category/{id}")
+    @GetMapping("/{id}")
     Category CategoryById(@PathVariable Long id) {
-        return CategoryRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND));
+        return CategoryRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/Category/save")
+    @PostMapping("/save")
     Category save(@RequestBody Category Category) {
         return CategoryRepository.save(Category);
     }

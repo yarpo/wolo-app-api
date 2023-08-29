@@ -14,5 +14,3 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> getEventsByOrganisation(Optional<Organisation> organisation);
     List<Event> getEventsByCategory(Optional<Category> category);
 }
-
-
