@@ -27,6 +27,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	testImplementation 'org.junit.jupiter:junit-jupiter'
 	compileOnly 'org.projectlombok:lombok'
 	implementation 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -36,9 +37,12 @@ dependencies {
 	testImplementation 'io.rest-assured:rest-assured:5.3.0'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-    include '**/*BasicUnitTest.class'
+test {
+	useJUnitPlatform()
+
+	testLogging {
+		events 'passed', 'skipped', 'failed'
+	}
 }
 
 task testRestAssured(type: Test) {

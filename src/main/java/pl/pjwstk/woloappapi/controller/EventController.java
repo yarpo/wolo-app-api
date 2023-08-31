@@ -36,6 +36,7 @@ public class EventController {
     public ResponseEntity<List<Event>> getEventsByCategory(@PathVariable Long category){
         return new ResponseEntity<>(eventService.getByCategory(category), HttpStatus.OK);
     }
+
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addEvent(@RequestBody Event event){
         eventService.createEvent(event);
