@@ -11,12 +11,12 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/role")
+@RequestMapping("/roles")
 public class RoleController {
 
     private final RoleService roleService;
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<List<Role>> getRoles(){
         List<Role> Roles = roleService.getAllRoles();
         return new ResponseEntity<>(Roles, HttpStatus.OK);
@@ -26,15 +26,16 @@ public class RoleController {
     public ResponseEntity<Role> getRoleById(@PathVariable Long id){
         return new ResponseEntity<>(roleService.getRoleById(id), HttpStatus.OK);
     }
+
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addRole(@RequestBody Role Role){
         roleService.createRole(Role);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @PostMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteRole(@PathVariable Long id){
         roleService.deleteRole(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

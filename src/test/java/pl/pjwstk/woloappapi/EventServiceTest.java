@@ -12,7 +12,7 @@ import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.service.EventService;
-import pl.pjwstk.woloappapi.utils.EventNotFoundException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +52,9 @@ public class EventServiceTest {
         Event event = createValidEvent(eventId, "Event 1");
         when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
 
-        Event result = eventService.getEventById(eventId);
+        Optional<Event> result = eventService.getEventById(eventId);
 
-        assertEquals(event, result);
+        assertEquals(event, result.get());
         verify(eventRepository, times(1)).findById(eventId);
     }
 
@@ -63,7 +63,7 @@ public class EventServiceTest {
         Long eventId = 1L;
         when(eventRepository.findById(eventId)).thenReturn(Optional.empty());
 
-        assertThrows(EventNotFoundException.class, () -> eventService.getEventById(eventId));
+        assertThrows(NotFoundException.class, () -> eventService.getEventById(eventId));
         verify(eventRepository, times(1)).findById(eventId);
     }
 
@@ -136,13 +136,8 @@ public class EventServiceTest {
 
     private Event createInvalidEvent() {
         Event event = new Event();
-        event.setId(1L);
         event.setName("");
-        event.setDescription("Event description");
-        event.setOrganisation(new Organisation());
-        event.setCategory(new Category());
-        event.setPeselVerificationRequired(true);
-        event.setAgreementNeeded(false);
+
         return event;
     }
 }

@@ -12,12 +12,12 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/Category")
+@RequestMapping("/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<List<Category>> getCategorys(){
         List<Category> Categorys = categoryService.getAllCategorys();
         return new ResponseEntity<>(Categorys, HttpStatus.OK);
@@ -27,15 +27,16 @@ public class CategoryController {
     public ResponseEntity<Category> getCategoryById(@PathVariable Long id){
         return new ResponseEntity<>(categoryService.getCategoryById(id), HttpStatus.OK);
     }
+
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addCategory(@RequestBody Category Category){
         categoryService.createCategory(Category);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @PostMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteCategory(@PathVariable Long id){
         categoryService.deleteCategory(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

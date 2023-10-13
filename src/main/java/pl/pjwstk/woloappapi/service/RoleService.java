@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
-import pl.pjwstk.woloappapi.utils.EventNotFoundException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class RoleService {
 
     public Role getRoleById(Long id) {
         return roleRepository.findById(id)
-                .orElseThrow(() -> new EventNotFoundException("role id not found!"));
+                .orElseThrow(() -> new NotFoundException("role id not found!"));
     }
 
     public void createRole(Role role) {

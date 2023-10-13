@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.Shift;
 import pl.pjwstk.woloappapi.repository.ShiftRepository;
-import pl.pjwstk.woloappapi.utils.EventNotFoundException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class ShiftService {
 
     public Shift getShiftById(Long id) {
         return shiftRepository.findById(id)
-                .orElseThrow(() -> new EventNotFoundException("Shift id not found!"));
+                .orElseThrow(() -> new NotFoundException("Shift id not found!"));
     }
 
     public void createShift(Shift Shift) {

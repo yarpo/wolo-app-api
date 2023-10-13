@@ -12,12 +12,12 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/organisation")
+@RequestMapping("/organisations")
 public class OrganisationController {
 
     private final OrganisationService organisationService;
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<List<Organisation>> getOrganisations(){
         List<Organisation> Organisations = organisationService.getAllOrganisations();
         return new ResponseEntity<>(Organisations, HttpStatus.OK);
@@ -27,15 +27,16 @@ public class OrganisationController {
     public ResponseEntity<Organisation> getOrganisationById(@PathVariable Long id){
         return new ResponseEntity<>(organisationService.getOrganisationById(id), HttpStatus.OK);
     }
+
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addOrganisation(@RequestBody Organisation Organisation){
         organisationService.createOrganisation(Organisation);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @PostMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteOrganisation(@PathVariable Long id){
         organisationService.deleteOrganisation(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

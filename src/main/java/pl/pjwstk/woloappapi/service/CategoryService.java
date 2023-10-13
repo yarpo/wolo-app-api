@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.Category;
 import pl.pjwstk.woloappapi.repository.CategoryRepository;
-import pl.pjwstk.woloappapi.utils.EventNotFoundException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class CategoryService {
 
     public Category getCategoryById(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new EventNotFoundException("Category id not found!"));
+                .orElseThrow(() -> new NotFoundException("Category id not found!"));
     }
 
     public void createCategory(Category Category) {

@@ -7,7 +7,7 @@ import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.model.User;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
-import pl.pjwstk.woloappapi.utils.EventNotFoundException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +24,7 @@ public class UserService {
 
     public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new EventNotFoundException("User id not found!"));
+                .orElseThrow(() -> new NotFoundException("User id not found!"));
     }
 
     public void createUser(User user) {

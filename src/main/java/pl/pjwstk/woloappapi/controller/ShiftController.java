@@ -11,12 +11,12 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/shift")
+@RequestMapping("/shifts")
 public class ShiftController {
 
     private final ShiftService shiftService;
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<List<Shift>> getShifts(){
         List<Shift> Shifts = shiftService.getAllShifts();
         return new ResponseEntity<>(Shifts, HttpStatus.OK);
@@ -26,15 +26,16 @@ public class ShiftController {
     public ResponseEntity<Shift> getShiftById(@PathVariable Long id){
         return new ResponseEntity<>(shiftService.getShiftById(id), HttpStatus.OK);
     }
+
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addShift(@RequestBody Shift Shift){
         shiftService.createShift(Shift);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @PostMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteShift(@PathVariable Long id){
         shiftService.deleteShift(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

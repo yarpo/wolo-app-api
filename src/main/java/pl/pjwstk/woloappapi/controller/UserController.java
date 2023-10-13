@@ -11,12 +11,12 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<List<User>> getUsers(){
         List<User> Users = userService.getAllUsers();
         return new ResponseEntity<>(Users, HttpStatus.OK);
@@ -26,15 +26,16 @@ public class UserController {
     public ResponseEntity<User> getUserById(@PathVariable Long id){
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
+
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addUser(@RequestBody User User){
         userService.createUser(User);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @PostMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

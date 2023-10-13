@@ -3,27 +3,25 @@ package pl.pjwstk.woloappapi.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.Event;
-import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.repository.EventRepository;
-import pl.pjwstk.woloappapi.repository.OrganisationRepository;
-import pl.pjwstk.woloappapi.utils.EventNotFoundException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class EventService {
     private final EventRepository eventRepository;
-    private final OrganisationRepository organisationRepository;
-    private final CategoryRepository categoryRepository;
 
-    public List<Event> getAllEvents() {
-        return eventRepository.findAll();
+     public List<Event> getAllEvents() {
+         eventRepository.findAll();
+        return null;
     }
 
-    public Event getEventById(Long id) {
-        return eventRepository.findById(id)
-                .orElseThrow(() -> new EventNotFoundException("Event id not found!"));
+    public Optional<Event> getEventById(Long id) {
+        return Optional.ofNullable(eventRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Event id not found!")));
     }
 
     public void createEvent(Event event) {

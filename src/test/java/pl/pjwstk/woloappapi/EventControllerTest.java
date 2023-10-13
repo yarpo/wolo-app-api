@@ -10,10 +10,11 @@ import org.springframework.http.ResponseEntity;
 import pl.pjwstk.woloappapi.controller.EventController;
 import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.service.EventService;
-import pl.pjwstk.woloappapi.utils.EventNotFoundException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -44,7 +45,7 @@ public class EventControllerTest {
     public void testGetEventById_ExistingId() {
         Long eventId = 1L;
         Event event = createEvent(eventId, "Event 1", "Description 1", true, false);
-        when(eventService.getEventById(eventId)).thenReturn(event);
+        when(eventService.getEventById(eventId)).thenReturn(Optional.of(event));
 
         ResponseEntity<Event> responseEntity = eventController.getEventById(eventId);
 
@@ -56,7 +57,7 @@ public class EventControllerTest {
     @Test
     public void testGetEventById_NonExistingId() {
         Long eventId = 1L;
-        when(eventService.getEventById(eventId)).thenThrow(new EventNotFoundException("Event id not found!"));
+        when(eventService.getEventById(eventId)).thenThrow(new NotFoundException("Event id not found!"));
 
         ResponseEntity<Event> responseEntity = eventController.getEventById(eventId);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());

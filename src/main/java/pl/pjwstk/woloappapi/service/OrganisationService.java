@@ -2,10 +2,9 @@ package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.model.Organisation;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
-import pl.pjwstk.woloappapi.utils.EventNotFoundException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class OrganisationService {
 
     public Organisation getOrganisationById(Long id) {
         return organisationRepository.findById(id)
-                .orElseThrow(() -> new EventNotFoundException("Organisation id not found!"));
+                .orElseThrow(() -> new NotFoundException("Organisation id not found!"));
     }
 
     public void createOrganisation(Organisation organisation) {
