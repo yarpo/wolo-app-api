@@ -6,10 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.service.EventService;
-import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -26,12 +24,8 @@ public class EventController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable Long id){
-        Optional<Event> optionalEvent = eventService.getEventById(id);
-        if (optionalEvent.isPresent()){
-            return new ResponseEntity<>(optionalEvent.get(), HttpStatus.OK);
-        } else {
-            throw new NotFoundException("Event id not found!");
-        }
+        Event event = eventService.getEventById(id);
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     @PostMapping("/add")

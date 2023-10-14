@@ -7,7 +7,6 @@ import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -15,13 +14,12 @@ public class EventService {
     private final EventRepository eventRepository;
 
      public List<Event> getAllEvents() {
-         eventRepository.findAll();
-        return null;
+         return eventRepository.findAll();
     }
 
-    public Optional<Event> getEventById(Long id) {
-        return Optional.ofNullable(eventRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Event id not found!")));
+    public Event getEventById(Long id) {
+        return eventRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Event id not found!"));
     }
 
     public void createEvent(Event event) {

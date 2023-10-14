@@ -1,8 +1,13 @@
 package pl.pjwstk.woloappapi.model;
 
-import lombok.Data;
-
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -11,7 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+
 @Table(name = "event")
 public class Event {
 
@@ -29,13 +41,13 @@ public class Event {
     @NotBlank(message = "Description is required")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "organisation_id", nullable = false)
     @NotNull(message = "Organization ID is required")
     @Valid
     private Organisation organisation;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 

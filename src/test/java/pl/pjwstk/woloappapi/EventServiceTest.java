@@ -52,9 +52,9 @@ public class EventServiceTest {
         Event event = createValidEvent(eventId, "Event 1");
         when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
 
-        Optional<Event> result = eventService.getEventById(eventId);
+        Event result = eventService.getEventById(eventId);
 
-        assertEquals(event, result.get());
+        assertEquals(event, result);
         verify(eventRepository, times(1)).findById(eventId);
     }
 

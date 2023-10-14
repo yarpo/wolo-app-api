@@ -14,7 +14,6 @@ import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -45,7 +44,7 @@ public class EventControllerTest {
     public void testGetEventById_ExistingId() {
         Long eventId = 1L;
         Event event = createEvent(eventId, "Event 1", "Description 1", true, false);
-        when(eventService.getEventById(eventId)).thenReturn(Optional.of(event));
+        when(eventService.getEventById(eventId)).thenReturn(event);
 
         ResponseEntity<Event> responseEntity = eventController.getEventById(eventId);
 

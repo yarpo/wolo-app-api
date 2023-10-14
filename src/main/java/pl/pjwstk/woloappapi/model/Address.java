@@ -1,14 +1,19 @@
 package pl.pjwstk.woloappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
-
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
+@Data
 @Table(name = "address")
 public class Address {
 
@@ -23,7 +28,7 @@ public class Address {
     @Column(name = "home_num", nullable = false)
     private String homeNum;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "district_id", nullable = false)
     private District district;
 

@@ -1,8 +1,10 @@
 package pl.pjwstk.woloappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
 import lombok.Data;
 
-import jakarta.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -10,6 +12,9 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @Data
 @Table(name = "organisation")
 public class Organisation {
@@ -38,7 +43,7 @@ public class Organisation {
     @Size(min = 9, max = 9, message = "Phone number must be 9 digits")
     private String phoneNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "address_id", nullable = false)
     @Valid
     private Address address;
@@ -46,7 +51,7 @@ public class Organisation {
     @Column(name = "is_approved", nullable = false)
     private boolean isApproved;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "moderator_id", nullable = false)
     @Valid
     private User moderator;
