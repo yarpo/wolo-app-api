@@ -2,31 +2,40 @@ package pl.pjwstk.woloappapi.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import pl.pjwstk.woloappapi.model.Role;
-import pl.pjwstk.woloappapi.repository.RoleRepository;
+import pl.pjwstk.woloappapi.service.RoleService;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
-public class RoleController  {
+@RequestMapping("/roles")
+public class RoleController {
 
-    private final RoleRepository RoleRepository;
+    private final RoleService roleService;
 
-    @GetMapping("/Role/all")
-    Iterable<Role> all() {
-        return RoleRepository.findAll();
+    @GetMapping()
+    public ResponseEntity<List<Role>> getRoles(){
+        List<Role> Roles = roleService.getAllRoles();
+        return new ResponseEntity<>(Roles, HttpStatus.OK);
     }
 
-    @GetMapping("/Role/{id}")
-    Role RoleById(@PathVariable Long id) {
-        return RoleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND));
+    @GetMapping("/{id}")
+    public ResponseEntity<Role> getRoleById(@PathVariable Long id){
+        return new ResponseEntity<>(roleService.getRoleById(id), HttpStatus.OK);
     }
 
-    @PostMapping("/Role/save")
-    Role save(@RequestBody Role Role) {
-        return RoleRepository.save(Role);
+    @PostMapping("/add")
+    public ResponseEntity<HttpStatus> addRole(@RequestBody Role Role){
+        roleService.createRole(Role);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteRole(@PathVariable Long id){
+        roleService.deleteRole(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

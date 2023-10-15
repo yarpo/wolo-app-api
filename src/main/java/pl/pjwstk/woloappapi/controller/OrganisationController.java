@@ -1,36 +1,42 @@
 package pl.pjwstk.woloappapi.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import pl.pjwstk.woloappapi.model.Organisation;
-import pl.pjwstk.woloappapi.repository.OrganisationRepository;
+import pl.pjwstk.woloappapi.service.OrganisationService;
+
+import java.util.List;
+
 
 @RestController
+@AllArgsConstructor
+@RequestMapping("/organisations")
 public class OrganisationController {
 
-    private OrganisationRepository OrganisationRepository;
+    private final OrganisationService organisationService;
 
-    @Autowired
-    public OrganisationController(OrganisationRepository OrganisationRepository) {
-        this.OrganisationRepository = OrganisationRepository;
+    @GetMapping()
+    public ResponseEntity<List<Organisation>> getOrganisations(){
+        List<Organisation> Organisations = organisationService.getAllOrganisations();
+        return new ResponseEntity<>(Organisations, HttpStatus.OK);
     }
 
-    @GetMapping("/Organisation/all")
-    Iterable<Organisation> all() {
-        return OrganisationRepository.findAll();
+    @GetMapping("/{id}")
+    public ResponseEntity<Organisation> getOrganisationById(@PathVariable Long id){
+        return new ResponseEntity<>(organisationService.getOrganisationById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/Organisation/{id}")
-    Organisation OrganisationById(@PathVariable Long id) {
-        return OrganisationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND));
+    @PostMapping("/add")
+    public ResponseEntity<HttpStatus> addOrganisation(@RequestBody Organisation Organisation){
+        organisationService.createOrganisation(Organisation);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/Organisation/save")
-    Organisation save(@RequestBody Organisation Organisation) {
-        return OrganisationRepository.save(Organisation);
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteOrganisation(@PathVariable Long id){
+        organisationService.deleteOrganisation(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
