@@ -8,7 +8,7 @@ class WoloAppApiApplicationTests {
 
 	@Test
 	public void testHealthEndpoint() {
-		given()
+				given()
 				.when().get("/health")
 				.then()
 				.statusCode(200);
