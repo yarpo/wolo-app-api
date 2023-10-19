@@ -1,4 +1,4 @@
-# Użyj obrazu bazowego z Javą 17
+
 FROM gradle:latest
 
 # Utwórz katalog aplikacji
@@ -8,9 +8,9 @@ WORKDIR /wolo-app-api
 COPY . /wolo-app-api
 
 # Ustaw zmienne środowiskowe dla bazy danych
-ENV SPRING_DATASOURCE_URL=jdbc:postgresql://dbpostgresql:5432/mydb
-ENV SPRING_DATASOURCE_USERNAME=postgres
-ENV SPRING_DATASOURCE_PASSWORD=password
+ENV SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/mydb2
+ENV SPRING_DATASOURCE_USERNAME=ADMIN1
+ENV SPRING_DATASOURCE_PASSWORD=ADMIN1
 
 # Otwórz port, na którym działa aplikacja Spring Boot
 EXPOSE 8080

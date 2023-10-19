@@ -1,19 +1,25 @@
-version: '3.8'
 
 services:
-  wolo-app-api:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    container_name: postgresql_container
+    environment:
+      - POSTGRES_PASSWORD=ADMIN1
+      - POSTGRES_USER=ADMIN1
+      - POSTGRES_DB=mydb2
+    restart: always
+
+  backend:
     build: .
     container_name: wolo-app-api
     ports:
       - "8080:8080"
-    depends_on:
-      - dbpostgresql
-
-  dbpostgresql:
-    image: postgres
-    ports:
-      - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=mydb
+      db-url: jdbc:postgresql://postgresql:5432/mydb2
+      db-username: ADMIN1
+      db-password: ADMIN1
+    depends_on:
+      - db
+    restart: always
