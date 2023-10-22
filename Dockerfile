@@ -8,7 +8,7 @@ WORKDIR /wolo-app-api
 COPY . /wolo-app-api
 
 # Ustaw zmienne środowiskowe dla bazy danych
-ENV SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/mydb2
+ENV SPRING_DATASOURCE_URL=jdbc:postgresql://172.19.0.2:5432/mydb2
 ENV SPRING_DATASOURCE_USERNAME=ADMIN1
 ENV SPRING_DATASOURCE_PASSWORD=ADMIN1
 
