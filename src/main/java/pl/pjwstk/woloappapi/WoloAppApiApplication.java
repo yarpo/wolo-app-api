@@ -10,3 +10,4 @@ public class WoloAppApiApplication {
 		SpringApplication.run(WoloAppApiApplication.class, args);
 	}
 }
+//
