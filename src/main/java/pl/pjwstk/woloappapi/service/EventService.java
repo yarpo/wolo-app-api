@@ -6,6 +6,7 @@ import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -40,19 +41,7 @@ public class EventService {
         eventRepository.deleteById(id);
     }
 
-//    public List<Event> getByOrganisation(Long organisation) {
-//        Optional<Organisation> organisationById = organisationRepository.findById(organisation);
-//        if(organisationById.isEmpty()){
-//            throw new IllegalArgumentException("Organisation with ID " + organisation + " does not exist");
-//        }
-//        return eventRepository.getEventsByOrganisation(organisationById);
-//    }
-//
-//    public List<Event> getByCategory(Long category) {
-//        Optional<Category> categoryById = categoryRepository.findById(category);
-//        if(categoryById.isEmpty()){
-//            throw new IllegalArgumentException("Category does not exist");
-//        }
-//        return eventRepository.getEventsByCategory(categoryById);
-//    }
+    public List<Event> filterEvents(String district, LocalDate startDate, LocalDate endDate, Long category, Long organizer, Integer ageRestriction) {
+        return eventRepository.findAllByFilter(district, startDate, endDate, category, organizer, ageRestriction);
+    }
 }
