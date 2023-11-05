@@ -21,7 +21,7 @@ public class EventRepositoryImpl implements EventRepositoryCustom{
     @Override
     public List<Event> findAllByFilter(String localization, LocalDate startDate,
                                        LocalDate endDate, Long category, Long organizer,
-                                       Integer ageRestriction) {
+                                       Integer ageRestriction, Boolean isPeselVerificationRequired) {
         EntityManager entityManager = getEntityManager();
         if (entityManager != null) {
             final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -64,6 +64,10 @@ public class EventRepositoryImpl implements EventRepositoryCustom{
                 Join<Event, AddressToEvent> addressToEventJoin = root.join("addressToEvent", JoinType.INNER);
                 Join<AddressToEvent, Shift> shiftJoin = addressToEventJoin.join("shift", JoinType.INNER);
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(shiftJoin.get("requiredMinAge"), ageRestriction));
+            }
+
+            if (isPeselVerificationRequired != null) {
+                predicates.add(criteriaBuilder.equal(root.get("isAgreementNeeded"), isPeselVerificationRequired));
             }
 
             criteriaQuery.select(root).distinct(true);

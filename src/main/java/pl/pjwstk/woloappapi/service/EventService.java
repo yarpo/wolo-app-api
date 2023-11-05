@@ -41,7 +41,10 @@ public class EventService {
         eventRepository.deleteById(id);
     }
 
-    public List<Event> filterEvents(String district, LocalDate startDate, LocalDate endDate, Long category, Long organizer, Integer ageRestriction) {
-        return eventRepository.findAllByFilter(district, startDate, endDate, category, organizer, ageRestriction);
+    public List<Event> filterEvents(String district, LocalDate startDate, LocalDate endDate,
+                                    Long category, Long organizer, Integer ageRestriction,
+                                    Boolean isPeselVerificationRequired) {
+        return eventRepository.findAllByFilter(district, startDate, endDate,
+                category, organizer, ageRestriction, isPeselVerificationRequired);
     }
 }
