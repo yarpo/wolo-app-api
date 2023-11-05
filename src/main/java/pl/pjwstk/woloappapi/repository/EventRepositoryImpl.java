@@ -1,26 +1,25 @@
 package pl.pjwstk.woloappapi.repository;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import pl.pjwstk.woloappapi.model.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-@RequiredArgsConstructor
 @Getter
 public class EventRepositoryImpl implements EventRepositoryCustom{
-
-    private final EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
-    public List<Event> findAllByFilter(String district, LocalDate startDate,
+    public List<Event> findAllByFilter(String localization, LocalDate startDate,
                                        LocalDate endDate, Long category, Long organizer,
                                        Integer ageRestriction) {
         EntityManager entityManager = getEntityManager();
@@ -30,15 +29,17 @@ public class EventRepositoryImpl implements EventRepositoryCustom{
             Root<Event> root = criteriaQuery.from(Event.class);
 
             List<Predicate> predicates = new ArrayList<>();
-            if(district!=null){
+            if(localization!=null){
                 Join<Event, AddressToEvent> addressToEventJoin =
-                        root.join("addressToEvent", JoinType.INNER);
+                        root.join("addressToEvents", JoinType.INNER);
                 Join<AddressToEvent, Address> addressJoin =
                         addressToEventJoin.join("address", JoinType.INNER);
-                predicates.add(criteriaBuilder.equal(addressJoin.get("district"), district));
+                Join<Address, District> districtJoin =
+                        addressJoin.join("district", JoinType.INNER);
+                predicates.add(criteriaBuilder.equal(districtJoin.get("name"), localization));
             }
             if (startDate != null) {
-                Join<Event, AddressToEvent> addressToEventJoin = root.join("addressToEvent", JoinType.INNER);
+                Join<Event, AddressToEvent> addressToEventJoin = root.join("addressToEvents", JoinType.INNER);
                 Join<AddressToEvent, Shift> shiftJoin = addressToEventJoin.join("shift", JoinType.INNER);
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(shiftJoin.get("date"), startDate));
             }
