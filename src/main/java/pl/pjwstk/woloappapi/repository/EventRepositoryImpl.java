@@ -29,6 +29,7 @@ public class EventRepositoryImpl implements EventRepositoryCustom{
             Root<Event> root = criteriaQuery.from(Event.class);
 
             List<Predicate> predicates = new ArrayList<>();
+
             if(localization!=null){
                 Join<Event, AddressToEvent> addressToEventJoin =
                         root.join("addressToEvents", JoinType.INNER);
@@ -70,11 +71,16 @@ public class EventRepositoryImpl implements EventRepositoryCustom{
                 predicates.add(criteriaBuilder.equal(root.get("isAgreementNeeded"), isPeselVerificationRequired));
             }
 
-            criteriaQuery.select(root).distinct(true);
-            criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+            if (predicates.isEmpty()) {
+                TypedQuery<Event> query = entityManager.createQuery(criteriaQuery.select(root));
+                return query.getResultList();
+            } else {
+                criteriaQuery.select(root).distinct(true);
+                criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
-            TypedQuery<Event> query = entityManager.createQuery(criteriaQuery);
-            return query.getResultList();
+                TypedQuery<Event> query = entityManager.createQuery(criteriaQuery);
+                return query.getResultList();
+            }
 
         } else {
             throw new RuntimeException("EntityManager is null. Unable to create query.");
