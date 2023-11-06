@@ -30,7 +30,7 @@ public class EventController {
                                                     @RequestParam(value = "category", required = false) Long category,
                                                     @RequestParam(value = "organizer", required = false) Long organizer,
                                                     @RequestParam(value = "ageRestriction", required = false) Integer ageRestriction,
-                                                    @RequestParam(value = "verification", required = false) Boolean isPeselVerificationRequired){
+                                                    @RequestParam(value = "verification", required = false) boolean isPeselVerificationRequired){
         List<Event> filteredEvents = eventService.filterEvents(localizations, startDate, endDate, category, organizer,
                 ageRestriction, isPeselVerificationRequired);
         return new ResponseEntity<>(filteredEvents, HttpStatus.OK);

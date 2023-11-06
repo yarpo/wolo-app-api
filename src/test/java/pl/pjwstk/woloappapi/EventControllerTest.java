@@ -70,14 +70,14 @@ public class EventControllerTest {
         events.add(createEvent(2L, "Event 2", "Description 2", false, true));
 
         when(eventService.filterEvents(null, null, null,
-                null, null, null, null)).thenReturn(events);
+                null, null, null, false)).thenReturn(events);
 
         ResponseEntity<List<Event>> responseEntity = eventController.filterEvents(
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null, false);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(events, responseEntity.getBody());
-        verify(eventService, times(1)).filterEvents(null, null, null, null, null, null, null);
+        verify(eventService, times(1)).filterEvents(null, null, null, null, null, null, false);
     }
 
     @Test

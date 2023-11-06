@@ -43,7 +43,7 @@ public class EventService {
 
     public List<Event> filterEvents(String[] localizations, LocalDate startDate, LocalDate endDate,
                                     Long category, Long organizer, Integer ageRestriction,
-                                    Boolean isPeselVerificationRequired) {
+                                    boolean isPeselVerificationRequired) {
         return eventRepository.findAllByFilter(localizations, startDate, endDate,
                 category, organizer, ageRestriction, isPeselVerificationRequired);
     }
