@@ -125,7 +125,7 @@ public class EventServiceTest {
         Long category = 1L;
         Long organizer = 2L;
         Integer ageRestriction = 18;
-        Boolean isPeselValid = true;
+        boolean isPeselValid = true;
         List<Event> events = new ArrayList<>();
         Event event1 = createValidEvent(1L, "Event 1");
         Event event2 = createValidEvent(2L, "Event 2");
