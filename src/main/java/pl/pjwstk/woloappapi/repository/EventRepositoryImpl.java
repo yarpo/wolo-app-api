@@ -80,17 +80,16 @@ public class EventRepositoryImpl implements EventRepositoryCustom{
             if (predicates.isEmpty()) {
                 TypedQuery<Event> query = entityManager.createQuery(criteriaQuery.select(root));
                 return query.getResultList();
-            } else {
-                criteriaQuery.select(root).distinct(true);
-                criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
-
-                TypedQuery<Event> query = entityManager.createQuery(criteriaQuery);
-                return query.getResultList();
             }
 
-        } else {
-            throw new RuntimeException("EntityManager is null. Unable to create query.");
+            criteriaQuery.select(root).distinct(true);
+            criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+
+            TypedQuery<Event> query = entityManager.createQuery(criteriaQuery);
+            return query.getResultList();
         }
+
+        throw new RuntimeException("EntityManager is null. Unable to create query.");
     }
 
 
