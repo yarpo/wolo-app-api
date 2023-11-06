@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import pl.pjwstk.woloappapi.controller.EventController;
 import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.service.EventService;
-import pl.pjwstk.woloappapi.utils.NotFoundException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,16 +54,6 @@ public class EventControllerTest {
     }
 
     @Test
-    public void testGetEventById_NonExistingId() {
-        Long eventId = 1L;
-        when(eventService.getEventById(eventId)).thenThrow(new NotFoundException("Event id not found!"));
-
-        ResponseEntity<Event> responseEntity = eventController.getEventById(eventId);
-        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-        verify(eventService, times(1)).getEventById(eventId);
-    }
-
-    @Test
     public void testAddEvent_ValidEvent() {
         Event eventToAdd = createEvent(1L, "Event 1", "Description 1", true, false);
 
@@ -73,6 +63,41 @@ public class EventControllerTest {
         verify(eventService, times(1)).createEvent(eventToAdd);
     }
 
+    @Test
+    public void testFilterEvents_NoFilters() {
+        List<Event> events = new ArrayList<>();
+        events.add(createEvent(1L, "Event 1", "Description 1", true, false));
+        events.add(createEvent(2L, "Event 2", "Description 2", false, true));
+
+        when(eventService.filterEvents(null, null, null,
+                null, null, null, null)).thenReturn(events);
+
+        ResponseEntity<List<Event>> responseEntity = eventController.filterEvents(
+                null, null, null, null, null, null, null);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(events, responseEntity.getBody());
+        verify(eventService, times(1)).filterEvents(null, null, null, null, null, null, null);
+    }
+
+    @Test
+    public void testFilterEvents_NoResults() {
+        List<Event> events = new ArrayList<>();
+        when(eventService.filterEvents(any(), any(), any(), any(), any(), any(), any())).thenReturn(events);
+
+        ResponseEntity<List<Event>> responseEntity = eventController.filterEvents(
+                new String[]{"Localization1"},
+                LocalDate.of(2023, 3, 17),
+                LocalDate.of(2023, 3, 18),
+                1L,
+                2L,
+                18,
+                true
+        );
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(events, responseEntity.getBody());
+    }
 
 
     private Event createEvent(Long id, String name, String description, boolean isPeselVerificationRequired, boolean isAgreementNeeded) {

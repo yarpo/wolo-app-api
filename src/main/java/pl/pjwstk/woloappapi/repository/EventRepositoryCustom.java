@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface EventRepositoryCustom {
-    List<Event> findAllByFilter(String localization, LocalDate startDate,LocalDate endDate,
+    List<Event> findAllByFilter(String[] localizations, LocalDate startDate,LocalDate endDate,
                                 Long category,Long organizer, Integer ageRestriction,
                                 Boolean isPeselVerificationRequired);
 }

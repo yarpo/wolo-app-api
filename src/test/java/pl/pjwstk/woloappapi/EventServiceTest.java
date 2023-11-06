@@ -8,12 +8,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.Category;
 import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.model.Organisation;
-import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.repository.EventRepository;
-import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +25,6 @@ import static org.mockito.Mockito.*;
 public class EventServiceTest {
     @Mock
     private EventRepository eventRepository;
-    @Mock
-    private OrganisationRepository organisationRepository;
-    @Mock
-    private CategoryRepository categoryRepository;
     @InjectMocks
     private EventService eventService;
 
@@ -121,6 +116,31 @@ public class EventServiceTest {
         verify(eventRepository, times(1)).existsById(eventId);
         verify(eventRepository, never()).deleteById(eventId);
     }
+
+    @Test
+    public void testFilterEvents() {
+        String[] localizations = {"TestLocalization1", "TestLocalization2"};
+        LocalDate startDate = LocalDate.of(2023, 3, 17);
+        LocalDate endDate = LocalDate.of(2023, 3, 18);
+        Long category = 1L;
+        Long organizer = 2L;
+        Integer ageRestriction = 18;
+        Boolean isPeselValid = true;
+        List<Event> events = new ArrayList<>();
+        Event event1 = createValidEvent(1L, "Event 1");
+        Event event2 = createValidEvent(2L, "Event 2");
+        events.add(event1);
+        events.add(event2);
+
+        when(eventRepository.findAllByFilter(localizations, startDate, endDate, category, organizer, ageRestriction, isPeselValid))
+                .thenReturn(events);
+
+        List<Event> result = eventService.filterEvents(localizations, startDate, endDate, category, organizer, ageRestriction, isPeselValid);
+
+        assertEquals(events, result);
+        verify(eventRepository, times(1)).findAllByFilter(localizations, startDate, endDate, category, organizer, ageRestriction, isPeselValid);
+    }
+
 
     private Event createValidEvent(Long id, String name) {
         Event event = new Event();

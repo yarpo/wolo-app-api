@@ -24,14 +24,14 @@ public class EventController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Event>> filterEvents(@RequestParam(value = "localization", required = false) String localization,
+    public ResponseEntity<List<Event>> filterEvents(@RequestParam(value = "localization", required = false) String[] localizations,
                                                     @RequestParam(value = "startDate", required = false) LocalDate startDate,
                                                     @RequestParam(value = "endDate", required = false) LocalDate endDate,
                                                     @RequestParam(value = "category", required = false) Long category,
                                                     @RequestParam(value = "organizer", required = false) Long organizer,
                                                     @RequestParam(value = "ageRestriction", required = false) Integer ageRestriction,
                                                     @RequestParam(value = "verification", required = false) Boolean isPeselVerificationRequired){
-        List<Event> filteredEvents = eventService.filterEvents(localization, startDate, endDate, category, organizer,
+        List<Event> filteredEvents = eventService.filterEvents(localizations, startDate, endDate, category, organizer,
                 ageRestriction, isPeselVerificationRequired);
         return new ResponseEntity<>(filteredEvents, HttpStatus.OK);
     }
