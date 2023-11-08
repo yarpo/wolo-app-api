@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 # wolo-app-api
 =======
 ![Logo](https://raw.githubusercontent.com/yarpo/wolo-app/e4cf379186c21a687389fc9755146fadbbef095c/src/images/logo.svg)
@@ -68,4 +67,3 @@ To run tests, run the following command
 - [@Filiposki54](https://github.com/Filiposki54)
 - [@Fylyp19](https://github.com/Fylyp19)
 - [@Aleksander Mielczarek](https://github.com/15465)
->>>>>>> Stashed changes
