@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.model.Organisation;
 import pl.pjwstk.woloappapi.service.OrganisationService;
 
@@ -38,5 +39,11 @@ public class OrganisationController {
     public ResponseEntity<HttpStatus> deleteOrganisation(@PathVariable Long id){
         organisationService.deleteOrganisation(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/events/{id}")
+    public ResponseEntity<List<Event>> getEventsByOrganizer(@PathVariable Long id) {
+        List<Event> eventsByOrganizer = organisationService.getEventsByOrganizer(id);
+        return new ResponseEntity<>(eventsByOrganizer, HttpStatus.OK);
     }
 }

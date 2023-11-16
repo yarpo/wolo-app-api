@@ -2,6 +2,7 @@ package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.model.Organisation;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
@@ -37,6 +38,12 @@ public class OrganisationService {
             throw new IllegalArgumentException("Organisation with ID " + id + " does not exist");
         }
         organisationRepository.deleteById(id);
+    }
+
+    public List<Event> getEventsByOrganizer(Long id) {
+        return organisationRepository.findById(id)
+                .map(Organisation::getEvents)
+                .orElseThrow(() -> new NotFoundException("Organizer id not found!"));
     }
 
 

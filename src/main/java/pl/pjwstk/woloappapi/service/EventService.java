@@ -47,4 +47,5 @@ public class EventService {
         return eventRepository.findAllByFilter(localizations, startDate, endDate,
                 category, organizer, ageRestriction, isPeselVerificationRequired);
     }
+
 }

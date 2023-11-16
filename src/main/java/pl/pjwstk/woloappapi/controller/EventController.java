@@ -30,7 +30,7 @@ public class EventController {
                                                     @RequestParam(value = "category", required = false) Long category,
                                                     @RequestParam(value = "organizer", required = false) Long organizer,
                                                     @RequestParam(value = "ageRestriction", required = false) Integer ageRestriction,
-                                                    @RequestParam(value = "verification", required = false) boolean isPeselVerificationRequired){
+                                                    @RequestParam(value = "verification", required = false) boolean isPeselVerificationRequired){ //włączony filter - false
         List<Event> filteredEvents = eventService.filterEvents(localizations, startDate, endDate, category, organizer,
                 ageRestriction, isPeselVerificationRequired);
         return new ResponseEntity<>(filteredEvents, HttpStatus.OK);
@@ -47,5 +47,6 @@ public class EventController {
         eventService.createEvent(event);
             return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
 }
 
