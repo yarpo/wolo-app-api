@@ -16,7 +16,7 @@ import java.util.List;
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
 @Data
-@Table(name = "\"user\"")
+@Table(name = "user")
 public class User {
 
     @Id
