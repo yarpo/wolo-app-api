@@ -1,6 +1,7 @@
 package pl.pjwstk.woloappapi.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 
@@ -27,6 +28,7 @@ public class District {
     @Column(name = "city")
     private String city;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "district")
     private List<Address> addresses = new ArrayList<>();
 }
