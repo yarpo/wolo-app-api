@@ -19,8 +19,8 @@ public class CategoryController {
 
     @GetMapping()
     public ResponseEntity<List<Category>> getCategorys(){
-        List<Category> Categorys = categoryService.getAllCategorys();
-        return new ResponseEntity<>(Categorys, HttpStatus.OK);
+        List<Category> categories = categoryService.getAllCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -29,8 +29,8 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addCategory(@RequestBody Category Category){
-        categoryService.createCategory(Category);
+    public ResponseEntity<HttpStatus> addCategory(@RequestBody Category category){
+        categoryService.createCategory(category);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

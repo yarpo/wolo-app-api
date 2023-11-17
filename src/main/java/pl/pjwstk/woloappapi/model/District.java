@@ -1,13 +1,11 @@
 package pl.pjwstk.woloappapi.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import jakarta.persistence.Column;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.Data;
-import jakarta.persistence.*;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +28,7 @@ public class District {
     @Column(name = "city")
     private String city;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "district")
     private List<Address> addresses = new ArrayList<>();
 }

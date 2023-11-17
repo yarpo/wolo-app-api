@@ -1,10 +1,11 @@
 package pl.pjwstk.woloappapi.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import jakarta.persistence.*;
 import lombok.Data;
 
+import jakarta.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -48,6 +49,7 @@ public class Organisation {
     @Valid
     private Address address;
 
+    @JsonIgnore
     @Column(name = "is_approved", nullable = false)
     private boolean isApproved;
 
@@ -56,6 +58,7 @@ public class Organisation {
     @Valid
     private User moderator;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
     private List<Event> events;
 
