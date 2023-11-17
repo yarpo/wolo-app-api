@@ -36,6 +36,7 @@ public class EventRepositoryImpl implements EventRepositoryCustom{
     //    if (!isPeselVerificationRequired)
     //        predicates.add(criteriaBuilder.equal(root.get("isPeselVerificationRequired"), isPeselVerificationRequired));
 
+
         if (predicates.isEmpty()) {
             TypedQuery<Event> query = entityManager.createQuery(criteriaQuery.select(root));
             return query.getResultList();
@@ -66,13 +67,17 @@ public class EventRepositoryImpl implements EventRepositoryCustom{
                                    Root<Event> root, List<Predicate> predicates) {
         if (startDate != null) {
             Join<Event, AddressToEvent> addressToEventJoin = root.join("addressToEvents", JoinType.INNER);
+
             Join<AddressToEvent, Shift> shiftJoin = addressToEventJoin.join("shifts", JoinType.INNER);
+
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(shiftJoin.get("date"), startDate));
         }
 
         if (endDate != null) {
             Join<Event, AddressToEvent> addressToEventJoin = root.join("addressToEvents", JoinType.INNER);
+
             Join<AddressToEvent, Shift> shiftJoin = addressToEventJoin.join("shifts", JoinType.INNER);
+
             predicates.add(criteriaBuilder.lessThanOrEqualTo(shiftJoin.get("date"), endDate));
         }
     }
@@ -97,8 +102,10 @@ public class EventRepositoryImpl implements EventRepositoryCustom{
                                             Root<Event> root, List<Predicate> predicates) {
         if (ageRestriction != null) {
             Join<Event, AddressToEvent> addressToEventJoin = root.join("addressToEvents", JoinType.INNER);
+
             Join<AddressToEvent, Shift> shiftJoin = addressToEventJoin.join("shifts", JoinType.INNER);
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(shiftJoin.get("requiredMinAge"), ageRestriction));
         }
     }
 }
+

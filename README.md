@@ -1,16 +1,8 @@
 ![Logo](https://raw.githubusercontent.com/yarpo/wolo-app/e4cf379186c21a687389fc9755146fadbbef095c/src/images/logo.svg)
 
-# Wolo-app-api
+# WoloApp Api
 
 REST API for web Application for Regional Volunteer Centre in Gdańsk, which helps volunteers find and partake in events.
-
-## Tech Stack
-
-- Gradle
-- SpringBoot
-- Postgresql
-- Liquibase
-- REST Assured
 
 ## Run Locally
 
@@ -26,18 +18,31 @@ Go to the project directory
   cd wolo-app-api
 ```
 
-Run
+## Running with Docker
+
+Start Docker Desktop
+
+Run the Database and Backend
+
+```bash
+  docker-compose up
+```
+
+## Running with Docker & Gradle
+
+Start Docker Desktop
+
+Run the Database
+
+```bash
+  docker-compose start dbpostgresql
+```
+
+Run the Backend
 
 ```bash
   ./gradlew bootRun
 ```
-
-Mapping
-
-- http://localhost:8080/persons
-- http://localhost:8080/health
-
-
 
 ## Running Tests
 
@@ -47,11 +52,75 @@ To run tests, run the following command
   ./gradlew test
 ```
 
+Mapping
+
+- http://localhost:8080/profile
+
+- http://localhost:8080/events
+
+- http://localhost:8080/shifts
+
+- http://localhost:8080/categories
+
+- http://localhost:8080/roles
+
+- http://localhost:8080/shiftToUsers
+
+- http://localhost:8080/addresses
+
+- http://localhost:8080/users
+
+- http://localhost:8080/districts
+
+- http://localhost:8080/organisations
+
+- http://localhost:8080/addressToEvents
+
+## Troubleshooting
+
+### Gradle Issues
+
+1. Delete "build" folder:
+
+```bash
+  ./gradlew clean
+  ./gradlew build
+```
+
+2. Delete .gradle folder
+
+### Docker Issues
+
+1. In Docker Desktop, remove data created by the "docker-compose" script in "Containers," "Images," and "Volumes" panels.
+2. Restart the previously used script.
+
+### Rare Scenario:
+
+Ensure Docker Desktop is running without any warnings. If there are warnings:
+1. Uninstall Docker Desktop.
+2. Check for Docker folders in appdata and user directories (delete them if found).
+3. Navigate to system settings in Windows:
+4. System > Advanced system settings > Environment Variables.
+5. Remove any variables containing "docker" in the name.
+6. Install Docker Desktop.
+
+## Technologies
+
+- Gradle
+- SpringBoot
+- Postgresql
+- Liquibase
+- REST Assured
+- Docker
+
 
 ## Related
 
  _Link to frontend repository:_
 [Wolo-app](https://github.com/yarpo/wolo-app.git)
+
+_Link to project documentation:_
+[Jira Confluence](https://woloapp.atlassian.net/wiki/spaces/W/overview?homepageId=13795391)
 
 
 ## Authors
@@ -64,3 +133,4 @@ To run tests, run the following command
 - [@Filiposki54](https://github.com/Filiposki54)
 - [@Fylyp19](https://github.com/Fylyp19)
 - [@Aleksander Mielczarek](https://github.com/15465)
+  
