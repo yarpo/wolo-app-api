@@ -55,7 +55,7 @@ public class User {
     @Column(name = "is_adult", nullable = false)
     private boolean isAdult;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "organization_id", referencedColumnName = "id")
     private Organisation organization;
 

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.User;
 import pl.pjwstk.woloappapi.service.UserService;
 
-import java.util.*;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -23,33 +23,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<Map<String, Object>>> getUserById(@PathVariable Long id){
-        User user = userService.getUserById(id);
-        if (user != null) {
-            List<Map<String, Object>> userMapList = new ArrayList<>();
-            Map<String, Object> userMap = new HashMap<>();
-            userMap.put("id", user.getId());
-            userMap.put("firstname", user.getFirstname());
-            userMap.put("lastname", user.getLastname());
-            userMap.put("email", user.getEmail());
-            userMap.put("phoneNumber", user.getPhoneNumber());
-            userMap.put("isPeselVerified", user.isPeselVerified());
-            userMap.put("isAgreementSigned", user.isAgreementSigned());
-            userMap.put("isAdult", user.isAdult());
-            if (user.getRole() != null) {
-                userMap.put("roleName", user.getRole().getName());
-            }
-
-
-            if (user.getOrganization() != null) {
-                userMap.put("organizationName", user.getOrganization().getName());
-            }
-            userMapList.add(userMap);
-
-            return new ResponseEntity<>(userMapList, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<User> getUserById(@PathVariable Long id){
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
     @PostMapping("/add")
@@ -61,6 +36,6 @@ public class UserController {
     @PostMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
