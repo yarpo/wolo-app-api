@@ -38,4 +38,9 @@ public class UserController {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    @GetMapping("/{userId}/shiftsCount")
+    public ResponseEntity<Integer> getShiftsCountForUser(@PathVariable Long userId) {
+        int shiftsCount = userService.getShiftsCountForUser(userId);
+        return ResponseEntity.ok(shiftsCount);
+    }
 }

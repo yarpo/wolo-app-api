@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @JsonIdentityInfo(
@@ -25,8 +26,8 @@ public class Category {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Event> events = new ArrayList<>();
+    private Set<CategoryToEvent> categoryToEventSet;
 
 }

@@ -23,11 +23,15 @@ Go to the project directory
 Start Docker Desktop
 
 Run the Database and Backend
-
+```bash
+  docker-compose build
+```
 ```bash
   docker-compose up
 ```
-
+```bash
+  docker-compose down
+```
 ## Running with Docker & Gradle
 
 Start Docker Desktop

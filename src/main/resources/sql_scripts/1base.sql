@@ -34,7 +34,9 @@ CREATE TABLE IF NOT EXISTS event (
                                      category_id BIGINT,
                                      is_pesel_ver_req BOOLEAN NOT NULL,
                                      is_agreement_needed BOOLEAN NOT NULL,
-                                     organisation_id BIGINT NOT NULL
+                                     organisation_id BIGINT NOT NULL,
+                                     image_url VARCHAR(255),
+                                     is_approved BOOLEAN NOT NULL
 );
 -- Table: organisation
 CREATE TABLE IF NOT EXISTS organisation (
@@ -45,7 +47,8 @@ CREATE TABLE IF NOT EXISTS organisation (
                                             phone_num VARCHAR(9) NOT NULL,
                                             address_id BIGINT NOT NULL,
                                             is_approved BOOLEAN NOT NULL,
-                                            moderator_id BIGINT NOT NULL
+                                            moderator_id BIGINT NOT NULL,
+                                            logo_url VARCHAR(255)
 );
 -- Table: role
 CREATE TABLE IF NOT EXISTS role (
@@ -82,6 +85,12 @@ CREATE TABLE IF NOT EXISTS "user" (
                                       is_pesel_verified BOOLEAN NOT NULL,
                                       is_agreement_signed BOOLEAN NOT NULL,
                                       is_adult BOOLEAN NOT NULL
+);
+-- Table: category_to_event
+CREATE TABLE IF NOT EXISTS category_to_event (
+                                     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                                     category_id BIGINT NOT NULL,
+                                     event_id BIGINT NOT NULL
 );
 
 --changeset woloapp:2
@@ -136,6 +145,14 @@ ALTER TABLE "user"
     ADD CONSTRAINT fk_user_role_id
         FOREIGN KEY (role_id)
             REFERENCES role (id);
+-- Tabela: category_to_event
+ALTER TABLE category_to_event
+    ADD CONSTRAINT fk_category_to_event_category_id
+        FOREIGN KEY (category_id)
+            REFERENCES category (id),
+    ADD CONSTRAINT fk_category_to_event_event_id
+        FOREIGN KEY (event_id)
+            REFERENCES event (id);
 
 CREATE OR REPLACE FUNCTION update_event_after_category_delete()
     RETURNS TRIGGER AS $$

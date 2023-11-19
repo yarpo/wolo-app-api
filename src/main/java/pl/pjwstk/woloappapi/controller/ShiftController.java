@@ -38,4 +38,9 @@ public class ShiftController {
         shiftService.deleteShift(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @GetMapping("/{shiftId}/registeredUsersCount")
+    public ResponseEntity<Integer> getRegisteredUsersCountForShift(@PathVariable Long shiftId) {
+        int registeredUsersCount = shiftService.getRegisteredUsersCountForShift(shiftId);
+        return ResponseEntity.ok(registeredUsersCount);
+    }
 }

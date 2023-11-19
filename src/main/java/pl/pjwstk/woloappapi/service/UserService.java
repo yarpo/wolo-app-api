@@ -52,4 +52,13 @@ public class UserService {
         }
         return userRepository.getUsersByRole(roleById);
     }
+    public int getShiftsCountForUser(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user != null) {
+            return user.getShifts().size();
+        } else {
+            return 0; // lub można zwrócić odpowiedni kod błędu
+        }
+    }
 }
