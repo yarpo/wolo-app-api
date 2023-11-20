@@ -25,6 +25,8 @@ public class EventController {
     private final AddressToEventSevice addressToEventService;
     private final CategoryService categoryService;
 
+    private final ShiftService shiftService;
+
 
     @GetMapping()
     public ResponseEntity<List<Event>> getEvents(){
@@ -60,7 +62,7 @@ public class EventController {
         District district = districtService.getDistrictById(dtoEvent.getDistrictId());
         address.setDistrict(district);
 
-        Shift shift = eventMapper.INSTANCE.toShift(dtoEvent);
+        List<Shift> shifts = eventMapper.INSTANCE.toShifts(dtoEvent.getShifts());
 
         Event event = eventMapper.INSTANCE.toEvent(dtoEvent);
         Organisation organisation = organisationService.getOrganisationById(dtoEvent.getOrganisationId());
@@ -69,14 +71,19 @@ public class EventController {
         AddressToEvent addressToEvent = new AddressToEvent();
         addressToEvent.setEvent(event);
         addressToEvent.setAddress(address);
-        addressToEvent.getShifts().add(shift);
+
+        shifts.forEach(shift -> {
+            shift.setAddressToEvent(addressToEvent);
+            addressToEvent.getShifts().add(shift);
+            shiftService.createShift(shift);
+        });
 
         event.setCategory(category);
         event.setOrganisation(organisation);
         event.getAddressToEvents().add(addressToEvent);
 
         address.getAddressToEvents().add(addressToEvent);
-        shift.setAddressToEvent(addressToEvent);
+
 
         addressService.createAddress(address);
         eventService.createEvent(event);

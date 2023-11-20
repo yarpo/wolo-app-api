@@ -5,9 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 @Getter
 @Setter
@@ -44,20 +46,8 @@ public class DtoRequestEvent {
 
     private String addressDescription;
 
-
-    private LocalTime startTime;
-
-
-    private LocalTime endTime;
-
-    @Future(message = "Date must be in the future")
-    private LocalDate date;
-
-    @Min(value = 1, message = "Capacity must be greater than 0")
-    private int capacity;
-
-    private boolean isLeaderRequired;
-
-    @Min(value = 0, message = "Minimum age cannot be negative")
-    private int requiredMinAge;
+    @NotNull(message = "Shifts are required")
+    @Size(min = 1, message = "At least one shift is required")
+    @Valid
+    private List<ShiftDto> shifts;
 }
