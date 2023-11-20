@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.service.EventService;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -46,9 +47,22 @@ public class EventController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addEvent(@RequestBody Event event){
+    public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody Event event){
         eventService.createEvent(event);
             return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteEvent(@PathVariable Long id){
+        eventService.deleteEvent(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{id}/edit")
+    public ResponseEntity<HttpStatus> editDistrict(@Valid @RequestBody Event     event,
+                                                   @PathVariable Long id) {
+        eventService.updateEvent(event, id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

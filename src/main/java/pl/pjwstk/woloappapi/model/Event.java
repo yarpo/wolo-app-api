@@ -43,12 +43,13 @@ public class Event {
 
     @ManyToOne
     @JoinColumn(name = "organisation_id", nullable = false)
-    @NotNull(message = "Organization ID is required")
+    @NotNull(message = "Organisation ID is required")
     @Valid
     private Organisation organisation;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
+    @Valid
     private Category category;
 
     @Column(name = "is_pesel_ver_req", nullable = false)
@@ -58,6 +59,7 @@ public class Event {
     private boolean isAgreementNeeded;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @Valid
     private List<AddressToEvent> addressToEvents = new ArrayList<>();
 
 }

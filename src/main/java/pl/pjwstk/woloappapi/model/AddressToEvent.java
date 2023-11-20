@@ -6,6 +6,7 @@ import lombok.Data;
 
 import jakarta.persistence.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class AddressToEvent {
     private Event event;
 
     @ManyToOne
+    @Valid
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 

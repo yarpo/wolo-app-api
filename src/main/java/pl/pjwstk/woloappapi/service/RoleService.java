@@ -18,23 +18,24 @@ public class RoleService {
 
     public Role getRoleById(Long id) {
         return roleRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("role id not found!"));
+                .orElseThrow(() -> new NotFoundException("Role id not found!"));
     }
 
     public void createRole(Role role) {
         roleRepository.save(role);
     }
 
-    public Role updateRole(Role role) {
-        if (!roleRepository.existsById(role.getId())) {
-            throw new IllegalArgumentException("role with ID " + role.getId() + " does not exist");
+    public void updateRole(Role role, Long id) {
+        if (!roleRepository.existsById(id)) {
+            throw new IllegalArgumentException("Role with ID " + id + " does not exist");
         }
-        return roleRepository.save(role);
+        role.setId(id);
+        roleRepository.save(role);
     }
 
     public void deleteRole(Long id) {
         if (!roleRepository.existsById(id)) {
-            throw new IllegalArgumentException("role with ID " + id + " does not exist");
+            throw new IllegalArgumentException("Role with ID " + id + " does not exist");
         }
         roleRepository.deleteById(id);
     }
