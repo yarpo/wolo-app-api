@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.Min;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -40,18 +38,15 @@ public class Shift {
     private LocalTime endTime;
 
     @Column(name = "date", nullable = false)
-    @Future(message = "Date must be in the future")
     private LocalDate date;
 
     @Column(name = "capacity", nullable = false)
-    @Min(value = 1, message = "Capacity must be greater than 0")
     private int capacity;
 
     @Column(name = "is_leader_required", nullable = false)
     private boolean isLeaderRequired;
 
     @Column(name = "required_min_age", nullable = false)
-    @Min(value = 0, message = "Minimum age cannot be negative")
     private int requiredMinAge;
 
 }
