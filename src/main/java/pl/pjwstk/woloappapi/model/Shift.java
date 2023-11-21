@@ -33,11 +33,9 @@ public class Shift {
     private List<ShiftToUser> shiftToUsers = new ArrayList<>();
 
     @Column(name = "start_time", nullable = false)
-    @TimeOrder
     private LocalTime startTime;
 
     @Column(name = "end_time", nullable = false)
-    @TimeOrder
     private LocalTime endTime;
 
     @Column(name = "date", nullable = false)
