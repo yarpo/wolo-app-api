@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
+import pl.pjwstk.woloappapi.annotations.TimeOrder;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
@@ -34,9 +35,11 @@ public class Shift {
     private List<ShiftToUser> shiftToUsers = new ArrayList<>();
 
     @Column(name = "start_time", nullable = false)
+    @TimeOrder
     private LocalTime startTime;
 
     @Column(name = "end_time", nullable = false)
+    @TimeOrder
     private LocalTime endTime;
 
     @Column(name = "date", nullable = false)
