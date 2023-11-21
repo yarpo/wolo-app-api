@@ -98,7 +98,7 @@ public class EventController {
     }
 
     @PutMapping("/{id}/edit")
-    public ResponseEntity<HttpStatus> editDistrict(@Valid @RequestBody Event     event,
+    public ResponseEntity<HttpStatus> editDistrict(@Valid @RequestBody Event event,
                                                    @PathVariable Long id) {
         eventService.updateEvent(event, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
