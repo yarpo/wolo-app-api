@@ -21,10 +21,11 @@ public class ShiftDto {
     @TimeOrder
     private LocalTime endTime;
 
-
     private LocalDate date;
 
     private Integer capacity;
+
+    private Integer signedUp;
 
     private Boolean isLeaderRequired;
 

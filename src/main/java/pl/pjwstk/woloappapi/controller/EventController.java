@@ -11,6 +11,7 @@ import pl.pjwstk.woloappapi.utils.EventMapper;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -29,9 +30,12 @@ public class EventController {
 
 
     @GetMapping()
-    public ResponseEntity<List<Event>> getEvents(){
+    public ResponseEntity<List<EventResponseDto>> getEvents() {
         List<Event> events = eventService.getAllEvents();
-        return new ResponseEntity<>(events, HttpStatus.OK);
+        List<EventResponseDto> eventDtos = events.stream()
+                .map(event -> eventMapper.toEventResponseDto(event))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
     @GetMapping("/search")

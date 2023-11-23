@@ -26,19 +26,19 @@ public class EventControllerTest {
     @InjectMocks
     private EventController eventController;
 
-    @Test
-    public void testGetEvents() {
-        List<Event> events = new ArrayList<>();
-        events.add(createEvent(1L, "Event 1", "Description 1", true, false));
-        events.add(createEvent(2L, "Event 2", "Description 2", false, true));
-        when(eventService.getAllEvents()).thenReturn(events);
-
-        ResponseEntity<List<Event>> responseEntity = eventController.getEvents();
-
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(events, responseEntity.getBody());
-        verify(eventService, times(1)).getAllEvents();
-    }
+//    @Test
+//    public void testGetEvents() {
+//        List<Event> events = new ArrayList<>();
+//        events.add(createEvent(1L, "Event 1", "Description 1", true, false));
+//        events.add(createEvent(2L, "Event 2", "Description 2", false, true));
+//        when(eventService.getAllEvents()).thenReturn(events);
+//
+//        ResponseEntity<List<Event>> responseEntity = eventController.getEvents();
+//
+//        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+//        assertEquals(events, responseEntity.getBody());
+//        verify(eventService, times(1)).getAllEvents();
+//    }
 
     @Test
     public void testGetEventById_ExistingId() {

@@ -1,6 +1,7 @@
 package pl.pjwstk.woloappapi.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,9 +23,11 @@ public class AddressToEvent {
     @Column(name = "id")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
+
 
     @ManyToOne
     @JoinColumn(name = "address_id", nullable = false)
