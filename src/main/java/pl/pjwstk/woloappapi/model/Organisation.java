@@ -57,8 +57,12 @@ public class Organisation {
     @JoinColumn(name = "moderator_id", nullable = false)
     private User moderator;
 
+    @Column(name = "logo_url")
+    private String logoUrl;
+
     @JsonIgnore
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
     private List<Event> events;
+
 
 }

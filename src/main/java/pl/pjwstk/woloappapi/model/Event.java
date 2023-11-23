@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @JsonIdentityInfo(
@@ -38,9 +39,9 @@ public class Event {
     @JoinColumn(name = "organisation_id", nullable = false)
     private Organisation organisation;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @OneToMany
+    @JoinColumn(name = "category", nullable = false)
+    private Set<CategoryToEvent> categoryToEventSet;
 
     @Column(name = "is_pesel_ver_req", nullable = false)
     private boolean isPeselVerificationRequired;
@@ -50,5 +51,11 @@ public class Event {
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<AddressToEvent> addressToEvents = new ArrayList<>();
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "is_approved", nullable = false)
+    private boolean approved;
 
 }

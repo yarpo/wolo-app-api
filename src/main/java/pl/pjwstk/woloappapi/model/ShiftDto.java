@@ -24,11 +24,11 @@ public class ShiftDto {
 
     private LocalDate date;
 
-    private int capacity;
+    private Integer capacity;
 
-    private boolean isLeaderRequired;
+    private Boolean isLeaderRequired;
 
-    private int requiredMinAge;
+    private Integer requiredMinAge;
 
 }
 

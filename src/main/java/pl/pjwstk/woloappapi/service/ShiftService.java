@@ -39,5 +39,15 @@ public class ShiftService {
         shiftRepository.deleteById(id);
     }
 
+    public int getRegisteredUsersCountForShift(Long shiftId) {
+        Shift shift = shiftRepository.findById(shiftId).orElse(null);
+
+        if (shift != null) {
+            return shift.getShiftToUsers().size();
+        } else {
+            return 0; // lub można zwrócić odpowiedni kod błędu
+        }
+    }
+
 
 }

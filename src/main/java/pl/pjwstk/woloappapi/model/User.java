@@ -62,4 +62,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<ShiftToUser> shifts = new ArrayList<>();
 
+    @Column(name="password_hash",nullable = false)
+    private String password_hash;
+
+    @Column(name="salt",nullable = false)
+    private String salt;
 }
