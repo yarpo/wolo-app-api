@@ -41,7 +41,7 @@ public class Event {
 
     @OneToMany
     @JoinColumn(name = "category", nullable = false)
-    private Set<CategoryToEvent> categoryToEventSet;
+    private Set<CategoryToEvent> categories;
 
     @Column(name = "is_pesel_ver_req", nullable = false)
     private boolean isPeselVerificationRequired;
