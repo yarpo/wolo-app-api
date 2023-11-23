@@ -12,9 +12,10 @@ import pl.pjwstk.woloappapi.model.DtoRequestEvent;
 
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface EventMapper {
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
+    /*
     @Mappings({
             @Mapping(source = "startTime", target = "startTime"),
             @Mapping(source = "endTime", target = "endTime"),
@@ -22,7 +23,7 @@ public interface EventMapper {
             @Mapping(source = "capacity", target = "capacity"),
             @Mapping(source = "isLeaderRequired", target = "isLeaderRequired"),
             @Mapping(source = "requiredMinAge", target = "requiredMinAge")
-    })
+    })*/
     Shift toShift(ShiftDto shiftDto);
 
     List<Shift> toShifts(List<ShiftDto> shiftDtos);
