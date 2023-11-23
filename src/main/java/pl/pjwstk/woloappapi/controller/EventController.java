@@ -83,7 +83,7 @@ public class EventController {
         event.getAddressToEvents().add(addressToEvent);
 
         address.getAddressToEvents().add(addressToEvent);
-        
+
         addressService.createAddress(address);
         eventService.createEvent(event);
         addressToEventService.createAddressToEvent(addressToEvent);

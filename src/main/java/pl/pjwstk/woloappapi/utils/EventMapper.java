@@ -4,7 +4,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.Event;
+import pl.pjwstk.woloappapi.model.Address;
+import pl.pjwstk.woloappapi.model.Shift;
+import pl.pjwstk.woloappapi.model.ShiftDto;
+import pl.pjwstk.woloappapi.model.DtoRequestEvent;
 
 import java.util.List;
 

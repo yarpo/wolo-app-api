@@ -21,7 +21,6 @@ public class ShiftDto {
     @TimeOrder
     private LocalTime endTime;
 
-
     private LocalDate date;
 
     private int capacity;
