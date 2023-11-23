@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -28,7 +27,7 @@ public class DtoRequestEvent {
     private Long organisationId;
 
     @NotNull(message = "Category ID is required")
-    private List<Integer> categories;
+    private List<Long> categories;
 
     private boolean isPeselVerificationRequired;
 

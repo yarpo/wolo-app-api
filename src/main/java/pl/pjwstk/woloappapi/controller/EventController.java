@@ -10,11 +10,9 @@ import pl.pjwstk.woloappapi.utils.EventMapper;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -36,7 +34,7 @@ public class EventController {
     public ResponseEntity<List<EventResponseDto>> getEvents() {
         List<Event> events = eventService.getAllEvents();
         List<EventResponseDto> eventDtos = events.stream()
-                .map(event -> eventMapper.toEventResponseDto(event))
+                .map(eventMapper::toEventResponseDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
@@ -84,10 +82,16 @@ public class EventController {
             shiftService.createShift(shift);
         });
 
-        List<Category> eventCategories = new ArrayList<>();
-        for (Integer categoryId: dtoEvent.getCategories()){
-            Category
-        }
+        Set<CategoryToEvent> categoryToEvents = dtoEvent.getCategories().stream()
+                .map(c -> {
+                    Category category = categoryService.getCategoryById(c);
+                    CategoryToEvent categoryToEvent = new CategoryToEvent();
+                    categoryToEvent.setCategory(category);
+                    categoryToEvent.setEvent(event); // Set the event reference
+                    return categoryToEvent;
+                })
+                .collect(Collectors.toSet());
+        event.setCategories(categoryToEvents);
 
 
         event.setOrganisation(organisation);
