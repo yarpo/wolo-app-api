@@ -73,7 +73,7 @@ public class EventController {
         List<Shift> shifts = eventMapper.INSTANCE.toShifts(dtoEvent.getShifts());
 
         Event event = eventMapper.INSTANCE.toEvent(dtoEvent);
-        Organisation organisation = organisationService.getOrganisationById(dtoEvent.getOrganisationId());
+        Organisation organisation = organisationService.getOrganisationById(dtoEvent.getOrganisation_id());
 
         AddressToEvent addressToEvent = new AddressToEvent();
         addressToEvent.setEvent(event);
