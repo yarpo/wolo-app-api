@@ -29,7 +29,6 @@ public class EventController {
     private final AddressService addressService;
     private final AddressToEventSevice addressToEventService;
     private final CategoryService categoryService;
-    private final CategoryToEventService categoryToEventService;
     private final ShiftService shiftService;
     private final CategoryRepository categoryRepository;
 
