@@ -16,7 +16,7 @@ public class EventResponseDto {
 
     private String name;
 
-    private Long organisationId;
+    private Long organisation_id;
 
     private boolean isPeselVerificationRequired;
 
