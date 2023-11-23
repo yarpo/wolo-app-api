@@ -56,7 +56,7 @@ public class Event {
     @Column(name = "image_url")
     private String imageUrl;
 
-    private String adressDescription;
+    private String addressDescription;
 
     @JsonIgnore
     @Column(name = "is_approved", nullable = false)
