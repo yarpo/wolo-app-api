@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.Event;
-import pl.pjwstk.woloappapi.service.EventService;
+import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.service.*;
+import pl.pjwstk.woloappapi.utils.EventMapper;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,6 +18,15 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+    private final EventMapper eventMapper;
+    private final DistrictService districtService;
+    private final OrganisationService organisationService;
+    private final AddressService addressService;
+    private final AddressToEventSevice addressToEventService;
+    private final CategoryService categoryService;
+
+    private final ShiftService shiftService;
+
 
     @GetMapping()
     public ResponseEntity<List<Event>> getEvents(){
@@ -46,9 +57,50 @@ public class EventController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addEvent(@RequestBody Event event){
+    public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody DtoRequestEvent dtoEvent){
+        Address address = eventMapper.INSTANCE.toAddress(dtoEvent);
+        District district = districtService.getDistrictById(dtoEvent.getDistrictId());
+        address.setDistrict(district);
+
+        List<Shift> shifts = eventMapper.INSTANCE.toShifts(dtoEvent.getShifts());
+
+        Event event = eventMapper.INSTANCE.toEvent(dtoEvent);
+        Organisation organisation = organisationService.getOrganisationById(dtoEvent.getOrganisationId());
+        Category category = categoryService.getCategoryById(dtoEvent.getCategoryId());
+
+        AddressToEvent addressToEvent = new AddressToEvent();
+        addressToEvent.setEvent(event);
+        addressToEvent.setAddress(address);
+
+        shifts.forEach(shift -> {
+            shift.setAddressToEvent(addressToEvent);
+            addressToEvent.getShifts().add(shift);
+            shiftService.createShift(shift);
+        });
+
+        event.setCategory(category);
+        event.setOrganisation(organisation);
+        event.getAddressToEvents().add(addressToEvent);
+
+        address.getAddressToEvents().add(addressToEvent);
+
+        addressService.createAddress(address);
         eventService.createEvent(event);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+        addressToEventService.createAddressToEvent(addressToEvent);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteEvent(@PathVariable Long id){
+        eventService.deleteEvent(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{id}/edit")
+    public ResponseEntity<HttpStatus> editDistrict(@Valid @RequestBody Event event,
+                                                   @PathVariable Long id) {
+        eventService.updateEvent(event, id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

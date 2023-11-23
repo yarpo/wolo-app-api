@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.Category;
 import pl.pjwstk.woloappapi.service.CategoryService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -18,7 +19,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping()
-    public ResponseEntity<List<Category>> getCategorys(){
+    public ResponseEntity<List<Category>> getCategories(){
         List<Category> categories = categoryService.getAllCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
@@ -29,14 +30,21 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addCategory(@RequestBody Category category){
+    public ResponseEntity<HttpStatus> addCategory(@Valid @RequestBody Category category){
         categoryService.createCategory(category);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteCategory(@PathVariable Long id){
         categoryService.deleteCategory(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{id}/edit")
+    public ResponseEntity<HttpStatus> editCategory(@Valid @RequestBody Category category,
+                                                   @PathVariable Long id) {
+        categoryService.updateCategory(category, id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

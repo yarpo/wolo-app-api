@@ -27,7 +27,7 @@ public class Organisation {
 
     @Column(name = "name", nullable = false)
     @NotBlank(message = "Name is required")
-    @Size(max = 150, message = "Name cannot exceed 150 characters")
+    @Size(max = 200, message = "Name cannot exceed 200 characters")
     private String name;
 
     @Column(name = "description", nullable = false)
@@ -55,7 +55,6 @@ public class Organisation {
 
     @ManyToOne
     @JoinColumn(name = "moderator_id", nullable = false)
-    @Valid
     private User moderator;
 
     @Column(name = "logo_url")

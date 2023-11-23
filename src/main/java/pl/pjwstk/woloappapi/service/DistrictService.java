@@ -32,4 +32,12 @@ public class DistrictService {
         }
         districtRepository.deleteById(id);
     }
+
+    public void updateDistrict(District district, Long id) {
+        if (!districtRepository.existsById(id)) {
+            throw new IllegalArgumentException("District with ID " + id + " does not exist");
+        }
+        district.setId(id);
+        districtRepository.save(district);
+    }
 }

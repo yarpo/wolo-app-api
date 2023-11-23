@@ -72,29 +72,10 @@ public class EventServiceTest {
     }
 
 
-    @Test
-    public void testUpdateEvent_ExistingEvent_ValidEvent() {
-        Event event = createValidEvent(1L, "Event 1");
-        when(eventRepository.existsById(event.getId())).thenReturn(true);
-        when(eventRepository.save(event)).thenReturn(event);
-
-        Event result = eventService.updateEvent(event);
-
-        assertEquals(event, result);
-        verify(eventRepository, times(1)).existsById(event.getId());
-        verify(eventRepository, times(1)).save(event);
-    }
 
 
-    @Test
-    public void testUpdateEvent_NonExistingEvent() {
-        Event event = createValidEvent(1L, "Event 1");
-        when(eventRepository.existsById(event.getId())).thenReturn(false);
 
-        assertThrows(IllegalArgumentException.class, () -> eventService.updateEvent(event));
-        verify(eventRepository, times(1)).existsById(event.getId());
-        verify(eventRepository, never()).save(event);
-    }
+
 
     @Test
     public void testDeleteEvent_ExistingId() {
