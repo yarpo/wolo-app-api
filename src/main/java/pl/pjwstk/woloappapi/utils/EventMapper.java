@@ -15,6 +15,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface EventMapper {
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
+
+
     /*
     @Mappings({
             @Mapping(source = "startTime", target = "startTime"),
@@ -28,14 +30,20 @@ public interface EventMapper {
 
     List<Shift> toShifts(List<ShiftDto> shiftDtos);
 
-    @Mapping(source = "name", target = "name")
+
+    /*@Mapping(source = "name", target = "name")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "isPeselVerificationRequired", target = "isPeselVerificationRequired")
     @Mapping(source = "isAgreementNeeded", target = "isAgreementNeeded")
+    */
     Event toEvent(DtoRequestEvent dtoRequestEvent);
 
+
+
+    /*
     @Mapping(source = "street", target = "street")
     @Mapping(source = "homeNum", target = "homeNum")
     @Mapping(source = "addressDescription", target = "description")
+    */
     Address toAddress(DtoRequestEvent dtoRequestEvent);
 }
