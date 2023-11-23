@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class Category {
     private Long id;
 
     @Column(name = "name", nullable = false)
+    @Size(max = 50, message = "Name cannot exceed 50 characters")
     private String name;
 
     @JsonIgnore

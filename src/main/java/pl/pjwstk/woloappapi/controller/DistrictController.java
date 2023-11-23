@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.District;
 import pl.pjwstk.woloappapi.service.DistrictService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,14 +29,21 @@ public class DistrictController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addDistrict(@RequestBody District district){
+    public ResponseEntity<HttpStatus> addDistrict(@Valid @RequestBody District district){
         districtService.createDistrict(district);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteDistrict(@PathVariable Long id){
         districtService.deleteCDistrict(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{id}/edit")
+    public ResponseEntity<HttpStatus> editDistrict(@Valid @RequestBody District district,
+                                                   @PathVariable Long id) {
+        districtService.updateDistrict(district, id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

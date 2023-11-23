@@ -26,11 +26,12 @@ public class OrganisationService {
         organisationRepository.save(organisation);
     }
 
-    public Organisation updateOrganisation(Organisation organisation) {
-        if (!organisationRepository.existsById(organisation.getId())) {
-            throw new IllegalArgumentException("Organisation with ID " + organisation.getId() + " does not exist");
+    public void updateOrganisation(Organisation organisation, Long id) {
+        if (!organisationRepository.existsById(id)) {
+            throw new IllegalArgumentException("Organisation with ID " + id + " does not exist");
         }
-        return organisationRepository.save(organisation);
+        organisation.setId(id);
+        organisationRepository.save(organisation);
     }
 
     public void deleteOrganisation(Long id) {

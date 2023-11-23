@@ -3,9 +3,10 @@ package pl.pjwstk.woloappapi.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.Data;
-
 import jakarta.persistence.*;
+import lombok.Data;
+import pl.pjwstk.woloappapi.annotations.TimeOrder;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -48,6 +49,5 @@ public class Shift {
 
     @Column(name = "required_min_age", nullable = false)
     private int requiredMinAge;
-
 
 }

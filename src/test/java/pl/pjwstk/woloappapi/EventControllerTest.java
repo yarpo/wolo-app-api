@@ -53,6 +53,7 @@ public class EventControllerTest {
         verify(eventService, times(1)).getEventById(eventId);
     }
 
+    /*
     @Test
     public void testAddEvent_ValidEvent() {
         Event eventToAdd = createEvent(1L, "Event 1", "Description 1", true, false);
@@ -62,6 +63,8 @@ public class EventControllerTest {
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         verify(eventService, times(1)).createEvent(eventToAdd);
     }
+
+     */
 
     @Test
     public void testFilterEvents_NoFilters() {

@@ -8,6 +8,7 @@ import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.model.Organisation;
 import pl.pjwstk.woloappapi.service.OrganisationService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -30,20 +31,27 @@ public class OrganisationController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addOrganisation(@RequestBody Organisation Organisation){
+    public ResponseEntity<HttpStatus> addOrganisation(@Valid @RequestBody Organisation Organisation){
         organisationService.createOrganisation(Organisation);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteOrganisation(@PathVariable Long id){
         organisationService.deleteOrganisation(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/events/{id}")
     public ResponseEntity<List<Event>> getEventsByOrganizer(@PathVariable Long id) {
         List<Event> eventsByOrganizer = organisationService.getEventsByOrganizer(id);
         return new ResponseEntity<>(eventsByOrganizer, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/edit")
+    public ResponseEntity<HttpStatus> editOrganisation(@Valid @RequestBody Organisation organisation,
+                                                   @PathVariable Long id) {
+        organisationService.updateOrganisation(organisation, id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
