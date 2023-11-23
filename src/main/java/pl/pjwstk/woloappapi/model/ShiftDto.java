@@ -32,4 +32,3 @@ public class ShiftDto {
     private Integer requiredMinAge;
 
 }
-

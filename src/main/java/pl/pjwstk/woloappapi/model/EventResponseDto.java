@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -30,4 +31,5 @@ public class EventResponseDto {
     private String imageUrl;
 
     private List<ShiftDto> shifts;
+
 }

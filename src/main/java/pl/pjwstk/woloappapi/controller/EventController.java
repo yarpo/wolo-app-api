@@ -5,11 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.service.*;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,8 +29,9 @@ public class EventController {
     private final AddressService addressService;
     private final AddressToEventSevice addressToEventService;
     private final CategoryService categoryService;
-
+    private final CategoryToEventService categoryToEventService;
     private final ShiftService shiftService;
+    private final CategoryRepository categoryRepository;
 
 
     @GetMapping()
@@ -82,17 +86,18 @@ public class EventController {
             shiftService.createShift(shift);
         });
 
+
         Set<CategoryToEvent> categoryToEvents = dtoEvent.getCategories().stream()
-                .map(c -> {
-                    Category category = categoryService.getCategoryById(c);
+                .map(categoryId -> {
+                    Category category = categoryService.getCategoryById(categoryId);
                     CategoryToEvent categoryToEvent = new CategoryToEvent();
                     categoryToEvent.setCategory(category);
-                    categoryToEvent.setEvent(event); // Set the event reference
+                    categoryToEvent.setEvent(event);
                     return categoryToEvent;
                 })
                 .collect(Collectors.toSet());
-        event.setCategories(categoryToEvents);
 
+        event.setCategories(categoryToEvents);
 
         event.setOrganisation(organisation);
         event.getAddressToEvents().add(addressToEvent);
