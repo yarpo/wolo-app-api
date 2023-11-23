@@ -27,7 +27,7 @@ public class DtoRequestEvent {
     private Long organisationId;
 
     @NotNull(message = "Category ID is required")
-    private Long categoryId;
+    private List<Long> categories;
 
     private boolean isPeselVerificationRequired;
 

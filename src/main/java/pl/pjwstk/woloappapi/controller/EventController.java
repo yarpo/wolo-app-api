@@ -5,12 +5,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.service.*;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -24,14 +29,17 @@ public class EventController {
     private final AddressService addressService;
     private final AddressToEventSevice addressToEventService;
     private final CategoryService categoryService;
-
     private final ShiftService shiftService;
+    private final CategoryRepository categoryRepository;
 
 
     @GetMapping()
-    public ResponseEntity<List<Event>> getEvents(){
+    public ResponseEntity<List<EventResponseDto>> getEvents() {
         List<Event> events = eventService.getAllEvents();
-        return new ResponseEntity<>(events, HttpStatus.OK);
+        List<EventResponseDto> eventDtos = events.stream()
+                .map(eventMapper::toEventResponseDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
     @GetMapping("/search")
@@ -66,7 +74,6 @@ public class EventController {
 
         Event event = eventMapper.INSTANCE.toEvent(dtoEvent);
         Organisation organisation = organisationService.getOrganisationById(dtoEvent.getOrganisationId());
-        Category category = categoryService.getCategoryById(dtoEvent.getCategoryId());
 
         AddressToEvent addressToEvent = new AddressToEvent();
         addressToEvent.setEvent(event);
@@ -78,7 +85,19 @@ public class EventController {
             shiftService.createShift(shift);
         });
 
-        event.setCategory(category);
+
+        Set<CategoryToEvent> categoryToEvents = dtoEvent.getCategories().stream()
+                .map(categoryId -> {
+                    Category category = categoryService.getCategoryById(categoryId);
+                    CategoryToEvent categoryToEvent = new CategoryToEvent();
+                    categoryToEvent.setCategory(category);
+                    categoryToEvent.setEvent(event);
+                    return categoryToEvent;
+                })
+                .collect(Collectors.toSet());
+
+        event.setCategories(categoryToEvents);
+
         event.setOrganisation(organisation);
         event.getAddressToEvents().add(addressToEvent);
 

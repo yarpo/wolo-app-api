@@ -21,14 +21,14 @@ public class ShiftDto {
     @TimeOrder
     private LocalTime endTime;
 
-
     private LocalDate date;
 
-    private int capacity;
+    private Integer capacity;
 
-    private boolean isLeaderRequired;
+    private Integer signedUp;
 
-    private int requiredMinAge;
+    private Boolean isLeaderRequired;
+
+    private Integer requiredMinAge;
 
 }
-

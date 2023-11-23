@@ -14,6 +14,7 @@ import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -129,7 +130,7 @@ public class EventServiceTest {
         event.setName(name);
         event.setDescription("Event description");
         event.setOrganisation(new Organisation());
-        event.setCategory(new Category());
+        event.setCategories(new HashSet<>());
         event.setPeselVerificationRequired(true);
         event.setAgreementNeeded(false);
         return event;
