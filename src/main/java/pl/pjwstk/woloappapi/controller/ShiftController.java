@@ -33,10 +33,10 @@ public class ShiftController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteShift(@PathVariable Long id){
         shiftService.deleteShift(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     @GetMapping("/{shiftId}/registeredUsersCount")
     public ResponseEntity<Integer> getRegisteredUsersCountForShift(@PathVariable Long shiftId) {

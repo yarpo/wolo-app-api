@@ -21,15 +21,16 @@ public class CategoryService {
                 .orElseThrow(() -> new NotFoundException("Category id not found!"));
     }
 
-    public void createCategory(Category Category) {
-        categoryRepository.save(Category);
+    public void createCategory(Category category) {
+        categoryRepository.save(category);
     }
 
-    public Category updateCategory(Category Category) {
-        if (!categoryRepository.existsById(Category.getId())) {
-            throw new IllegalArgumentException("Category with ID " + Category.getId() + " does not exist");
+    public void updateCategory(Category category, Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new IllegalArgumentException("Category with ID " + id + " does not exist");
         }
-        return categoryRepository.save(Category);
+        category.setId(id);
+        categoryRepository.save(category);
     }
 
     public void deleteCategory(Long id) {

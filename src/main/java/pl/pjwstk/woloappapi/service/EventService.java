@@ -27,11 +27,12 @@ public class EventService {
         eventRepository.save(event);
     }
 
-    public Event updateEvent(Event event) {
-        if (!eventRepository.existsById(event.getId())) {
-            throw new IllegalArgumentException("Event with ID " + event.getId() + " does not exist");
+    public void updateEvent(Event event, Long id) {
+        if (!eventRepository.existsById(id)) {
+            throw new IllegalArgumentException("Event with ID " + id + " does not exist");
         }
-        return eventRepository.save(event);
+        event.setId(id);
+        eventRepository.save(event);
     }
 
     public void deleteEvent(Long id) {
