@@ -18,6 +18,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
+
         String email = oAuth2User.getAttribute("email");
         if (email == null) {
             throw new RuntimeException("User not authorized");
@@ -27,9 +28,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             if (user == null) {
                 throw new RuntimeException("User not found in the repository");
             }
-        }
+		}
 
 
         return oAuth2User;
-    }
+		
+	}
 }
