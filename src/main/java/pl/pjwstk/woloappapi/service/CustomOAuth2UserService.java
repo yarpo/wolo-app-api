@@ -18,10 +18,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        String email = (String) oAuth2User.getAttribute("email");
+        String email = oAuth2User.getAttribute("email");
 
         User user = userRepository.findByEmail(email);
-        if (user != null) {
+        if (user == null) {
             throw new RuntimeException("User not found in the repository");
         }
 
