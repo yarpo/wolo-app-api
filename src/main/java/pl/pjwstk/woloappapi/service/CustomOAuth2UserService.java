@@ -19,10 +19,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
 
+
         String email = oAuth2User.getAttribute("email");
         if (email == null) {
             throw new RuntimeException("User not authorized");
-        }
         else {
             User user = userRepository.findByEmail(email);
             if (user == null) {
