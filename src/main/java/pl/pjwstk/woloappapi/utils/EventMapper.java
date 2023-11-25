@@ -21,7 +21,7 @@ public interface EventMapper {
     default EventResponseDto toEventResponseDto(Event event) {
         EventResponseDto eventResponseDto = new EventResponseDto();
         eventResponseDto.setName(event.getName());
-        eventResponseDto.setOrganisation_id(event.getOrganisation().getId());
+        eventResponseDto.setOrganisationId(event.getOrganisation().getId());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
 
         List<ShiftDto> shifts = event.getAddressToEvents().stream()

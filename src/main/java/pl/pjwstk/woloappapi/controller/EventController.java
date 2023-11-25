@@ -11,10 +11,7 @@ import pl.pjwstk.woloappapi.utils.EventMapper;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -73,7 +70,7 @@ public class EventController {
         List<Shift> shifts = eventMapper.INSTANCE.toShifts(dtoEvent.getShifts());
 
         Event event = eventMapper.INSTANCE.toEvent(dtoEvent);
-        Organisation organisation = organisationService.getOrganisationById(dtoEvent.getOrganisation_id());
+        Organisation organisation = organisationService.getOrganisationById(dtoEvent.getOrganisationId());
 
         AddressToEvent addressToEvent = new AddressToEvent();
         addressToEvent.setEvent(event);
@@ -86,7 +83,7 @@ public class EventController {
         });
 
 
-        Set<CategoryToEvent> categoryToEvents = dtoEvent.getCategories().stream()
+        List<CategoryToEvent> categoryToEvents = dtoEvent.getCategories().stream()
                 .map(categoryId -> {
                     Category category = categoryService.getCategoryById(categoryId);
                     CategoryToEvent categoryToEvent = new CategoryToEvent();
@@ -94,7 +91,7 @@ public class EventController {
                     categoryToEvent.setEvent(event);
                     return categoryToEvent;
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         event.setCategories(categoryToEvents);
 

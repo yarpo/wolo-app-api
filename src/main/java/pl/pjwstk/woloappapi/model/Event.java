@@ -11,7 +11,6 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @JsonIdentityInfo(
@@ -41,8 +40,8 @@ public class Event {
     private Organisation organisation;
 
     @OneToMany
-    @JoinColumn(name = "category", nullable = false)
-    private Set<CategoryToEvent> categories;
+    @JoinColumn(name = "event", nullable = false)
+    private List<CategoryToEvent> categories;
 
     @Column(name = "is_pesel_ver_req", nullable = false)
     private boolean isPeselVerificationRequired;
@@ -55,8 +54,6 @@ public class Event {
 
     @Column(name = "image_url")
     private String imageUrl;
-
-    private String addressDescription;
 
     @JsonIgnore
     @Column(name = "is_approved", nullable = false)

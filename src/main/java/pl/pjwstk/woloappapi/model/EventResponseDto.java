@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ public class EventResponseDto {
 
     private String name;
 
-    private Long organisation_id;
+    private Long organisationId;
 
     private boolean isPeselVerificationRequired;
 

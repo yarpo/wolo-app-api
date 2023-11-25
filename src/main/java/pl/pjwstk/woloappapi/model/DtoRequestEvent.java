@@ -24,7 +24,7 @@ public class DtoRequestEvent {
     @NotBlank(message = "Description is required")
     private String description;
 
-    private Long organisation_id;
+    private Long organisationId;
 
     @NotNull(message = "Category ID is required")
     private List<Long> categories;
