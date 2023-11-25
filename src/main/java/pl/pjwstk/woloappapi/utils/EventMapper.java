@@ -23,7 +23,12 @@ public interface EventMapper {
         eventResponseDto.setName(event.getName());
         eventResponseDto.setOrganisationId(event.getOrganisation().getId());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
-
+        Address address = event.getAddressToEvents().get(0).getAddress();
+        eventResponseDto.setStreet(address.getStreet());
+        eventResponseDto.setHomeNum(address.getHomeNum());
+        eventResponseDto.setDistrictId(address.getDistrict().getId());
+        eventResponseDto.setAddressDescription(address.getAddressDescription());
+        eventResponseDto.setImageUrl(event.getImageUrl());
         List<ShiftDto> shifts = event.getAddressToEvents().stream()
                 .flatMap(addressToEvent -> mapShiftListToShiftDtoList(addressToEvent.getShifts()).stream())
                 .collect(Collectors.toList());
@@ -49,5 +54,29 @@ public interface EventMapper {
         shiftDto.setIsLeaderRequired(shift.isLeaderRequired());
         shiftDto.setRequiredMinAge(shift.getRequiredMinAge());
         return shiftDto;
+    }
+
+    default EventResponseDetailsDto toEventResponseDetailsDto(Event event) {
+        EventResponseDetailsDto eventResponseDto = new EventResponseDetailsDto();
+        eventResponseDto.setName(event.getName());
+        eventResponseDto.setOrganisationId(event.getOrganisation().getId());
+        eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
+        eventResponseDto.setDescription(event.getDescription());
+        eventResponseDto.setCategories(event.getCategories().stream()
+                .map(categoryToEvent -> categoryToEvent.getCategory().getId())
+                .collect(Collectors.toList()));
+        Address address = event.getAddressToEvents().get(0).getAddress();
+        eventResponseDto.setStreet(address.getStreet());
+        eventResponseDto.setHomeNum(address.getHomeNum());
+        eventResponseDto.setDistrictId(address.getDistrict().getId());
+        eventResponseDto.setAddressDescription(address.getAddressDescription());
+        eventResponseDto.setImageUrl(event.getImageUrl());
+        List<ShiftDto> shifts = event.getAddressToEvents().stream()
+                .flatMap(addressToEvent -> mapShiftListToShiftDtoList(addressToEvent.getShifts()).stream())
+                .collect(Collectors.toList());
+
+        eventResponseDto.setShifts(shifts);
+
+        return eventResponseDto;
     }
 }

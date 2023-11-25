@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.*;
-import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.service.*;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @RequestMapping("/events")
 public class EventController {
-
     private final EventService eventService;
     private final EventMapper eventMapper;
     private final DistrictService districtService;
@@ -27,8 +25,6 @@ public class EventController {
     private final AddressToEventSevice addressToEventService;
     private final CategoryService categoryService;
     private final ShiftService shiftService;
-    private final CategoryRepository categoryRepository;
-
 
     @GetMapping()
     public ResponseEntity<List<EventResponseDto>> getEvents() {
@@ -40,25 +36,28 @@ public class EventController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Event>> filterEvents(@RequestParam(value = "localization", required = false) String[] localizations,
-                                                    @RequestParam(value = "startDate", required = false) LocalDate startDate,
-                                                    @RequestParam(value = "endDate", required = false) LocalDate endDate,
-                                                    @RequestParam(value = "category", required = false) Long category,
-                                                    @RequestParam(value = "organizer", required = false) Long organizer,
-                                                    @RequestParam(value = "ageRestriction", required = false) Integer ageRestriction,
-
-                                                    @RequestParam(value = "verification", required = false) boolean isPeselVerificationRequired){
+    public ResponseEntity<List<EventResponseDto>> filterEvents(@RequestParam(value = "localization", required = false) String[] localizations,
+                                                               @RequestParam(value = "startDate", required = false) LocalDate startDate,
+                                                               @RequestParam(value = "endDate", required = false) LocalDate endDate,
+                                                               @RequestParam(value = "category", required = false) Long category,
+                                                               @RequestParam(value = "organizer", required = false) Long organizer,
+                                                               @RequestParam(value = "ageRestriction", required = false) Integer ageRestriction,
+                                                               @RequestParam(value = "verification", required = false) boolean isPeselVerificationRequired){
 
 
         List<Event> filteredEvents = eventService.filterEvents(localizations, startDate, endDate, category, organizer,
                 ageRestriction, isPeselVerificationRequired);
-        return new ResponseEntity<>(filteredEvents, HttpStatus.OK);
+        List<EventResponseDto> eventDtos = filteredEvents.stream()
+                .map(eventMapper::toEventResponseDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getEventById(@PathVariable Long id){
+    public ResponseEntity<EventResponseDetailsDto> getEventById(@PathVariable Long id){
         Event event = eventService.getEventById(id);
-        return new ResponseEntity<>(event, HttpStatus.OK);
+        EventResponseDetailsDto eventDto = eventMapper.toEventResponseDetailsDto(event);
+        return new ResponseEntity<>(eventDto, HttpStatus.OK);
     }
 
     @PostMapping("/add")
