@@ -14,9 +14,9 @@ public interface EventMapper {
     Shift toShift(ShiftDto shiftDto);
     List<Shift> toShifts(List<ShiftDto> shiftDtos);
 
-    Event toEvent(DtoRequestEvent dtoRequestEvent);
+    Event toEvent(EventRequestDto eventRequestDto);
 
-    Address toAddress(DtoRequestEvent dtoRequestEvent);
+    Address toAddress(EventRequestDto eventRequestDto);
 
     default EventResponseDto toEventResponseDto(Event event) {
         EventResponseDto eventResponseDto = new EventResponseDto();

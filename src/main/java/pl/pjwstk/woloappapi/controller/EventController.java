@@ -61,7 +61,7 @@ public class EventController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody DtoRequestEvent dtoEvent){
+    public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent){
         Address address = eventMapper.INSTANCE.toAddress(dtoEvent);
         District district = districtService.getDistrictById(dtoEvent.getDistrictId());
         address.setDistrict(district);

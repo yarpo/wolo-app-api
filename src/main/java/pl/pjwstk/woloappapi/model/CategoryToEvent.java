@@ -24,7 +24,7 @@ public class CategoryToEvent {
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "address_id", nullable = false)
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
 

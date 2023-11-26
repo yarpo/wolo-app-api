@@ -19,6 +19,8 @@ public class EventResponseDetailsDto {
 
     private boolean isPeselVerificationRequired;
 
+    private boolean isAgreementNeeded;
+
     private String description;
 
     private List<Long> categories;
