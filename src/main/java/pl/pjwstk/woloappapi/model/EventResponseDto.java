@@ -25,8 +25,6 @@ public class EventResponseDto {
 
     private Long districtId;
 
-    private String addressDescription;
-
     private String imageUrl;
 
     private List<ShiftDto> shifts;

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.repository.CategoryToEventRepository;
 import pl.pjwstk.woloappapi.service.*;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 
@@ -25,6 +26,7 @@ public class EventController {
     private final AddressToEventSevice addressToEventService;
     private final CategoryService categoryService;
     private final ShiftService shiftService;
+    private final CategoryToEventRepository categoryToEventRepository;
 
     @GetMapping()
     public ResponseEntity<List<EventResponseDto>> getEvents() {
@@ -62,46 +64,7 @@ public class EventController {
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent){
-        Address address = eventMapper.INSTANCE.toAddress(dtoEvent);
-        District district = districtService.getDistrictById(dtoEvent.getDistrictId());
-        address.setDistrict(district);
-
-        List<Shift> shifts = eventMapper.INSTANCE.toShifts(dtoEvent.getShifts());
-
-        Event event = eventMapper.INSTANCE.toEvent(dtoEvent);
-        Organisation organisation = organisationService.getOrganisationById(dtoEvent.getOrganisationId());
-
-        AddressToEvent addressToEvent = new AddressToEvent();
-        addressToEvent.setEvent(event);
-        addressToEvent.setAddress(address);
-
-        shifts.forEach(shift -> {
-            shift.setAddressToEvent(addressToEvent);
-            addressToEvent.getShifts().add(shift);
-            shiftService.createShift(shift);
-        });
-
-
-        List<CategoryToEvent> categoryToEvents = dtoEvent.getCategories().stream()
-                .map(categoryId -> {
-                    Category category = categoryService.getCategoryById(categoryId);
-                    CategoryToEvent categoryToEvent = new CategoryToEvent();
-                    categoryToEvent.setCategory(category);
-                    categoryToEvent.setEvent(event);
-                    return categoryToEvent;
-                })
-                .collect(Collectors.toList());
-
-        event.setCategories(categoryToEvents);
-
-        event.setOrganisation(organisation);
-        event.getAddressToEvents().add(addressToEvent);
-
-        address.getAddressToEvents().add(addressToEvent);
-
-        addressService.createAddress(address);
-        eventService.createEvent(event);
-        addressToEventService.createAddressToEvent(addressToEvent);
+        eventService.createEvent(dtoEvent);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -112,9 +75,10 @@ public class EventController {
     }
 
     @PutMapping("/{id}/edit")
-    public ResponseEntity<HttpStatus> editDistrict(@Valid @RequestBody Event event,
+    public ResponseEntity<HttpStatus> editDistrict(@Valid @RequestBody EventRequestEditDto eventRequestEditDto,
                                                    @PathVariable Long id) {
-        eventService.updateEvent(event, id);
+
+        eventService.updateEvent(eventRequestEditDto, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
