@@ -25,7 +25,9 @@ public class EventResponseDto {
 
     private String homeNum;
 
-    private Long districtId;
+    private String district;
+
+    private String city;
 
     private String addressDescription;
 

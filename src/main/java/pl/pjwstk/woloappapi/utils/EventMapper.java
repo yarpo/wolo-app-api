@@ -28,7 +28,8 @@ public interface EventMapper {
         eventResponseDto.setStreet(address.getStreet());
         eventResponseDto.setAddressDescription(address.getAddressDescription());
         eventResponseDto.setHomeNum(address.getHomeNum());
-        eventResponseDto.setDistrictId(address.getDistrict().getId());
+        eventResponseDto.setDistrict(address.getDistrict().getName());
+        eventResponseDto.setCity(address.getDistrict().getCity());
         eventResponseDto.setImageUrl(event.getImageUrl());
         List<ShiftDto> shifts = event.getAddressToEvents().stream()
                 .flatMap(addressToEvent -> mapShiftListToShiftDtoList(addressToEvent.getShifts()).stream())
