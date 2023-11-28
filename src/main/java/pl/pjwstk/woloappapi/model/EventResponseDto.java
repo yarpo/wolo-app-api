@@ -13,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 public class EventResponseDto {
 
+    private Long id;
+
     private String name;
 
     private Long organisationId;
@@ -24,6 +26,8 @@ public class EventResponseDto {
     private String homeNum;
 
     private Long districtId;
+
+    private String addressdescription;
 
     private String imageUrl;
 

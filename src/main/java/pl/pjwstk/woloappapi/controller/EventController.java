@@ -5,8 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.*;
-import pl.pjwstk.woloappapi.repository.CategoryToEventRepository;
-import pl.pjwstk.woloappapi.service.*;
+import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 
 import javax.validation.Valid;
@@ -20,13 +19,6 @@ import java.util.stream.Collectors;
 public class EventController {
     private final EventService eventService;
     private final EventMapper eventMapper;
-    private final DistrictService districtService;
-    private final OrganisationService organisationService;
-    private final AddressService addressService;
-    private final AddressToEventSevice addressToEventService;
-    private final CategoryService categoryService;
-    private final ShiftService shiftService;
-    private final CategoryToEventRepository categoryToEventRepository;
 
     @GetMapping()
     public ResponseEntity<List<EventResponseDto>> getEvents() {

@@ -5,33 +5,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventRequestEditDto {
+public class OrganisationResponseDto {
 
     private String name;
 
     private String description;
 
-    private Long organisationId;
+    private String email;
 
-    private List<Long> categories;
-
-    private boolean isPeselVerificationRequired;
-
-    private boolean isAgreementNeeded;
+    private String phoneNumber;
 
     private String street;
 
-    private String addressDescription;
-
     private String homeNum;
 
-    private Long districtId;
+    private String addressDescription;
 
-    private List<ShiftDto> shifts;
+    private String logoUrl;
+
 }

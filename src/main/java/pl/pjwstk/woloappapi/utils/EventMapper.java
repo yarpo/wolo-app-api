@@ -20,11 +20,13 @@ public interface EventMapper {
 
     default EventResponseDto toEventResponseDto(Event event) {
         EventResponseDto eventResponseDto = new EventResponseDto();
+        eventResponseDto.setId(event.getId());
         eventResponseDto.setName(event.getName());
         eventResponseDto.setOrganisationId(event.getOrganisation().getId());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
         Address address = event.getAddressToEvents().get(0).getAddress();
         eventResponseDto.setStreet(address.getStreet());
+        eventResponseDto.setAddressdescription(address.getAddressDescription());
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrictId(address.getDistrict().getId());
         eventResponseDto.setImageUrl(event.getImageUrl());

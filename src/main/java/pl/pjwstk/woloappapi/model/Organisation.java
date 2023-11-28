@@ -63,6 +63,4 @@ public class Organisation {
     @JsonIgnore
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
     private List<Event> events;
-
-
 }
