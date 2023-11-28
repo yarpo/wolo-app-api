@@ -26,7 +26,7 @@ public interface EventMapper {
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
         Address address = event.getAddressToEvents().get(0).getAddress();
         eventResponseDto.setStreet(address.getStreet());
-        eventResponseDto.setAddressdescription(address.getAddressDescription());
+        eventResponseDto.setAddressDescription(address.getAddressDescription());
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrictId(address.getDistrict().getId());
         eventResponseDto.setImageUrl(event.getImageUrl());

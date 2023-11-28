@@ -27,7 +27,7 @@ public class EventResponseDto {
 
     private Long districtId;
 
-    private String addressdescription;
+    private String addressDescription;
 
     private String imageUrl;
 
