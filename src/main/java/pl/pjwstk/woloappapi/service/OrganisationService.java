@@ -17,7 +17,6 @@ public class OrganisationService {
     private final OrganisationRepository organisationRepository;
     private final OrganisationMapper organisationMapper;
     private final DistrictService districtService;
-    private final AddressService addressService;
     private final UserRepository userRepository;
     public List<Organisation> getAllOrganisations() {
         return organisationRepository.findAll();
@@ -37,8 +36,6 @@ public class OrganisationService {
         Optional<User> user = userRepository.findById(organisationDto.getModeratorId());
         user.ifPresent(organisation::setModerator);
         organisationRepository.save(organisation);
-        address.getOrganisations().add(organisation);
-        addressService.createAddress(address);
     }
 
     public void updateOrganisation(Organisation organisation, Long id) {

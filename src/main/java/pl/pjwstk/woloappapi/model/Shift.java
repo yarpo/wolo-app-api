@@ -51,8 +51,6 @@ public class Shift {
 
     @Column(name = "required_min_age", nullable = false)
     private int requiredMinAge;
-
-
     public int getRegisteredUsersCount() {
         return this.shiftToUsers.size();
     }

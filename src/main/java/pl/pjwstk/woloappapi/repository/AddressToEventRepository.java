@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.pjwstk.woloappapi.model.AddressToEvent;
 @Repository
 public interface AddressToEventRepository extends JpaRepository<AddressToEvent, Long> {
+
 }
