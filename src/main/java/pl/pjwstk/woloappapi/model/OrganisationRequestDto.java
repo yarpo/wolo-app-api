@@ -5,51 +5,45 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventRequestDto {
+public class OrganisationRequestDto {
 
     @NotBlank(message = "Name is required")
-    @Size(max = 250, message = "Name cannot exceed 250 characters")
+    @Size(max = 200, message = "Name cannot exceed 200 characters")
     private String name;
 
     @NotBlank(message = "Description is required")
     private String description;
 
-    private Long organisationId;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    private String email;
 
-    @NotNull(message = "Category ID is required")
-    private List<Long> categories;
-
-    private boolean isPeselVerificationRequired;
-
-    private boolean isAgreementNeeded;
+    @NotBlank(message = "Phone number is required")
+    @Size(min = 9, max = 9, message = "Phone number must be 9 digits")
+    private String phoneNumber;
 
     @NotBlank(message = "Street is required")
-    @Size(max = 200, message = "Street cannot exceed 200 characters")
     private String street;
 
     @NotBlank(message = "Home number is required")
-    @Size(max = 20, message = "Home number cannot exceed 20 characters")
     private String homeNum;
+
+    private String addressDescription;
 
     @NotNull(message = "District must be chosen")
     private Long districtId;
 
-    private String addressDescription;
+    private Long moderatorId;
 
-    private String imageUrl;
+    private String logoUrl;
 
-    @NotNull(message = "Shifts are required")
-    @Size(min = 1, message = "At least one shift is required")
-    @Valid
-    private List<ShiftDto> shifts;
 }

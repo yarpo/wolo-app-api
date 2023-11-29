@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.Event;
-import pl.pjwstk.woloappapi.model.EventResponseDto;
-import pl.pjwstk.woloappapi.model.Organisation;
-import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
+import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.OrganisationService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
@@ -44,8 +41,8 @@ public class OrganisationController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addOrganisation(@Valid @RequestBody Organisation Organisation){
-        organisationService.createOrganisation(Organisation);
+    public ResponseEntity<HttpStatus> addOrganisation(@Valid @RequestBody OrganisationRequestDto organisationDto){
+        organisationService.createOrganisation(organisationDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

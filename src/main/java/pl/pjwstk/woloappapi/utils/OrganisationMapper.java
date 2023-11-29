@@ -1,9 +1,7 @@
 package pl.pjwstk.woloappapi.utils;
 
 import org.mapstruct.Mapper;
-import pl.pjwstk.woloappapi.model.Address;
-import pl.pjwstk.woloappapi.model.Organisation;
-import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
+import pl.pjwstk.woloappapi.model.*;
 
 @Mapper(componentModel = "spring")
 public interface OrganisationMapper {
@@ -19,6 +17,25 @@ public interface OrganisationMapper {
         organisationResponseDto.setAddressDescription(address.getAddressDescription());
         organisationResponseDto.setLogoUrl(organisation.getLogoUrl());
         return organisationResponseDto;
+    }
+
+    default Organisation toOrganisation(OrganisationRequestDto organisationRequestDto) {
+        Organisation organisation = new Organisation();
+        organisation.setName(organisationRequestDto.getName());
+        organisation.setDescription(organisationRequestDto.getDescription());
+        organisation.setEmail(organisationRequestDto.getEmail());
+        organisation.setPhoneNumber(organisationRequestDto.getPhoneNumber());
+        organisation.setApproved(false);
+        organisation.setLogoUrl(organisationRequestDto.getLogoUrl());
+        return  organisation;
+    }
+
+    default Address toAddress(OrganisationRequestDto organisationRequestDto){
+        Address address = new Address();
+        address.setStreet(organisationRequestDto.getStreet());
+        address.setHomeNum(organisationRequestDto.getHomeNum());
+        address.setAddressDescription(organisationRequestDto.getAddressDescription());
+        return address;
     }
 
 

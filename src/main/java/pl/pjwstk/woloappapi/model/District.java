@@ -26,8 +26,8 @@ public class District {
     private Long id;
 
     @Column(name = "name", nullable = false)
-    @NotBlank(message = "Name is required")
-    @Size(max = 100, message = "Surname cannot exceed 100 characters")
+    @NotBlank(message = "District name is required")
+    @Size(max = 100, message = "District name cannot exceed 100 characters")
     private String name;
 
     @Column(name = "city")
