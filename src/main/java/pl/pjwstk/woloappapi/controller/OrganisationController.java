@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @RequestMapping("/organisations")
 public class OrganisationController {
-
     private final OrganisationService organisationService;
     private final OrganisationMapper organisationMapper;
     private final EventMapper eventMapper;
@@ -27,7 +26,7 @@ public class OrganisationController {
     public ResponseEntity<List<OrganisationResponseDto>> getOrganisations(){
         List<Organisation> organisations = organisationService.getAllOrganisations();
         List<OrganisationResponseDto> organisationDtos = organisations.stream()
-                .map(organisationMapper::toOrganisationResponseDto)
+                .map(organisationMapper.INSTANCE::toOrganisationResponseDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(organisationDtos, HttpStatus.OK);
     }
@@ -35,7 +34,7 @@ public class OrganisationController {
     @GetMapping("/{id}")
     public ResponseEntity<OrganisationResponseDto> getOrganisationById(@PathVariable Long id){
         Organisation organisation = organisationService.getOrganisationById(id);
-        OrganisationResponseDto organisationDto = organisationMapper
+        OrganisationResponseDto organisationDto = organisationMapper.INSTANCE
                 .toOrganisationResponseDto(organisation);
         return new ResponseEntity<>(organisationDto, HttpStatus.OK);
     }
@@ -56,7 +55,7 @@ public class OrganisationController {
     public ResponseEntity<List<EventResponseDto>> getEventsByOrganisation(@PathVariable Long id) {
         List<Event> events = organisationService.getEventsByOrganisation(id);
         List<EventResponseDto> eventDtos = events.stream()
-                .map(eventMapper::toEventResponseDto)
+                .map(eventMapper.INSTANCE::toEventResponseDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
