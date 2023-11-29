@@ -3,7 +3,6 @@ package pl.pjwstk.woloappapi.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.*;
-import pl.pjwstk.woloappapi.repository.CategoryToEventRepository;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
@@ -19,11 +18,10 @@ public class EventService {
     private final EventMapper eventMapper;
     private final DistrictService districtService;
     private final OrganisationService organisationService;
-    private final AddressService addressService;
     private final AddressToEventSevice addressToEventService;
     private final CategoryService categoryService;
     private final ShiftService shiftService;
-    private final CategoryToEventRepository categoryToEventRepository;
+    private final CategoryToEventService  categoryToEventService;
 
      public List<Event> getAllEvents() {
          return eventRepository.findAll();
@@ -39,42 +37,27 @@ public class EventService {
         District district = districtService.getDistrictById(dtoEvent.getDistrictId());
         address.setDistrict(district);
 
-        List<Shift> shifts = eventMapper.INSTANCE.toShifts(dtoEvent.getShifts());
-
         Event event = eventMapper.INSTANCE.toEvent(dtoEvent);
         Organisation organisation = organisationService.getOrganisationById(dtoEvent.getOrganisationId());
+        event.setOrganisation(organisation);
 
         AddressToEvent addressToEvent = new AddressToEvent();
         addressToEvent.setEvent(event);
         addressToEvent.setAddress(address);
+        addressToEventService.createAddressToEvent(addressToEvent);
 
+        List<Shift> shifts = eventMapper.INSTANCE.toShifts(dtoEvent.getShifts());
         shifts.forEach(shift -> {
             shift.setAddressToEvent(addressToEvent);
-            addressToEvent.getShifts().add(shift);
             shiftService.createShift(shift);
         });
 
-
-        List<CategoryToEvent> categoryToEvents = dtoEvent.getCategories().stream()
-                .map(categoryId -> {
-                    Category category = categoryService.getCategoryById(categoryId);
-                    CategoryToEvent categoryToEvent = new CategoryToEvent();
-                    categoryToEvent.setCategory(category);
-                    categoryToEvent.setEvent(event);
-                    return categoryToEvent;
-                })
-                .collect(Collectors.toList());
-
-        event.setCategories(categoryToEvents);
-
-        event.setOrganisation(organisation);
-        event.getAddressToEvents().add(addressToEvent);
-
-        address.getAddressToEvents().add(addressToEvent);
-
-        addressService.createAddress(address);
-        addressToEventService.createAddressToEvent(addressToEvent);
-        eventRepository.save(event);
+        dtoEvent.getCategories().forEach(categoryId -> {
+            CategoryToEvent categoryToEvent = new CategoryToEvent();
+            categoryToEvent.setCategory(categoryService.getCategoryById(categoryId));
+            categoryToEvent.setEvent(event);
+            categoryToEventService.createCategoryToEvent(categoryToEvent);
+        });
     }
 
     public void updateEvent(EventRequestEditDto eventRequestEditDto, Long id) {
@@ -108,7 +91,7 @@ public class EventService {
             event.setOrganisation(organisation);
         }
 
-        //Dział z Kategoriami - do sprawdzenia/rozpatrzenia
+        //Dział z Kategoriami-do sprawdzenia/rozpatrzenia
         if(eventRequestEditDto.getCategories() != null){
             List<CategoryToEvent> categoryToEvents = eventRequestEditDto.getCategories().stream()
                     .map(categoryId -> {
@@ -123,7 +106,7 @@ public class EventService {
             event.setCategories(categoryToEvents);
         }
 
-        //Dział z adresem - do sprawdzenia/rozpatrzenia
+        //Dział z adresem-do sprawdzenia/rozpatrzenia
         List<AddressToEvent> addressToEvent = event.getAddressToEvents();
         Address address = addressToEvent.get(0).getAddress();
 
@@ -142,7 +125,7 @@ public class EventService {
         }
         addressToEvent.get(0).setAddress(address);
 
-        //Dział z shiftami - do sprawdzenia/rozpatrzenia
+        //Dział z shiftami-do sprawdzenia/rozpatrzenia
         if(eventRequestEditDto.getShifts() != null){
             List<Shift> shifts = eventMapper.INSTANCE.toShifts(eventRequestEditDto.getShifts());
             shifts.forEach(shift -> {

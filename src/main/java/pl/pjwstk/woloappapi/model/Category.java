@@ -28,6 +28,6 @@ public class Category {
 
     @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<CategoryToEvent> categoryToEventSet;
+    private List<CategoryToEvent> categoryToEventList;
 
 }
