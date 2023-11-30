@@ -61,7 +61,7 @@ public class OrganisationController {
     }
 
     @PutMapping("/{id}/edit")
-    public ResponseEntity<HttpStatus> editOrganisation(@Valid @RequestBody Organisation organisation,
+    public ResponseEntity<HttpStatus> editOrganisation(@Valid @RequestBody OrganisationRequestDto organisation,
                                                    @PathVariable Long id) {
         organisationService.updateOrganisation(organisation, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
