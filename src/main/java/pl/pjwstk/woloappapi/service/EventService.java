@@ -9,7 +9,6 @@ import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -67,65 +66,55 @@ public class EventService {
         }
 
         Event event = eventRepository.getReferenceById(id);
-        //Address address = addressService.getAddressById(event.getAddressToEvents().g);
 
-        //Działa
         if(eventRequestEditDto.getName() != null){
             event.setName(eventRequestEditDto.getName());
         }
 
-        //Działa
         if(eventRequestEditDto.getDescription() != null){
             event.setDescription(eventRequestEditDto.getDescription());
         }
 
-        //Działa
         event.setPeselVerificationRequired(eventRequestEditDto.isPeselVerificationRequired());
 
-        //Działa
         event.setAgreementNeeded(eventRequestEditDto.isAgreementNeeded());
 
-        //Działa
         if(eventRequestEditDto.getOrganisationId() != null){
             Organisation organisation = organisationService.getOrganisationById(eventRequestEditDto.getOrganisationId());
             event.setOrganisation(organisation);
         }
 
-        //Dział z Kategoriami-do sprawdzenia/rozpatrzenia
         if(eventRequestEditDto.getCategories() != null){
-            List<CategoryToEvent> categoryToEvents = eventRequestEditDto.getCategories().stream()
-                    .map(categoryId -> {
+            event.getCategories().clear();
+            eventRequestEditDto.getCategories().forEach(
+                    categoryId -> {
                         Category category = categoryService.getCategoryById(categoryId);
                         CategoryToEvent categoryToEvent = new CategoryToEvent();
                         categoryToEvent.setCategory(category);
                         categoryToEvent.setEvent(event);
-                        return categoryToEvent;
-                    })
-                    .collect(Collectors.toList());
-
-            event.setCategories(categoryToEvents);
+                        categoryToEventService.createCategoryToEvent(categoryToEvent);
+                    });
         }
 
-        //Dział z adresem-do sprawdzenia/rozpatrzenia
         List<AddressToEvent> addressToEvent = event.getAddressToEvents();
         Address address = addressToEvent.get(0).getAddress();
 
-        //Działa
         if(eventRequestEditDto.getDistrictId() != null){
             District district = districtService.getDistrictById(eventRequestEditDto.getDistrictId());
             address.setDistrict(district);
         }
-        //Działa
+
         if(eventRequestEditDto.getStreet() != null){
             address.setStreet(eventRequestEditDto.getStreet());
         }
-        //Działa
+
         if(eventRequestEditDto.getHomeNum() != null){
             address.setHomeNum(eventRequestEditDto.getHomeNum());
         }
-        addressToEvent.get(0).setAddress(address);
+        event.getAddressToEvents().forEach(ate -> {
+                ate.setAddress(address);
+        });
 
-        //Dział z shiftami-do sprawdzenia/rozpatrzenia
         if(eventRequestEditDto.getShifts() != null){
             List<Shift> shifts = eventMapper.INSTANCE.toShifts(eventRequestEditDto.getShifts());
             shifts.forEach(shift -> {
