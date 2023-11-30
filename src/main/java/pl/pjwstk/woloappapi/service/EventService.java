@@ -10,6 +10,8 @@ import pl.pjwstk.woloappapi.utils.NotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Service
 @AllArgsConstructor
@@ -61,31 +63,25 @@ public class EventService {
     }
 
     public void updateEvent(EventRequestDto eventDto, Long id) {
-
         Event event = eventRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("event with ID " + id + " does not exist"));
+                new IllegalArgumentException("Event with ID " + id + " does not exist"));
 
-        if (!Objects.equals(event.getName(), eventDto.getName())) {
-            event.setName(eventDto.getName());
-        }
+        updateFieldIfDifferent(event::getName, event::setName, eventDto.getName());
+        updateFieldIfDifferent(event::getDescription, event::setDescription, eventDto.getDescription());
+        updateFieldIfDifferent(event::isPeselVerificationRequired, event::setPeselVerificationRequired, eventDto.isPeselVerificationRequired());
+        updateFieldIfDifferent(event::isAgreementNeeded, event::setAgreementNeeded, eventDto.isAgreementNeeded());
 
-        if (!Objects.equals(event.getDescription(), eventDto.getDescription())) {
-            event.setDescription(eventDto.getDescription());
-        }
+        Organisation organisation = organisationService.getOrganisationById(eventDto.getOrganisationId());
+        updateFieldIfDifferent(() -> event.getOrganisation().getId(), oId -> event.setOrganisation(organisation), eventDto.getOrganisationId());
 
-        if (!Objects.equals(event.isPeselVerificationRequired(), eventDto.isPeselVerificationRequired())) {
-            event.setPeselVerificationRequired(eventDto.isPeselVerificationRequired());
-        }
+        updateEventCategories(event, eventDto);
+        updateEventAddress(event, eventDto);
+        updateEventShifts(event, eventDto);
 
-        if (!Objects.equals(event.isAgreementNeeded(), eventDto.isAgreementNeeded())) {
-            event.setAgreementNeeded(eventDto.isAgreementNeeded());
-        }
+        eventRepository.save(event);
+    }
 
-        if (!Objects.equals(event.getOrganisation().getId(), eventDto.getOrganisationId())) {
-            Organisation organisation = organisationService.getOrganisationById(eventDto.getOrganisationId());
-            event.setOrganisation(organisation);
-        }
-
+    private void updateEventCategories(Event event, EventRequestDto eventDto) {
         event.getCategories().removeIf(categoryToEvent ->
                 !eventDto.getCategories().contains(categoryToEvent.getCategory().getId()));
 
@@ -100,67 +96,51 @@ public class EventService {
                     return newCategoryToEvent;
                 })
                 .forEach(event.getCategories()::add);
+    }
 
+    private void updateEventAddress(Event event, EventRequestDto eventDto) {
         List<AddressToEvent> addressToEvent = event.getAddressToEvents();
         Address address = addressToEvent.get(0).getAddress();
 
-        if (!Objects.equals(address.getDistrict().getId(), eventDto.getDistrictId())) {
-            District district = districtService.getDistrictById(eventDto.getDistrictId());
-            address.setDistrict(district);
-        }
+        updateFieldIfDifferent(address::getDistrict, district -> address.setDistrict((District) district), eventDto.getDistrictId());
+        updateFieldIfDifferent(address::getStreet, address::setStreet, eventDto.getStreet());
+        updateFieldIfDifferent(address::getHomeNum, address::setHomeNum, eventDto.getHomeNum());
 
-        if (!Objects.equals(address.getStreet(), eventDto.getStreet())) {
-            address.setStreet(eventDto.getStreet());
-        }
+        event.getAddressToEvents().forEach(ate -> ate.setAddress(address));
+    }
 
-        if (!Objects.equals(address.getHomeNum(), eventDto.getHomeNum())) {
-            address.setHomeNum(eventDto.getHomeNum());
-        }
-
-        event.getAddressToEvents().forEach(ate ->ate.setAddress(address));
-
+    private void updateEventShifts(Event event, EventRequestDto eventDto) {
         List<Shift> newShifts = eventMapper.INSTANCE.toShifts(eventDto.getShifts());
+
         event.getAddressToEvents().forEach(ate ->
                 ate.getShifts().removeIf(shift -> !newShifts.stream()
-                        .map(Shift::getId).toList().contains(shift.getId())));
+                        .map(Shift::getId)
+                        .toList()
+                        .contains(shift.getId())));
 
-        newShifts.forEach(newShift ->{
-            if(newShift.getId() == null){
+        newShifts.forEach(newShift -> {
+            if (newShift.getId() == null) {
                 event.getAddressToEvents().get(0).getShifts().add(newShift);
-            }else{
+            } else {
                 Shift shift = event.getAddressToEvents().get(0).getShifts().stream()
                         .filter(sh -> sh.getId().equals(newShift.getId()))
-                        .findFirst().get();
-                if(!Objects.equals(shift.getDate(), newShift.getDate())){
-                    shift.setDate(newShift.getDate());
-                }
+                        .findFirst()
+                        .orElseThrow(); // Обробте, якщо shift не знайдений
 
-                if(!Objects.equals(shift.getStartTime(), newShift.getStartTime())){
-                    shift.setStartTime(newShift.getStartTime());
-                }
-
-                if(!Objects.equals(shift.getEndTime(), newShift.getEndTime())){
-                    shift.setEndTime(newShift.getEndTime());
-                }
-
-                if (!Objects.equals(shift.getCapacity(), newShift.getCapacity())){
-                    shift.setCapacity(newShift.getCapacity());
-                }
-
-                if (!Objects.equals(shift.isLeaderRequired(), newShift.isLeaderRequired())){
-                    shift.setLeaderRequired(newShift.isLeaderRequired());
-                }
-
-                if(!Objects.equals(shift.getRequiredMinAge(), newShift.getRequiredMinAge())){
-                    shift.setRequiredMinAge(newShift.getRequiredMinAge());
-                }
+                updateShiftFields(shift, newShift);
             }
         });
-
-
-        eventRepository.save(event);
-
     }
+
+    private void updateShiftFields(Shift shift, Shift newShift) {
+        updateFieldIfDifferent(shift::getDate, shift::setDate, newShift.getDate());
+        updateFieldIfDifferent(shift::getStartTime, shift::setStartTime, newShift.getStartTime());
+        updateFieldIfDifferent(shift::getEndTime, shift::setEndTime, newShift.getEndTime());
+        updateFieldIfDifferent(shift::getCapacity, shift::setCapacity, newShift.getCapacity());
+        updateFieldIfDifferent(shift::isLeaderRequired, shift::setLeaderRequired, newShift.isLeaderRequired());
+        updateFieldIfDifferent(shift::getRequiredMinAge, shift::setRequiredMinAge, newShift.getRequiredMinAge());
+    }
+
 
     public void deleteEvent(Long id) {
         if (!eventRepository.existsById(id)) {
@@ -175,6 +155,14 @@ public class EventService {
                                     boolean isPeselVerificationRequired) {
         return eventRepository.findAllByFilter(localizations, startDate, endDate,
                 category, organizer, ageRestriction, isPeselVerificationRequired);
+    }
+
+    private <T> void updateFieldIfDifferent(Supplier<T> currentSupplier,
+                                            Consumer<T> updateConsumer,
+                                            T newValue) {
+        if (!Objects.equals(currentSupplier.get(), newValue)) {
+            updateConsumer.accept(newValue);
+        }
     }
 
 }
