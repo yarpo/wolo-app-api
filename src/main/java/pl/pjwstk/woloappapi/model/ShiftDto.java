@@ -15,6 +15,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ShiftDto {
 
+    private Long id;
     @TimeOrder
     private LocalTime startTime;
 

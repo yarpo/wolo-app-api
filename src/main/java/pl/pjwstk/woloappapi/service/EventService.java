@@ -9,6 +9,7 @@ import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -59,72 +60,106 @@ public class EventService {
         });
     }
 
-    public void updateEvent(EventRequestEditDto eventRequestEditDto, Long id) {
+    public void updateEvent(EventRequestDto eventDto, Long id) {
 
-        if (!eventRepository.existsById(id)) {
-            throw new IllegalArgumentException("Event with ID " + id + " does not exist");
+        Event event = eventRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("event with ID " + id + " does not exist"));
+
+        if (!Objects.equals(event.getName(), eventDto.getName())) {
+            event.setName(eventDto.getName());
         }
 
-        Event event = eventRepository.getReferenceById(id);
-
-        if(eventRequestEditDto.getName() != null){
-            event.setName(eventRequestEditDto.getName());
+        if (!Objects.equals(event.getDescription(), eventDto.getDescription())) {
+            event.setDescription(eventDto.getDescription());
         }
 
-        if(eventRequestEditDto.getDescription() != null){
-            event.setDescription(eventRequestEditDto.getDescription());
+        if (!Objects.equals(event.isPeselVerificationRequired(), eventDto.isPeselVerificationRequired())) {
+            event.setPeselVerificationRequired(eventDto.isPeselVerificationRequired());
         }
 
-        event.setPeselVerificationRequired(eventRequestEditDto.isPeselVerificationRequired());
+        if (!Objects.equals(event.isAgreementNeeded(), eventDto.isAgreementNeeded())) {
+            event.setAgreementNeeded(eventDto.isAgreementNeeded());
+        }
 
-        event.setAgreementNeeded(eventRequestEditDto.isAgreementNeeded());
-
-        if(eventRequestEditDto.getOrganisationId() != null){
-            Organisation organisation = organisationService.getOrganisationById(eventRequestEditDto.getOrganisationId());
+        if (!Objects.equals(event.getOrganisation().getId(), eventDto.getOrganisationId())) {
+            Organisation organisation = organisationService.getOrganisationById(eventDto.getOrganisationId());
             event.setOrganisation(organisation);
         }
 
-        if(eventRequestEditDto.getCategories() != null){
-            event.getCategories().clear();
-            eventRequestEditDto.getCategories().forEach(
-                    categoryId -> {
-                        Category category = categoryService.getCategoryById(categoryId);
-                        CategoryToEvent categoryToEvent = new CategoryToEvent();
-                        categoryToEvent.setCategory(category);
-                        categoryToEvent.setEvent(event);
-                        categoryToEventService.createCategoryToEvent(categoryToEvent);
-                    });
-        }
+        event.getCategories().removeIf(categoryToEvent ->
+                !eventDto.getCategories().contains(categoryToEvent.getCategory().getId()));
+
+        eventDto.getCategories().stream()
+                .filter(categoryId -> event.getCategories().stream()
+                        .noneMatch(categoryToEvent -> categoryId.equals(categoryToEvent.getCategory().getId())))
+                .map(categoryService::getCategoryById)
+                .map(category -> {
+                    CategoryToEvent newCategoryToEvent = new CategoryToEvent();
+                    newCategoryToEvent.setCategory(category);
+                    newCategoryToEvent.setEvent(event);
+                    return newCategoryToEvent;
+                })
+                .forEach(event.getCategories()::add);
 
         List<AddressToEvent> addressToEvent = event.getAddressToEvents();
         Address address = addressToEvent.get(0).getAddress();
 
-        if(eventRequestEditDto.getDistrictId() != null){
-            District district = districtService.getDistrictById(eventRequestEditDto.getDistrictId());
+        if (!Objects.equals(address.getDistrict().getId(), eventDto.getDistrictId())) {
+            District district = districtService.getDistrictById(eventDto.getDistrictId());
             address.setDistrict(district);
         }
 
-        if(eventRequestEditDto.getStreet() != null){
-            address.setStreet(eventRequestEditDto.getStreet());
+        if (!Objects.equals(address.getStreet(), eventDto.getStreet())) {
+            address.setStreet(eventDto.getStreet());
         }
 
-        if(eventRequestEditDto.getHomeNum() != null){
-            address.setHomeNum(eventRequestEditDto.getHomeNum());
+        if (!Objects.equals(address.getHomeNum(), eventDto.getHomeNum())) {
+            address.setHomeNum(eventDto.getHomeNum());
         }
-        event.getAddressToEvents().forEach(ate -> {
-                ate.setAddress(address);
+
+        event.getAddressToEvents().forEach(ate ->ate.setAddress(address));
+
+        List<Shift> newShifts = eventMapper.INSTANCE.toShifts(eventDto.getShifts());
+        event.getAddressToEvents().forEach(ate ->
+                ate.getShifts().removeIf(shift -> !newShifts.stream()
+                        .map(Shift::getId).toList().contains(shift.getId())));
+
+        newShifts.forEach(newShift ->{
+            if(newShift.getId() == null){
+                event.getAddressToEvents().get(0).getShifts().add(newShift);
+            }else{
+                Shift shift = event.getAddressToEvents().get(0).getShifts().stream()
+                        .filter(sh -> sh.getId().equals(newShift.getId()))
+                        .findFirst().get();
+                if(!Objects.equals(shift.getDate(), newShift.getDate())){
+                    shift.setDate(newShift.getDate());
+                }
+
+                if(!Objects.equals(shift.getStartTime(), newShift.getStartTime())){
+                    shift.setStartTime(newShift.getStartTime());
+                }
+
+                if(!Objects.equals(shift.getEndTime(), newShift.getEndTime())){
+                    shift.setEndTime(newShift.getEndTime());
+                }
+
+                if (!Objects.equals(shift.getCapacity(), newShift.getCapacity())){
+                    shift.setCapacity(newShift.getCapacity());
+                }
+
+                if (!Objects.equals(shift.isLeaderRequired(), newShift.isLeaderRequired())){
+                    shift.setLeaderRequired(newShift.isLeaderRequired());
+                }
+
+                if(!Objects.equals(shift.getRequiredMinAge(), newShift.getRequiredMinAge())){
+                    shift.setRequiredMinAge(newShift.getRequiredMinAge());
+                }
+            }
         });
 
-        if(eventRequestEditDto.getShifts() != null){
-            List<Shift> shifts = eventMapper.INSTANCE.toShifts(eventRequestEditDto.getShifts());
-            shifts.forEach(shift -> {
-                shift.setAddressToEvent(addressToEvent.get(0));
-                addressToEvent.get(0).getShifts().add(shift);
-                shiftService.updateShift(shift);
-            });
-        }
 
         eventRepository.save(event);
+
     }
 
     public void deleteEvent(Long id) {
@@ -133,6 +168,7 @@ public class EventService {
         }
         eventRepository.deleteById(id);
     }
+
 
     public List<Event> filterEvents(String[] localizations, LocalDate startDate, LocalDate endDate,
                                     Long category, Long organizer, Integer ageRestriction,

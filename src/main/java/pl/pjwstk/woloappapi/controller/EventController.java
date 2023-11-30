@@ -67,7 +67,7 @@ public class EventController {
     }
 
     @PatchMapping("/{id}/edit")
-    public ResponseEntity<HttpStatus> editEvent(@Valid @RequestBody EventRequestEditDto eventRequestEditDto,
+    public ResponseEntity<HttpStatus> editEvent(@Valid @RequestBody EventRequestDto eventRequestEditDto,
                                                    @PathVariable Long id) {
 
         eventService.updateEvent(eventRequestEditDto, id);
