@@ -33,14 +33,14 @@ public class EventController {
     public ResponseEntity<List<EventResponseDto>> filterEvents(@RequestParam(value = "localization", required = false) String[] localizations,
                                                                @RequestParam(value = "startDate", required = false) LocalDate startDate,
                                                                @RequestParam(value = "endDate", required = false) LocalDate endDate,
-                                                               @RequestParam(value = "category", required = false) Long category,
+                                                               @RequestParam(value = "category", required = false) Long[] categories,
                                                                @RequestParam(value = "organizer", required = false) Long organizer,
                                                                @RequestParam(value = "ageRestriction", required = false) Integer ageRestriction,
-                                                               @RequestParam(value = "verification", required = false) boolean isPeselVerificationRequired){
+                                                               @RequestParam(value = "verification", required = false) Boolean isPeselVerificationRequired,
+                                                               @RequestParam(value = "showAvailable", required = false) Boolean showWithAvailableCapacity){
 
-
-        List<Event> filteredEvents = eventService.filterEvents(localizations, startDate, endDate, category, organizer,
-                ageRestriction, isPeselVerificationRequired);
+        List<Event> filteredEvents = eventService.filterEvents(localizations, startDate, endDate, categories, organizer,
+                ageRestriction, isPeselVerificationRequired, showWithAvailableCapacity);
         List<EventResponseDto> eventDtos = filteredEvents.stream()
                 .map(eventMapper::toEventResponseDto)
                 .collect(Collectors.toList());

@@ -125,7 +125,7 @@ public class EventService {
                 Shift shift = event.getAddressToEvents().get(0).getShifts().stream()
                         .filter(sh -> sh.getId().equals(newShift.getId()))
                         .findFirst()
-                        .orElseThrow(); // Обробте, якщо shift не знайдений
+                        .orElseThrow();
 
                 updateShiftFields(shift, newShift);
             }
@@ -151,10 +151,10 @@ public class EventService {
 
 
     public List<Event> filterEvents(String[] localizations, LocalDate startDate, LocalDate endDate,
-                                    Long category, Long organizer, Integer ageRestriction,
-                                    boolean isPeselVerificationRequired) {
+                                    Long[] categories, Long organizer, Integer ageRestriction,
+                                    Boolean isPeselVerificationRequired, Boolean showWithAvailableCapacity) {
         return eventRepository.findAllByFilter(localizations, startDate, endDate,
-                category, organizer, ageRestriction, isPeselVerificationRequired);
+                categories, organizer, ageRestriction, isPeselVerificationRequired, showWithAvailableCapacity);
     }
 
     private <T> void updateFieldIfDifferent(Supplier<T> currentSupplier,
