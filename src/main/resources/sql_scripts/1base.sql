@@ -26,17 +26,7 @@ CREATE TABLE IF NOT EXISTS district (
                                         "name" VARCHAR(50) NOT NULL,
     city VARCHAR(50) NOT NULL
     );
--- Table: event
-CREATE TABLE IF NOT EXISTS event (
-                                     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                     "name" VARCHAR(250) NOT NULL,
-    description TEXT NOT NULL,
-    is_pesel_ver_req BOOLEAN NOT NULL,
-    is_agreement_needed BOOLEAN NOT NULL,
-    organisation_id BIGINT NOT NULL,
-    image_url VARCHAR(255),
-    is_approved BOOLEAN NOT NULL
-    );
+
 -- Table: organisation
 CREATE TABLE IF NOT EXISTS organisation (
                                             id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -48,6 +38,17 @@ CREATE TABLE IF NOT EXISTS organisation (
     is_approved BOOLEAN NOT NULL,
     moderator_id BIGINT NOT NULL,
     logo_url VARCHAR(255)
+    );
+-- Table: event
+CREATE TABLE IF NOT EXISTS event (
+                                     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                                     "name" VARCHAR(250) NOT NULL,
+    description TEXT NOT NULL,
+    is_pesel_ver_req BOOLEAN NOT NULL,
+    is_agreement_needed BOOLEAN NOT NULL,
+    organisation_id BIGINT NOT NULL,
+    image_url VARCHAR(255),
+    is_approved BOOLEAN NOT NULL
     );
 -- Table: role
 CREATE TABLE IF NOT EXISTS role (
@@ -111,11 +112,6 @@ ALTER TABLE address_to_event
     ADD CONSTRAINT fk_address_to_event_address_id
         FOREIGN KEY (address_id)
             REFERENCES address (id);
--- Tabela: event
-ALTER TABLE event
-    ADD CONSTRAINT fk_event_organisation_id
-        FOREIGN KEY (organisation_id)
-            REFERENCES organisation (id);
 -- Tabela: organisation
 ALTER TABLE organisation
     ADD CONSTRAINT fk_organisation_address_id
@@ -125,6 +121,12 @@ ALTER TABLE organisation
     ADD CONSTRAINT fk_organisation_moderator_id
         FOREIGN KEY (moderator_id)
             REFERENCES "user" (id);
+-- Tabela: event
+ALTER TABLE event
+    ADD CONSTRAINT fk_event_organisation_id
+        FOREIGN KEY (organisation_id)
+            REFERENCES organisation (id);
+
 -- Tabela: shift
 ALTER TABLE shift
     ADD CONSTRAINT fk_shift_address_to_event_id
