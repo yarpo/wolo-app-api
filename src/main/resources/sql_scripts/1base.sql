@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS event (
                                      id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                      "name" VARCHAR(250) NOT NULL,
     description TEXT NOT NULL,
-    category_id BIGINT,
     is_pesel_ver_req BOOLEAN NOT NULL,
     is_agreement_needed BOOLEAN NOT NULL,
     organisation_id BIGINT NOT NULL,
@@ -114,9 +113,6 @@ ALTER TABLE address_to_event
             REFERENCES address (id);
 -- Tabela: event
 ALTER TABLE event
-    ADD CONSTRAINT fk_event_category_id
-        FOREIGN KEY (category_id)
-            REFERENCES category (id),
     ADD CONSTRAINT fk_event_organisation_id
         FOREIGN KEY (organisation_id)
             REFERENCES organisation (id);
