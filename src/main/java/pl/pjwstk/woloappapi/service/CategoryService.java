@@ -35,11 +35,11 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow();
-        category.getCategoryToEventList().forEach(cte ->
-                cte.setCategory(categoryRepository.findById(basicCategory).get()));
-        categoryRepository.deleteById(id);
+        categoryRepository.findById(id).ifPresent(category -> {
+            category.getCategoryToEventList().forEach(cte ->
+                    cte.setCategory(categoryRepository.findById(basicCategory).orElse(null)));
+            categoryRepository.deleteById(id);
+        });
     }
-
 
 }

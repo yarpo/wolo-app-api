@@ -122,14 +122,12 @@ public class EventService {
 
         newShifts.forEach(newShift -> {
             if (newShift.getId() == null) {
-                event.getAddressToEvents().get(0).getShifts().add(newShift);
+                event.getAddressToEvents().get(0).getShifts().add(newShift); //adding new shifts
             } else {
-                Shift shift = event.getAddressToEvents().get(0).getShifts().stream()
+                event.getAddressToEvents().get(0).getShifts().stream()
                         .filter(sh -> sh.getId().equals(newShift.getId()))
                         .findFirst()
-                        .orElseThrow();
-
-                updateShiftFields(shift, newShift);
+                        .ifPresent(existingShift -> updateShiftFields(existingShift, newShift));
             }
         });
     }
@@ -145,9 +143,6 @@ public class EventService {
 
 
     public void deleteEvent(Long id) {
-        if (!eventRepository.existsById(id)) {
-            throw new IllegalArgumentException("Event with ID " + id + " does not exist");
-        }
         eventRepository.deleteById(id);
     }
 
