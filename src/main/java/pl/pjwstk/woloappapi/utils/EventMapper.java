@@ -11,12 +11,35 @@ import java.util.stream.Collectors;
 public interface EventMapper {
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-    Shift toShift(ShiftDto shiftDto);
+    default Shift toShift(ShiftDto shiftDto){
+        Shift shift = new Shift();
+        shift.setStartTime(shiftDto.getStartTime());
+        shift.setEndTime(shiftDto.getEndTime());
+        shift.setDate(shiftDto.getDate());
+        shift.setLeaderRequired(shiftDto.getIsLeaderRequired());
+        shift.setCapacity(shiftDto.getCapacity());
+        shift.setRequiredMinAge(shiftDto.getRequiredMinAge());
+        return shift;
+    }
     List<Shift> toShifts(List<ShiftDto> shiftDtos);
 
-    Event toEvent(EventRequestDto eventRequestDto);
+    default Event toEvent(EventRequestDto eventRequestDto){
+        Event event = new Event();
+        event.setName(eventRequestDto.getName());
+        event.setDescription(eventRequestDto.getDescription());
+        event.setPeselVerificationRequired(eventRequestDto.isPeselVerificationRequired());
+        event.setAgreementNeeded(eventRequestDto.isAgreementNeeded());
+        event.setImageUrl(eventRequestDto.getImageUrl());
+        return event;
+    }
 
-    Address toAddress(EventRequestDto eventRequestDto);
+    default Address toAddress(EventRequestDto eventRequestDto){
+        Address address = new Address();
+        address.setStreet(eventRequestDto.getStreet());
+        address.setHomeNum(eventRequestDto.getHomeNum());
+        address.setAddressDescription(eventRequestDto.getAddressDescription());
+        return address;
+    }
 
     default EventResponseDto toEventResponseDto(Event event) {
         EventResponseDto eventResponseDto = new EventResponseDto();
