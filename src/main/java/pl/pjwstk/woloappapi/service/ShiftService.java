@@ -43,7 +43,7 @@ public class ShiftService {
         Shift shift = shiftRepository.findById(shiftId).orElse(null);
 
         if (shift != null) {
-            return shift.getShiftToUsers().size();
+            return shift.getRegisteredUsersCount();
         } else {
             return 0; // lub można zwrócić odpowiedni kod błędu
         }

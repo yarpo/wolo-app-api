@@ -1,9 +1,6 @@
 package pl.pjwstk.woloappapi.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,9 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 @Data
 @Table(name = "shift")
 public class Shift {
@@ -29,7 +23,6 @@ public class Shift {
     @JoinColumn(name = "address_to_event_id", nullable = false)
     private AddressToEvent addressToEvent;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "shift")
     private List<ShiftToUser> shiftToUsers = new ArrayList<>();
 
@@ -45,7 +38,6 @@ public class Shift {
     @Column(name = "capacity", nullable = false)
     private int capacity;
 
-    @JsonIgnore
     @Column(name = "is_leader_required", nullable = false)
     private boolean isLeaderRequired;
 

@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface EventRepositoryCustom {
     List<Event> findAllByFilter(String[] localizations, LocalDate startDate,LocalDate endDate,
-                                Long category,Long organizer, Integer ageRestriction,
-                                boolean isPeselVerificationRequired);
+                                Long[] categories,Long organizer, Integer ageRestriction,
+                                Boolean isPeselVerificationRequired, Boolean showWithAvailableCapacity);
 }

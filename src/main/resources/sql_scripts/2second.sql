@@ -38,3 +38,7 @@ INSERT INTO shift_to_user ( user_id, shift_id, is_on_reserve_list, is_leader) VA
                                                                                   ( 1, 1, false, true),
                                                                                   ( 2, 2, false, false),
                                                                                   ( 3, 3, true, false);
+INSERT INTO category_to_event (category_id, event_id) VALUES
+                                                          ( 1, 1),
+                                                          ( 2, 2),
+                                                          ( 3, 3);
