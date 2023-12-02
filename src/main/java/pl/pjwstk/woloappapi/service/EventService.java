@@ -102,7 +102,9 @@ public class EventService {
         List<AddressToEvent> addressToEvent = event.getAddressToEvents();
         Address address = addressToEvent.get(0).getAddress();
 
-        updateFieldIfDifferent(address::getDistrict, district -> address.setDistrict((District) district), eventDto.getDistrictId());
+        updateFieldIfDifferent(address.getDistrict()::getId,
+                districtId -> address.setDistrict( districtService.getDistrictById(districtId)),
+                eventDto.getDistrictId());
         updateFieldIfDifferent(address::getStreet, address::setStreet, eventDto.getStreet());
         updateFieldIfDifferent(address::getHomeNum, address::setHomeNum, eventDto.getHomeNum());
 

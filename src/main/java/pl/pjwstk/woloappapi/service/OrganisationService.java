@@ -45,22 +45,24 @@ public class OrganisationService {
         Organisation organisation = organisationRepository.findById(id)
                 .orElseThrow(() ->
                         new IllegalArgumentException("Organisation with ID " + id + " does not exist"));
+        Address address = organisation.getAddress();
         updateFieldIfDifferent(organisation::getName, organisation::setName, organisationDto.getName());
         updateFieldIfDifferent(organisation::getDescription, organisation::setDescription,
                 organisationDto.getDescription());
         updateFieldIfDifferent(organisation::getEmail, organisation::setEmail,
                 organisationDto.getEmail());
-        updateFieldIfDifferent(organisation.getAddress()::getStreet,
-                organisation.getAddress()::setStreet, organisationDto.getStreet());
-        updateFieldIfDifferent(organisation.getAddress()::getHomeNum, organisation.getAddress()::setHomeNum,
-                organisationDto.getHomeNum());
-        updateFieldIfDifferent(organisation.getAddress()::getAddressDescription,
-                organisation.getAddress()::setAddressDescription, organisationDto.getAddressDescription());
 
-        updateFieldIfDifferent(() -> organisation.getAddress().getDistrict().getId(), dId -> {
+        updateFieldIfDifferent(address::getStreet,
+                address::setStreet, organisationDto.getStreet());
+        updateFieldIfDifferent(address::getHomeNum, address::setHomeNum,
+                organisationDto.getHomeNum());
+        updateFieldIfDifferent(address::getAddressDescription,
+                address::setAddressDescription, organisationDto.getAddressDescription());
+        updateFieldIfDifferent(() -> address.getDistrict().getId(), dId -> {
             District district = districtService.getDistrictById(dId);
-            organisation.getAddress().setDistrict(district);
+            address.setDistrict(district);
         }, organisationDto.getDistrictId());
+        organisation.setAddress(address);
 
         updateFieldIfDifferent(() -> organisation.getModerator().getId(),
                 mId -> userRepository.findById(mId).ifPresent(organisation::setModerator),
