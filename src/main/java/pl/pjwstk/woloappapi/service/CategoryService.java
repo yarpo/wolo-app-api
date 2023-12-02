@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class CategoryService {
+    private final Long basicCategory = 4L;
     private final CategoryRepository categoryRepository;
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
@@ -34,9 +35,9 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long id) {
-        if (!categoryRepository.existsById(id)) {
-            throw new IllegalArgumentException("Category with ID " + id + " does not exist");
-        }
+        Category category = categoryRepository.findById(id).orElseThrow();
+        category.getCategoryToEventList().forEach(cte ->
+                cte.setCategory(categoryRepository.findById(basicCategory).get()));
         categoryRepository.deleteById(id);
     }
 

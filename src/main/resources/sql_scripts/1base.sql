@@ -90,8 +90,8 @@ CREATE TABLE IF NOT EXISTS "user" (
 -- Table: category_to_event
 CREATE TABLE IF NOT EXISTS category_to_event (
                                                  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                                 category_id BIGINT NOT NULL,
-                                                 event_id BIGINT NOT NULL
+                                                 category_id BIGINT  DEFAULT 4 NOT NULL,
+                                                 event_id BIGINT
 );
 
 --changeset woloapp:2
