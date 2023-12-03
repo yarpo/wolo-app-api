@@ -154,19 +154,6 @@ ALTER TABLE category_to_event
         FOREIGN KEY (event_id)
             REFERENCES event (id);
 
-CREATE OR REPLACE FUNCTION update_event_after_category_delete()
-    RETURNS TRIGGER AS $$
-BEGIN
-UPDATE event
-SET category_id = (SELECT id FROM category WHERE "name" = 'Podstawowa')
-WHERE category_id = OLD.id;
-RETURN NULL;
-END $$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_event_after_category_delete
-    AFTER DELETE ON category
-    FOR EACH ROW
-    EXECUTE FUNCTION update_event_after_category_delete();
 
 INSERT INTO role ("name") VALUES
                               ( 'Administrator'),
