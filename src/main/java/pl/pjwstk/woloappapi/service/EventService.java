@@ -107,6 +107,9 @@ public class EventService {
                 eventDto.getDistrictId());
         updateFieldIfDifferent(address::getStreet, address::setStreet, eventDto.getStreet());
         updateFieldIfDifferent(address::getHomeNum, address::setHomeNum, eventDto.getHomeNum());
+        updateFieldIfDifferent(address::getAddressDescription,
+                address::setAddressDescription,
+                eventDto.getAddressDescription());
 
         event.getAddressToEvents().forEach(ate -> ate.setAddress(address));
     }
