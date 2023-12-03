@@ -19,7 +19,7 @@ public class Shift {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_to_event_id") // nullable = false
     private AddressToEvent addressToEvent;
 
