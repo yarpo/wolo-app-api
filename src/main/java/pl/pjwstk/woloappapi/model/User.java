@@ -1,10 +1,8 @@
 package pl.pjwstk.woloappapi.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
 import lombok.Data;
 
-import jakarta.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -12,9 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 @Data
 @Table(name = "user")
 public class User {
@@ -55,9 +50,8 @@ public class User {
     @Column(name = "is_adult", nullable = false)
     private boolean isAdult;
 
-    @ManyToOne
-    @JoinColumn(name = "organization_id", referencedColumnName = "id")
-    private Organisation organization;
+    @OneToMany(mappedBy = "moderator", cascade = CascadeType.ALL)
+    private List<Organisation> organisations;
 
     @OneToMany(mappedBy = "user")
     private List<ShiftToUser> shifts = new ArrayList<>();

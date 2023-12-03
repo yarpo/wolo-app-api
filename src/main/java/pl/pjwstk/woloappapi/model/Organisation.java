@@ -35,7 +35,7 @@ public class Organisation {
     private boolean isApproved;
 
     @ManyToOne
-    @JoinColumn(name = "moderator_id")
+    @JoinColumn(name = "moderator_id", nullable = false)
     private User moderator;
 
     @Column(name = "logo_url")
