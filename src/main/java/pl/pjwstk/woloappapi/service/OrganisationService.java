@@ -41,7 +41,7 @@ public class OrganisationService {
         organisationRepository.deleteById(id);
     }
 
-    public List<Event> getEventsByOrganizer(Long id) {
+    public List<Event> getEventsByOrganisation(Long id) {
         return organisationRepository.findById(id)
                 .map(Organisation::getEvents)
                 .orElseThrow(() -> new NotFoundException("Organizer id not found!"));

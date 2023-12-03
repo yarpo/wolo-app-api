@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import javax.validation.constraints.Size;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @JsonIdentityInfo(
@@ -28,6 +28,6 @@ public class Category {
 
     @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private Set<CategoryToEvent> categoryToEventSet;
+    private List<CategoryToEvent> categoryToEventSet;
 
 }

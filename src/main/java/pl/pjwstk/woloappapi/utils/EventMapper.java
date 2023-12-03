@@ -14,16 +14,23 @@ public interface EventMapper {
     Shift toShift(ShiftDto shiftDto);
     List<Shift> toShifts(List<ShiftDto> shiftDtos);
 
-    Event toEvent(DtoRequestEvent dtoRequestEvent);
+    Event toEvent(EventRequestDto eventRequestDto);
 
-    Address toAddress(DtoRequestEvent dtoRequestEvent);
+    Address toAddress(EventRequestDto eventRequestDto);
 
     default EventResponseDto toEventResponseDto(Event event) {
         EventResponseDto eventResponseDto = new EventResponseDto();
+        eventResponseDto.setId(event.getId());
         eventResponseDto.setName(event.getName());
-        eventResponseDto.setOrganisation_id(event.getOrganisation().getId());
+        eventResponseDto.setOrganisationId(event.getOrganisation().getId());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
-
+        Address address = event.getAddressToEvents().get(0).getAddress();
+        eventResponseDto.setStreet(address.getStreet());
+        eventResponseDto.setAddressDescription(address.getAddressDescription());
+        eventResponseDto.setHomeNum(address.getHomeNum());
+        eventResponseDto.setDistrict(address.getDistrict().getName());
+        eventResponseDto.setCity(address.getDistrict().getCity());
+        eventResponseDto.setImageUrl(event.getImageUrl());
         List<ShiftDto> shifts = event.getAddressToEvents().stream()
                 .flatMap(addressToEvent -> mapShiftListToShiftDtoList(addressToEvent.getShifts()).stream())
                 .collect(Collectors.toList());
@@ -49,5 +56,28 @@ public interface EventMapper {
         shiftDto.setIsLeaderRequired(shift.isLeaderRequired());
         shiftDto.setRequiredMinAge(shift.getRequiredMinAge());
         return shiftDto;
+    }
+
+    default EventResponseDetailsDto toEventResponseDetailsDto(Event event) {
+        EventResponseDetailsDto eventResponseDto = new EventResponseDetailsDto();
+        eventResponseDto.setName(event.getName());
+        eventResponseDto.setOrganisationId(event.getOrganisation().getId());
+        eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
+        eventResponseDto.setDescription(event.getDescription());
+        eventResponseDto.setCategories(event.getCategories().stream()
+                .map(categoryToEvent -> categoryToEvent.getCategory().getId())
+                .collect(Collectors.toList()));
+        Address address = event.getAddressToEvents().get(0).getAddress();
+        eventResponseDto.setStreet(address.getStreet());
+        eventResponseDto.setHomeNum(address.getHomeNum());
+        eventResponseDto.setDistrictId(address.getDistrict().getId());
+        eventResponseDto.setImageUrl(event.getImageUrl());
+        List<ShiftDto> shifts = event.getAddressToEvents().stream()
+                .flatMap(addressToEvent -> mapShiftListToShiftDtoList(addressToEvent.getShifts()).stream())
+                .collect(Collectors.toList());
+
+        eventResponseDto.setShifts(shifts);
+
+        return eventResponseDto;
     }
 }
