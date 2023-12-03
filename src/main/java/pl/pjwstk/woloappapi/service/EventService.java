@@ -8,6 +8,7 @@ import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -43,16 +44,17 @@ public class EventService {
         Organisation organisation = organisationService.getOrganisationById(dtoEvent.getOrganisationId());
         event.setOrganisation(organisation);
 
-        AddressToEvent addressToEvent = new AddressToEvent();
-        addressToEvent.setEvent(event);
-        addressToEvent.setAddress(address);
-        addressToEventService.createAddressToEvent(addressToEvent);
+        AddressToEvent addressToEvent = new AddressToEvent(event, address);
+        List<AddressToEvent> addressToEvents = new ArrayList<>();
+        addressToEvents.add(addressToEvent);
 
         List<Shift> shifts = eventMapper.INSTANCE.toShifts(dtoEvent.getShifts());
         shifts.forEach(shift -> {
             shift.setAddressToEvent(addressToEvent);
             shiftService.createShift(shift);
         });
+
+        event.setAddressToEvents(addressToEvents);
 
         dtoEvent.getCategories().forEach(categoryId -> {
             CategoryToEvent categoryToEvent = new CategoryToEvent();

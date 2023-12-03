@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS address (
                                        id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                        street VARCHAR(50) NOT NULL,
     home_num VARCHAR(10) NOT NULL,
-    district_id BIGINT NOT NULL,
+    district_id BIGINT, -- NOT NULL
     description VARCHAR(250) NOT NULL
     );
 -- Table: address_to_event
