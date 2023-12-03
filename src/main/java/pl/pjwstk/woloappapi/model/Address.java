@@ -30,6 +30,7 @@ public class Address {
     @Column(name = "description")
     private String addressDescription;
 
+
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
     private List<Organisation> organisations = new ArrayList<>();
 

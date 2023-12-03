@@ -1,7 +1,9 @@
 package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
 import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
