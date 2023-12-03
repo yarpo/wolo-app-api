@@ -1,11 +1,7 @@
 package pl.pjwstk.woloappapi.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.Data;
-
 import jakarta.persistence.*;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -13,9 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 @Data
 @Table(name = "district")
 public class District {
@@ -26,8 +19,8 @@ public class District {
     private Long id;
 
     @Column(name = "name", nullable = false)
-    @NotBlank(message = "Name is required")
-    @Size(max = 100, message = "Surname cannot exceed 100 characters")
+    @NotBlank(message = "District name is required")
+    @Size(max = 100, message = "District name cannot exceed 100 characters")
     private String name;
 
     @Column(name = "city")
@@ -35,8 +28,7 @@ public class District {
     @Size(max = 50, message = "City cannot exceed 50 characters")
     private String city;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "district")
+    @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
     private List<Address> addresses = new ArrayList<>();
 }
 

@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.Event;
-import pl.pjwstk.woloappapi.model.EventResponseDto;
-import pl.pjwstk.woloappapi.model.Organisation;
-import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
+import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.OrganisationService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
@@ -21,7 +18,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @RequestMapping("/organisations")
 public class OrganisationController {
-
     private final OrganisationService organisationService;
     private final OrganisationMapper organisationMapper;
     private final EventMapper eventMapper;
@@ -30,7 +26,7 @@ public class OrganisationController {
     public ResponseEntity<List<OrganisationResponseDto>> getOrganisations(){
         List<Organisation> organisations = organisationService.getAllOrganisations();
         List<OrganisationResponseDto> organisationDtos = organisations.stream()
-                .map(organisationMapper::toOrganisationResponseDto)
+                .map(organisationMapper.INSTANCE::toOrganisationResponseDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(organisationDtos, HttpStatus.OK);
     }
@@ -38,14 +34,14 @@ public class OrganisationController {
     @GetMapping("/{id}")
     public ResponseEntity<OrganisationResponseDto> getOrganisationById(@PathVariable Long id){
         Organisation organisation = organisationService.getOrganisationById(id);
-        OrganisationResponseDto organisationDto = organisationMapper
+        OrganisationResponseDto organisationDto = organisationMapper.INSTANCE
                 .toOrganisationResponseDto(organisation);
         return new ResponseEntity<>(organisationDto, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addOrganisation(@Valid @RequestBody Organisation Organisation){
-        organisationService.createOrganisation(Organisation);
+    public ResponseEntity<HttpStatus> addOrganisation(@Valid @RequestBody OrganisationRequestDto organisationDto){
+        organisationService.createOrganisation(organisationDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -59,13 +55,13 @@ public class OrganisationController {
     public ResponseEntity<List<EventResponseDto>> getEventsByOrganisation(@PathVariable Long id) {
         List<Event> events = organisationService.getEventsByOrganisation(id);
         List<EventResponseDto> eventDtos = events.stream()
-                .map(eventMapper::toEventResponseDto)
+                .map(eventMapper.INSTANCE::toEventResponseDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/edit")
-    public ResponseEntity<HttpStatus> editOrganisation(@Valid @RequestBody Organisation organisation,
+    @PatchMapping ("/{id}/edit")
+    public ResponseEntity<HttpStatus> editOrganisation(@Valid @RequestBody OrganisationRequestDto organisation,
                                                    @PathVariable Long id) {
         organisationService.updateOrganisation(organisation, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

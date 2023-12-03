@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS address (
                                        id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                        street VARCHAR(50) NOT NULL,
     home_num VARCHAR(10) NOT NULL,
-    district_id BIGINT NOT NULL,
+    district_id BIGINT, -- NOT NULL
     description VARCHAR(250) NOT NULL
     );
 -- Table: address_to_event
@@ -26,18 +26,7 @@ CREATE TABLE IF NOT EXISTS district (
                                         "name" VARCHAR(50) NOT NULL,
     city VARCHAR(50) NOT NULL
     );
--- Table: event
-CREATE TABLE IF NOT EXISTS event (
-                                     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                     "name" VARCHAR(250) NOT NULL,
-    description TEXT NOT NULL,
-    category_id BIGINT,
-    is_pesel_ver_req BOOLEAN NOT NULL,
-    is_agreement_needed BOOLEAN NOT NULL,
-    organisation_id BIGINT NOT NULL,
-    image_url VARCHAR(255),
-    is_approved BOOLEAN NOT NULL
-    );
+
 -- Table: organisation
 CREATE TABLE IF NOT EXISTS organisation (
                                             id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -50,6 +39,17 @@ CREATE TABLE IF NOT EXISTS organisation (
     moderator_id BIGINT NOT NULL,
     logo_url VARCHAR(255)
     );
+-- Table: event
+CREATE TABLE IF NOT EXISTS event (
+                                     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                                     "name" VARCHAR(250) NOT NULL,
+    description TEXT NOT NULL,
+    is_pesel_ver_req BOOLEAN NOT NULL,
+    is_agreement_needed BOOLEAN NOT NULL,
+    organisation_id BIGINT NOT NULL,
+    image_url VARCHAR(255),
+    is_approved BOOLEAN NOT NULL
+    );
 -- Table: role
 CREATE TABLE IF NOT EXISTS role (
                                     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS role (
 -- Table: shift
 CREATE TABLE IF NOT EXISTS shift (
                                      id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                     address_to_event_id BIGINT NOT NULL,
+                                     address_to_event_id BIGINT, -- NOT NULL
                                      start_time TIME NOT NULL,
                                      end_time TIME NOT NULL,
                                      "date" DATE NOT NULL,
@@ -112,14 +112,6 @@ ALTER TABLE address_to_event
     ADD CONSTRAINT fk_address_to_event_address_id
         FOREIGN KEY (address_id)
             REFERENCES address (id);
--- Tabela: event
-ALTER TABLE event
-    ADD CONSTRAINT fk_event_category_id
-        FOREIGN KEY (category_id)
-            REFERENCES category (id),
-    ADD CONSTRAINT fk_event_organisation_id
-        FOREIGN KEY (organisation_id)
-            REFERENCES organisation (id);
 -- Tabela: organisation
 ALTER TABLE organisation
     ADD CONSTRAINT fk_organisation_address_id
@@ -129,6 +121,12 @@ ALTER TABLE organisation
     ADD CONSTRAINT fk_organisation_moderator_id
         FOREIGN KEY (moderator_id)
             REFERENCES "user" (id);
+-- Tabela: event
+ALTER TABLE event
+    ADD CONSTRAINT fk_event_organisation_id
+        FOREIGN KEY (organisation_id)
+            REFERENCES organisation (id);
+
 -- Tabela: shift
 ALTER TABLE shift
     ADD CONSTRAINT fk_shift_address_to_event_id
@@ -156,19 +154,6 @@ ALTER TABLE category_to_event
         FOREIGN KEY (event_id)
             REFERENCES event (id);
 
-CREATE OR REPLACE FUNCTION update_event_after_category_delete()
-    RETURNS TRIGGER AS $$
-BEGIN
-UPDATE event
-SET category_id = (SELECT id FROM category WHERE "name" = 'Podstawowa')
-WHERE category_id = OLD.id;
-RETURN NULL;
-END $$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_event_after_category_delete
-    AFTER DELETE ON category
-    FOR EACH ROW
-    EXECUTE FUNCTION update_event_after_category_delete();
 
 INSERT INTO role ("name") VALUES
                               ( 'Administrator'),

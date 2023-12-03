@@ -21,15 +21,15 @@ public class ShiftService {
                 .orElseThrow(() -> new NotFoundException("Shift id not found!"));
     }
 
-    public void createShift(Shift Shift) {
-        shiftRepository.save(Shift);
+    public void createShift(Shift shift) {
+        shiftRepository.save(shift);
     }
 
-    public Shift updateShift(Shift Shift) {
-        if (!shiftRepository.existsById(Shift.getId())) {
-            throw new IllegalArgumentException("Shift with ID " + Shift.getId() + " does not exist");
+    public Shift updateShift(Shift shift) {
+        if (!shiftRepository.existsById(shift.getId())) {
+            throw new IllegalArgumentException("Shift with ID " + shift.getId() + " does not exist");
         }
-        return shiftRepository.save(Shift);
+        return shiftRepository.save(shift);
     }
 
     public void deleteShift(Long id) {
@@ -43,7 +43,7 @@ public class ShiftService {
         Shift shift = shiftRepository.findById(shiftId).orElse(null);
 
         if (shift != null) {
-            return shift.getShiftToUsers().size();
+            return shift.getRegisteredUsersCount();
         } else {
             return 0; // lub można zwrócić odpowiedni kod błędu
         }

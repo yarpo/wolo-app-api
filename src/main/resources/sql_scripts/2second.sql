@@ -16,13 +16,13 @@ INSERT INTO organisation ( "name", description, email, phone_num, address_id, is
                                                                                                                        ( 'Centrum Wolontariatu w Gdańsku', 'Regionalne Centrum Wolontariatu w Gdańsku powstało w 1994r. Od 2001 roku jesteśmy samodzielnym stowarzyszeniem działającym w ramach ogólnopolskiej Federacji Centrów Wolontariatu', 'info@nowehoryzontygallery.com', '987654321', 2, true, 2, 'https://img.freepik.com/premium-wektory/streszczenie-kolorowe-logo-projektu_650075-1506.jpg'),
                                                                                                                        ( 'Akademia Programowania "Koduj z Nami"', 'Akademia oferująca kursy programowania dla osób w każdym wieku.', 'info@kodujznami.com', '456789123', 3, true, 1, 'https://img.freepik.com/darmowe-wektory/ptak-kolorowe-logo-wektor-gradientu_343694-1365.jpg');
 
-INSERT INTO event ( "name", description, category_id, is_pesel_ver_req, is_agreement_needed, organisation_id, image_url, is_approved) VALUES
+INSERT INTO event ( "name", description, is_pesel_ver_req, is_agreement_needed, organisation_id, image_url, is_approved) VALUES
                                                                                                                                           ( 'Bieg Maratoński', ' Pieski spędzające cały dzień na kanapie się nudzą
-Dlatego poszukujemy wolontariuszy, do spacerów z dużymi psami, które mieszkają w Leźnie i są pod opieką naszej Fundacji.', 1, false, false, 1, 'https://www.konferencje.pl/gfx/konferencje/userfiles/images/Event%20czym%20jest%20event%20w%20plenerze.jpg', true),
+Dlatego poszukujemy wolontariuszy, do spacerów z dużymi psami, które mieszkają w Leźnie i są pod opieką naszej Fundacji.', false, false, 1, 'https://www.konferencje.pl/gfx/konferencje/userfiles/images/Event%20czym%20jest%20event%20w%20plenerze.jpg', true),
                                                                                                                                           ( 'Festyn dla dzieci na Rudnikach', 'Poszukujemy wolontariuszy do pomocy przy organizacji festynu dla dzieci.
-Festyn obędzie się 10 czerwca 2023  na Rudnikach.', 2, true, true, 3, 'https://img.freepik.com/darmowe-wektory/ptak-kolorowe-logo-wektor-gradientu_343694-1365.jpg', true),
+Festyn obędzie się 10 czerwca 2023  na Rudnikach.', true, true, 3, 'https://img.freepik.com/darmowe-wektory/ptak-kolorowe-logo-wektor-gradientu_343694-1365.jpg', true),
                                                                                                                                           ( 'Warsztaty Programowania', 'Już w czerwcu o 10:00 pod Fontanną Neptuna w Gdańsku wystartuje Parada Seniorów 2023!
-O godzinie 10:00 rozpocznie się część oficjalna z przemówieniami.', 3, true, true, 2, 'https://cdn-daimk.nitrocdn.com/OrmiGLClAGCkdsnLonNSzrJOPvnSqbNv/assets/images/optimized/rev-d9c9754/www.projektefektywny.pl/wp-content/uploads/2021/05/Wieczor-tematyczny.jpg', false);
+O godzinie 10:00 rozpocznie się część oficjalna z przemówieniami.', true, true, 2, 'https://cdn-daimk.nitrocdn.com/OrmiGLClAGCkdsnLonNSzrJOPvnSqbNv/assets/images/optimized/rev-d9c9754/www.projektefektywny.pl/wp-content/uploads/2021/05/Wieczor-tematyczny.jpg', false);
 
 INSERT INTO address_to_event ( event_id, address_id) VALUES
                                                          ( 1, 1),
@@ -38,3 +38,7 @@ INSERT INTO shift_to_user ( user_id, shift_id, is_on_reserve_list, is_leader) VA
                                                                                   ( 1, 1, false, true),
                                                                                   ( 2, 2, false, false),
                                                                                   ( 3, 3, true, false);
+INSERT INTO category_to_event (category_id, event_id) VALUES
+                                                          ( 1, 1),
+                                                          ( 2, 2),
+                                                          ( 3, 3);

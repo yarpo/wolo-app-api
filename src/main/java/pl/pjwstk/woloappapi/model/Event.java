@@ -1,7 +1,6 @@
 package pl.pjwstk.woloappapi.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,8 +38,7 @@ public class Event {
     @JoinColumn(name = "organisation_id", nullable = false)
     private Organisation organisation;
 
-    @OneToMany
-    @JoinColumn(name = "event", nullable = false)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<CategoryToEvent> categories;
 
     @Column(name = "is_pesel_ver_req", nullable = false)
@@ -55,8 +53,6 @@ public class Event {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @JsonIgnore
     @Column(name = "is_approved", nullable = false)
     private boolean approved;
-
 }
