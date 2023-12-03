@@ -24,7 +24,7 @@ public class Address {
     private String homeNum;
 
     @ManyToOne
-    @JoinColumn(name = "district_id", nullable = false)
+    @JoinColumn(name = "district_id") // nullable = false
     private District district;
 
     @Column(name = "description")

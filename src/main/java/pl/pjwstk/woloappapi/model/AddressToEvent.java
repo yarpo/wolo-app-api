@@ -12,6 +12,14 @@ import java.util.List;
 @Table(name = "address_to_event")
 public class AddressToEvent {
 
+    public AddressToEvent() {
+    }
+
+    public AddressToEvent(Event event, Address address) {
+        this.event = event;
+        this.address = address;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
