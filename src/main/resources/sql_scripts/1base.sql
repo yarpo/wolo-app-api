@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS role (
 -- Table: shift
 CREATE TABLE IF NOT EXISTS shift (
                                      id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                     address_to_event_id BIGINT NOT NULL,
+                                     address_to_event_id BIGINT, -- NOT NULL
                                      start_time TIME NOT NULL,
                                      end_time TIME NOT NULL,
                                      "date" DATE NOT NULL,
