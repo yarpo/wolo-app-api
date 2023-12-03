@@ -20,7 +20,7 @@ public class Shift {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "address_to_event_id", nullable = false)
+    @JoinColumn(name = "address_to_event_id") // nullable = false
     private AddressToEvent addressToEvent;
 
     @OneToMany(mappedBy = "shift")
