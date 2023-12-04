@@ -20,15 +20,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 
 
+
         String email = oAuth2User.getAttribute("email");
         if (email == null) {
-            throw new RuntimeException("User not authorized");
+			throw new RuntimeException("User not authorized");
+		}
         else {
             User user = userRepository.findByEmail(email);
             if (user == null) {
                 throw new RuntimeException("User not found in the repository");
             }
 		}
+
 
 
         return oAuth2User;
