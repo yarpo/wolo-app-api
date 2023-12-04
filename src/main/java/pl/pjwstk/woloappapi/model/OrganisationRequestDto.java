@@ -45,5 +45,4 @@ public class OrganisationRequestDto {
     private Long moderatorId;
 
     private String logoUrl;
-
 }

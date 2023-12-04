@@ -1,6 +1,7 @@
 package pl.pjwstk.woloappapi.model;
 
 import jakarta.persistence.*;
+
 import lombok.Data;
 
 @Entity
@@ -26,6 +27,4 @@ public class ShiftToUser {
 
     @Column(name = "is_leader", nullable = false)
     private boolean isLeader;
-
-
 }

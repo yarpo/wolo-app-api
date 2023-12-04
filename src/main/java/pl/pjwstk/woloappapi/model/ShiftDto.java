@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import pl.pjwstk.woloappapi.annotations.TimeOrder;
 
 import java.time.LocalDate;
@@ -16,11 +17,9 @@ import java.time.LocalTime;
 public class ShiftDto {
 
     private Long id;
-    @TimeOrder
-    private LocalTime startTime;
+    @TimeOrder private LocalTime startTime;
 
-    @TimeOrder
-    private LocalTime endTime;
+    @TimeOrder private LocalTime endTime;
 
     private LocalDate date;
 
@@ -31,5 +30,4 @@ public class ShiftDto {
     private Boolean isLeaderRequired;
 
     private Integer requiredMinAge;
-
 }

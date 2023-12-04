@@ -1,7 +1,9 @@
 package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
 import pl.pjwstk.woloappapi.model.Shift;
 import pl.pjwstk.woloappapi.repository.ShiftRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
@@ -12,12 +14,14 @@ import java.util.List;
 @AllArgsConstructor
 public class ShiftService {
     private final ShiftRepository shiftRepository;
+
     public List<Shift> getAllShifts() {
         return shiftRepository.findAll();
     }
 
     public Shift getShiftById(Long id) {
-        return shiftRepository.findById(id)
+        return shiftRepository
+                .findById(id)
                 .orElseThrow(() -> new NotFoundException("Shift id not found!"));
     }
 
@@ -27,7 +31,8 @@ public class ShiftService {
 
     public Shift updateShift(Shift shift) {
         if (!shiftRepository.existsById(shift.getId())) {
-            throw new IllegalArgumentException("Shift with ID " + shift.getId() + " does not exist");
+            throw new IllegalArgumentException(
+                    "Shift with ID " + shift.getId() + " does not exist");
         }
         return shiftRepository.save(shift);
     }
@@ -48,6 +53,4 @@ public class ShiftService {
             return 0; // lub można zwrócić odpowiedni kod błędu
         }
     }
-
-
 }

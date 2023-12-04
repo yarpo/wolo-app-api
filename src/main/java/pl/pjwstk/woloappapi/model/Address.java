@@ -1,11 +1,11 @@
 package pl.pjwstk.woloappapi.model;
 
 import jakarta.persistence.*;
+
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Entity
 @Data
@@ -30,12 +30,9 @@ public class Address {
     @Column(name = "description")
     private String addressDescription;
 
-
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
     private List<Organisation> organisations = new ArrayList<>();
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
     private List<AddressToEvent> addressToEvents = new ArrayList<>();
-
 }
-

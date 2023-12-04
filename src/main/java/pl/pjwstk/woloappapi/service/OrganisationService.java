@@ -1,7 +1,9 @@
 package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
@@ -21,12 +23,14 @@ public class OrganisationService {
     private final OrganisationMapper organisationMapper;
     private final DistrictService districtService;
     private final UserRepository userRepository;
+
     public List<Organisation> getAllOrganisations() {
         return organisationRepository.findAll();
     }
 
     public Organisation getOrganisationById(Long id) {
-        return organisationRepository.findById(id)
+        return organisationRepository
+                .findById(id)
                 .orElseThrow(() -> new NotFoundException("Organisation id not found!"));
     }
 
@@ -42,33 +46,45 @@ public class OrganisationService {
     }
 
     public void updateOrganisation(OrganisationRequestDto organisationDto, Long id) {
-        Organisation organisation = organisationRepository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Organisation with ID " + id + " does not exist"));
+        Organisation organisation =
+                organisationRepository
+                        .findById(id)
+                        .orElseThrow(
+                                () ->
+                                        new IllegalArgumentException(
+                                                "Organisation with ID " + id + " does not exist"));
         Address address = organisation.getAddress();
-        updateFieldIfDifferent(organisation::getName, organisation::setName, organisationDto.getName());
-        updateFieldIfDifferent(organisation::getDescription, organisation::setDescription,
+        updateFieldIfDifferent(
+                organisation::getName, organisation::setName, organisationDto.getName());
+        updateFieldIfDifferent(
+                organisation::getDescription,
+                organisation::setDescription,
                 organisationDto.getDescription());
-        updateFieldIfDifferent(organisation::getEmail, organisation::setEmail,
-                organisationDto.getEmail());
+        updateFieldIfDifferent(
+                organisation::getEmail, organisation::setEmail, organisationDto.getEmail());
 
-        updateFieldIfDifferent(address::getStreet,
-                address::setStreet, organisationDto.getStreet());
-        updateFieldIfDifferent(address::getHomeNum, address::setHomeNum,
-                organisationDto.getHomeNum());
-        updateFieldIfDifferent(address::getAddressDescription,
-                address::setAddressDescription, organisationDto.getAddressDescription());
-        updateFieldIfDifferent(() -> address.getDistrict().getId(), dId -> {
-            District district = districtService.getDistrictById(dId);
-            address.setDistrict(district);
-        }, organisationDto.getDistrictId());
+        updateFieldIfDifferent(address::getStreet, address::setStreet, organisationDto.getStreet());
+        updateFieldIfDifferent(
+                address::getHomeNum, address::setHomeNum, organisationDto.getHomeNum());
+        updateFieldIfDifferent(
+                address::getAddressDescription,
+                address::setAddressDescription,
+                organisationDto.getAddressDescription());
+        updateFieldIfDifferent(
+                () -> address.getDistrict().getId(),
+                dId -> {
+                    District district = districtService.getDistrictById(dId);
+                    address.setDistrict(district);
+                },
+                organisationDto.getDistrictId());
         organisation.setAddress(address);
 
-        updateFieldIfDifferent(() -> organisation.getModerator().getId(),
+        updateFieldIfDifferent(
+                () -> organisation.getModerator().getId(),
                 mId -> userRepository.findById(mId).ifPresent(organisation::setModerator),
                 organisationDto.getModeratorId());
-        updateFieldIfDifferent(organisation::getLogoUrl, organisation::setLogoUrl,
-                organisationDto.getLogoUrl());
+        updateFieldIfDifferent(
+                organisation::getLogoUrl, organisation::setLogoUrl, organisationDto.getLogoUrl());
 
         organisationRepository.save(organisation);
     }
@@ -81,17 +97,16 @@ public class OrganisationService {
     }
 
     public List<Event> getEventsByOrganisation(Long id) {
-        return organisationRepository.findById(id)
+        return organisationRepository
+                .findById(id)
                 .map(Organisation::getEvents)
                 .orElseThrow(() -> new NotFoundException("Organizer id not found!"));
     }
 
-    private <T> void updateFieldIfDifferent(Supplier<T> currentSupplier,
-                                            Consumer<T> updateConsumer,
-                                            T newValue) {
+    private <T> void updateFieldIfDifferent(
+            Supplier<T> currentSupplier, Consumer<T> updateConsumer, T newValue) {
         if (!Objects.equals(currentSupplier.get(), newValue)) {
             updateConsumer.accept(newValue);
         }
     }
-
 }

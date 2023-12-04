@@ -1,33 +1,25 @@
 package pl.pjwstk.woloappapi;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.pjwstk.woloappapi.model.Category;
+
 import pl.pjwstk.woloappapi.model.Event;
-import pl.pjwstk.woloappapi.model.Organisation;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EventServiceTest {
-    @Mock
-    private EventRepository eventRepository;
-    @InjectMocks
-    private EventService eventService;
+    @Mock private EventRepository eventRepository;
+    @InjectMocks private EventService eventService;
     /*
     @Test
     public void testGetAllEvents() {
@@ -77,11 +69,6 @@ public class EventServiceTest {
         verify(eventRepository, times(1)).save(event);
     }
     */
-
-
-
-
-
 
     @Test
     public void testDeleteEvent_ExistingId() {
