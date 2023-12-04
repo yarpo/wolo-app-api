@@ -1,7 +1,9 @@
 package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
 import pl.pjwstk.woloappapi.model.Address;
 import pl.pjwstk.woloappapi.repository.AddressRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
@@ -18,7 +20,8 @@ public class AddressService {
     }
 
     public Address getAddressById(Long id) {
-        return addressRepository.findById(id)
+        return addressRepository
+                .findById(id)
                 .orElseThrow(() -> new NotFoundException("Address id not found!"));
     }
 

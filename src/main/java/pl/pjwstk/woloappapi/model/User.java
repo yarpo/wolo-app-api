@@ -1,13 +1,15 @@
 package pl.pjwstk.woloappapi.model;
 
 import jakarta.persistence.*;
+
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -34,7 +36,7 @@ public class User {
     private String email;
 
     @Column(name = "phone_number")
-    @Pattern(regexp="[0-9]{9}", message="Phone number should consist of 9 digits")
+    @Pattern(regexp = "[0-9]{9}", message = "Phone number should consist of 9 digits")
     private String phoneNumber;
 
     @ManyToOne
@@ -56,9 +58,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<ShiftToUser> shifts = new ArrayList<>();
 
-    @Column(name="password_hash",nullable = false)
+    @Column(name = "password_hash", nullable = false)
     private String password_hash;
 
-    @Column(name="salt",nullable = false)
+    @Column(name = "salt", nullable = false)
     private String salt;
 }

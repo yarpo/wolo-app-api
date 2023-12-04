@@ -1,12 +1,14 @@
 package pl.pjwstk.woloappapi.model;
 
 import jakarta.persistence.*;
+
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -31,4 +33,3 @@ public class District {
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
     private List<Address> addresses = new ArrayList<>();
 }
-

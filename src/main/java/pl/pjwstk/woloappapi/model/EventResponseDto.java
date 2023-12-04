@@ -34,5 +34,4 @@ public class EventResponseDto {
     private String imageUrl;
 
     private List<ShiftDto> shifts;
-
 }

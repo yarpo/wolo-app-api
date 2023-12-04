@@ -1,8 +1,9 @@
 package pl.pjwstk.woloappapi.service;
 
-
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
 import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.model.User;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
@@ -23,7 +24,8 @@ public class UserService {
     }
 
     public User getUserById(Long id) {
-        return userRepository.findById(id)
+        return userRepository
+                .findById(id)
                 .orElseThrow(() -> new NotFoundException("User id not found!"));
     }
 
@@ -47,7 +49,7 @@ public class UserService {
 
     public List<User> getByRole(Long role) {
         Optional<Role> roleById = roleRepository.findById(role);
-        if(roleById.isEmpty()){
+        if (roleById.isEmpty()) {
             throw new IllegalArgumentException("Role does not exist");
         }
         return userRepository.getUsersByRole(roleById);

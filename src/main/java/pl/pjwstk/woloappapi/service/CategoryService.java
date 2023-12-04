@@ -1,7 +1,9 @@
 package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
 import pl.pjwstk.woloappapi.model.Category;
 import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
@@ -13,12 +15,14 @@ import java.util.List;
 public class CategoryService {
     private final Long basicCategory = 4L;
     private final CategoryRepository categoryRepository;
+
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
 
     public Category getCategoryById(Long id) {
-        return categoryRepository.findById(id)
+        return categoryRepository
+                .findById(id)
                 .orElseThrow(() -> new NotFoundException("Category id not found!"));
     }
 
@@ -35,11 +39,18 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long id) {
-        categoryRepository.findById(id).ifPresent(category -> {
-            category.getCategoryToEventList().forEach(cte ->
-                    cte.setCategory(categoryRepository.findById(basicCategory).orElse(null)));
-            categoryRepository.deleteById(id);
-        });
+        categoryRepository
+                .findById(id)
+                .ifPresent(
+                        category -> {
+                            category.getCategoryToEventList()
+                                    .forEach(
+                                            cte ->
+                                                    cte.setCategory(
+                                                            categoryRepository
+                                                                    .findById(basicCategory)
+                                                                    .orElse(null)));
+                            categoryRepository.deleteById(id);
+                        });
     }
-
 }
