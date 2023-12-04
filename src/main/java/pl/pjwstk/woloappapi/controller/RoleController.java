@@ -1,14 +1,17 @@
 package pl.pjwstk.woloappapi.controller;
 
 import lombok.AllArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.service.RoleService;
 
-import javax.validation.Valid;
 import java.util.List;
+
+import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor
@@ -41,10 +44,9 @@ public class RoleController {
     }
 
     @PutMapping("/{id}/edit")
-    public ResponseEntity<HttpStatus> editRole(@Valid @RequestBody Role role,
-                                               @PathVariable Long id) {
+    public ResponseEntity<HttpStatus> editRole(
+            @Valid @RequestBody Role role, @PathVariable Long id) {
         roleService.updateRole(role, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

@@ -1,10 +1,12 @@
 package pl.pjwstk.woloappapi.model;
 
 import jakarta.persistence.*;
+
 import lombok.Data;
 
-import javax.validation.constraints.Size;
 import java.util.List;
+
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -22,5 +24,4 @@ public class Category {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<CategoryToEvent> categoryToEventList;
-
 }

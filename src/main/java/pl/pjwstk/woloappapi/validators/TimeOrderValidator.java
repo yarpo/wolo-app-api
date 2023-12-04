@@ -9,12 +9,10 @@ import javax.validation.ConstraintValidatorContext;
 public class TimeOrderValidator implements ConstraintValidator<TimeOrder, ShiftDto> {
 
     @Override
-    public void initialize(TimeOrder timeOrder){
-    }
+    public void initialize(TimeOrder timeOrder) {}
 
     @Override
     public boolean isValid(ShiftDto shift, ConstraintValidatorContext context) {
         return shift.getStartTime().isBefore(shift.getEndTime());
     }
-
 }

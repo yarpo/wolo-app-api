@@ -1,7 +1,7 @@
 package pl.pjwstk.woloappapi.model;
 
-
 import jakarta.persistence.*;
+
 import lombok.Data;
 
 import java.time.LocalDate;

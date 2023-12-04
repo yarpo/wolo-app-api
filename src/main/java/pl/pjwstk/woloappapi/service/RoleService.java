@@ -14,12 +14,14 @@ import java.util.List;
 @AllArgsConstructor
 public class RoleService {
     private final RoleRepository roleRepository;
+
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
 
     public Role getRoleById(Long id) {
-        return roleRepository.findById(id)
+        return roleRepository
+                .findById(id)
                 .orElseThrow(() -> new NotFoundException("Role id not found!"));
     }
 
@@ -41,6 +43,4 @@ public class RoleService {
         }
         roleRepository.deleteById(id);
     }
-
-
 }
