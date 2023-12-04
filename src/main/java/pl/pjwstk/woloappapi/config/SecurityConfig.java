@@ -51,23 +51,4 @@ public class SecurityConfig {
         return new CustomUserDetailsService(userRepository);
     }
 
-
-    public ClientRegistration googleClientRegistration() {
-
-
-        return ClientRegistration.withRegistrationId("google")
-                .clientId("13893580502-b542hnte437qe2froi35flpd8dd83u1o.apps.googleusercontent.com")
-                .clientSecret("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")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .redirectUri("http://localhost:8080/login/oauth2/code/google")
-                .scope("openid", "profile", "email", "address", "phone")
-                .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
-                .tokenUri("https://www.googleapis.com/oauth2/v4/token")
-                .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
-                .userNameAttributeName(IdTokenClaimNames.SUB)
-                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
-                .clientName("Google")
-                .build();
-    }
 }
