@@ -51,18 +51,13 @@ public class SecurityConfig {
         return new CustomUserDetailsService(userRepository);
     }
 
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String googleClientId;
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String googleClientSecret;
-
 
     public ClientRegistration googleClientRegistration() {
 
 
         return ClientRegistration.withRegistrationId("google")
-                .clientId(googleClientId)
-                .clientSecret(googleClientSecret)
+                .clientId("13893580502-b542hnte437qe2froi35flpd8dd83u1o.apps.googleusercontent.com")
+                .clientSecret("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")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUri("http://localhost:8080/login/oauth2/code/google")
