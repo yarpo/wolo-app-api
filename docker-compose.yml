@@ -7,26 +7,20 @@ services:
     container_name: wolo-app-api
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://dbpostgresql:5432/mydb2
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: password
+    env_file:
+      - .env
     depends_on:
       - dbpostgresql
-    restart: unless-stopped
+    restart: on-failure
   dbpostgresql:
     image: postgres
     container_name: dbpostgresql
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: postgres
-      POSTGRES_DB: mydb2
+    env_file:
+      - .env
     volumes:
       - ./data:/var/lib/postgresql/data
     expose:
       - 5432
-    restart: unless-stopped
-
-
+    restart: on-failure
