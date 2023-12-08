@@ -18,6 +18,19 @@ Go to the project directory
   cd wolo-app-api
 ```
 
+## Environment Variables
+
+Create and setup an ```.env``` file with the following Environment Variables:
+```bash
+  SPRING_DATASOURCE_URL = jdbc:postgresql://dbpostgresql:5432/mydb2
+  SPRING_DATASOURCE_USERNAME = {spring_username}
+  SPRING_DATASOURCE_PASSWORD = {spring_password}
+
+  POSTGRES_DB = mydb2
+  POSTGRES_USER= {postgres_username}
+  POSTGRES_PASSWORD= {postgres_password}
+```
+
 ## Running with Docker
 
 Start Docker Desktop
@@ -25,7 +38,7 @@ Start Docker Desktop
 Run the Database and Backend
 
 ```bash
-  docker-compose up
+  docker-compose --env-file .env --profile standalone up
 ```
 
 ## Running with Docker & Gradle
