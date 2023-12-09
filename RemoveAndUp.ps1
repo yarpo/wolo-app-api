@@ -14,9 +14,8 @@ if (Test-Path $directoryPath) {
     docker rmi -f $(docker images -q $imageToRemove)
     Write-Host "Obraz $imageToRemove został pomyślnie usunięty."
 
-    # Uruchom Docker Compose
-    docker-compose up -d
-    Write-Host "Docker Compose został pomyślnie uruchomiony."
+
 } else {
     Write-Host "Katalog $directoryPath nie istnieje."
 }
+    docker-compose --env-file .env --profile standalone up
