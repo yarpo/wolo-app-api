@@ -1,8 +1,6 @@
 package pl.pjwstk.woloappapi.utils;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
-
 import pl.pjwstk.woloappapi.model.*;
 
 import java.util.List;
@@ -10,8 +8,6 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface EventMapper {
-    EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
-
     default Shift toShift(ShiftDto shiftDto) {
         Shift shift = new Shift();
         shift.setStartTime(shiftDto.getStartTime());
@@ -47,7 +43,7 @@ public interface EventMapper {
         EventResponseDto eventResponseDto = new EventResponseDto();
         eventResponseDto.setId(event.getId());
         eventResponseDto.setName(event.getName());
-        eventResponseDto.setOrganisationId(event.getOrganisation().getId());
+        eventResponseDto.setOrganisation(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
         Address address = event.getAddressToEvents().get(0).getAddress();
         eventResponseDto.setStreet(address.getStreet());

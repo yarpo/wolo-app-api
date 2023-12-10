@@ -39,12 +39,12 @@ public class EventService {
     }
 
     public void createEvent(EventRequestDto dtoEvent) {
-        Address address = eventMapper.INSTANCE.toAddress(dtoEvent);
+        Address address = eventMapper.toAddress(dtoEvent);
         District district = districtService.getDistrictById(dtoEvent.getDistrictId());
         address.setDistrict(district);
         addressService.createAddress(address);
 
-        Event event = eventMapper.INSTANCE.toEvent(dtoEvent);
+        Event event = eventMapper.toEvent(dtoEvent);
         Organisation organisation =
                 organisationService.getOrganisationById(dtoEvent.getOrganisationId());
         event.setOrganisation(organisation);
@@ -55,7 +55,7 @@ public class EventService {
 
         addressToEventService.createAddressToEvent(addressToEvent);
 
-        List<Shift> shifts = eventMapper.INSTANCE.toShifts(dtoEvent.getShifts());
+        List<Shift> shifts = eventMapper.toShifts(dtoEvent.getShifts());
         shifts.forEach(
                 shift -> {
                     shift.setAddressToEvent(addressToEvent);
@@ -153,7 +153,7 @@ public class EventService {
     }
 
     private void updateEventShifts(Event event, EventRequestDto eventDto) {
-        List<Shift> newShifts = eventMapper.INSTANCE.toShifts(eventDto.getShifts());
+        List<Shift> newShifts = eventMapper.toShifts(eventDto.getShifts());
 
         event.getAddressToEvents()
                 .forEach(
