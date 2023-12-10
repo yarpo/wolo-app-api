@@ -85,6 +85,7 @@ public interface EventMapper {
         EventResponseDetailsDto eventResponseDto = new EventResponseDetailsDto();
         eventResponseDto.setName(event.getName());
         eventResponseDto.setOrganisationId(event.getOrganisation().getId());
+        eventResponseDto.setOrganisationName(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
         eventResponseDto.setDescription(event.getDescription());
         eventResponseDto.setCategories(
@@ -94,7 +95,7 @@ public interface EventMapper {
         Address address = event.getAddressToEvents().get(0).getAddress();
         eventResponseDto.setStreet(address.getStreet());
         eventResponseDto.setHomeNum(address.getHomeNum());
-        eventResponseDto.setDistrictId(address.getDistrict().getId());
+        eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setAddressDescription(address.getAddressDescription());
         eventResponseDto.setImageUrl(event.getImageUrl());
         List<ShiftDto> shifts =
