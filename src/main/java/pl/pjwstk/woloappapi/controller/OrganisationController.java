@@ -1,20 +1,17 @@
 package pl.pjwstk.woloappapi.controller;
 
 import lombok.AllArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.OrganisationService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor
@@ -60,7 +57,7 @@ public class OrganisationController {
         List<Event> events = organisationService.getEventsByOrganisation(id);
         List<EventResponseDto> eventDtos =
                 events.stream()
-                        .map(eventMapper.INSTANCE::toEventResponseDto)
+                        .map(eventMapper::toEventResponseDto)
                         .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
