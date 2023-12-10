@@ -41,6 +41,10 @@ Run the Database and Backend
   docker-compose --env-file .env --profile standalone up
 ```
 
+Run with clear before
+```bash
+  .\RemoveAndUp
+```
 ## Running with Docker & Gradle
 
 Start Docker Desktop
