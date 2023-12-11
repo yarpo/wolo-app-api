@@ -1,15 +1,13 @@
 package pl.pjwstk.woloappapi.utils;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
-
-import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.Address;
+import pl.pjwstk.woloappapi.model.Organisation;
+import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
+import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
 
 @Mapper(componentModel = "spring")
 public interface OrganisationMapper {
-
-    OrganisationMapper INSTANCE = Mappers.getMapper(OrganisationMapper.class);
-
     default OrganisationResponseDto toOrganisationResponseDto(Organisation organisation) {
         OrganisationResponseDto organisationResponseDto = new OrganisationResponseDto();
         organisationResponseDto.setName(organisation.getName());

@@ -26,7 +26,7 @@ public class OrganisationController {
         List<Organisation> organisations = organisationService.getAllOrganisations();
         List<OrganisationResponseDto> organisationDtos =
                 organisations.stream()
-                        .map(organisationMapper.INSTANCE::toOrganisationResponseDto)
+                        .map(organisationMapper::toOrganisationResponseDto)
                         .collect(Collectors.toList());
         return new ResponseEntity<>(organisationDtos, HttpStatus.OK);
     }
@@ -35,7 +35,7 @@ public class OrganisationController {
     public ResponseEntity<OrganisationResponseDto> getOrganisationById(@PathVariable Long id) {
         Organisation organisation = organisationService.getOrganisationById(id);
         OrganisationResponseDto organisationDto =
-                organisationMapper.INSTANCE.toOrganisationResponseDto(organisation);
+                organisationMapper.toOrganisationResponseDto(organisation);
         return new ResponseEntity<>(organisationDto, HttpStatus.OK);
     }
 
