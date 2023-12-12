@@ -45,6 +45,10 @@ public interface EventMapper {
         eventResponseDto.setName(event.getName());
         eventResponseDto.setOrganisation(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
+        eventResponseDto.setCategories(
+                event.getCategories().stream()
+                        .map(categoryToEvent -> categoryToEvent.getCategory().getName())
+                        .collect(Collectors.toList()));
         Address address = event.getAddressToEvents().get(0).getAddress();
         eventResponseDto.setStreet(address.getStreet());
         eventResponseDto.setAddressDescription(address.getAddressDescription());

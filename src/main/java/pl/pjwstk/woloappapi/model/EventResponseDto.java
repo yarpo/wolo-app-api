@@ -23,6 +23,8 @@ public class EventResponseDto {
 
     private String street;
 
+    private List<String> categories;
+
     private String homeNum;
 
     private String district;
