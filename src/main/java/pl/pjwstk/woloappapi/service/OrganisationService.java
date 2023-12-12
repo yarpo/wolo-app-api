@@ -40,7 +40,7 @@ public class OrganisationService {
         Organisation organisation = organisationMapper.toOrganisation(organisationDto);
         address.setDistrict(district);
         organisation.setAddress(address);
-        Optional<User> user = userRepository.findById(organisationDto.getModeratorId());
+        Optional<UserEntity> user = userRepository.findById(organisationDto.getModeratorId());
         user.ifPresent(organisation::setModerator);
         organisationRepository.save(organisation);
     }

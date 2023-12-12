@@ -20,6 +20,6 @@ public class Role {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "role")
-    private List<User> users = new ArrayList<>();
+    @OneToMany(mappedBy = "role") //TODO change many to many, fetch type eager, cascade all
+    private List<UserEntity> userEntities = new ArrayList<>();
 }

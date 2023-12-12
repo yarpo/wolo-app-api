@@ -16,7 +16,7 @@ public class ShiftToUser {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    private UserEntity userEntity;
 
     @ManyToOne
     @JoinColumn(name = "shift_id", referencedColumnName = "id")
