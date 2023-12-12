@@ -1,32 +1,29 @@
 package pl.pjwstk.woloappapi;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
+import org.mapstruct.factory.Mappers;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.Address;
 import pl.pjwstk.woloappapi.model.Organisation;
 import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
 import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
-import pl.pjwstk.woloappapi.service.AddressService;
-import pl.pjwstk.woloappapi.service.DistrictService;
-import pl.pjwstk.woloappapi.service.OrganisationService;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @ExtendWith(MockitoExtension.class)
 public class OrganisationMapperTests {
+    private OrganisationMapper createOrganisationMapper() {
+        return Mappers.getMapper(OrganisationMapper.class);
+    }
 
     @Test
     public void testToOrganisationResponseDto() {
-        OrganisationMapper organisationMapper = OrganisationMapper.INSTANCE;
+        // Given
+        OrganisationMapper organisationMapper = createOrganisationMapper();
         Organisation organisation = new Organisation();
         organisation.setName("Test Organisation");
         organisation.setDescription("Test Description");
@@ -39,8 +36,10 @@ public class OrganisationMapperTests {
         organisation.setAddress(address);
         organisation.setLogoUrl("http://example.com/logo");
 
+        // When
         OrganisationResponseDto responseDto = organisationMapper.toOrganisationResponseDto(organisation);
 
+        // Then
         assertEquals("Test Organisation", responseDto.getName());
         assertEquals("Test Description", responseDto.getDescription());
         assertEquals("test@example.com", responseDto.getEmail());
@@ -53,7 +52,8 @@ public class OrganisationMapperTests {
 
     @Test
     public void testToOrganisation() {
-        OrganisationMapper organisationMapper = OrganisationMapper.INSTANCE;
+        // Given
+        OrganisationMapper organisationMapper = createOrganisationMapper();
         OrganisationRequestDto requestDto = new OrganisationRequestDto();
         requestDto.setName("Test Organisation");
         requestDto.setDescription("Test Description");
@@ -61,27 +61,32 @@ public class OrganisationMapperTests {
         requestDto.setPhoneNumber("123456789");
         requestDto.setLogoUrl("http://example.com/logo");
 
+        // When
         Organisation organisation = organisationMapper.toOrganisation(requestDto);
 
+        // Then
         assertEquals("Test Organisation", organisation.getName());
         assertEquals("Test Description", organisation.getDescription());
         assertEquals("test@example.com", organisation.getEmail());
         assertEquals("123456789", organisation.getPhoneNumber());
-        assertFalse(organisation.isApproved());
+        assertFalse(organisation.isApproved()); // Assuming this defaults to false
         assertEquals("http://example.com/logo", organisation.getLogoUrl());
     }
 
 
     @Test
     public void testToAddress() {
-        OrganisationMapper organisationMapper = OrganisationMapper.INSTANCE;
+        // Given
+        OrganisationMapper organisationMapper = createOrganisationMapper();
         OrganisationRequestDto requestDto = new OrganisationRequestDto();
         requestDto.setStreet("Test Street");
         requestDto.setHomeNum("123");
         requestDto.setAddressDescription("Test Address");
 
+        // When
         Address address = organisationMapper.toAddress(requestDto);
 
+        // Then
         assertEquals("Test Street", address.getStreet());
         assertEquals("123", address.getHomeNum());
         assertEquals("Test Address", address.getAddressDescription());
