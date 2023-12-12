@@ -22,7 +22,6 @@ public class OrganisationMapperTests {
 
     @Test
     public void testToOrganisationResponseDto() {
-        // Given
         OrganisationMapper organisationMapper = createOrganisationMapper();
         Organisation organisation = new Organisation();
         organisation.setName("Test Organisation");
@@ -36,10 +35,8 @@ public class OrganisationMapperTests {
         organisation.setAddress(address);
         organisation.setLogoUrl("http://example.com/logo");
 
-        // When
         OrganisationResponseDto responseDto = organisationMapper.toOrganisationResponseDto(organisation);
 
-        // Then
         assertEquals("Test Organisation", responseDto.getName());
         assertEquals("Test Description", responseDto.getDescription());
         assertEquals("test@example.com", responseDto.getEmail());
@@ -52,7 +49,6 @@ public class OrganisationMapperTests {
 
     @Test
     public void testToOrganisation() {
-        // Given
         OrganisationMapper organisationMapper = createOrganisationMapper();
         OrganisationRequestDto requestDto = new OrganisationRequestDto();
         requestDto.setName("Test Organisation");
@@ -61,32 +57,27 @@ public class OrganisationMapperTests {
         requestDto.setPhoneNumber("123456789");
         requestDto.setLogoUrl("http://example.com/logo");
 
-        // When
         Organisation organisation = organisationMapper.toOrganisation(requestDto);
 
-        // Then
         assertEquals("Test Organisation", organisation.getName());
         assertEquals("Test Description", organisation.getDescription());
         assertEquals("test@example.com", organisation.getEmail());
         assertEquals("123456789", organisation.getPhoneNumber());
-        assertFalse(organisation.isApproved()); // Assuming this defaults to false
+        assertFalse(organisation.isApproved());
         assertEquals("http://example.com/logo", organisation.getLogoUrl());
     }
 
 
     @Test
     public void testToAddress() {
-        // Given
         OrganisationMapper organisationMapper = createOrganisationMapper();
         OrganisationRequestDto requestDto = new OrganisationRequestDto();
         requestDto.setStreet("Test Street");
         requestDto.setHomeNum("123");
         requestDto.setAddressDescription("Test Address");
 
-        // When
         Address address = organisationMapper.toAddress(requestDto);
 
-        // Then
         assertEquals("Test Street", address.getStreet());
         assertEquals("123", address.getHomeNum());
         assertEquals("Test Address", address.getAddressDescription());
