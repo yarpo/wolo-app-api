@@ -111,7 +111,6 @@ public class EventMapperTests {
 
     @Test
     public void testToEventResponseDtoStructure() {
-        // Given
         EventMapper eventMapper = createEventMapper();
         Event event = new Event();
         event.setId(1L);
@@ -188,7 +187,6 @@ public class EventMapperTests {
 
     @Test
     public void testMapShiftListToShiftDtoList() {
-        // Given
         EventMapper eventMapper = createEventMapper();
         List<Shift> shiftList = new ArrayList<>();
         Shift shift1 = new Shift();
@@ -251,7 +249,6 @@ public class EventMapperTests {
 
     @Test
     public void testToEventResponseDetailsDto() {
-        // Given
         EventMapper eventMapper = createEventMapper();
         Event event = new Event();
         event.setName("Test Event");
