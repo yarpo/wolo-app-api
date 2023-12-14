@@ -1,17 +1,16 @@
 package pl.pjwstk.woloappapi.controller;
 
 import lombok.AllArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import pl.pjwstk.woloappapi.model.District;
+import pl.pjwstk.woloappapi.model.DistrictDto;
 import pl.pjwstk.woloappapi.service.DistrictService;
-
-import java.util.List;
+import pl.pjwstk.woloappapi.utils.DictionariesMapper;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -19,16 +18,21 @@ import javax.validation.Valid;
 public class DistrictController {
 
     private final DistrictService districtService;
+    private final DictionariesMapper dictionariesMapper;
 
     @GetMapping()
-    public ResponseEntity<List<District>> getDistricts() {
+    public ResponseEntity<List<DistrictDto>> getDistricts() {
         List<District> districts = districtService.getAllDistricts();
-        return new ResponseEntity<>(districts, HttpStatus.OK);
+        List<DistrictDto> districtDtos =
+                districts.stream().map(dictionariesMapper::toDistrictDto).toList();
+        return new ResponseEntity<>(districtDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<District> getDistrictById(@PathVariable Long id) {
-        return new ResponseEntity<>(districtService.getDistrictById(id), HttpStatus.OK);
+    public ResponseEntity<DistrictDto> getDistrictById(@PathVariable Long id) {
+        DistrictDto districtDto = dictionariesMapper
+                .toDistrictDto(districtService.getDistrictById(id));
+        return new ResponseEntity<>(districtDto, HttpStatus.OK);
     }
 
     @PostMapping("/add")

@@ -36,8 +36,8 @@ public class OrganisationService {
 
     public void createOrganisation(OrganisationRequestDto organisationDto) {
         District district = districtService.getDistrictById(organisationDto.getDistrictId());
-        Address address = organisationMapper.INSTANCE.toAddress(organisationDto);
-        Organisation organisation = organisationMapper.INSTANCE.toOrganisation(organisationDto);
+        Address address = organisationMapper.toAddress(organisationDto);
+        Organisation organisation = organisationMapper.toOrganisation(organisationDto);
         address.setDistrict(district);
         organisation.setAddress(address);
         Optional<User> user = userRepository.findById(organisationDto.getModeratorId());

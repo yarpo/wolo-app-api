@@ -1,20 +1,17 @@
 package pl.pjwstk.woloappapi.controller;
 
 import lombok.AllArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.OrganisationService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor
@@ -29,7 +26,7 @@ public class OrganisationController {
         List<Organisation> organisations = organisationService.getAllOrganisations();
         List<OrganisationResponseDto> organisationDtos =
                 organisations.stream()
-                        .map(organisationMapper.INSTANCE::toOrganisationResponseDto)
+                        .map(organisationMapper::toOrganisationResponseDto)
                         .collect(Collectors.toList());
         return new ResponseEntity<>(organisationDtos, HttpStatus.OK);
     }
@@ -38,7 +35,7 @@ public class OrganisationController {
     public ResponseEntity<OrganisationResponseDto> getOrganisationById(@PathVariable Long id) {
         Organisation organisation = organisationService.getOrganisationById(id);
         OrganisationResponseDto organisationDto =
-                organisationMapper.INSTANCE.toOrganisationResponseDto(organisation);
+                organisationMapper.toOrganisationResponseDto(organisation);
         return new ResponseEntity<>(organisationDto, HttpStatus.OK);
     }
 
@@ -60,7 +57,7 @@ public class OrganisationController {
         List<Event> events = organisationService.getEventsByOrganisation(id);
         List<EventResponseDto> eventDtos =
                 events.stream()
-                        .map(eventMapper.INSTANCE::toEventResponseDto)
+                        .map(eventMapper::toEventResponseDto)
                         .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }

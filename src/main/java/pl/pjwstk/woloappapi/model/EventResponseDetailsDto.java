@@ -17,6 +17,8 @@ public class EventResponseDetailsDto {
 
     private Long organisationId;
 
+    private String organisationName;
+
     private boolean isPeselVerificationRequired;
 
     private boolean isAgreementNeeded;
@@ -31,7 +33,7 @@ public class EventResponseDetailsDto {
 
     private String homeNum;
 
-    private Long districtId;
+    private String district;
 
     private String imageUrl;
 
