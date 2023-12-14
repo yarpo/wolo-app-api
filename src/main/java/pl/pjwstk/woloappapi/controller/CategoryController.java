@@ -1,17 +1,16 @@
 package pl.pjwstk.woloappapi.controller;
 
 import lombok.AllArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import pl.pjwstk.woloappapi.model.Category;
+import pl.pjwstk.woloappapi.model.CategoryDto;
 import pl.pjwstk.woloappapi.service.CategoryService;
-
-import java.util.List;
+import pl.pjwstk.woloappapi.utils.DictionariesMapper;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -19,16 +18,21 @@ import javax.validation.Valid;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final DictionariesMapper dictionariesMapper;
 
     @GetMapping()
-    public ResponseEntity<List<Category>> getCategories() {
+    public ResponseEntity<List<CategoryDto>> getCategories() {
         List<Category> categories = categoryService.getAllCategories();
-        return new ResponseEntity<>(categories, HttpStatus.OK);
+        List<CategoryDto> categoryDtos =
+                categories.stream().map(dictionariesMapper::toCategoryDto).toList();
+        return new ResponseEntity<>(categoryDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
-        return new ResponseEntity<>(categoryService.getCategoryById(id), HttpStatus.OK);
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
+        CategoryDto categoryDto = dictionariesMapper
+                .toCategoryDto(categoryService.getCategoryById(id));
+        return new ResponseEntity<>(categoryDto, HttpStatus.OK);
     }
 
     @PostMapping("/add")
