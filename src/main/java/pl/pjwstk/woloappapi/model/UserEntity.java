@@ -55,7 +55,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "moderator", cascade = CascadeType.ALL)
     private List<Organisation> organisations;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userEntity")
     private List<ShiftToUser> shifts = new ArrayList<>();
 
     @Column(name = "password_hash", nullable = false)

@@ -15,23 +15,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private JwtAuthEntryPoint authEntryPoint;
-    private CustomUserDetailsService userDetailsService;
+
+    private final CustomUserDetailsService userDetailsService;
 
 
     @Autowired
-    public SecurityConfig(JwtAuthEntryPoint authEntryPoint, CustomUserDetailsService userDetailsService, JwtAuthEntryPoint) {
-        this.authEntryPoint = authEntryPoint;
+    public SecurityConfig(CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
-
-    @Autowired
-    public PasswordEncoder passwordEncoder;
 
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
@@ -42,15 +37,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .anyRequest().permitAll()
-
                 )
-                .csrf().disabled()
-                .authenticationEntryPoint(authEntryPoint)
-                .and
-                .sessionManagment()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .httpBasic();
+                .csrf().disable()
+                .formLogin(formlogin -> formlogin
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/home")
+                        .failureUrl("/health"))
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
         return http.build();
     }
@@ -64,4 +58,10 @@ public class SecurityConfig {
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    //TODO DELETE IF STATEFULL
+    //@Bean
+    //public JWTAuthenticationFilter jwtAuthenticationFilter(){
+    //  return new JWTAuthenticationFilter();
+    //}
+
 }
