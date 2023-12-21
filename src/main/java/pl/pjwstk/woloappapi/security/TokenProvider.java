@@ -25,7 +25,6 @@ public class TokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + tokenConfig.getTokenExpirationMsec());
 
-
         return Jwts.builder()
                 .setSubject(Long.toString(userPrincipal.getId()))
                 .setIssuedAt(new Date())
@@ -33,6 +32,7 @@ public class TokenProvider {
                 .signWith(Keys.hmacShaKeyFor(tokenConfig.getTokenSecret().getBytes()), SignatureAlgorithm.HS512)
                 .compact();
     }
+    
     public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(tokenConfig.getTokenSecret().getBytes()))

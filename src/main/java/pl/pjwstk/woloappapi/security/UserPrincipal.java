@@ -62,6 +62,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     public String getUsername() {
         return email;
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
