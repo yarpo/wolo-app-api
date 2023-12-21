@@ -32,9 +32,9 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         switch (role) {
-            case "User" -> authorities.add(UserRole.USER);
-            case "Organization" -> authorities.add(UserRole.ORGANIZATION);
-            case "Admin" -> authorities.add(UserRole.ADMIN);
+            case "USER" -> authorities.add(UserRole.USER);
+            case "ORGANIZATION" -> authorities.add(UserRole.ORGANIZATION);
+            case "ADMIN" -> authorities.add(UserRole.ADMIN);
             default -> throw new IllegalArgumentException("Unknown role: " + role);
         }
         return authorities;
