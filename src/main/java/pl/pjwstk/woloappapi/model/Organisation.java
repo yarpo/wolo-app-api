@@ -37,7 +37,7 @@ public class Organisation {
 
     @ManyToOne
     @JoinColumn(name = "moderator_id", nullable = false)
-    private User moderator;
+    private UserEntity moderator;
 
     @Column(name = "logo_url")
     private String logoUrl;

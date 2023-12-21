@@ -6,10 +6,10 @@ INSERT INTO address ( street, home_num, district_id, description) VALUES
                                                                       ( 'ul. Słoneczna', '5', 1, 'Biuro PJATK'),
                                                                       ( 'ul. Parkowa', '7', 3, 'Wejście przez zieloną bramę, na domofonie #31');
 
-INSERT INTO "user" ( firstname, lastname, email, phone_number, role_id, is_pesel_verified, is_agreement_signed, is_adult,password_hash,salt) VALUES
-                                                                                                                                                 ( 'Jan', 'Kowalski', 'jan.kowalski@example.com', '123456789', 3, true, true, true, 'password', 'salt'),
-                                                                                                                                                 ( 'Anna', 'Nowak', 'anna.nowak@example.com', '987654321', 3, false, true, true, 'password', 'salt'),
-                                                                                                                                                 ( 'Piotr', 'Wójcik', 'piotr.wojcik@example.com', '456789123', 2, true, false,false, 'password', 'salt');
+INSERT INTO "user" ( firstname, lastname, email, phone_number, role_id, is_pesel_verified, is_agreement_signed, is_adult, password) VALUES
+                                                                                                                                                 ( 'Jan', 'Kowalski', 'jan.kowalski@example.com', '123456789', 3, true, true, true, 'password'),
+                                                                                                                                                 ( 'Anna', 'Nowak', 'anna.nowak@example.com', '987654321', 3, false, true, true, 'password'),
+                                                                                                                                                 ( 'Piotr', 'Wójcik', 'piotr.wojcik@example.com', '456789123', 2, true, false,false, 'password');
 
 INSERT INTO organisation ( "name", description, email, phone_num, address_id, is_approved, moderator_id, logo_url) VALUES
                                                                                                                        ( 'Pomorska Fundacja Bracia Mniejsi', 'Pomagamy zwierzakom).', 'info@sprintclub.com', '123456789', 1, true, 1, 'https://upload.wikimedia.org/wikipedia/commons/2/25/Intel_logo_%282006-2020%29.jpg'),

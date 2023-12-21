@@ -85,8 +85,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     is_pesel_verified BOOLEAN NOT NULL,
     is_agreement_signed BOOLEAN NOT NULL,
     is_adult BOOLEAN NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    salt VARCHAR(50) NOT NULL
+    password VARCHAR(255) NOT NULL
     );
 -- Table: category_to_event
 CREATE TABLE IF NOT EXISTS category_to_event (
