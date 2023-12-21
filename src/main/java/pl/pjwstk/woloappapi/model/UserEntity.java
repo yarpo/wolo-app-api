@@ -60,15 +60,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<ShiftToUser> shifts = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Credential credential;
+    @Column(name = "password", nullable = false)
+    private String password;
 
-    public String getPassword() {
-
-        return credential.getPassword();
-    }
-    public void setPassword(String password){
-        credential.setPassword(password);
-    }
 }

@@ -3,13 +3,12 @@ package pl.pjwstk.woloappapi.security;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import pl.pjwstk.woloappapi.model.UserEntity;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +28,21 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         this.authorities = authorities;
     }
 
+    public static List<GrantedAuthority> convertStringToAuthorities(String role) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        switch (role) {
+            case "User" -> authorities.add(UserRole.USER);
+            case "Organization" -> authorities.add(UserRole.ORGANIZATION);
+            case "Admin" -> authorities.add(UserRole.ADMIN);
+            default -> throw new IllegalArgumentException("Unknown role: " + role);
+        }
+        return authorities;
+    }
+
     public static UserPrincipal create(UserEntity user) {
-        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getName()));
+
+        List<GrantedAuthority> authorities = convertStringToAuthorities(user.getRole().getName());
 
         return new UserPrincipal(
                 user.getId(),
@@ -50,7 +62,6 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     public String getUsername() {
         return email;
     }
-    //TODO expand to return this stuff
     @Override
     public boolean isAccountNonExpired() {
         return true;

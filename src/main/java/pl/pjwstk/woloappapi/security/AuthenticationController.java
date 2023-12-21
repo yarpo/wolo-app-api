@@ -1,11 +1,11 @@
 package pl.pjwstk.woloappapi.security;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,22 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.pjwstk.woloappapi.model.Organisation;
-import pl.pjwstk.woloappapi.model.Role;
-import pl.pjwstk.woloappapi.model.ShiftToUser;
 import pl.pjwstk.woloappapi.model.UserEntity;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @AllArgsConstructor

@@ -6,20 +6,13 @@ INSERT INTO address ( street, home_num, district_id, description) VALUES
                                                                       ( 'ul. Słoneczna', '5', 1, 'Biuro PJATK'),
                                                                       ( 'ul. Parkowa', '7', 3, 'Wejście przez zieloną bramę, na domofonie #31');
 
-INSERT INTO "user" ( firstname, lastname, email, phone_number, role_id, is_pesel_verified, is_agreement_signed, is_adult) VALUES
-                                                                                                                                                 ( 'Jan', 'Kowalski', 'jan.kowalski@example.com', '123456789', 3, true, true, true),
-                                                                                                                                                 ( 'Anna', 'Nowak', 'anna.nowak@example.com', '987654321', 3, false, true, true),
-                                                                                                                                                 ( 'Piotr', 'Wójcik', 'piotr.wojcik@example.com', '456789123', 2, true, false,false);
+INSERT INTO "user" ( firstname, lastname, email, phone_number, role_id, is_pesel_verified, is_agreement_signed, is_adult, password) VALUES
+                                                                                                                                                 ( 'Jan', 'Kowalski', 'jan.kowalski@example.com', '123456789', 3, true, true, true, '$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi'),
+                                                                                                                                                 ( 'Anna', 'Nowak', 'anna.nowak@example.com', '987654321', 3, false, true, true, '$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi'),
+                                                                                                                                                 ( 'Piotr', 'Wójcik', 'piotr.wojcik@example.com', '456789123', 2, true, false, false, '$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi');
 
-INSERT INTO credential (password) VALUES
-    ('$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi'),
-    ('$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi'),
-    ('$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi');
 
-INSERT INTO user_to_credential (user_id,credential_id) VALUES
-                                                           (1,1),
-                                                           (2,2),
-                                                           (3,3);
+
 INSERT INTO organisation ( "name", description, email, phone_num, address_id, is_approved, moderator_id, logo_url) VALUES
                                                                                                                        ( 'Pomorska Fundacja Bracia Mniejsi', 'Pomagamy zwierzakom).', 'info@sprintclub.com', '123456789', 1, true, 1, 'https://upload.wikimedia.org/wikipedia/commons/2/25/Intel_logo_%282006-2020%29.jpg'),
                                                                                                                        ( 'Centrum Wolontariatu w Gdańsku', 'Regionalne Centrum Wolontariatu w Gdańsku powstało w 1994r. Od 2001 roku jesteśmy samodzielnym stowarzyszeniem działającym w ramach ogólnopolskiej Federacji Centrów Wolontariatu', 'info@nowehoryzontygallery.com', '987654321', 2, true, 2, 'https://img.freepik.com/premium-wektory/streszczenie-kolorowe-logo-projektu_650075-1506.jpg'),

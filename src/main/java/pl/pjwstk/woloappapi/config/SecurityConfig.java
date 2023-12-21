@@ -23,6 +23,7 @@ import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.security.CustomUserDetailsService;
 import pl.pjwstk.woloappapi.security.RestAuthenticationEntryPoint;
 import pl.pjwstk.woloappapi.security.TokenAuthenticationFilter;
+import pl.pjwstk.woloappapi.security.UserRole;
 import pl.pjwstk.woloappapi.security.oauth2.CustomOAuth2UserService;
 
 @Configuration
@@ -44,9 +45,9 @@ public class SecurityConfig {
                     auth.requestMatchers("/").permitAll();
                     auth.requestMatchers("/auth/login").permitAll();
                     auth.requestMatchers("/auth/signup").permitAll();
-                    auth.requestMatchers("/?error").permitAll();
-                    auth.requestMatchers("/health").hasAuthority("Użytkownik");
-                    auth.anyRequest().hasAuthority("Administrator");
+                    auth.requestMatchers("/error").permitAll();
+                    auth.requestMatchers("/health").hasAuthority(UserRole.USER.name());
+                    auth.anyRequest().hasAuthority(UserRole.ADMIN.name());
                 })
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(Customizer.withDefaults())

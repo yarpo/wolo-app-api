@@ -25,7 +25,7 @@ public class RoleController {
         List<Role> Roles = roleService.getAllRoles();
         return new ResponseEntity<>(Roles, HttpStatus.OK);
     }
-
+/*
     @GetMapping("/{id}")
     public ResponseEntity<Role> getRoleById(@PathVariable Long id) {
         return new ResponseEntity<>(roleService.getRoleById(id), HttpStatus.OK);
@@ -48,5 +48,5 @@ public class RoleController {
             @Valid @RequestBody Role role, @PathVariable Long id) {
         roleService.updateRole(role, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+    }*/
 }
