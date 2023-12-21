@@ -70,12 +70,10 @@ public class AuthenticationController {
 
         user.setPeselVerified(false);
 
-        user.setPeselVerified(false);
-
         user.setAdult(true);
 
         user.setEmail(signUpRequest.getEmail());
-        
+
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 
         UserEntity result = userRepository.save(user);
