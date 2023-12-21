@@ -16,8 +16,7 @@ import javax.validation.constraints.Size;
 @Data
 @Table(name = "user")
 public class UserEntity {
-    //TODO expand to include UserDetails variables: boolean isAccountNonExpired, boolean isAccountNonLocked(), boolean isCredentialsNonExpired(), boolean isEnabled()
-    //as well as setProvider
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
