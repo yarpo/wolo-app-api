@@ -36,7 +36,6 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
 
 
-    // Filter Chain
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -51,23 +50,23 @@ public class SecurityConfig {
                 })
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(Customizer.withDefaults())
-                .exceptionHandling(ex ->{
+                .exceptionHandling(ex -> {
                     ex.authenticationEntryPoint(new RestAuthenticationEntryPoint());
                 })
                 .oauth2Login(Customizer.withDefaults())
                 .sessionManagement(s -> {
-                        s.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                    s.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
                 .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // Beans
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
         return new TokenAuthenticationFilter();
     }
+
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService() {
         return new CustomOAuth2UserService();

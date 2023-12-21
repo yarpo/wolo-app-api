@@ -36,7 +36,9 @@ public class AuthenticationController {
     private TokenProvider tokenProvider;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -52,7 +54,7 @@ public class AuthenticationController {
     }
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new BadRequestException("Email address already in use.");
         }
 
@@ -73,7 +75,7 @@ public class AuthenticationController {
         user.setAdult(true);
 
         user.setEmail(signUpRequest.getEmail());
-        //user.setProvider(AuthProvider.local);
+        
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 
         UserEntity result = userRepository.save(user);
