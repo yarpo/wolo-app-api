@@ -61,7 +61,7 @@ public class UserService {
         if (userEntity != null) {
             return userEntity.getShifts().size();
         } else {
-            return 0; // lub można zwrócić odpowiedni kod błędu
+            return 0;
         }
     }
 }

@@ -84,14 +84,23 @@ CREATE TABLE IF NOT EXISTS "user" (
     role_id BIGINT NOT NULL,
     is_pesel_verified BOOLEAN NOT NULL,
     is_agreement_signed BOOLEAN NOT NULL,
-    is_adult BOOLEAN NOT NULL,
-    password VARCHAR(255) NOT NULL
+    is_adult BOOLEAN NOT NULL
     );
 -- Table: category_to_event
 CREATE TABLE IF NOT EXISTS category_to_event (
                                                  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                                  category_id BIGINT NOT NULL,
                                                  event_id BIGINT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS credential (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    password varchar(255) NOT NULL
+
+);
+CREATE TABLE IF NOT EXISTS user_to_credential(
+                                                 id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                                                 user_id BIGINT NOT NULL,
+                                                 credential_id BIGINT NOT NULL
 );
 
 --changeset woloapp:2
@@ -152,12 +161,20 @@ ALTER TABLE category_to_event
     ADD CONSTRAINT fk_category_to_event_event_id
         FOREIGN KEY (event_id)
             REFERENCES event (id);
+-- Tabela: user_to_credential
+ALTER TABLE user_to_credential
+    ADD CONSTRAINT fk_user_to_credential_user_id
+        FOREIGN KEY (user_id)
+            REFERENCES "user" (id),
+    ADD CONSTRAINT fk_user_to_credential_credential_id
+        FOREIGN KEY (credential_id)
+            REFERENCES credential (id);
 
 
 INSERT INTO role ("name") VALUES
-                              ( 'Administrator'),
-                              ( 'Lider'),
-                              ( 'Użytkownik');
+                              ( 'Admin'),
+                              ( 'Organization'),
+                              ( 'User');
 
 INSERT INTO district ( "name", city) VALUES
                                          ( 'Centrum', 'Warszawa'),
