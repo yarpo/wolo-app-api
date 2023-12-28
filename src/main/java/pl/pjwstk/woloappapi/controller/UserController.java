@@ -6,12 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import pl.pjwstk.woloappapi.model.Role;
-import pl.pjwstk.woloappapi.model.User;
+import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.UserService;
+import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -19,21 +20,28 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @GetMapping()
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<UserResponseDto>> getUsers() {
         List<User> Users = userService.getAllUsers();
-        return new ResponseEntity<>(Users, HttpStatus.OK);
+        List<UserResponseDto> userResponseDtos = Users.stream()
+                .map(userMapper::toUserResponseDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(userResponseDtos, HttpStatus.OK);
     }
 
+
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        UserResponseDto userResponseDto= userMapper.toUserResponseDto(user);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addUser(@RequestBody User User) {
-        userService.createUser(User);
+    public ResponseEntity<HttpStatus> addUser(@RequestBody UserRequestDto userRequestDto) {
+        userService.createUser(userRequestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -44,9 +52,9 @@ public class UserController {
     }
     @PutMapping("/{id}/edit")
     public ResponseEntity<Object> editUser(
-            @Valid @RequestBody User user, @PathVariable Long id) {
+            @Valid @RequestBody UserRequestDto userRequestDto, @PathVariable Long id) {
         try {
-            User updatedUser = userService.updateUser(user, id);
+            User updatedUser = userService.updateUser(userRequestDto, id);
             return ResponseEntity.ok(updatedUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

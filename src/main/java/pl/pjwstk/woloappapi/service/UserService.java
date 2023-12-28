@@ -6,20 +6,25 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import pl.pjwstk.woloappapi.model.Role;
-import pl.pjwstk.woloappapi.model.User;
+import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
+import pl.pjwstk.woloappapi.utils.OrganisationMapper;
+import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Service
 @AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserMapper userMapper;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -30,16 +35,9 @@ public class UserService {
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("User id not found!"));
     }
-
-    public void createUser(User user) {
+    public void createUser(UserRequestDto userDto) {
+        User user = userMapper.toUser(userDto);
         userRepository.save(user);
-    }
-
-    public User updateUser(User user) {
-        if (!userRepository.existsById(user.getId())) {
-            throw new IllegalArgumentException("User with ID " + user.getId() + " does not exist");
-        }
-        return userRepository.save(user);
     }
 
     public void deleteUser(Long id) {
@@ -48,29 +46,25 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
-    @Transactional
-    public User updateUser(@Valid User user, Long id) {
+    public User updateUser(UserRequestDto userRequestDto, Long id) {
 
-        Optional<User> existingUserOptional = userRepository.findById(id);
-        if (existingUserOptional.isEmpty()) {
-            throw new IllegalArgumentException("User with ID " + id + " does not exist");
-        }
+         User user = userRepository.findById(id).orElseThrow(
+                () ->
+                        new IllegalArgumentException(
+                                "User with ID " + id + " does not exist"));
+        updateFieldIfDifferent(user::getFirstname, user::setFirstname, userRequestDto.getFirstname());
+        updateFieldIfDifferent(user::getLastname, user::setLastname, userRequestDto.getLastname());
+        updateFieldIfDifferent(user::getEmail, user::setEmail, userRequestDto.getEmail());
+        updateFieldIfDifferent(user::getPhoneNumber, user::setPhoneNumber, userRequestDto.getPhoneNumber());
+        updateFieldIfDifferent(user::isPeselVerified, user::setPeselVerified, userRequestDto.isPeselVerified());
+        updateFieldIfDifferent(user::isAgreementSigned, user::setAgreementSigned, userRequestDto.isAgreementSigned());
+        Role role = roleRepository.findById(userRequestDto.getRoleDto().getId()).orElse(user.getRole());
+        updateFieldIfDifferent(user::getRole, user::setRole, role);
+        updateFieldIfDifferent(user::isAdult, user::setAdult, userRequestDto.isAdult());
+        updateFieldIfDifferent(user::getPassword_hash, user::setPassword_hash, userRequestDto.getPassword_hash());
+        updateFieldIfDifferent(user::getSalt, user::setSalt, userRequestDto.getSalt());
+        return userRepository.save(user);
 
-
-        User existingUser = existingUserOptional.get();
-        existingUser.setEmail(user.getEmail());
-        existingUser.setFirstname(user.getFirstname());
-        existingUser.setLastname(user.getLastname());
-        existingUser.setAdult(user.isAdult());
-        existingUser.setAgreementSigned(user.isAgreementSigned());
-        existingUser.setPeselVerified(user.isPeselVerified());
-        existingUser.setPassword_hash(user.getPassword_hash());
-        existingUser.setPhoneNumber(user.getPhoneNumber());
-        existingUser.setRole(user.getRole());
-        existingUser.setSalt(user.getSalt());
-
-
-        return userRepository.save(existingUser);
     }
     public List<User> getByRole(Long role) {
         Optional<Role> roleById = roleRepository.findById(role);
@@ -86,7 +80,13 @@ public class UserService {
         if (user != null) {
             return user.getShifts().size();
         } else {
-            return 0; // lub można zwrócić odpowiedni kod błędu
+            return 0;
+        }
+    }
+    private <T> void updateFieldIfDifferent(
+            Supplier<T> currentSupplier, Consumer<T> updateConsumer, T newValue) {
+        if (!Objects.equals(currentSupplier.get(), newValue)) {
+            updateConsumer.accept(newValue);
         }
     }
 }
