@@ -1,5 +1,7 @@
 package pl.pjwstk.woloappapi.service;
 
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -46,7 +48,30 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
+    @Transactional
+    public User updateUser(@Valid User user, Long id) {
 
+        Optional<User> existingUserOptional = userRepository.findById(id);
+        if (existingUserOptional.isEmpty()) {
+            throw new IllegalArgumentException("User with ID " + id + " does not exist");
+        }
+
+
+        User existingUser = existingUserOptional.get();
+        existingUser.setEmail(user.getEmail());
+        existingUser.setFirstname(user.getFirstname());
+        existingUser.setLastname(user.getLastname());
+        existingUser.setAdult(user.isAdult());
+        existingUser.setAgreementSigned(user.isAgreementSigned());
+        existingUser.setPeselVerified(user.isPeselVerified());
+        existingUser.setPassword_hash(user.getPassword_hash());
+        existingUser.setPhoneNumber(user.getPhoneNumber());
+        existingUser.setRole(user.getRole());
+        existingUser.setSalt(user.getSalt());
+
+
+        return userRepository.save(existingUser);
+    }
     public List<User> getByRole(Long role) {
         Optional<Role> roleById = roleRepository.findById(role);
         if (roleById.isEmpty()) {
