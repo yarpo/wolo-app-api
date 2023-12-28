@@ -53,7 +53,6 @@ public class UserService {
             }
         }
 
-
     @Transactional
     public void updateUser(UserRequestDto userDto, Long id) {
          UserEntity user = userRepository.findById(id).orElseThrow(
@@ -68,6 +67,7 @@ public class UserService {
         Role role = roleService.getRoleById(userDto.getRoleId());
         user.setRole(role);
         userRepository.save(user);
+
     }
 
     public int getShiftsCountForUser(Long userId) {
