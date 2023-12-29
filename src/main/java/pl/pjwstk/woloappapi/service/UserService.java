@@ -61,8 +61,6 @@ public class UserService {
         Role role = roleRepository.findById(userRequestDto.getRoleDto().getId()).orElse(user.getRole());
         updateFieldIfDifferent(user::getRole, user::setRole, role);
         updateFieldIfDifferent(user::isAdult, user::setAdult, userRequestDto.isAdult());
-        updateFieldIfDifferent(user::getPassword_hash, user::setPassword_hash, userRequestDto.getPassword_hash());
-        updateFieldIfDifferent(user::getSalt, user::setSalt, userRequestDto.getSalt());
         return userRepository.save(user);
 
     }
