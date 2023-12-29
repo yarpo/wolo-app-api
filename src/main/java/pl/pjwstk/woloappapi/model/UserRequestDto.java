@@ -34,9 +34,6 @@ public class UserRequestDto {
     private boolean isAgreementSigned;
 
     private boolean isAdult;
-    @NotBlank(message = "password is required")
-    private String password_hash;
-    @NotBlank(message = "salt is required")
-    private String salt;
+
 
 }

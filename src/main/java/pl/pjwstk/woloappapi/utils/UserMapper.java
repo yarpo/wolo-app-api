@@ -15,8 +15,7 @@ public interface UserMapper {
             userResponseDto.setPhoneNumber(user.getPhoneNumber());
             userResponseDto.setAgreementSigned(user.isAgreementSigned());
             userResponseDto.setPeselVerified(user.isPeselVerified());
-            Role role = user.getRole();
-            userResponseDto.setRole(role.getName());
+            userResponseDto.setRoleDto(toRoleDto(user.getRole()));
             return userResponseDto;
         }
 
