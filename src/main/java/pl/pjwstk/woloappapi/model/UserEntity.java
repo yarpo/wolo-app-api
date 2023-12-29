@@ -1,5 +1,6 @@
 package pl.pjwstk.woloappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,6 +36,7 @@ public class UserEntity {
 
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
+    @JsonIgnore
     private Role role;
 
     @Column(name = "is_pesel_verified", nullable = false)

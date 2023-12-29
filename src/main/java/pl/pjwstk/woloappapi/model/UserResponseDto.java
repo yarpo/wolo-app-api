@@ -16,7 +16,7 @@ public class UserResponseDto {
     private String lastname;
     private String email;
     private String phoneNumber;
-    private String role;
+    private RoleDto roleDto;
     private boolean isPeselVerified;
     private boolean isAgreementSigned;
     private boolean isAdult;
