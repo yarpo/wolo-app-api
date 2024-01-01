@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
+import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
@@ -24,6 +25,7 @@ import java.util.function.Supplier;
 public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final ShiftToUserRepository shiftToUserRepository;
     private final UserMapper userMapper;
 
     public List<User> getAllUsers() {
@@ -40,12 +42,20 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("User with ID " + id + " does not exist");
+
+
+    @Transactional
+        public void deleteUser(Long userId) {
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                shiftToUserRepository.deleteByUser(user);
+                userRepository.deleteById(userId);
+            } else {
+                throw new IllegalArgumentException("User with ID " + userId + " does not exist");
+            }
         }
-        userRepository.deleteById(id);
-    }
+
     public User updateUser(UserRequestDto userRequestDto, Long id) {
 
          User user = userRepository.findById(id).orElseThrow(
