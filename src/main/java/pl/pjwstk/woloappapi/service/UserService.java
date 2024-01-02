@@ -27,6 +27,7 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final ShiftToUserRepository shiftToUserRepository;
     private final UserMapper userMapper;
+    private final OrganisationService organisationService;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -47,7 +48,13 @@ public class UserService {
     @Transactional
         public void deleteUser(Long userId) {
             Optional<User> userOptional = userRepository.findById(userId);
+
             if (userOptional.isPresent()) {
+                List<Organisation>userOrganisations = organisationService.findOrganisationsByModeratorId(userId);
+                if(!userOrganisations.isEmpty()){
+                    organisationService.removeModeratorFromOrganisations(userOrganisations,userId);
+                }{}
+
                 User user = userOptional.get();
                 shiftToUserRepository.deleteByUser(user);
                 userRepository.deleteById(userId);
