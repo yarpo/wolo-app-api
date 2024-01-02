@@ -34,12 +34,15 @@ public class TokenProvider {
     }
     
     public Long getUserIdFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(tokenConfig.getTokenSecret().getBytes()))
-                .build()
-                .parseClaimsJws(token).getBody();
+        if (validateToken(token)){
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(tokenConfig.getTokenSecret().getBytes()))
+                    .build()
+                    .parseClaimsJws(token).getBody();
 
-        return Long.parseLong(claims.getSubject());
+            return Long.parseLong(claims.getSubject());
+        }
+        return null;
     }
 
     public boolean validateToken(String authToken) {
