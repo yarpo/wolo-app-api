@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS organisation (
     phone_num VARCHAR(9) NOT NULL,
     address_id BIGINT NOT NULL,
     is_approved BOOLEAN NOT NULL,
-    moderator_id BIGINT NOT NULL,
+    moderator_id BIGINT,
     logo_url VARCHAR(255)
     );
 -- Table: event
