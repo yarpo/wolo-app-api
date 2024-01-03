@@ -1,6 +1,8 @@
 package pl.pjwstk.woloappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import lombok.Data;
@@ -42,7 +44,7 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
-    @JsonIgnore
+    @JsonBackReference
     private Role role;
 
     @Column(name = "is_pesel_verified", nullable = false)
@@ -55,9 +57,11 @@ public class User {
     private boolean isAdult;
 
     @OneToMany(mappedBy = "moderator", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Organisation> organisations;
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private List<ShiftToUser> shifts = new ArrayList<>();
 
     @Column(name = "password_hash", nullable = false)

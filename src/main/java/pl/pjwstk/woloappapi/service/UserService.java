@@ -63,6 +63,7 @@ public class UserService {
             }
         }
 
+
     public User updateUser(UserRequestDto userRequestDto, Long id) {
 
          User user = userRepository.findById(id).orElseThrow(
