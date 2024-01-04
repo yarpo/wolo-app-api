@@ -120,7 +120,7 @@ public class OrganisationService {
     }
 
     private void removeModeratorFromOrganisation(Organisation organisation, Long moderatorIdToRemove) {
-        User moderatorToRemove = organisation.getModerator();
+        UserEntity moderatorToRemove = organisation.getModerator();
 
         if (moderatorToRemove != null && moderatorToRemove.getId().equals(moderatorIdToRemove)) {
             organisation.setModerator(null);

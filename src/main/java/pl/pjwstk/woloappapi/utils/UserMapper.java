@@ -5,7 +5,7 @@ import pl.pjwstk.woloappapi.model.*;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-        default UserResponseDto toUserResponseDto(User user) {
+        default UserResponseDto toUserResponseDto(UserEntity user) {
            UserResponseDto userResponseDto = new UserResponseDto();
            userResponseDto.setId(user.getId());
             userResponseDto.setFirstname(user.getFirstname());
@@ -19,8 +19,8 @@ public interface UserMapper {
             return userResponseDto;
         }
 
-        default User toUser(UserRequestDto userRequestDto) {
-            User user = new User();
+        default UserEntity toUser(UserRequestDto userRequestDto) {
+            UserEntity user = new UserEntity();
             user.setFirstname(userRequestDto.getFirstname());
             user.setLastname(userRequestDto.getLastname());
             user.setEmail(userRequestDto.getEmail());
