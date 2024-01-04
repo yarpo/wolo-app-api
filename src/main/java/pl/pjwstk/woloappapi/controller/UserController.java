@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import pl.pjwstk.woloappapi.model.User;
+import pl.pjwstk.woloappapi.model.UserEntity;
 import pl.pjwstk.woloappapi.service.UserService;
 
 import java.util.List;
@@ -19,19 +19,19 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping()
-    public ResponseEntity<List<User>> getUsers() {
-        List<User> Users = userService.getAllUsers();
-        return new ResponseEntity<>(Users, HttpStatus.OK);
+    public ResponseEntity<List<UserEntity>> getUsers() {
+        List<UserEntity> userEntities = userService.getAllUsers();
+        return new ResponseEntity<>(userEntities, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserEntity> getUserById(@PathVariable Long id) {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addUser(@RequestBody User User) {
-        userService.createUser(User);
+    public ResponseEntity<HttpStatus> addUser(@RequestBody UserEntity UserEntity) {
+        userService.createUser(UserEntity);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

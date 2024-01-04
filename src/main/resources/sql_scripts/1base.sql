@@ -76,8 +76,8 @@ CREATE TABLE IF NOT EXISTS shift_to_user (
 );
 -- Table: user
 CREATE TABLE IF NOT EXISTS "user" (
-                                      id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                      firstname VARCHAR(50) NOT NULL,
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    firstname VARCHAR(50) NOT NULL,
     lastname VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     phone_number VARCHAR(9) NOT NULL,
@@ -85,9 +85,9 @@ CREATE TABLE IF NOT EXISTS "user" (
     is_pesel_verified BOOLEAN NOT NULL,
     is_agreement_signed BOOLEAN NOT NULL,
     is_adult BOOLEAN NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    salt VARCHAR(50) NOT NULL
+    password varchar(255) NOT NULL
     );
+
 -- Table: category_to_event
 CREATE TABLE IF NOT EXISTS category_to_event (
                                                  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -126,7 +126,11 @@ ALTER TABLE event
     ADD CONSTRAINT fk_event_organisation_id
         FOREIGN KEY (organisation_id)
             REFERENCES organisation (id);
-
+-- Tabela: user
+ALTER TABLE "user"
+    ADD CONSTRAINT fk_user_role_id
+        FOREIGN KEY (role_id)
+            REFERENCES role (id);
 -- Tabela: shift
 ALTER TABLE shift
     ADD CONSTRAINT fk_shift_address_to_event_id
@@ -140,11 +144,7 @@ ALTER TABLE shift_to_user
     ADD CONSTRAINT fk_shift_to_user_shift_id
         FOREIGN KEY (shift_id)
             REFERENCES shift (id);
--- Tabela: user
-ALTER TABLE "user"
-    ADD CONSTRAINT fk_user_role_id
-        FOREIGN KEY (role_id)
-            REFERENCES role (id);
+
 -- Tabela: category_to_event
 ALTER TABLE category_to_event
     ADD CONSTRAINT fk_category_to_event_category_id
@@ -155,10 +155,11 @@ ALTER TABLE category_to_event
             REFERENCES event (id);
 
 
+
 INSERT INTO role ("name") VALUES
-                              ( 'Administrator'),
-                              ( 'Lider'),
-                              ( 'Użytkownik');
+                              ( 'ADMIN'),
+                              ( 'ORGANIZATION'),
+                              ( 'USER');
 
 INSERT INTO district ( "name", city) VALUES
                                          ( 'Centrum', 'Warszawa'),

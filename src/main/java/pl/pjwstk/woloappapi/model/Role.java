@@ -21,5 +21,5 @@ public class Role {
     private String name;
 
     @OneToMany(mappedBy = "role")
-    private List<User> users = new ArrayList<>();
+    private List<UserEntity> userEntities = new ArrayList<>();
 }
