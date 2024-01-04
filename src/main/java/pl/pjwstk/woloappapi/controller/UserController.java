@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.UserMapper;
@@ -24,17 +25,18 @@ public class UserController {
 
     @GetMapping()
     public ResponseEntity<List<UserResponseDto>> getUsers() {
-        List<User> Users = userService.getAllUsers();
+        List<UserEntity> Users = userService.getAllUsers();
         List<UserResponseDto> userResponseDtos = Users.stream()
                 .map(userMapper::toUserResponseDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(userResponseDtos, HttpStatus.OK);
+
     }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
-        User user = userService.getUserById(id);
+        UserEntity user = userService.getUserById(id);
         UserResponseDto userResponseDto= userMapper.toUserResponseDto(user);
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
@@ -54,7 +56,7 @@ public class UserController {
     public ResponseEntity<Object> editUser(
             @Valid @RequestBody UserRequestDto userRequestDto, @PathVariable Long id) {
         try {
-            User updatedUser = userService.updateUser(userRequestDto, id);
+            UserEntity updatedUser = userService.updateUser(userRequestDto, id);
             return ResponseEntity.ok(updatedUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

@@ -18,7 +18,8 @@ public class ShiftToUser {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonBackReference
-    private User user;
+    private UserEntity user;
+
 
     @ManyToOne
     @JoinColumn(name = "shift_id", referencedColumnName = "id")

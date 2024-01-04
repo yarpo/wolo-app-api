@@ -59,4 +59,5 @@ public class RoleController {
         roleService.updateRole(role, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }

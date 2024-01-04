@@ -115,7 +115,7 @@ Mapping
 
 Ensure Docker Desktop is running without any warnings. If there are warnings:
 1. Uninstall Docker Desktop.
-2. Check for Docker folders in appdata and user directories (delete them if found).
+2. Check for Docker folders in appdata and userEntity directories (delete them if found).
 3. Navigate to system settings in Windows:
 4. System > Advanced system settings > Environment Variables.
 5. Remove any variables containing "docker" in the name.

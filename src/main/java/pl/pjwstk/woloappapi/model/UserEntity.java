@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Data
 @Table(name = "user")
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,9 +64,6 @@ public class User {
     @JsonManagedReference
     private List<ShiftToUser> shifts = new ArrayList<>();
 
-    @Column(name = "password_hash", nullable = false)
-    private String password_hash;
-
-    @Column(name = "salt", nullable = false)
-    private String salt;
+    @Column(name = "password", nullable = false)
+    private String password;
 }

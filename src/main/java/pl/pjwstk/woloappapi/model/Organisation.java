@@ -39,9 +39,10 @@ public class Organisation {
     private boolean isApproved;
 
     @ManyToOne
-    @JoinColumn(name = "moderator_id")
+    @JoinColumn(name = "moderator_id", nullable = false)
     @JsonBackReference
-    private User moderator;
+    private UserEntity moderator;
+
 
     @Column(name = "logo_url")
     private String logoUrl;

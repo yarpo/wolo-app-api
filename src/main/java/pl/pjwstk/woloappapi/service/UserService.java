@@ -1,17 +1,16 @@
 package pl.pjwstk.woloappapi.service;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
+
 
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
-import pl.pjwstk.woloappapi.utils.OrganisationMapper;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import java.util.List;
@@ -29,25 +28,23 @@ public class UserService {
     private final UserMapper userMapper;
     private final OrganisationService organisationService;
 
-    public List<User> getAllUsers() {
+    public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public User getUserById(Long id) {
+    public UserEntity getUserById(Long id) {
         return userRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("User id not found!"));
     }
     public void createUser(UserRequestDto userDto) {
-        User user = userMapper.toUser(userDto);
+        UserEntity user = userMapper.toUser(userDto);
         userRepository.save(user);
     }
 
-
-
     @Transactional
         public void deleteUser(Long userId) {
-            Optional<User> userOptional = userRepository.findById(userId);
+            Optional<UserEntity> userOptional = userRepository.findById(userId);
 
             if (userOptional.isPresent()) {
                 List<Organisation>userOrganisations = organisationService.findOrganisationsByModeratorId(userId);
@@ -55,7 +52,7 @@ public class UserService {
                     organisationService.removeModeratorFromOrganisations(userOrganisations,userId);
                 }{}
 
-                User user = userOptional.get();
+                UserEntity user = userOptional.get();
                 shiftToUserRepository.deleteByUser(user);
                 userRepository.deleteById(userId);
             } else {
@@ -64,9 +61,9 @@ public class UserService {
         }
 
 
-    public User updateUser(UserRequestDto userRequestDto, Long id) {
+    public UserEntity updateUser(UserRequestDto userRequestDto, Long id) {
 
-         User user = userRepository.findById(id).orElseThrow(
+         UserEntity user = userRepository.findById(id).orElseThrow(
                 () ->
                         new IllegalArgumentException(
                                 "User with ID " + id + " does not exist"));
@@ -82,7 +79,8 @@ public class UserService {
         return userRepository.save(user);
 
     }
-    public List<User> getByRole(Long role) {
+    public List<UserEntity> getByRole(Long role) {
+
         Optional<Role> roleById = roleRepository.findById(role);
         if (roleById.isEmpty()) {
             throw new IllegalArgumentException("Role does not exist");
@@ -91,18 +89,20 @@ public class UserService {
     }
 
     public int getShiftsCountForUser(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
+        UserEntity userEntity = userRepository.findById(userId).orElse(null);
 
-        if (user != null) {
-            return user.getShifts().size();
+        if (userEntity != null) {
+            return userEntity.getShifts().size();
         } else {
             return 0;
+
         }
     }
     private <T> void updateFieldIfDifferent(
             Supplier<T> currentSupplier, Consumer<T> updateConsumer, T newValue) {
         if (!Objects.equals(currentSupplier.get(), newValue)) {
             updateConsumer.accept(newValue);
+
         }
     }
 }

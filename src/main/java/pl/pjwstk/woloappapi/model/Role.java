@@ -25,5 +25,6 @@ public class Role {
 
     @OneToMany(mappedBy = "role")
     @JsonManagedReference
-    private List<User> users = new ArrayList<>();
+    private List<UserEntity> userEntities = new ArrayList<>();
+
 }
