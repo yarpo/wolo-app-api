@@ -59,4 +59,12 @@ public class Event {
 
     @Column(name = "is_approved", nullable = false)
     private boolean approved;
+
+    public List<Category> getEventCategories() {
+        List<Category> eventCategories = new ArrayList<>();
+        for (CategoryToEvent categoryToEvent : categories) {
+            eventCategories.add(categoryToEvent.getCategory());
+        }
+        return eventCategories;
+    }
 }

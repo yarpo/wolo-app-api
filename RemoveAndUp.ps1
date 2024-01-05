@@ -8,4 +8,5 @@ if (Test-Path $directoryPath) {
 } else {
     Write-Host "Catalog $directoryPath not exist."
 }
+    docker-compose --env-file .env --profile standalone down
     docker-compose --env-file .env --profile standalone up
