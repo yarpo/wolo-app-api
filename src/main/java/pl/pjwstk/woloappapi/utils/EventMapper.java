@@ -83,12 +83,6 @@ public interface EventMapper {
         categoryDto.setId(category.getId());
         return categoryDto;
     }
-    default Category mapCategoryDtoToCategory(CategoryDto categoryDto) {
-        Category category= new Category();
-        category.setName(categoryDto.getName());
-        category.setId(categoryDto.getId());
-        return category;
-    }
 
 
     default ShiftDto mapShiftToShiftDto(Shift shift) {
