@@ -25,6 +25,9 @@ import pl.pjwstk.woloappapi.security.RestAuthenticationEntryPoint;
 import pl.pjwstk.woloappapi.security.TokenAuthenticationFilter;
 import pl.pjwstk.woloappapi.security.UserRole;
 import pl.pjwstk.woloappapi.security.oauth2.CustomOAuth2UserService;
+import pl.pjwstk.woloappapi.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import pl.pjwstk.woloappapi.security.oauth2.OAuth2AuthenticationFailureHandler;
+import pl.pjwstk.woloappapi.security.oauth2.OAuth2AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -34,7 +37,12 @@ public class SecurityConfig {
     private final UserRepository userRepository;
     @Autowired
     private final CustomUserDetailsService customUserDetailsService;
-
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
+    @Autowired
+    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    @Autowired
+    private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
@@ -49,12 +57,15 @@ public class SecurityConfig {
                     auth.anyRequest().permitAll();
                 })
                 .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(Customizer.withDefaults())
+                .formLogin(AbstractHttpConfigurer::disable)
                 .exceptionHandling(ex -> {
                     ex.authenticationEntryPoint(new RestAuthenticationEntryPoint());
                 })
-                .oauth2Login(oauth -> {
-                    oauth.defaultSuccessUrl("http://localhost:3000/");//TODO replace with a global static variable called frontEndURL
+                .oauth2Login(oauth2 ->{
+                        oauth2.userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService));
+                        oauth2.successHandler(oAuth2AuthenticationSuccessHandler);
+                        oauth2.failureHandler(oAuth2AuthenticationFailureHandler);
+                        oauth2.defaultSuccessUrl("http://localhost:3000/");
                 })
                 .sessionManagement(s -> {
                     s.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -68,12 +79,10 @@ public class SecurityConfig {
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
         return new TokenAuthenticationFilter();
     }
-
     @Bean
-    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService() {
-        return new CustomOAuth2UserService();
+    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+        return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {return new BCryptPasswordEncoder();}
 
