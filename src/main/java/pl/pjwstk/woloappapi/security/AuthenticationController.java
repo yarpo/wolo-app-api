@@ -60,17 +60,19 @@ public class AuthenticationController {
 
         UserEntity user = new UserEntity();
 
-        user.setFirstname(signUpRequest.getFirstname());
+        user.setFirstname(signUpRequest.getFirstName());
 
-        user.setLastname(signUpRequest.getLastname());
+        user.setLastname(signUpRequest.getLastName());
 
         user.setPhoneNumber(signUpRequest.getPhoneNumber());
 
         user.setRole(roleRepository.findById(3L).orElse(null));
 
+        user.setAgreementSigned(signUpRequest.isTermsAndConditions());
+
         user.setPeselVerified(false);
 
-        user.setAdult(true);
+        user.setAdult(signUpRequest.isAdultConfirmation());
 
         user.setEmail(signUpRequest.getEmail());
 

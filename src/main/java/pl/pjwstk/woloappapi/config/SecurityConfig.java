@@ -46,14 +46,16 @@ public class SecurityConfig {
                     auth.requestMatchers("/auth/signup").permitAll();
                     auth.requestMatchers("/error").permitAll();
                     auth.requestMatchers("/health").hasAuthority(UserRole.USER.name());
-                    auth.anyRequest().hasAuthority(UserRole.ADMIN.name());
+                    auth.anyRequest().permitAll();
                 })
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(Customizer.withDefaults())
                 .exceptionHandling(ex -> {
                     ex.authenticationEntryPoint(new RestAuthenticationEntryPoint());
                 })
-                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(oauth -> {
+                    oauth.defaultSuccessUrl("http://localhost:3000/");//TODO replace with a global static variable called frontEndURL
+                })
                 .sessionManagement(s -> {
                     s.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })

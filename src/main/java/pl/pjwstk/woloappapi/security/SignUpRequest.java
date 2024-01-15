@@ -9,19 +9,19 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 public class SignUpRequest {
-    //TODO expand to cover all the fields in frontend
     @NotBlank
     @Email
     private String email;
-
     @NotBlank
     private String password;
-
     @NotBlank
-    private String firstname;
-
+    private String firstName;
     @NotBlank
-    private String lastname;
+    private String lastName;
+    @NotBlank
+    private boolean termsAndConditions;
+    @NotBlank
+    private boolean adultConfirmation;
 
     private String phoneNumber;
 }

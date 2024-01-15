@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import pl.pjwstk.woloappapi.model.UserEntity;
 import pl.pjwstk.woloappapi.repository.UserRepository;
-import pl.pjwstk.woloappapi.security.AuthProvider;
 import pl.pjwstk.woloappapi.security.UserPrincipal;
 
 
@@ -57,6 +56,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private UserEntity registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
         UserEntity user = new UserEntity();
         user.setEmail(oAuth2UserInfo.getEmail());
+        user.setAgreementSigned(true);
+        user.setFirstname(oAuth2UserInfo.getFirstName());
+        user.setLastname(oAuth2UserInfo.getFirstName());
+        user.setPassword("");
 
         return userRepository.save(user);
     }
