@@ -44,9 +44,9 @@ public class UserController {
     }
     @PutMapping("/{id}/edit")
     public ResponseEntity<Object> editUser(
-            @Valid @RequestBody User user, @PathVariable Long id) {
+            @Valid @RequestBody UserEntity user, @PathVariable Long id) {
         try {
-            User updatedUser = userService.updateUser(user, id);
+            UserEntity updatedUser = userService.updateUser(user);
             return ResponseEntity.ok(updatedUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
