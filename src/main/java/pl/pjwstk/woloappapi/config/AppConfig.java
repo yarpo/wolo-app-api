@@ -1,11 +1,14 @@
 package pl.pjwstk.woloappapi.config;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Configuration
@@ -37,6 +40,18 @@ public class AppConfig {
 
         public long getTokenExpirationMsec() {
             return tokenExpirationMsec;
+        }
+    }
+
+    @Getter
+    private final OAuth2 oauth2 = new OAuth2();
+    @Getter
+    public static final class OAuth2 {
+        private List<String> authorizedRedirectUris = new ArrayList<>();
+
+        public OAuth2 authorizedRedirectUris(List<String> authorizedRedirectUris) {
+            this.authorizedRedirectUris = authorizedRedirectUris;
+            return this;
         }
     }
 }
