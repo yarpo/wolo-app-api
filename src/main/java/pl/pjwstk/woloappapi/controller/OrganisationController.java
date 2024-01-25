@@ -53,11 +53,12 @@ public class OrganisationController {
     }
 
     @GetMapping("/events/{id}")
-    public ResponseEntity<List<EventResponseDto>> getEventsByOrganisation(@PathVariable Long id) {
+    public ResponseEntity<List<EventResponseDto>> getEventsByOrganisation(@PathVariable Long id,
+                                                                          @RequestParam(value = "language") Language language) {
         List<Event> events = organisationService.getEventsByOrganisation(id);
         List<EventResponseDto> eventDtos =
                 events.stream()
-                        .map(eventMapper::toEventResponseDto)
+                        .map(e -> eventMapper.toEventResponseDto(e, language))
                         .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }

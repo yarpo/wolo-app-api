@@ -67,8 +67,8 @@ public class OrganisationService {
         updateFieldIfDifferent(
                 address::getHomeNum, address::setHomeNum, organisationDto.getHomeNum());
         updateFieldIfDifferent(
-                address::getAddressDescription,
-                address::setAddressDescription,
+                address::getAddressDescriptionPL,
+                address::setAddressDescriptionPL,
                 organisationDto.getAddressDescription());
         updateFieldIfDifferent(
                 () -> address.getDistrict().getId(),

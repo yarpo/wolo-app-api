@@ -38,13 +38,13 @@ public class EventService {
                 .orElseThrow(() -> new NotFoundException("Event id not found!"));
     }
 
-    public void createEvent(EventRequestDto dtoEvent) {
-        Address address = eventMapper.toAddress(dtoEvent);
+    public void createEvent(EventTranslationResponsDto translation, EventRequestDto dtoEvent) {
+        Address address = eventMapper.toAddress(translation, dtoEvent);
         District district = districtService.getDistrictById(dtoEvent.getDistrictId());
         address.setDistrict(district);
         addressService.createAddress(address);
 
-        Event event = eventMapper.toEvent(dtoEvent);
+        Event event = eventMapper.toEvent(translation, dtoEvent);
         Organisation organisation =
                 organisationService.getOrganisationById(dtoEvent.getOrganisationId());
         event.setOrganisation(organisation);
