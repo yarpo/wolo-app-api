@@ -82,9 +82,9 @@ public class EventService {
                                         new IllegalArgumentException(
                                                 "Event with ID " + id + " does not exist"));
 
-        updateFieldIfDifferent(event::getName, event::setName, eventDto.getName());
+        updateFieldIfDifferent(event::getNamePL, event::setNamePL, eventDto.getName());
         updateFieldIfDifferent(
-                event::getDescription, event::setDescription, eventDto.getDescription());
+                event::getDescriptionPL, event::setDescriptionPL, eventDto.getDescription());
         updateFieldIfDifferent(
                 event::isPeselVerificationRequired,
                 event::setPeselVerificationRequired,
@@ -145,8 +145,8 @@ public class EventService {
         updateFieldIfDifferent(address::getStreet, address::setStreet, eventDto.getStreet());
         updateFieldIfDifferent(address::getHomeNum, address::setHomeNum, eventDto.getHomeNum());
         updateFieldIfDifferent(
-                address::getAddressDescription,
-                address::setAddressDescription,
+                address::getAddressDescriptionPL,
+                address::setAddressDescriptionPL,
                 eventDto.getAddressDescription());
 
         event.getAddressToEvents().forEach(ate -> ate.setAddress(address));

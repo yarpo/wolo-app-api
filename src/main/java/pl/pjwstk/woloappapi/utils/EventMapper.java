@@ -23,8 +23,8 @@ public interface EventMapper {
 
     default Event toEvent(EventRequestDto eventRequestDto) {
         Event event = new Event();
-        event.setName(eventRequestDto.getName());
-        event.setDescription(eventRequestDto.getDescription());
+        event.setNamePL(eventRequestDto.getName());
+        event.setDescriptionPL(eventRequestDto.getDescription());
         event.setPeselVerificationRequired(eventRequestDto.isPeselVerificationRequired());
         event.setAgreementNeeded(eventRequestDto.isAgreementNeeded());
         event.setImageUrl(eventRequestDto.getImageUrl());
@@ -35,19 +35,19 @@ public interface EventMapper {
         Address address = new Address();
         address.setStreet(eventRequestDto.getStreet());
         address.setHomeNum(eventRequestDto.getHomeNum());
-        address.setAddressDescription(eventRequestDto.getAddressDescription());
+        address.setAddressDescriptionPL(eventRequestDto.getAddressDescription());
         return address;
     }
 
     default EventResponseDto toEventResponseDto(Event event) {
         EventResponseDto eventResponseDto = new EventResponseDto();
         eventResponseDto.setId(event.getId());
-        eventResponseDto.setName(event.getName());
+        eventResponseDto.setName(event.getNamePL());
         eventResponseDto.setOrganisation(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
         Address address = event.getAddressToEvents().get(0).getAddress();
         eventResponseDto.setStreet(address.getStreet());
-        eventResponseDto.setAddressDescription(address.getAddressDescription());
+        eventResponseDto.setAddressDescription(address.getAddressDescriptionPL());
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setCity(address.getDistrict().getCity());
@@ -83,11 +83,11 @@ public interface EventMapper {
 
     default EventResponseDetailsDto toEventResponseDetailsDto(Event event) {
         EventResponseDetailsDto eventResponseDto = new EventResponseDetailsDto();
-        eventResponseDto.setName(event.getName());
+        eventResponseDto.setName(event.getNamePL());
         eventResponseDto.setOrganisationId(event.getOrganisation().getId());
         eventResponseDto.setOrganisationName(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
-        eventResponseDto.setDescription(event.getDescription());
+        eventResponseDto.setDescription(event.getDescriptionPL());
         eventResponseDto.setCategories(
                 event.getCategories().stream()
                         .map(categoryToEvent -> categoryToEvent.getCategory().getId())
@@ -96,7 +96,7 @@ public interface EventMapper {
         eventResponseDto.setStreet(address.getStreet());
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
-        eventResponseDto.setAddressDescription(address.getAddressDescription());
+        eventResponseDto.setAddressDescription(address.getAddressDescriptionPL());
         eventResponseDto.setImageUrl(event.getImageUrl());
         List<ShiftDto> shifts =
                 event.getAddressToEvents().stream()
