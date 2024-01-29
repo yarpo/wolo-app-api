@@ -7,8 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import pl.pjwstk.woloappapi.model.UserEntity;
+import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.service.UserService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -39,5 +41,17 @@ public class UserController {
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @PutMapping("/{id}/edit")
+    public ResponseEntity<Object> editUser(
+            @Valid @RequestBody UserEntity user, @PathVariable Long id) {
+        try {
+            UserEntity updatedUser = userService.updateUser(user);
+            return ResponseEntity.ok(updatedUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }

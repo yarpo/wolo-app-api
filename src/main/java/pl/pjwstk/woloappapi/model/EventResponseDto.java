@@ -27,6 +27,8 @@ public class EventResponseDto {
 
     private String district;
 
+    private List<CategoryDto> categories;
+
     private String city;
 
     private String addressDescription;
