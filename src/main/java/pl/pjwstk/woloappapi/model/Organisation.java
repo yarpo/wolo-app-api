@@ -1,5 +1,7 @@
 package pl.pjwstk.woloappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import lombok.Data;
@@ -30,6 +32,7 @@ public class Organisation {
 
     @ManyToOne
     @JoinColumn(name = "address_id", nullable = false)
+    @JsonBackReference
     private Address address;
 
     @Column(name = "is_approved", nullable = false)
@@ -37,11 +40,14 @@ public class Organisation {
 
     @ManyToOne
     @JoinColumn(name = "moderator_id", nullable = false)
+    @JsonBackReference
     private UserEntity moderator;
+
 
     @Column(name = "logo_url")
     private String logoUrl;
 
     @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Event> events;
 }
