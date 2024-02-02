@@ -90,8 +90,14 @@ public abstract class EventMapper {
                                         mapShiftListToShiftDtoList(addressToEvent.getShifts())
                                                 .stream())
                         .collect(Collectors.toList());
-
         eventResponseDto.setShifts(shifts);
+        List<Category> categories =
+                event.getCategories().stream()
+                        .map(CategoryToEvent::getCategory)
+                        .collect(Collectors.toList());
+        eventResponseDto.setCategories(mapCategoryListToCategoryDtoList(categories));
+
+
 
         return eventResponseDto;
     }
@@ -99,6 +105,16 @@ public abstract class EventMapper {
     public List<ShiftDto> mapShiftListToShiftDtoList(List<Shift> shifts) {
         return shifts.stream().map(this::mapShiftToShiftDto).collect(Collectors.toList());
     }
+    default List<CategoryDto> mapCategoryListToCategoryDtoList(List<Category> categories) {
+        return categories.stream().map(this::mapCategoryToCategoryDto).collect(Collectors.toList());
+    }
+    default CategoryDto mapCategoryToCategoryDto(Category category) {
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setName(category.getName());
+        categoryDto.setId(category.getId());
+        return categoryDto;
+    }
+
 
     public ShiftDto mapShiftToShiftDto(Shift shift) {
         ShiftDto shiftDto = new ShiftDto();
@@ -121,7 +137,7 @@ public abstract class EventMapper {
         eventResponseDto.setDescription(descriptionExtractorMap.getOrDefault(language, e -> null).apply(event));
         eventResponseDto.setCategories(
                 event.getCategories().stream()
-                        .map(categoryToEvent -> categoryToEvent.getCategory().getId())
+                        .map(categoryToEvent ->mapCategoryToCategoryDto( categoryToEvent.getCategory()))
                         .collect(Collectors.toList()));
         Address address = event.getAddressToEvents().get(0).getAddress();
         eventResponseDto.setStreet(address.getStreet());
