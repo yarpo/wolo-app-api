@@ -171,7 +171,12 @@ public class EventMapperTests {
 
         event.setImageUrl("http://example.com/image.jpg");
 
-        EventResponseDto eventResponseDto = eventMapper.toEventResponseDto(event, Language.PL);
+        List<String> translations = new ArrayList<>();
+        translations.add("PL Name");
+        translations.add("Description PL");
+        translations.add("PL Address Description");
+
+        EventResponseDto eventResponseDto = eventMapper.toEventResponseDto(event, translations);
 
         assertNotNull(eventResponseDto);
         assertNotNull(eventResponseDto.getId());
@@ -343,7 +348,12 @@ public class EventMapperTests {
 
         event.setImageUrl("http://example.com/image.jpg");
 
-        EventResponseDetailsDto eventResponseDetailsDto = eventMapper.toEventResponseDetailsDto(event, Language.UA);
+        List<String> translations = new ArrayList<>();
+        translations.add("UA Name");
+        translations.add("Description UA");
+        translations.add("UA Address Description");
+
+        EventResponseDetailsDto eventResponseDetailsDto = eventMapper.toEventResponseDetailsDto(event, translations);
 
         assertNotNull(eventResponseDetailsDto);
         assertEquals("UA Name", eventResponseDetailsDto.getName());

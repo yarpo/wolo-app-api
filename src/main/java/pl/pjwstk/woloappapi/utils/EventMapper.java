@@ -1,37 +1,15 @@
 package pl.pjwstk.woloappapi.utils;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 import pl.pjwstk.woloappapi.model.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Component
-public abstract class EventMapper {
-    private static final Map<Language, Function<Event, String>> nameExtractorMap = Map.of(
-            Language.PL, Event::getNamePL,
-            Language.EN, Event::getNameEN,
-            Language.UA, Event::getNameUA,
-            Language.RU, Event::getNameRU
-    );
+@Mapper(componentModel = "spring")
+public interface EventMapper {
 
-    private static final Map<Language, Function<Event, String>> descriptionExtractorMap = Map.of(
-            Language.PL, Event::getDescriptionPL,
-            Language.EN, Event::getDescriptionEN,
-            Language.UA, Event::getDescriptionUA,
-            Language.RU, Event::getDescriptionRU
-    );
-
-    private static final Map<Language, Function<Address, String>> addressDescriptionExtractorMap = Map.of(
-            Language.PL, Address::getAddressDescriptionPL,
-            Language.EN, Address::getAddressDescriptionEN,
-            Language.UA, Address::getAddressDescriptionUA,
-            Language.RU, Address::getAddressDescriptionRU
-    );
-    public Shift toShift(ShiftDto shiftDto) {
+    default Shift toShift(ShiftDto shiftDto) {
         Shift shift = new Shift();
         shift.setStartTime(shiftDto.getStartTime());
         shift.setEndTime(shiftDto.getEndTime());
@@ -42,20 +20,9 @@ public abstract class EventMapper {
         return shift;
     }
 
-    public List<Shift> toShifts(List<ShiftDto> shiftDtos) {
-        if ( shiftDtos == null ) {
-            return null;
-        }
+    List<Shift> toShifts(List<ShiftDto> shiftDtos);
 
-        List<Shift> list = new ArrayList<>(shiftDtos.size());
-        for ( ShiftDto shiftDto : shiftDtos ) {
-            list.add( toShift( shiftDto ) );
-        }
-
-        return list;
-    }
-
-    public Event toEvent(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
+    default Event toEvent(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
         Event event = new Event();
         event.setNamePL(translation.getTitlePL());
         event.setNameEN(translation.getTitleEN());
@@ -71,7 +38,7 @@ public abstract class EventMapper {
         return event;
     }
 
-    public Address toAddress(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
+    default Address toAddress(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
         Address address = new Address();
         address.setStreet(eventRequestDto.getStreet());
         address.setHomeNum(eventRequestDto.getHomeNum());
@@ -82,15 +49,15 @@ public abstract class EventMapper {
         return address;
     }
 
-    public EventResponseDto toEventResponseDto(Event event, Language language) {
+    default EventResponseDto toEventResponseDto(Event event, List<String> translations) {
         EventResponseDto eventResponseDto = new EventResponseDto();
         eventResponseDto.setId(event.getId());
-        eventResponseDto.setName(nameExtractorMap.getOrDefault(language, e -> null).apply(event));
+        eventResponseDto.setName(translations.get(0));
         eventResponseDto.setOrganisation(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
         Address address = event.getAddressToEvents().get(0).getAddress();
         eventResponseDto.setStreet(address.getStreet());
-        eventResponseDto.setAddressDescription(address.getAddressDescriptionPL());
+        eventResponseDto.setAddressDescription(translations.get(2));
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setCity(address.getDistrict().getCity());
@@ -108,23 +75,23 @@ public abstract class EventMapper {
                         .map(CategoryToEvent::getCategory)
                         .collect(Collectors.toList());
         eventResponseDto.setCategories(mapCategoryListToCategoryDtoList(categories));
+
+
+
         return eventResponseDto;
     }
 
-    public List<ShiftDto> mapShiftListToShiftDtoList(List<Shift> shifts) {
-        return shifts.stream().map(this::mapShiftToShiftDto).collect(Collectors.toList());
-    }
-    public List<CategoryDto> mapCategoryListToCategoryDtoList(List<Category> categories) {
-        return categories.stream().map(this::mapCategoryToCategoryDto).collect(Collectors.toList());
-    }
-    public CategoryDto mapCategoryToCategoryDto(Category category) {
+    List<ShiftDto> mapShiftListToShiftDtoList(List<Shift> shifts) ;
+    List<CategoryDto> mapCategoryListToCategoryDtoList(List<Category> categories);
+    default CategoryDto mapCategoryToCategoryDto(Category category) {
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setName(category.getName());
         categoryDto.setId(category.getId());
         return categoryDto;
     }
 
-    public ShiftDto mapShiftToShiftDto(Shift shift) {
+
+    default ShiftDto mapShiftToShiftDto(Shift shift) {
         ShiftDto shiftDto = new ShiftDto();
         shiftDto.setStartTime(shift.getStartTime());
         shiftDto.setEndTime(shift.getEndTime());
@@ -136,13 +103,13 @@ public abstract class EventMapper {
         return shiftDto;
     }
 
-    public EventResponseDetailsDto toEventResponseDetailsDto(Event event, Language language) {
+    default EventResponseDetailsDto toEventResponseDetailsDto(Event event, List<String> translations) {
         EventResponseDetailsDto eventResponseDto = new EventResponseDetailsDto();
-        eventResponseDto.setName(nameExtractorMap.getOrDefault(language, e -> null).apply(event));
+        eventResponseDto.setName(translations.get(0));
         eventResponseDto.setOrganisationId(event.getOrganisation().getId());
         eventResponseDto.setOrganisationName(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
-        eventResponseDto.setDescription(descriptionExtractorMap.getOrDefault(language, e -> null).apply(event));
+        eventResponseDto.setDescription(translations.get(1));
         eventResponseDto.setCategories(
                 event.getCategories().stream()
                         .map(categoryToEvent ->mapCategoryToCategoryDto( categoryToEvent.getCategory()))
@@ -151,9 +118,7 @@ public abstract class EventMapper {
         eventResponseDto.setStreet(address.getStreet());
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
-        eventResponseDto.setName(nameExtractorMap.getOrDefault(language, e -> null).apply(event));
-        eventResponseDto.setAddressDescription(addressDescriptionExtractorMap
-                .getOrDefault(language, e -> null).apply(address));
+        eventResponseDto.setAddressDescription(translations.get(2));
         eventResponseDto.setImageUrl(event.getImageUrl());
         List<ShiftDto> shifts =
                 event.getAddressToEvents().stream()
@@ -168,7 +133,7 @@ public abstract class EventMapper {
         return eventResponseDto;
     }
 
-    public EventTranslationRequestDto toEventTranslationDto(EventRequestDto eventDto){
+    default EventTranslationRequestDto toEventTranslationDto(EventRequestDto eventDto){
         EventTranslationRequestDto translation = new EventTranslationRequestDto();
         translation.setTitle(eventDto.getName());
         translation.setDescription(eventDto.getDescription());
