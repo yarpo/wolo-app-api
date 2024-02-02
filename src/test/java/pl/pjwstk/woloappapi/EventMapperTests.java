@@ -1,5 +1,6 @@
 package pl.pjwstk.woloappapi;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -16,6 +17,27 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EventMapperTests {
+    private EventMapper eventMapper;
+    private EventTranslationResponsDto translation;
+
+    @BeforeEach
+    public void setUp() {
+        eventMapper = createEventMapper();
+
+        translation = new EventTranslationResponsDto();
+        translation.setAddressDescriptionPL("PL Address Description");
+        translation.setAddressDescriptionEN("EN Address Description");
+        translation.setAddressDescriptionUA("UA Address Description");
+        translation.setAddressDescriptionRU("RU Address Description");
+        translation.setTitlePL("Title PL");
+        translation.setTitleEN("Title EN");
+        translation.setTitleUA("Title UA");
+        translation.setTitleRU("Title RU");
+        translation.setDescriptionPL("Description PL");
+        translation.setDescriptionEN("Description EN");
+        translation.setDescriptionUA("Description UA");
+        translation.setDescriptionRU("Description RU");
+    }
 
     private EventMapper createEventMapper() {
         return Mappers.getMapper(EventMapper.class);
@@ -75,46 +97,53 @@ public class EventMapperTests {
 
     @Test
     public void testToEvent() {
-        EventMapper eventMapper = createEventMapper();
         EventRequestDto eventRequestDto = new EventRequestDto();
-        eventRequestDto.setName("Test Event");
-        eventRequestDto.setDescription("Test Description");
         eventRequestDto.setPeselVerificationRequired(true);
         eventRequestDto.setAgreementNeeded(false);
         eventRequestDto.setImageUrl("http://example.com/image");
 
-        Event event = eventMapper.toEvent(eventRequestDto);
+        Event event = eventMapper.toEvent(translation, eventRequestDto);
 
         assertNotNull(event);
-        assertEquals("Test Event", event.getName());
-        assertEquals("Test Description", event.getDescription());
+        assertEquals("Title PL", event.getNamePL());
+        assertEquals("Title EN", event.getNameEN());
+        assertEquals("Title UA", event.getNameUA());
+        assertEquals("Title RU", event.getNameRU());
+        assertEquals("Description PL", event.getDescriptionPL());
+        assertEquals("Description EN", event.getDescriptionEN());
+        assertEquals("Description UA", event.getDescriptionUA());
+        assertEquals("Description RU", event.getDescriptionRU());
         assertTrue(event.isPeselVerificationRequired());
         assertFalse(event.isAgreementNeeded());
         assertEquals("http://example.com/image", event.getImageUrl());
+        assertFalse(event.isApproved());
     }
 
     @Test
     public void testToAddress() {
-        EventMapper eventMapper = createEventMapper();
         EventRequestDto eventRequestDto = new EventRequestDto();
         eventRequestDto.setStreet("Test Street");
         eventRequestDto.setHomeNum("123");
-        eventRequestDto.setAddressDescription("Test Address");
 
-        Address address = eventMapper.toAddress(eventRequestDto);
+        Address address = eventMapper.toAddress(translation, eventRequestDto);
 
         assertNotNull(address);
         assertEquals("Test Street", address.getStreet());
         assertEquals("123", address.getHomeNum());
-        assertEquals("Test Address", address.getAddressDescription());
+        assertEquals("PL Address Description", address.getAddressDescriptionPL());
+        assertEquals("EN Address Description", address.getAddressDescriptionEN());
+        assertEquals("UA Address Description", address.getAddressDescriptionUA());
+        assertEquals("RU Address Description", address.getAddressDescriptionRU());
     }
 
     @Test
     public void testToEventResponseDtoStructure() {
-        EventMapper eventMapper = createEventMapper();
         Event event = new Event();
         event.setId(1L);
-        event.setName("Test Event");
+        event.setNamePL("PL Name");
+        event.setNameEN("EN Name");
+        event.setNameUA("UA Name");
+        event.setNameRU("RU Name");
         event.setPeselVerificationRequired(true);
 
         Organisation organisation = new Organisation();
@@ -128,7 +157,10 @@ public class EventMapperTests {
         Address address = new Address();
         address.setStreet("Test Street");
         address.setHomeNum("123");
-        address.setAddressDescription("Test Address");
+        address.setAddressDescriptionPL("PL Address Description");
+        address.setAddressDescriptionEN("EN Address Description");
+        address.setAddressDescriptionUA("UA Address Description");
+        address.setAddressDescriptionRU("RU Address Description");
         address.setDistrict(district);
 
         List<AddressToEvent> addressToEvents = new ArrayList<>();
@@ -139,13 +171,12 @@ public class EventMapperTests {
 
         event.setImageUrl("http://example.com/image.jpg");
 
-        EventResponseDto eventResponseDto = eventMapper.toEventResponseDto(event);
+        EventResponseDto eventResponseDto = eventMapper.toEventResponseDto(event, Language.PL);
 
         assertNotNull(eventResponseDto);
         assertNotNull(eventResponseDto.getId());
         assertNotNull(eventResponseDto.getName());
         assertNotNull(eventResponseDto.getOrganisation());
-        assertNotNull(eventResponseDto.isPeselVerificationRequired());
         assertNotNull(eventResponseDto.getStreet());
         assertNotNull(eventResponseDto.getHomeNum());
         assertNotNull(eventResponseDto.getAddressDescription());
@@ -249,10 +280,15 @@ public class EventMapperTests {
 
     @Test
     public void testToEventResponseDetailsDto() {
-        EventMapper eventMapper = createEventMapper();
         Event event = new Event();
-        event.setName("Test Event");
-        event.setDescription("Test Description");
+        event.setNamePL("PL Name");
+        event.setNameEN("EN Name");
+        event.setNameUA("UA Name");
+        event.setNameRU("RU Name");
+        event.setDescriptionPL("Description PL");
+        event.setDescriptionEN("Description EN");
+        event.setDescriptionUA("Description UA");
+        event.setDescriptionRU("Description RU");
         event.setPeselVerificationRequired(true);
 
         Organisation organisation = new Organisation();
@@ -285,7 +321,10 @@ public class EventMapperTests {
         Address address = new Address();
         address.setStreet("Test Street");
         address.setHomeNum("123");
-        address.setAddressDescription("Test Address");
+        address.setAddressDescriptionPL("PL Address Description");
+        address.setAddressDescriptionEN("EN Address Description");
+        address.setAddressDescriptionUA("UA Address Description");
+        address.setAddressDescriptionRU("RU Address Description");
         address.setDistrict(district);
 
         List<AddressToEvent> addressToEvents = new ArrayList<>();
@@ -304,19 +343,19 @@ public class EventMapperTests {
 
         event.setImageUrl("http://example.com/image.jpg");
 
-        EventResponseDetailsDto eventResponseDetailsDto = eventMapper.toEventResponseDetailsDto(event);
+        EventResponseDetailsDto eventResponseDetailsDto = eventMapper.toEventResponseDetailsDto(event, Language.UA);
 
         assertNotNull(eventResponseDetailsDto);
-        assertEquals("Test Event", eventResponseDetailsDto.getName());
+        assertEquals("UA Name", eventResponseDetailsDto.getName());
         assertEquals(1L, eventResponseDetailsDto.getOrganisationId());
         assertEquals("Org Name", eventResponseDetailsDto.getOrganisationName());
         assertTrue(eventResponseDetailsDto.isPeselVerificationRequired());
-        assertEquals("Test Description", eventResponseDetailsDto.getDescription());
+        assertEquals("Description UA", eventResponseDetailsDto.getDescription());
         assertEquals(2, eventResponseDetailsDto.getCategories().size());
         assertEquals("Test Street", eventResponseDetailsDto.getStreet());
         assertEquals("123", eventResponseDetailsDto.getHomeNum());
         assertEquals("Test District", eventResponseDetailsDto.getDistrict());
-        assertEquals("Test Address", eventResponseDetailsDto.getAddressDescription());
+        assertEquals("UA Address Description", eventResponseDetailsDto.getAddressDescription());
         assertEquals("http://example.com/image.jpg", eventResponseDetailsDto.getImageUrl());
         assertEquals(1, eventResponseDetailsDto.getShifts().size());
     }

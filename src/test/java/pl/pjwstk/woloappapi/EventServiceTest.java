@@ -1,20 +1,19 @@
 package pl.pjwstk.woloappapi;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import pl.pjwstk.woloappapi.model.Event;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EventServiceTest {
@@ -132,7 +131,7 @@ public class EventServiceTest {
 
     private Event createInvalidEvent() {
         Event event = new Event();
-        event.setName("");
+        event.setNamePL("");
 
         return event;
     }
