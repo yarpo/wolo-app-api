@@ -23,13 +23,23 @@ public class EventController {
     private final EventService eventService;
     private final EventMapper eventMapper;
 
-    @GetMapping()
+    @GetMapping("")
     public ResponseEntity<List<EventResponseDto>> getEvents(
-            @RequestParam(value = "language") Language language) {
+            @RequestParam(value = "language") String language) {
         List<Event> events = eventService.getAllEvents();
         List<EventResponseDto> eventDtos =
-                events.stream().map(e -> eventMapper.toEventResponseDto(e, language)).collect(Collectors.toList());
+                events.stream().map(e -> eventMapper.toEventResponseDto(e, languageToEnum(language))).collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
+    }
+
+    private Language languageToEnum(String language) {
+        return switch (language) {
+            case "pl" -> Language.PL;
+            case "en" -> Language.EN;
+            case "ua" -> Language.UA;
+            case "ru" -> Language.RU;
+            default -> null;
+        };
     }
 
     @GetMapping("/search")
@@ -44,7 +54,7 @@ public class EventController {
                     Boolean isPeselVerificationRequired,
             @RequestParam(value = "showAvailable", required = false)
                     Boolean showWithAvailableCapacity,
-            @RequestParam(value = "language") Language language) {
+            @RequestParam(value = "language") String language) {
 
         List<Event> filteredEvents =
                 eventService.filterEvents(
@@ -58,16 +68,16 @@ public class EventController {
                         showWithAvailableCapacity);
         List<EventResponseDto> eventDtos =
                 filteredEvents.stream()
-                        .map(e -> eventMapper.toEventResponseDto(e, language))
+                        .map(e -> eventMapper.toEventResponseDto(e, languageToEnum(language)))
                         .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EventResponseDetailsDto> getEventById(@PathVariable Long id,
-                                                                @RequestParam(value = "language") Language language) {
+                                                                @RequestParam(value = "language") String language) {
         Event event = eventService.getEventById(id);
-        EventResponseDetailsDto eventDto = eventMapper.toEventResponseDetailsDto(event, language);
+        EventResponseDetailsDto eventDto = eventMapper.toEventResponseDetailsDto(event, languageToEnum(language));
         return new ResponseEntity<>(eventDto, HttpStatus.OK);
     }
 
@@ -81,9 +91,7 @@ public class EventController {
                 .bodyValue(translationDto)
                 .retrieve()
                 .bodyToMono(EventTranslationResponsDto.class)
-                .subscribe(translatedObject -> {
-                    eventService.createEvent(translatedObject, dtoEvent);
-                });
+                .subscribe(translatedObject -> eventService.createEvent(translatedObject, dtoEvent));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
