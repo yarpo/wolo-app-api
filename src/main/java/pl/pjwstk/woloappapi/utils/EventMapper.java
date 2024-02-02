@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface EventMapper {
+
     default Shift toShift(ShiftDto shiftDto) {
         Shift shift = new Shift();
         shift.setStartTime(shiftDto.getStartTime());
@@ -21,33 +22,42 @@ public interface EventMapper {
 
     List<Shift> toShifts(List<ShiftDto> shiftDtos);
 
-    default Event toEvent(EventRequestDto eventRequestDto) {
+    default Event toEvent(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
         Event event = new Event();
-        event.setName(eventRequestDto.getName());
-        event.setDescription(eventRequestDto.getDescription());
+        event.setNamePL(translation.getTitlePL());
+        event.setNameEN(translation.getTitleEN());
+        event.setNameUA(translation.getTitleUA());
+        event.setNameRU(translation.getTitleRU());
+        event.setDescriptionPL(translation.getDescriptionPL());
+        event.setDescriptionEN(translation.getDescriptionEN());
+        event.setDescriptionUA(translation.getDescriptionUA());
+        event.setDescriptionRU(translation.getDescriptionRU());
         event.setPeselVerificationRequired(eventRequestDto.isPeselVerificationRequired());
         event.setAgreementNeeded(eventRequestDto.isAgreementNeeded());
         event.setImageUrl(eventRequestDto.getImageUrl());
         return event;
     }
 
-    default Address toAddress(EventRequestDto eventRequestDto) {
+    default Address toAddress(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
         Address address = new Address();
         address.setStreet(eventRequestDto.getStreet());
         address.setHomeNum(eventRequestDto.getHomeNum());
-        address.setAddressDescription(eventRequestDto.getAddressDescription());
+        address.setAddressDescriptionPL(translation.getAddressDescriptionPL());
+        address.setAddressDescriptionEN(translation.getAddressDescriptionEN());
+        address.setAddressDescriptionUA(translation.getAddressDescriptionUA());
+        address.setAddressDescriptionRU(translation.getAddressDescriptionRU());
         return address;
     }
 
-    default EventResponseDto toEventResponseDto(Event event) {
+    default EventResponseDto toEventResponseDto(Event event, List<String> translations) {
         EventResponseDto eventResponseDto = new EventResponseDto();
         eventResponseDto.setId(event.getId());
-        eventResponseDto.setName(event.getName());
+        eventResponseDto.setName(translations.get(0));
         eventResponseDto.setOrganisation(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
         Address address = event.getAddressToEvents().get(0).getAddress();
         eventResponseDto.setStreet(address.getStreet());
-        eventResponseDto.setAddressDescription(address.getAddressDescription());
+        eventResponseDto.setAddressDescription(translations.get(2));
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setCity(address.getDistrict().getCity());
@@ -71,12 +81,8 @@ public interface EventMapper {
         return eventResponseDto;
     }
 
-    default List<ShiftDto> mapShiftListToShiftDtoList(List<Shift> shifts) {
-        return shifts.stream().map(this::mapShiftToShiftDto).collect(Collectors.toList());
-    }
-    default List<CategoryDto> mapCategoryListToCategoryDtoList(List<Category> categories) {
-        return categories.stream().map(this::mapCategoryToCategoryDto).collect(Collectors.toList());
-    }
+    List<ShiftDto> mapShiftListToShiftDtoList(List<Shift> shifts) ;
+    List<CategoryDto> mapCategoryListToCategoryDtoList(List<Category> categories);
     default CategoryDto mapCategoryToCategoryDto(Category category) {
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setName(category.getName());
@@ -97,13 +103,13 @@ public interface EventMapper {
         return shiftDto;
     }
 
-    default EventResponseDetailsDto toEventResponseDetailsDto(Event event) {
+    default EventResponseDetailsDto toEventResponseDetailsDto(Event event, List<String> translations) {
         EventResponseDetailsDto eventResponseDto = new EventResponseDetailsDto();
-        eventResponseDto.setName(event.getName());
+        eventResponseDto.setName(translations.get(0));
         eventResponseDto.setOrganisationId(event.getOrganisation().getId());
         eventResponseDto.setOrganisationName(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
-        eventResponseDto.setDescription(event.getDescription());
+        eventResponseDto.setDescription(translations.get(1));
         eventResponseDto.setCategories(
                 event.getCategories().stream()
                         .map(categoryToEvent ->mapCategoryToCategoryDto( categoryToEvent.getCategory()))
@@ -112,7 +118,7 @@ public interface EventMapper {
         eventResponseDto.setStreet(address.getStreet());
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
-        eventResponseDto.setAddressDescription(address.getAddressDescription());
+        eventResponseDto.setAddressDescription(translations.get(2));
         eventResponseDto.setImageUrl(event.getImageUrl());
         List<ShiftDto> shifts =
                 event.getAddressToEvents().stream()
@@ -125,5 +131,14 @@ public interface EventMapper {
         eventResponseDto.setShifts(shifts);
 
         return eventResponseDto;
+    }
+
+    default EventTranslationRequestDto toEventTranslationDto(EventRequestDto eventDto){
+        EventTranslationRequestDto translation = new EventTranslationRequestDto();
+        translation.setTitle(eventDto.getName());
+        translation.setDescription(eventDto.getDescription());
+        translation.setAddressDescription(eventDto.getAddressDescription());
+        translation.setLanguage(eventDto.getLanguage());
+        return translation;
     }
 }

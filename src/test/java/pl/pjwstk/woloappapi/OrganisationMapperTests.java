@@ -31,7 +31,7 @@ public class OrganisationMapperTests {
         Address address = new Address();
         address.setStreet("Test Street");
         address.setHomeNum("123");
-        address.setAddressDescription("Test Address");
+        address.setAddressDescriptionPL("Test Address");
         organisation.setAddress(address);
         organisation.setLogoUrl("http://example.com/logo");
 
@@ -80,6 +80,6 @@ public class OrganisationMapperTests {
 
         assertEquals("Test Street", address.getStreet());
         assertEquals("123", address.getHomeNum());
-        assertEquals("Test Address", address.getAddressDescription());
+        assertEquals("Test Address", address.getAddressDescriptionPL());
     }
 }

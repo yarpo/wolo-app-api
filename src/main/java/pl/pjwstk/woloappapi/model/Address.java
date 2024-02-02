@@ -4,13 +4,15 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "address")
 public class Address {
 
@@ -30,8 +32,17 @@ public class Address {
     @JsonBackReference
     private District district;
 
-    @Column(name = "description")
-    private String addressDescription;
+    @Column(name = "description_pl")
+    private String addressDescriptionPL;
+
+    @Column(name = "description_en")
+    private String addressDescriptionEN;
+
+    @Column(name = "description_ua")
+    private String addressDescriptionUA;
+
+    @Column(name = "description_ru")
+    private String addressDescriptionRU;
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
     @JsonManagedReference

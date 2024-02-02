@@ -5,12 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Getter
 @Setter
@@ -53,4 +52,6 @@ public class EventRequestDto {
     @Size(min = 1, message = "At least one shift is required")
     @Valid
     private List<ShiftDto> shifts;
+
+    private Language language;
 }

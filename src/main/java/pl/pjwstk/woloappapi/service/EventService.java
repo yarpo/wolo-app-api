@@ -1,9 +1,7 @@
 package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
-
 import org.springframework.stereotype.Service;
-
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.utils.EventMapper;
@@ -38,13 +36,13 @@ public class EventService {
                 .orElseThrow(() -> new NotFoundException("Event id not found!"));
     }
 
-    public void createEvent(EventRequestDto dtoEvent) {
-        Address address = eventMapper.toAddress(dtoEvent);
+    public void createEvent(EventTranslationResponsDto translation, EventRequestDto dtoEvent) {
+        Address address = eventMapper.toAddress(translation, dtoEvent);
         District district = districtService.getDistrictById(dtoEvent.getDistrictId());
         address.setDistrict(district);
         addressService.createAddress(address);
 
-        Event event = eventMapper.toEvent(dtoEvent);
+        Event event = eventMapper.toEvent(translation, dtoEvent);
         Organisation organisation =
                 organisationService.getOrganisationById(dtoEvent.getOrganisationId());
         event.setOrganisation(organisation);
@@ -82,9 +80,9 @@ public class EventService {
                                         new IllegalArgumentException(
                                                 "Event with ID " + id + " does not exist"));
 
-        updateFieldIfDifferent(event::getName, event::setName, eventDto.getName());
+        updateFieldIfDifferent(event::getNamePL, event::setNamePL, eventDto.getName());
         updateFieldIfDifferent(
-                event::getDescription, event::setDescription, eventDto.getDescription());
+                event::getDescriptionPL, event::setDescriptionPL, eventDto.getDescription());
         updateFieldIfDifferent(
                 event::isPeselVerificationRequired,
                 event::setPeselVerificationRequired,
@@ -145,8 +143,8 @@ public class EventService {
         updateFieldIfDifferent(address::getStreet, address::setStreet, eventDto.getStreet());
         updateFieldIfDifferent(address::getHomeNum, address::setHomeNum, eventDto.getHomeNum());
         updateFieldIfDifferent(
-                address::getAddressDescription,
-                address::setAddressDescription,
+                address::getAddressDescriptionPL,
+                address::setAddressDescriptionPL,
                 eventDto.getAddressDescription());
 
         event.getAddressToEvents().forEach(ate -> ate.setAddress(address));
@@ -225,4 +223,5 @@ public class EventService {
             updateConsumer.accept(newValue);
         }
     }
+
 }
