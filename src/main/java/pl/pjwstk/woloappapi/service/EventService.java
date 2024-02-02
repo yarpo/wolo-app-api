@@ -16,7 +16,6 @@ import java.util.function.Supplier;
 @Service
 @AllArgsConstructor
 public class EventService {
-
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final DistrictService districtService;
