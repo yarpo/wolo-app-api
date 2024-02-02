@@ -1,6 +1,8 @@
 package pl.pjwstk.woloappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.*;
@@ -52,10 +54,14 @@ public class Event {
     private String descriptionRU;
 
     @ManyToOne
+
     @JoinColumn(name = "organisation_en", nullable = false)
+
+    @JsonBackReference
     private Organisation organisation;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<CategoryToEvent> categories;
 
     @Column(name = "is_pesel_ver_req", nullable = false)
@@ -65,6 +71,7 @@ public class Event {
     private boolean isAgreementNeeded;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<AddressToEvent> addressToEvents = new ArrayList<>();
 
     @Column(name = "image_url")
@@ -72,4 +79,12 @@ public class Event {
 
     @Column(name = "is_approved", nullable = false)
     private boolean approved;
+
+    public List<Category> getEventCategories() {
+        List<Category> eventCategories = new ArrayList<>();
+        for (CategoryToEvent categoryToEvent : categories) {
+            eventCategories.add(categoryToEvent.getCategory());
+        }
+        return eventCategories;
+    }
 }

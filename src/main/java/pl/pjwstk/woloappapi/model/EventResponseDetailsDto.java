@@ -25,7 +25,7 @@ public class EventResponseDetailsDto {
 
     private String description;
 
-    private List<Long> categories;
+    private List<CategoryDto> categories;
 
     private String street;
 

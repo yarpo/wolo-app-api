@@ -109,4 +109,26 @@ public class OrganisationService {
             updateConsumer.accept(newValue);
         }
     }
+    public List<Organisation> findOrganisationsByModeratorId(Long moderatorId) {
+        return organisationRepository.findByModeratorId(moderatorId);
+    }
+
+    public void removeModeratorFromOrganisations(List<Organisation> organisations, Long moderatorIdToRemove) {
+        for (Organisation organisation : organisations) {
+            removeModeratorFromOrganisation(organisation, moderatorIdToRemove);
+        }
+    }
+
+    private void removeModeratorFromOrganisation(Organisation organisation, Long moderatorIdToRemove) {
+        UserEntity moderatorToRemove = organisation.getModerator();
+
+        if (moderatorToRemove != null && moderatorToRemove.getId().equals(moderatorIdToRemove)) {
+            organisation.setModerator(null);
+            organisationRepository.save(organisation);
+
+            // Remove the organisation from the user's list of organisations
+            moderatorToRemove.getOrganisations().remove(organisation);
+            userRepository.save(moderatorToRemove);
+        }
+    }
 }
