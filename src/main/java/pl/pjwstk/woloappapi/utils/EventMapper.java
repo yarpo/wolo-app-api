@@ -1,14 +1,15 @@
 package pl.pjwstk.woloappapi.utils;
 
-import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Component
 public abstract class EventMapper {
     private static final Map<Language, Function<Event, String>> nameExtractorMap = Map.of(
             Language.PL, Event::getNamePL,
@@ -41,7 +42,18 @@ public abstract class EventMapper {
         return shift;
     }
 
-    public abstract List<Shift> toShifts(List<ShiftDto> shiftDtos);
+    public List<Shift> toShifts(List<ShiftDto> shiftDtos) {
+        if ( shiftDtos == null ) {
+            return null;
+        }
+
+        List<Shift> list = new ArrayList<>(shiftDtos.size());
+        for ( ShiftDto shiftDto : shiftDtos ) {
+            list.add( toShift( shiftDto ) );
+        }
+
+        return list;
+    }
 
     public Event toEvent(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
         Event event = new Event();
@@ -96,25 +108,21 @@ public abstract class EventMapper {
                         .map(CategoryToEvent::getCategory)
                         .collect(Collectors.toList());
         eventResponseDto.setCategories(mapCategoryListToCategoryDtoList(categories));
-
-
-
         return eventResponseDto;
     }
 
     public List<ShiftDto> mapShiftListToShiftDtoList(List<Shift> shifts) {
         return shifts.stream().map(this::mapShiftToShiftDto).collect(Collectors.toList());
     }
-    default List<CategoryDto> mapCategoryListToCategoryDtoList(List<Category> categories) {
+    public List<CategoryDto> mapCategoryListToCategoryDtoList(List<Category> categories) {
         return categories.stream().map(this::mapCategoryToCategoryDto).collect(Collectors.toList());
     }
-    default CategoryDto mapCategoryToCategoryDto(Category category) {
+    public CategoryDto mapCategoryToCategoryDto(Category category) {
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setName(category.getName());
         categoryDto.setId(category.getId());
         return categoryDto;
     }
-
 
     public ShiftDto mapShiftToShiftDto(Shift shift) {
         ShiftDto shiftDto = new ShiftDto();
