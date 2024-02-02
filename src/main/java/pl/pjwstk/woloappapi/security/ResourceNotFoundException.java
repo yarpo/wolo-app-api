@@ -1,11 +1,13 @@
 package pl.pjwstk.woloappapi.security;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class ResourceNotFoundException extends RuntimeException {
     private String resourceName;
     private String fieldName;

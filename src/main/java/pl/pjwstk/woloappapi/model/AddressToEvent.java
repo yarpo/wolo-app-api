@@ -3,18 +3,17 @@ package pl.pjwstk.woloappapi.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor
 @Table(name = "address_to_event")
 public class AddressToEvent {
-
-    public AddressToEvent() {}
 
     public AddressToEvent(Event event, Address address) {
         this.event = event;

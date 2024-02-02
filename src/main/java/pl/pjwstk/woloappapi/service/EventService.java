@@ -1,9 +1,7 @@
 package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
-
 import org.springframework.stereotype.Service;
-
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.utils.EventMapper;
@@ -225,4 +223,5 @@ public class EventService {
             updateConsumer.accept(newValue);
         }
     }
+
 }
