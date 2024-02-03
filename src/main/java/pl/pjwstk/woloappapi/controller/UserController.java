@@ -1,15 +1,13 @@
 package pl.pjwstk.woloappapi.controller;
 
 import lombok.AllArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import pl.pjwstk.woloappapi.model.UserEntity;
-import pl.pjwstk.woloappapi.model.UserRequestDto;
-import pl.pjwstk.woloappapi.model.UserResponseDto;
+import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.service.UserService;
+import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import javax.validation.Valid;
@@ -22,7 +20,9 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
+    private final EventService eventService;
     private final UserMapper userMapper;
+    private final EventMapper eventMapper;
 
     @GetMapping()
     public ResponseEntity<List<UserResponseDto>> getUsers() {
@@ -39,6 +39,14 @@ public class UserController {
         UserEntity user = userService.getUserById(id);
         UserResponseDto userResponseDto= userMapper.toUserResponseDto(user);
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/events")
+    public ResponseEntity<List<EventAIRequest>>getUserEvents(@PathVariable Long id){
+        List<Event> events = eventService.getEvensByUser(id);
+        List<EventAIRequest> aiRequests = events.stream()
+                .map(eventMapper::toEventAIRequest).toList();
+        return new ResponseEntity<>(aiRequests, HttpStatus.OK);
     }
 
     @PostMapping("/add")
@@ -64,4 +72,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+
 }

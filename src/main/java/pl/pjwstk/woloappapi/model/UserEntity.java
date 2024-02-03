@@ -1,18 +1,12 @@
 package pl.pjwstk.woloappapi.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Data
@@ -44,7 +38,6 @@ public class UserEntity {
 
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
-    @JsonBackReference
     private Role role;
 
     @Column(name = "is_pesel_verified", nullable = false)
@@ -57,12 +50,10 @@ public class UserEntity {
     private boolean isAdult;
 
     @OneToMany(mappedBy = "moderator", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<Organisation> organisations;
 
     @OneToMany(mappedBy = "user")
-    @JsonManagedReference
-    private List<ShiftToUser> shifts = new ArrayList<>();
+    private List<ShiftToUser> shifts;
 
     @Column(name = "password", nullable = false)
     private String password;

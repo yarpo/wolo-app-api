@@ -15,11 +15,6 @@ import java.util.List;
 @Table(name = "address_to_event")
 public class AddressToEvent {
 
-    public AddressToEvent(Event event, Address address) {
-        this.event = event;
-        this.address = address;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -38,4 +33,9 @@ public class AddressToEvent {
     @OneToMany(mappedBy = "addressToEvent", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Shift> shifts = new ArrayList<>();
+
+    public AddressToEvent(Event event, Address address) {
+        this.address = address;
+        this.event = event;
+    }
 }

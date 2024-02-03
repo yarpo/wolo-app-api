@@ -24,3 +24,4 @@ ALTER TABLE event
     ADD COLUMN description_en TEXT,
     ADD COLUMN description_ua TEXT,
     ADD COLUMN description_ru TEXT;
+

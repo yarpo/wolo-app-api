@@ -102,4 +102,12 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<EventAIRequest>>getUpcomingEvents(){
+        List<Event> events = eventService.getUpcomingEvents();
+        List<EventAIRequest> aiRequests = events.stream()
+                .map(eventMapper::toEventAIRequest).toList();
+        return new ResponseEntity<>(aiRequests, HttpStatus.OK);
+    }
+
 }

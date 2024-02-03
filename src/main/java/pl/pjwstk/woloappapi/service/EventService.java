@@ -224,4 +224,11 @@ public class EventService {
         }
     }
 
+    public List<Event> getEvensByUser(Long id) {
+        return eventRepository.findEventsByUserId(id);
+    }
+
+    public List<Event> getUpcomingEvents() {
+        return eventRepository.findAllNotBeforeNow();
+    }
 }

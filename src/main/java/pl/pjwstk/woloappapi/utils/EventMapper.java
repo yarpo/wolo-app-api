@@ -141,4 +141,19 @@ public interface EventMapper {
         translation.setLanguage(eventDto.getLanguage());
         return translation;
     }
+
+    default EventAIRequest toEventAIRequest(Event event){
+        EventAIRequest aiRequest = new EventAIRequest();
+        aiRequest.setId(event.getId());
+        aiRequest.setDistrict(event.getAddressToEvents().get(0).getAddress().getDistrict().getName());
+        aiRequest.setOrganisation(event.getOrganisation().getName());
+        aiRequest.setCategories(event.getCategories()
+                .stream()
+                .map(cte -> cte
+                        .getCategory()
+                        .getName())
+                .distinct()
+                .collect(Collectors.toList()));
+        return aiRequest;
+    }
 }
