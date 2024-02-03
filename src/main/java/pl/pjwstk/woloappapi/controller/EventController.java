@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.EventService;
+import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.Translator;
 
@@ -23,6 +24,7 @@ public class EventController {
     private final EventService eventService;
     private final EventMapper eventMapper;
     private final Translator translator;
+    private final UserService userService;
 
     @GetMapping("")
     public ResponseEntity<List<EventResponseDto>> getEvents(
@@ -32,6 +34,13 @@ public class EventController {
                 .map(e -> eventMapper.toEventResponseDto(e, translator.translate(language, e)))
                 .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
+    }
+    @PostMapping("/join")
+    public ResponseEntity<HttpStatus> joinEvent(
+            @RequestParam(value = "user") Long userId,
+            @RequestParam(value = "shift") Long shiftId){
+        userService.joinEvent(userId, shiftId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/search")

@@ -1,13 +1,12 @@
 package pl.pjwstk.woloappapi.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-
 import org.springframework.stereotype.Service;
-
-
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
+import pl.pjwstk.woloappapi.repository.ShiftRepository;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
@@ -27,6 +26,7 @@ public class UserService {
     private final ShiftToUserRepository shiftToUserRepository;
     private final UserMapper userMapper;
     private final OrganisationService organisationService;
+    private ShiftRepository shiftRepository;
 
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
@@ -50,7 +50,7 @@ public class UserService {
                 List<Organisation>userOrganisations = organisationService.findOrganisationsByModeratorId(userId);
                 if(!userOrganisations.isEmpty()){
                     organisationService.removeModeratorFromOrganisations(userOrganisations,userId);
-                }{}
+                }
 
                 UserEntity user = userOptional.get();
                 shiftToUserRepository.deleteByUser(user);
@@ -104,5 +104,16 @@ public class UserService {
             updateConsumer.accept(newValue);
 
         }
+    }
+
+    public void joinEvent(Long userId, Long shiftId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        Shift shift = shiftRepository.findById(shiftId)
+                .orElseThrow(() -> new EntityNotFoundException("Shift not found with id: " + shiftId));
+
+        shift.getShiftToUsers().add(new ShiftToUser(user, shift));
+        shiftRepository.save(shift);
     }
 }

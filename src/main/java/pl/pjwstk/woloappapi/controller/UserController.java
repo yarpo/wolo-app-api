@@ -49,12 +49,14 @@ public class UserController {
         return new ResponseEntity<>(aiRequests, HttpStatus.OK);
     }
 
+    //to do wyrzucenia
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addUser(@RequestBody UserRequestDto userRequestDto) {
         userService.createUser(userRequestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    //to nie wiem czy jest potrzebne
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
@@ -72,6 +74,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
-
 }

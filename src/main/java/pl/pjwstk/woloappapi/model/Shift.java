@@ -1,9 +1,6 @@
 package pl.pjwstk.woloappapi.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -23,11 +20,9 @@ public class Shift {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_to_event_id") // nullable = false
-    @JsonBackReference
     private AddressToEvent addressToEvent;
 
     @OneToMany(mappedBy = "shift")
-    @JsonManagedReference
     private List<ShiftToUser> shiftToUsers = new ArrayList<>();
 
     @Column(name = "start_time", nullable = false)
