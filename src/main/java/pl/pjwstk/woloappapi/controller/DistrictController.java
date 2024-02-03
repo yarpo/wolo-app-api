@@ -37,6 +37,7 @@ public class DistrictController {
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addDistrict(@Valid @RequestBody DistrictDto district) {
+
         districtService.createDistrict(district);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -51,6 +52,7 @@ public class DistrictController {
     public ResponseEntity<HttpStatus> editDistrict(
             @Valid @RequestBody DistrictDto district) {
         districtService.updateDistrict(district);
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

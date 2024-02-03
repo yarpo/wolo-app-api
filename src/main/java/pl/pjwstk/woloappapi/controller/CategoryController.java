@@ -36,7 +36,9 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addCategory(@Valid @RequestBody CategoryDto category) {
+
+    public ResponseEntity<HttpStatus> addCategory(@Valid @RequestBody Category category) {
+
         categoryService.createCategory(category);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -51,6 +53,7 @@ public class CategoryController {
     public ResponseEntity<HttpStatus> editCategory(
             @Valid @RequestBody CategoryDto category) {
         categoryService.updateCategory(category);
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
