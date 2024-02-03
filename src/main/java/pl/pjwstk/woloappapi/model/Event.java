@@ -45,10 +45,7 @@ public class Event {
     private String descriptionRU;
 
     @ManyToOne
-    @JoinColumn(name = "organisation_en", nullable = false)
     @JoinColumn(name = "organisation_id", nullable = false)
-    @JsonBackReference
-    @JoinColumn(name = "organisation_en", nullable = false)
     private Organisation organisation;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
