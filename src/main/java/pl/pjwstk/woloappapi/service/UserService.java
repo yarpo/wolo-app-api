@@ -88,6 +88,12 @@ public class UserService {
         return userRepository.getUsersByRole(roleById);
     }
 
+    public UserEntity getByEmail(String email){
+        return userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found!"));
+    }
+
     public int getShiftsCountForUser(Long userId) {
         UserEntity userEntity = userRepository.findById(userId).orElse(null);
 

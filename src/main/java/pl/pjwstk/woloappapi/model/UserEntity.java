@@ -1,17 +1,24 @@
 package pl.pjwstk.woloappapi.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user")
-public class UserEntity {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,21 +26,15 @@ public class UserEntity {
     private Long id;
 
     @Column(name = "firstname", nullable = false)
-    @NotBlank(message = "Name is required")
-    @Size(max = 50, message = "Name cannot exceed 50 characters")
     private String firstname;
 
     @Column(name = "lastname", nullable = false)
-    @NotBlank(message = "Surname is required")
-    @Size(max = 50, message = "Surname cannot exceed 50 characters")
     private String lastname;
 
     @Column(name = "email", nullable = false, unique = true)
-    @NotBlank(message = "Email is required")
     private String email;
 
     @Column(name = "phone_number")
-    @Pattern(regexp = "[0-9]{9}", message = "Phone number should consist of 9 digits")
     private String phoneNumber;
 
     @ManyToOne
@@ -57,4 +58,34 @@ public class UserEntity {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.getName()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

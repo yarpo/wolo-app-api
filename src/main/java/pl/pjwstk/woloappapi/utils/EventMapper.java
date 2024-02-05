@@ -138,7 +138,6 @@ public interface EventMapper {
         translation.setTitle(eventDto.getName());
         translation.setDescription(eventDto.getDescription());
         translation.setAddressDescription(eventDto.getAddressDescription());
-        translation.setLanguage(eventDto.getLanguage());
         return translation;
     }
 

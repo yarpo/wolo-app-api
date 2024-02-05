@@ -53,5 +53,4 @@ public class EventRequestDto {
     @Valid
     private List<ShiftDto> shifts;
 
-    private Language language;
 }

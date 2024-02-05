@@ -27,7 +27,7 @@ public class UserRequestDto {
     private String phoneNumber;
 
     @NotBlank(message = "role is required")
-    private RoleDto roleDto;
+    private String role;
 
     private boolean isPeselVerified;
 
