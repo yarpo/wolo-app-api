@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS address (
                                        street VARCHAR(50) NOT NULL,
     home_num VARCHAR(10) NOT NULL,
     district_id BIGINT, -- NOT NULL
-    description VARCHAR(250) NOT NULL
+    description VARCHAR(250)
     );
 -- Table: address_to_event
 CREATE TABLE IF NOT EXISTS address_to_event (
@@ -177,7 +177,9 @@ INSERT INTO district ( "name", city) VALUES
                                          ('Nowy Port', 'Gdańsk');
 
 INSERT INTO category ( "name") VALUES
+                                   ( 'Kultura'),
                                    ( 'Sport'),
-                                   ( 'Pomoc'),
                                    ( 'Edukacja'),
+                                   ( 'Ekologia'),
+                                   ( 'Pomoc'),
                                    ( 'Podstawowa');

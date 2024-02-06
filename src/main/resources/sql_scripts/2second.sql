@@ -14,7 +14,7 @@ INSERT INTO "user" ( firstname, lastname, email, phone_number, role_id, is_pesel
 
 
 INSERT INTO organisation ( "name", description, email, phone_num, address_id, is_approved, moderator_id, logo_url) VALUES
-                                                                                                                       ( 'Pomorska Fundacja Bracia Mniejsi', 'Pomagamy zwierzakom).', 'info@sprintclub.com', '123456789', 1, true, 1, 'https://upload.wikimedia.org/wikipedia/commons/2/25/Intel_logo_%282006-2020%29.jpg'),
+                                                                                                                       ( 'Pomorska Fundacja Bracia Mniejsi', 'Pomagamy zwierzakom).', 'info@sprintclub.com', '123456789', 2, true, 1, 'https://upload.wikimedia.org/wikipedia/commons/2/25/Intel_logo_%282006-2020%29.jpg'),
                                                                                                                        ( 'Centrum Wolontariatu w Gdańsku', 'Regionalne Centrum Wolontariatu w Gdańsku powstało w 1994r. Od 2001 roku jesteśmy samodzielnym stowarzyszeniem działającym w ramach ogólnopolskiej Federacji Centrów Wolontariatu', 'info@nowehoryzontygallery.com', '987654321', 2, true, 2, 'https://img.freepik.com/premium-wektory/streszczenie-kolorowe-logo-projektu_650075-1506.jpg'),
                                                                                                                        ( 'Akademia Programowania "Koduj z Nami"', 'Akademia oferująca kursy programowania dla osób w każdym wieku.', 'info@kodujznami.com', '456789123', 3, true, 1, 'https://img.freepik.com/darmowe-wektory/ptak-kolorowe-logo-wektor-gradientu_343694-1365.jpg');
 
@@ -41,6 +41,6 @@ INSERT INTO shift_to_user ( user_id, shift_id, is_on_reserve_list, is_leader) VA
                                                                                   ( 2, 2, false, false),
                                                                                   ( 3, 3, true, false);
 INSERT INTO category_to_event (category_id, event_id) VALUES
-                                                          ( 1, 1),
-                                                          ( 2, 2),
-                                                          ( 3, 3);
+                                                          (1, 1),
+                                                          (2, 2),
+                                                          (3, 3);

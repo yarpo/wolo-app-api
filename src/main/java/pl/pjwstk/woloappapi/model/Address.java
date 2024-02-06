@@ -1,10 +1,10 @@
 package pl.pjwstk.woloappapi.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +45,8 @@ public class Address {
     private String addressDescriptionRU;
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<Organisation> organisations = new ArrayList<>();
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<AddressToEvent> addressToEvents = new ArrayList<>();
 }

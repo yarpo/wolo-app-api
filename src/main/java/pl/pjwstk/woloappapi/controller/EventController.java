@@ -86,9 +86,9 @@ public class EventController {
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
         EventTranslationRequestDto translationDto = eventMapper.toEventTranslationDto(dtoEvent);
-        WebClient localClient = WebClient.create("http://localhost:5000");
+        WebClient localClient = WebClient.create();
         localClient.post()
-                .uri("/translate")
+                .uri("http://localhost:5000/translate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(translationDto)
                 .retrieve()
