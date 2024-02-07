@@ -2,7 +2,6 @@ package pl.pjwstk.woloappapi.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -85,22 +84,28 @@ public class EventController {
         return new ResponseEntity<>(eventDto, HttpStatus.OK);
     }
 
+//    @PostMapping("/add")
+//    public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
+//        EventTranslationRequestDto translationDto = eventMapper.toEventTranslationDto(dtoEvent);
+//        var translatedObject =webClient.post()
+//                .uri("/translate")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .bodyValue(translationDto)
+//                .retrieve()
+//                .bodyToMono(EventTranslationResponsDto.class)
+//                .block();
+//        if (translatedObject != null) {
+//            eventService.createEvent(translatedObject, dtoEvent);
+//            return new ResponseEntity<>(HttpStatus.CREATED);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
-        EventTranslationRequestDto translationDto = eventMapper.toEventTranslationDto(dtoEvent);
-        var translatedObject =webClient.post()
-                .uri("/translate")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(translationDto)
-                .retrieve()
-                .bodyToMono(EventTranslationResponsDto.class)
-                .block();
-        if (translatedObject != null) {
-            eventService.createEvent(translatedObject, dtoEvent);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventTranslateRequestDto dtoEvent) {
+            eventService.createEvent(eventMapper.toEvent(dtoEvent), dtoEvent);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}")

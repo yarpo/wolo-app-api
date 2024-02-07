@@ -38,14 +38,25 @@ public interface EventMapper {
         return event;
     }
 
-    default Address toAddress(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
+//    default Address toAddress(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
+//        Address address = new Address();
+//        address.setStreet(eventRequestDto.getStreet());
+//        address.setHomeNum(eventRequestDto.getHomeNum());
+//        address.setAddressDescriptionPL(translation.getAddressDescriptionPL());
+//        address.setAddressDescriptionEN(translation.getAddressDescriptionEN());
+//        address.setAddressDescriptionUA(translation.getAddressDescriptionUA());
+//        address.setAddressDescriptionRU(translation.getAddressDescriptionRU());
+//        return address;
+//    }
+
+    default Address toAddress(EventTranslateRequestDto dtoEvent) {
         Address address = new Address();
-        address.setStreet(eventRequestDto.getStreet());
-        address.setHomeNum(eventRequestDto.getHomeNum());
-        address.setAddressDescriptionPL(translation.getAddressDescriptionPL());
-        address.setAddressDescriptionEN(translation.getAddressDescriptionEN());
-        address.setAddressDescriptionUA(translation.getAddressDescriptionUA());
-        address.setAddressDescriptionRU(translation.getAddressDescriptionRU());
+        address.setStreet(dtoEvent.getStreet());
+        address.setHomeNum(dtoEvent.getHomeNum());
+        address.setAddressDescriptionPL(dtoEvent.getAddressDescription_pl());
+        address.setAddressDescriptionEN(dtoEvent.getAddressDescription_en());
+        address.setAddressDescriptionUA(dtoEvent.getAddressDescription_ua());
+        address.setAddressDescriptionRU(dtoEvent.getAddressDescription_ru());
         return address;
     }
 
@@ -155,5 +166,21 @@ public interface EventMapper {
                 .distinct()
                 .collect(Collectors.toList()));
         return aiRequest;
+    }
+
+    default Event toEvent(EventTranslateRequestDto dtoEvent){
+        Event event = new Event();
+        event.setNamePL(dtoEvent.getName_pl());
+        event.setNameEN(dtoEvent.getName_en());
+        event.setNameUA(dtoEvent.getName_ua());
+        event.setNameRU(dtoEvent.getName_ru());
+        event.setDescriptionPL(dtoEvent.getDescription_pl());
+        event.setDescriptionEN(dtoEvent.getDescription_en());
+        event.setDescriptionUA(dtoEvent.getDescription_ua());
+        event.setDescriptionRU(dtoEvent.getDescription_ru());
+        event.setPeselVerificationRequired(dtoEvent.isPeselVerificationRequired());
+        event.setAgreementNeeded(dtoEvent.isAgreementNeeded());
+        event.setImageUrl(dtoEvent.getImageUrl());
+        return event;
     }
 }

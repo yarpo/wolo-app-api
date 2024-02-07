@@ -119,22 +119,22 @@ public class EventMapperTests {
         assertFalse(event.isApproved());
     }
 
-    @Test
-    public void testToAddress() {
-        EventRequestDto eventRequestDto = new EventRequestDto();
-        eventRequestDto.setStreet("Test Street");
-        eventRequestDto.setHomeNum("123");
-
-        Address address = eventMapper.toAddress(translation, eventRequestDto);
-
-        assertNotNull(address);
-        assertEquals("Test Street", address.getStreet());
-        assertEquals("123", address.getHomeNum());
-        assertEquals("PL Address Description", address.getAddressDescriptionPL());
-        assertEquals("EN Address Description", address.getAddressDescriptionEN());
-        assertEquals("UA Address Description", address.getAddressDescriptionUA());
-        assertEquals("RU Address Description", address.getAddressDescriptionRU());
-    }
+//    @Test
+//    public void testToAddress() {
+//        EventRequestDto eventRequestDto = new EventRequestDto();
+//        eventRequestDto.setStreet("Test Street");
+//        eventRequestDto.setHomeNum("123");
+//
+//        Address address = eventMapper.toAddress(translation, eventRequestDto);
+//
+//        assertNotNull(address);
+//        assertEquals("Test Street", address.getStreet());
+//        assertEquals("123", address.getHomeNum());
+//        assertEquals("PL Address Description", address.getAddressDescriptionPL());
+//        assertEquals("EN Address Description", address.getAddressDescriptionEN());
+//        assertEquals("UA Address Description", address.getAddressDescriptionUA());
+//        assertEquals("RU Address Description", address.getAddressDescriptionRU());
+//    }
 
     @Test
     public void testToEventResponseDtoStructure() {

@@ -36,13 +36,47 @@ public class EventService {
                 .orElseThrow(() -> new NotFoundException("Event id not found!"));
     }
 
-    public void createEvent(EventTranslationResponsDto translation, EventRequestDto dtoEvent) {
-        Address address = eventMapper.toAddress(translation, dtoEvent);
+//    public void createEvent(EventTranslationResponsDto translation, EventRequestDto dtoEvent) {
+//        Address address = eventMapper.toAddress(translation, dtoEvent);
+//        District district = districtService.getDistrictById(dtoEvent.getDistrictId());
+//        address.setDistrict(district);
+//        addressService.createAddress(address);
+//
+//        Event event = eventMapper.toEvent(translation, dtoEvent);
+//        Organisation organisation =
+//                organisationService.getOrganisationById(dtoEvent.getOrganisationId());
+//        event.setOrganisation(organisation);
+//
+//        eventRepository.save(event);
+//
+//        AddressToEvent addressToEvent = new AddressToEvent(event, address);
+//
+//        addressToEventService.createAddressToEvent(addressToEvent);
+//
+//        List<Shift> shifts = eventMapper.toShifts(dtoEvent.getShifts());
+//        shifts.forEach(
+//                shift -> {
+//                    shift.setAddressToEvent(addressToEvent);
+//                    shiftService.createShift(shift);
+//                });
+//
+//        dtoEvent.getCategories()
+//                .forEach(
+//                        categoryId -> {
+//                            CategoryToEvent categoryToEvent = new CategoryToEvent();
+//                            categoryToEvent.setCategory(
+//                                    categoryService.getCategoryById(categoryId));
+//                            categoryToEvent.setEvent(event);
+//                            categoryToEventService.createCategoryToEvent(categoryToEvent);
+//                        });
+//    }
+
+    public void createEvent(Event event, EventTranslateRequestDto dtoEvent) {
+        Address address = eventMapper.toAddress(dtoEvent);
         District district = districtService.getDistrictById(dtoEvent.getDistrictId());
         address.setDistrict(district);
         addressService.createAddress(address);
 
-        Event event = eventMapper.toEvent(translation, dtoEvent);
         Organisation organisation =
                 organisationService.getOrganisationById(dtoEvent.getOrganisationId());
         event.setOrganisation(organisation);
