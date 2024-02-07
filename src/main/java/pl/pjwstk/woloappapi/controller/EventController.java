@@ -26,6 +26,8 @@ public class EventController {
     private final Translator translator;
     private final UserService userService;
 
+    private final WebClient webClient;
+
     @GetMapping("")
     public ResponseEntity<List<EventResponseDto>> getEvents(
             @RequestParam(value = "language") String language) {
@@ -86,15 +88,19 @@ public class EventController {
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
         EventTranslationRequestDto translationDto = eventMapper.toEventTranslationDto(dtoEvent);
-        WebClient localClient = WebClient.create("http://127.0.0.1:5000");
-        localClient.post()
+        var translatedObject =webClient.post()
                 .uri("/translate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(translationDto)
                 .retrieve()
                 .bodyToMono(EventTranslationResponsDto.class)
-                .subscribe(translatedObject -> eventService.createEvent(translatedObject, dtoEvent));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+                .block();
+        if (translatedObject != null) {
+            eventService.createEvent(translatedObject, dtoEvent);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/delete/{id}")
