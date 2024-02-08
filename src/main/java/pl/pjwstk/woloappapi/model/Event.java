@@ -50,4 +50,7 @@ public class Event {
     @Column(name = "is_approved", nullable = false)
     private boolean approved;
 
+    @Column(name = "alt")
+    private String alt;
+
 }
