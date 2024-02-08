@@ -37,10 +37,10 @@ public interface EventMapper {
         Address address = new Address();
         address.setStreet(dtoEvent.getStreet());
         address.setHomeNum(dtoEvent.getHomeNum());
-        address.setAddressDescriptionPL(dtoEvent.getAddressDescription_pl());
-        address.setAddressDescriptionEN(dtoEvent.getAddressDescription_en());
-        address.setAddressDescriptionUA(dtoEvent.getAddressDescription_ua());
-        address.setAddressDescriptionRU(dtoEvent.getAddressDescription_ru());
+        address.setAddressDescriptionPL(dtoEvent.getAddressDescriptionPL());
+        address.setAddressDescriptionEN(dtoEvent.getAddressDescriptionEN());
+        address.setAddressDescriptionUA(dtoEvent.getAddressDescriptionUA());
+        address.setAddressDescriptionRU(dtoEvent.getAddressDescriptionRU());
         return address;
     }
 
@@ -146,14 +146,14 @@ public interface EventMapper {
 
     default Event toEvent(EventRequestDto dtoEvent){
         Event event = new Event();
-        event.setNamePL(dtoEvent.getName_pl());
-        event.setNameEN(dtoEvent.getName_en());
-        event.setNameUA(dtoEvent.getName_ua());
-        event.setNameRU(dtoEvent.getName_ru());
-        event.setDescriptionPL(dtoEvent.getDescription_pl());
-        event.setDescriptionEN(dtoEvent.getDescription_en());
-        event.setDescriptionUA(dtoEvent.getDescription_ua());
-        event.setDescriptionRU(dtoEvent.getDescription_ru());
+        event.setNamePL(dtoEvent.getNamePL());
+        event.setNameEN(dtoEvent.getNameEN());
+        event.setNameUA(dtoEvent.getNameUA());
+        event.setNameRU(dtoEvent.getNameRU());
+        event.setDescriptionPL(dtoEvent.getDescriptionPL());
+        event.setDescriptionEN(dtoEvent.getDescriptionEN());
+        event.setDescriptionUA(dtoEvent.getDescriptionUA());
+        event.setDescriptionRU(dtoEvent.getDescriptionRU());
         event.setPeselVerificationRequired(dtoEvent.isPeselVerificationRequired());
         event.setAgreementNeeded(dtoEvent.isAgreementNeeded());
         event.setImageUrl(dtoEvent.getImageUrl());
