@@ -22,22 +22,6 @@ public interface EventMapper {
 
     List<Shift> toShifts(List<ShiftDto> shiftDtos);
 
-    default Event toEvent(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
-        Event event = new Event();
-        event.setNamePL(translation.getTitlePL());
-        event.setNameEN(translation.getTitleEN());
-        event.setNameUA(translation.getTitleUA());
-        event.setNameRU(translation.getTitleRU());
-        event.setDescriptionPL(translation.getDescriptionPL());
-        event.setDescriptionEN(translation.getDescriptionEN());
-        event.setDescriptionUA(translation.getDescriptionUA());
-        event.setDescriptionRU(translation.getDescriptionRU());
-        event.setPeselVerificationRequired(eventRequestDto.isPeselVerificationRequired());
-        event.setAgreementNeeded(eventRequestDto.isAgreementNeeded());
-        event.setImageUrl(eventRequestDto.getImageUrl());
-        return event;
-    }
-
 //    default Address toAddress(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
 //        Address address = new Address();
 //        address.setStreet(eventRequestDto.getStreet());
@@ -49,7 +33,7 @@ public interface EventMapper {
 //        return address;
 //    }
 
-    default Address toAddress(EventTranslateRequestDto dtoEvent) {
+    default Address toAddress(EventRequestDto dtoEvent) {
         Address address = new Address();
         address.setStreet(dtoEvent.getStreet());
         address.setHomeNum(dtoEvent.getHomeNum());
@@ -144,14 +128,6 @@ public interface EventMapper {
         return eventResponseDto;
     }
 
-    default EventTranslationRequestDto toEventTranslationDto(EventRequestDto eventDto){
-        EventTranslationRequestDto translation = new EventTranslationRequestDto();
-        translation.setTitle(eventDto.getName());
-        translation.setDescription(eventDto.getDescription());
-        translation.setAddressDescription(eventDto.getAddressDescription());
-        translation.setLanguage(eventDto.getLanguage());
-        return translation;
-    }
 
     default EventAIRequest toEventAIRequest(Event event){
         EventAIRequest aiRequest = new EventAIRequest();
@@ -168,7 +144,7 @@ public interface EventMapper {
         return aiRequest;
     }
 
-    default Event toEvent(EventTranslateRequestDto dtoEvent){
+    default Event toEvent(EventRequestDto dtoEvent){
         Event event = new Event();
         event.setNamePL(dtoEvent.getName_pl());
         event.setNameEN(dtoEvent.getName_en());
@@ -181,6 +157,7 @@ public interface EventMapper {
         event.setPeselVerificationRequired(dtoEvent.isPeselVerificationRequired());
         event.setAgreementNeeded(dtoEvent.isAgreementNeeded());
         event.setImageUrl(dtoEvent.getImageUrl());
+        event.setAlt(dtoEvent.getAlt());
         return event;
     }
 }

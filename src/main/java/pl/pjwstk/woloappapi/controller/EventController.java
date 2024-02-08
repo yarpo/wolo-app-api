@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.service.UserService;
@@ -24,8 +23,6 @@ public class EventController {
     private final EventMapper eventMapper;
     private final Translator translator;
     private final UserService userService;
-
-    private final WebClient webClient;
 
     @GetMapping("")
     public ResponseEntity<List<EventResponseDto>> getEvents(
@@ -103,7 +100,7 @@ public class EventController {
 //    }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventTranslateRequestDto dtoEvent) {
+    public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
             eventService.createEvent(eventMapper.toEvent(dtoEvent), dtoEvent);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

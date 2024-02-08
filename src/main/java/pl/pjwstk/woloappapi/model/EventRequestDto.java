@@ -19,10 +19,19 @@ public class EventRequestDto {
 
     @NotBlank(message = "Name is required")
     @Size(max = 250, message = "Name cannot exceed 250 characters")
-    private String name;
+    private String name_pl;
+
+    private String name_en;
+
+    private String name_ua;
+
+    private String name_ru;
 
     @NotBlank(message = "Description is required")
-    private String description;
+    private String description_pl;
+    private String description_en;
+    private String description_ua;
+    private String description_ru;
 
     private Long organisationId;
 
@@ -44,7 +53,10 @@ public class EventRequestDto {
     @NotNull(message = "District must be chosen")
     private Long districtId;
 
-    private String addressDescription;
+    private String addressDescription_pl;
+    private String addressDescription_en;
+    private String addressDescription_ua;
+    private String addressDescription_ru;
 
     private String imageUrl;
 
@@ -53,5 +65,5 @@ public class EventRequestDto {
     @Valid
     private List<ShiftDto> shifts;
 
-    private Language language;
+    private String alt;
 }

@@ -71,7 +71,7 @@ public class EventService {
 //                        });
 //    }
 
-    public void createEvent(Event event, EventTranslateRequestDto dtoEvent) {
+    public void createEvent(Event event, EventRequestDto dtoEvent) {
         Address address = eventMapper.toAddress(dtoEvent);
         District district = districtService.getDistrictById(dtoEvent.getDistrictId());
         address.setDistrict(district);
@@ -114,9 +114,9 @@ public class EventService {
                                         new IllegalArgumentException(
                                                 "Event with ID " + id + " does not exist"));
 
-        updateFieldIfDifferent(event::getNamePL, event::setNamePL, eventDto.getName());
+        updateFieldIfDifferent(event::getNamePL, event::setNamePL, eventDto.getName_pl());
         updateFieldIfDifferent(
-                event::getDescriptionPL, event::setDescriptionPL, eventDto.getDescription());
+                event::getDescriptionPL, event::setDescriptionPL, eventDto.getDescription_pl());
         updateFieldIfDifferent(
                 event::isPeselVerificationRequired,
                 event::setPeselVerificationRequired,
@@ -179,7 +179,7 @@ public class EventService {
         updateFieldIfDifferent(
                 address::getAddressDescriptionPL,
                 address::setAddressDescriptionPL,
-                eventDto.getAddressDescription());
+                eventDto.getAddressDescription_pl());
 
         event.getAddressToEvents().forEach(ate -> ate.setAddress(address));
     }
