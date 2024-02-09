@@ -20,7 +20,7 @@ public class Event {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name_pl", nullable = false)
+    @Column(name = "name_pl")
     private String namePL;
 
     @Column(name = "name_en")
@@ -32,7 +32,7 @@ public class Event {
     @Column(name = "name_ru")
     private String nameRU;
 
-    @Column(name = "description_pl", nullable = false)
+    @Column(name = "description_pl")
     private String descriptionPL;
 
     @Column(name = "description_en")
