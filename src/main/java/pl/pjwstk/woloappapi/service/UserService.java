@@ -37,6 +37,7 @@ public class UserService {
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("User id not found!"));
     }
+    @Transactional
     public void createUser(UserRequestDto userDto) {
         UserEntity user = userMapper.toUser(userDto);
         userRepository.save(user);
@@ -61,6 +62,7 @@ public class UserService {
         }
 
 
+    @Transactional
     public UserEntity updateUser(UserRequestDto userRequestDto, Long id) {
 
          UserEntity user = userRepository.findById(id).orElseThrow(
@@ -106,6 +108,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void joinEvent(Long userId, Long shiftId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));

@@ -1,6 +1,5 @@
 package pl.pjwstk.woloappapi.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +28,6 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name = "district_id") // nullable = false
-    @JsonBackReference
     private District district;
 
     @Column(name = "description_pl")

@@ -2,6 +2,7 @@ package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.utils.EventMapper;
@@ -36,42 +37,9 @@ public class EventService {
                 .orElseThrow(() -> new NotFoundException("Event id not found!"));
     }
 
-//    public void createEvent(EventTranslationResponsDto translation, EventRequestDto dtoEvent) {
-//        Address address = eventMapper.toAddress(translation, dtoEvent);
-//        District district = districtService.getDistrictById(dtoEvent.getDistrictId());
-//        address.setDistrict(district);
-//        addressService.createAddress(address);
-//
-//        Event event = eventMapper.toEvent(translation, dtoEvent);
-//        Organisation organisation =
-//                organisationService.getOrganisationById(dtoEvent.getOrganisationId());
-//        event.setOrganisation(organisation);
-//
-//        eventRepository.save(event);
-//
-//        AddressToEvent addressToEvent = new AddressToEvent(event, address);
-//
-//        addressToEventService.createAddressToEvent(addressToEvent);
-//
-//        List<Shift> shifts = eventMapper.toShifts(dtoEvent.getShifts());
-//        shifts.forEach(
-//                shift -> {
-//                    shift.setAddressToEvent(addressToEvent);
-//                    shiftService.createShift(shift);
-//                });
-//
-//        dtoEvent.getCategories()
-//                .forEach(
-//                        categoryId -> {
-//                            CategoryToEvent categoryToEvent = new CategoryToEvent();
-//                            categoryToEvent.setCategory(
-//                                    categoryService.getCategoryById(categoryId));
-//                            categoryToEvent.setEvent(event);
-//                            categoryToEventService.createCategoryToEvent(categoryToEvent);
-//                        });
-//    }
-
-    public void createEvent(Event event, EventRequestDto dtoEvent) {
+    @Transactional
+    public void createEvent(EventRequestDto dtoEvent) {
+        Event event = eventMapper.toEvent(dtoEvent);
         Address address = eventMapper.toAddress(dtoEvent);
         District district = districtService.getDistrictById(dtoEvent.getDistrictId());
         address.setDistrict(district);
@@ -105,6 +73,7 @@ public class EventService {
                         });
     }
 
+    @Transactional
     public void updateEvent(EventRequestDto eventDto, Long id) {
         Event event =
                 eventRepository
@@ -226,9 +195,9 @@ public class EventService {
         updateFieldIfDifferent(
                 shift::getRequiredMinAge, shift::setRequiredMinAge, newShift.getRequiredMinAge());
     }
-
+    @Transactional
     public void deleteEvent(Long id) {
-        eventRepository.deleteById(id);
+        eventRepository.findById(id).ifPresent(e -> eventRepository.deleteById(id));
     }
 
     public List<Event> filterEvents(
@@ -258,7 +227,7 @@ public class EventService {
         }
     }
 
-    public List<Event> getEvensByUser(Long id) {
+    public List<Event> getEventsByUser(Long id) {
         return eventRepository.findEventsByUserId(id);
     }
 

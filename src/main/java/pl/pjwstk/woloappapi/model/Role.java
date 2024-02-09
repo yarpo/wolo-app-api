@@ -1,10 +1,6 @@
 package pl.pjwstk.woloappapi.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -24,7 +20,6 @@ public class Role {
     private String name;
 
     @OneToMany(mappedBy = "role")
-    @JsonManagedReference
     private List<UserEntity> userEntities = new ArrayList<>();
 
 }

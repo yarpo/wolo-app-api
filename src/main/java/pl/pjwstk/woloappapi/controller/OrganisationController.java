@@ -48,12 +48,6 @@ public class OrganisationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> deleteOrganisation(@PathVariable Long id) {
-        organisationService.deleteOrganisation(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
     @GetMapping("/events/{id}")
     public ResponseEntity<List<EventResponseDto>> getEventsByOrganisation(@PathVariable Long id,
                                                                           @RequestParam(value = "language") String language) {

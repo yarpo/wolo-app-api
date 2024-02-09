@@ -1,7 +1,5 @@
 package pl.pjwstk.woloappapi.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,18 +18,15 @@ public class AddressToEvent {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "event_id", nullable = false)
-    @JsonBackReference
     private Event event;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "address_id", nullable = false)
-    @JsonBackReference
     private Address address;
 
     @OneToMany(mappedBy = "addressToEvent", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<Shift> shifts = new ArrayList<>();
 
     public AddressToEvent(Event event, Address address) {

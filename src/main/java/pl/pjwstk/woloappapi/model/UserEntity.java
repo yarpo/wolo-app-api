@@ -49,7 +49,7 @@ public class UserEntity {
     @Column(name = "is_adult", nullable = false)
     private boolean isAdult;
 
-    @OneToMany(mappedBy = "moderator", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "moderator", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private List<Organisation> organisations;
 
     @OneToMany(mappedBy = "user")

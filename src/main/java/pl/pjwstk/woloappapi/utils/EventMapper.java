@@ -115,6 +115,7 @@ public interface EventMapper {
         eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setAddressDescription(translations.get(2));
         eventResponseDto.setImageUrl(event.getImageUrl());
+        eventResponseDto.setAlt(event.getAlt());
         List<ShiftDto> shifts =
                 event.getAddressToEvents().stream()
                         .flatMap(

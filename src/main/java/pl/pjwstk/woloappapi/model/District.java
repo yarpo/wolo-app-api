@@ -1,7 +1,5 @@
 package pl.pjwstk.woloappapi.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,6 +23,5 @@ public class District {
     private String city;
 
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<Address> addresses = new ArrayList<>();
 }

@@ -43,7 +43,7 @@ public class UserController {
 
     @GetMapping("/{id}/events")
     public ResponseEntity<List<EventAIRequest>>getUserEvents(@PathVariable Long id){
-        List<Event> events = eventService.getEvensByUser(id);
+        List<Event> events = eventService.getEventsByUser(id);
         List<EventAIRequest> aiRequests = events.stream()
                 .map(eventMapper::toEventAIRequest).toList();
         return new ResponseEntity<>(aiRequests, HttpStatus.OK);

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.Category;
 import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
@@ -26,10 +27,12 @@ public class CategoryService {
                 .orElseThrow(() -> new NotFoundException("Category id not found!"));
     }
 
+    @Transactional
     public void createCategory(Category category) {
         categoryRepository.save(category);
     }
 
+    @Transactional
     public void updateCategory(Category category, Long id) {
         if (!categoryRepository.existsById(id)) {
             throw new IllegalArgumentException("Category with ID " + id + " does not exist");
@@ -38,6 +41,7 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
+    @Transactional
     public void deleteCategory(Long id) {
         categoryRepository
                 .findById(id)

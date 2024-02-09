@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
@@ -34,6 +35,7 @@ public class OrganisationService {
                 .orElseThrow(() -> new NotFoundException("Organisation id not found!"));
     }
 
+    @Transactional
     public void createOrganisation(OrganisationRequestDto organisationDto) {
         District district = districtService.getDistrictById(organisationDto.getDistrictId());
         Address address = organisationMapper.toAddress(organisationDto);
@@ -45,6 +47,7 @@ public class OrganisationService {
         organisationRepository.save(organisation);
     }
 
+    @Transactional
     public void updateOrganisation(OrganisationRequestDto organisationDto, Long id) {
         Organisation organisation =
                 organisationRepository
@@ -87,13 +90,6 @@ public class OrganisationService {
                 organisation::getLogoUrl, organisation::setLogoUrl, organisationDto.getLogoUrl());
 
         organisationRepository.save(organisation);
-    }
-
-    public void deleteOrganisation(Long id) {
-        if (!organisationRepository.existsById(id)) {
-            throw new IllegalArgumentException("Organisation with ID " + id + " does not exist");
-        }
-        organisationRepository.deleteById(id);
     }
 
     public List<Event> getEventsByOrganisation(Long id) {

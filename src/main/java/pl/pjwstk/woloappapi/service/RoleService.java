@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
@@ -25,18 +26,21 @@ public class RoleService {
                 .orElseThrow(() -> new NotFoundException("Role id not found!"));
     }
 
+    @Transactional
     public void createRole(Role role) {
         roleRepository.save(role);
     }
 
+    @Transactional
     public void updateRole(Role role, Long id) {
-        if (!roleRepository.existsById(id)) {
-            throw new IllegalArgumentException("Role with ID " + id + " does not exist");
-        }
+        roleRepository
+                .findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Role with ID " + id + " does not exist"));
         role.setId(id);
         roleRepository.save(role);
     }
 
+    @Transactional
     public void deleteRole(Long id) {
         if (!roleRepository.existsById(id)) {
             throw new IllegalArgumentException("Role with ID " + id + " does not exist");

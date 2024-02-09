@@ -80,28 +80,9 @@ public class EventController {
         EventResponseDetailsDto eventDto = eventMapper.toEventResponseDetailsDto(event, translator.translate(language, event));
         return new ResponseEntity<>(eventDto, HttpStatus.OK);
     }
-
-//    @PostMapping("/add")
-//    public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
-//        EventTranslationRequestDto translationDto = eventMapper.toEventTranslationDto(dtoEvent);
-//        var translatedObject =webClient.post()
-//                .uri("/translate")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .bodyValue(translationDto)
-//                .retrieve()
-//                .bodyToMono(EventTranslationResponsDto.class)
-//                .block();
-//        if (translatedObject != null) {
-//            eventService.createEvent(translatedObject, dtoEvent);
-//            return new ResponseEntity<>(HttpStatus.CREATED);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
-            eventService.createEvent(eventMapper.toEvent(dtoEvent), dtoEvent);
+            eventService.createEvent(dtoEvent);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -111,10 +92,9 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("/{id}/edit")
+    @PutMapping("/{id}/edit")
     public ResponseEntity<HttpStatus> editEvent(
             @Valid @RequestBody EventRequestDto eventRequestDto, @PathVariable Long id) {
-
         eventService.updateEvent(eventRequestDto, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
