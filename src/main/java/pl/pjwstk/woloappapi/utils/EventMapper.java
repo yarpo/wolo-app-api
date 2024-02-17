@@ -22,25 +22,11 @@ public interface EventMapper {
 
     List<Shift> toShifts(List<ShiftDto> shiftDtos);
 
-//    default Address toAddress(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
-//        Address address = new Address();
-//        address.setStreet(eventRequestDto.getStreet());
-//        address.setHomeNum(eventRequestDto.getHomeNum());
-//        address.setAddressDescriptionPL(translation.getAddressDescriptionPL());
-//        address.setAddressDescriptionEN(translation.getAddressDescriptionEN());
-//        address.setAddressDescriptionUA(translation.getAddressDescriptionUA());
-//        address.setAddressDescriptionRU(translation.getAddressDescriptionRU());
-//        return address;
-//    }
-
     default Address toAddress(EventRequestDto dtoEvent) {
         Address address = new Address();
         address.setStreet(dtoEvent.getStreet());
         address.setHomeNum(dtoEvent.getHomeNum());
-        address.setAddressDescriptionPL(dtoEvent.getAddressDescriptionPL());
-        address.setAddressDescriptionEN(dtoEvent.getAddressDescriptionEN());
-        address.setAddressDescriptionUA(dtoEvent.getAddressDescriptionUA());
-        address.setAddressDescriptionRU(dtoEvent.getAddressDescriptionRU());
+        address.setAddressDescription(dtoEvent.getAddressDescription());
         return address;
     }
 
@@ -115,7 +101,6 @@ public interface EventMapper {
         eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setAddressDescription(translations.get(2));
         eventResponseDto.setImageUrl(event.getImageUrl());
-        eventResponseDto.setAlt(event.getAlt());
         List<ShiftDto> shifts =
                 event.getAddressToEvents().stream()
                         .flatMap(
@@ -147,18 +132,11 @@ public interface EventMapper {
 
     default Event toEvent(EventRequestDto dtoEvent){
         Event event = new Event();
-        event.setNamePL(dtoEvent.getNamePL());
-        event.setNameEN(dtoEvent.getNameEN());
-        event.setNameUA(dtoEvent.getNameUA());
-        event.setNameRU(dtoEvent.getNameRU());
-        event.setDescriptionPL(dtoEvent.getDescriptionPL());
-        event.setDescriptionEN(dtoEvent.getDescriptionEN());
-        event.setDescriptionUA(dtoEvent.getDescriptionUA());
-        event.setDescriptionRU(dtoEvent.getDescriptionRU());
+        event.setName(dtoEvent.getName());
+        event.setDescription(dtoEvent.getDescription());
         event.setPeselVerificationRequired(dtoEvent.isPeselVerificationRequired());
         event.setAgreementNeeded(dtoEvent.isAgreementNeeded());
         event.setImageUrl(dtoEvent.getImageUrl());
-        event.setAlt(dtoEvent.getAlt());
         return event;
     }
 }

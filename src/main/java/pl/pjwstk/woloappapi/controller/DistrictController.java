@@ -36,20 +36,20 @@ public class DistrictController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addDistrict(@Valid @RequestBody District district) {
+    public ResponseEntity<HttpStatus> addDistrict(@Valid @RequestBody DistrictDto district) {
         districtService.createDistrict(district);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteDistrict(@PathVariable Long id) {
-        districtService.deleteCDistrict(id);
+        districtService.deleteDistrict(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}/edit")
     public ResponseEntity<HttpStatus> editDistrict(
-            @Valid @RequestBody District district, @PathVariable Long id) {
+            @Valid @RequestBody DistrictDto district, @PathVariable Long id) {
         districtService.updateDistrict(district, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

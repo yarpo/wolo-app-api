@@ -34,7 +34,7 @@ public class Organisation {
     @Column(name = "is_approved", nullable = false)
     private boolean isApproved;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "moderator_id", nullable = false)
     private UserEntity moderator;
 

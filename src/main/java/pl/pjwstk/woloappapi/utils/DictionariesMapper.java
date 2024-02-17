@@ -24,4 +24,19 @@ public interface DictionariesMapper {
         categoryDto.setName(category.getName());
         return categoryDto;
    }
+
+    default Category toCategory(CategoryDto categoryDto){
+        Category category = new Category();
+        category.setId(categoryDto.getId());
+        category.setName(category.getName());
+        return category;
+    }
+
+    default District toDistrict(DistrictDto districtDto){
+        District district = new District();
+        district.setId(districtDto.getId());
+        district.setName(districtDto.getName());
+        district.setCity(districtDto.getCity());
+        return district;
+    }
 }

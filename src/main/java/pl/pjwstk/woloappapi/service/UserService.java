@@ -46,18 +46,14 @@ public class UserService {
     @Transactional
         public void deleteUser(Long userId) {
             Optional<UserEntity> userOptional = userRepository.findById(userId);
-
             if (userOptional.isPresent()) {
-                List<Organisation>userOrganisations = organisationService.findOrganisationsByModeratorId(userId);
-                if(!userOrganisations.isEmpty()){
-                    organisationService.removeModeratorFromOrganisations(userOrganisations,userId);
+                Organisation organisation = userOptional.get().getOrganisation();
+                if(organisation != null){
+                    throw new IllegalArgumentException("User with ID " + userId
+                            + " is moderator of "+ organisation.getName()
+                            + "firstly assign new moderator to organisation");
                 }
-
-                UserEntity user = userOptional.get();
-                shiftToUserRepository.deleteByUser(user);
-                userRepository.deleteById(userId);
-            } else {
-                throw new IllegalArgumentException("User with ID " + userId + " does not exist");
+                userRepository.deleteById(userId);   //??
             }
         }
 
@@ -79,8 +75,8 @@ public class UserService {
         updateFieldIfDifferent(user::getRole, user::setRole, role);
         updateFieldIfDifferent(user::isAdult, user::setAdult, userRequestDto.isAdult());
         return userRepository.save(user);
-
     }
+
     public List<UserEntity> getByRole(Long role) {
 
         Optional<Role> roleById = roleRepository.findById(role);

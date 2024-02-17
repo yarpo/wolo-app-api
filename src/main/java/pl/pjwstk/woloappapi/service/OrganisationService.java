@@ -30,11 +30,9 @@ public class OrganisationService {
     }
 
     public Organisation getOrganisationById(Long id) {
-        return organisationRepository
-                .findById(id)
+        return organisationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Organisation id not found!"));
     }
-
     @Transactional
     public void createOrganisation(OrganisationRequestDto organisationDto) {
         District district = districtService.getDistrictById(organisationDto.getDistrictId());
@@ -70,8 +68,8 @@ public class OrganisationService {
         updateFieldIfDifferent(
                 address::getHomeNum, address::setHomeNum, organisationDto.getHomeNum());
         updateFieldIfDifferent(
-                address::getAddressDescriptionPL,
-                address::setAddressDescriptionPL,
+                address::getAddressDescription,
+                address::setAddressDescription,
                 organisationDto.getAddressDescription());
         updateFieldIfDifferent(
                 () -> address.getDistrict().getId(),
@@ -103,28 +101,6 @@ public class OrganisationService {
             Supplier<T> currentSupplier, Consumer<T> updateConsumer, T newValue) {
         if (!Objects.equals(currentSupplier.get(), newValue)) {
             updateConsumer.accept(newValue);
-        }
-    }
-    public List<Organisation> findOrganisationsByModeratorId(Long moderatorId) {
-        return organisationRepository.findByModeratorId(moderatorId);
-    }
-
-    public void removeModeratorFromOrganisations(List<Organisation> organisations, Long moderatorIdToRemove) {
-        for (Organisation organisation : organisations) {
-            removeModeratorFromOrganisation(organisation, moderatorIdToRemove);
-        }
-    }
-
-    private void removeModeratorFromOrganisation(Organisation organisation, Long moderatorIdToRemove) {
-        UserEntity moderatorToRemove = organisation.getModerator();
-
-        if (moderatorToRemove != null && moderatorToRemove.getId().equals(moderatorIdToRemove)) {
-            organisation.setModerator(null);
-            organisationRepository.save(organisation);
-
-            // Remove the organisation from the user's list of organisations
-            moderatorToRemove.getOrganisations().remove(organisation);
-            userRepository.save(moderatorToRemove);
         }
     }
 }

@@ -39,5 +39,4 @@ public class EventResponseDetailsDto {
 
     private List<ShiftDto> shifts;
 
-    private String alt;
 }
