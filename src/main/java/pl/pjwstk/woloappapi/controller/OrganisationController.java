@@ -8,7 +8,6 @@ import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.OrganisationService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
-import pl.pjwstk.woloappapi.utils.Translator;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -21,7 +20,6 @@ public class OrganisationController {
     private final OrganisationService organisationService;
     private final OrganisationMapper organisationMapper;
     private final EventMapper eventMapper;
-    private final Translator translator;
 
     @GetMapping()
     public ResponseEntity<List<OrganisationResponseDto>> getOrganisations() {
@@ -54,7 +52,7 @@ public class OrganisationController {
         List<Event> events = organisationService.getEventsByOrganisation(id);
         List<EventResponseDto> eventDtos =
                 events.stream()
-                        .map(e -> eventMapper.toEventResponseDto(e, translator.translate(language, e)))
+                        .map(e -> eventMapper.toEventResponseDto(e))
                         .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
