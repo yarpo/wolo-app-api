@@ -8,7 +8,6 @@ import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
-import pl.pjwstk.woloappapi.utils.Translator;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -21,15 +20,13 @@ import java.util.stream.Collectors;
 public class EventController {
     private final EventService eventService;
     private final EventMapper eventMapper;
-    private final Translator translator;
     private final UserService userService;
 
     @GetMapping("")
-    public ResponseEntity<List<EventResponseDto>> getEvents(
-            @RequestParam(value = "language") String language) {
+    public ResponseEntity<List<EventResponseDto>> getEvents() {
         List<EventResponseDto> eventDtos = eventService.getAllEvents()
                 .stream()
-                .map(e -> eventMapper.toEventResponseDto(e, translator.translate(language, e)))
+                .map(eventMapper::toEventResponseDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
@@ -52,8 +49,7 @@ public class EventController {
             @RequestParam(value = "verification", required = false)
                     Boolean isPeselVerificationRequired,
             @RequestParam(value = "showAvailable", required = false)
-                    Boolean showWithAvailableCapacity,
-            @RequestParam(value = "language") String language) {
+                    Boolean showWithAvailableCapacity) {
 
         List<Event> filteredEvents =
                 eventService.filterEvents(
@@ -68,16 +64,15 @@ public class EventController {
         List<EventResponseDto> eventDtos =
                 filteredEvents
                         .stream()
-                        .map(e -> eventMapper.toEventResponseDto(e, translator.translate(language, e)))
+                        .map(eventMapper::toEventResponseDto)
                         .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EventResponseDetailsDto> getEventById(@PathVariable Long id,
-                                                                @RequestParam(value = "language") String language) {
+    public ResponseEntity<EventResponseDetailsDto> getEventById(@PathVariable Long id) {
         Event event = eventService.getEventById(id);
-        EventResponseDetailsDto eventDto = eventMapper.toEventResponseDetailsDto(event, translator.translate(language, event));
+        EventResponseDetailsDto eventDto = eventMapper.toEventResponseDetailsDto(event);
         return new ResponseEntity<>(eventDto, HttpStatus.OK);
     }
     @PostMapping("/add")
@@ -106,5 +101,4 @@ public class EventController {
                 .map(eventMapper::toEventAIRequest).toList();
         return new ResponseEntity<>(aiRequests, HttpStatus.OK);
     }
-
 }

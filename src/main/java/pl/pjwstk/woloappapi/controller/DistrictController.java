@@ -47,10 +47,10 @@ public class DistrictController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{id}/edit")
+    @PutMapping("/edit")
     public ResponseEntity<HttpStatus> editDistrict(
-            @Valid @RequestBody DistrictDto district, @PathVariable Long id) {
-        districtService.updateDistrict(district, id);
+            @Valid @RequestBody DistrictDto district) {
+        districtService.updateDistrict(district);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

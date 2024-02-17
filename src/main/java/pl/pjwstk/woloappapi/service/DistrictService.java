@@ -40,10 +40,10 @@ public class DistrictService {
     }
 
     @Transactional
-    public void updateDistrict(DistrictDto districtDto, Long id) {
+    public void updateDistrict(DistrictDto districtDto) {
         District district = districtRepository
-                .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("District with ID " + id + " does not exist"));
+                .findById(districtDto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("District with ID " + districtDto.getId() + " does not exist"));
         district.setName(districtDto.getName());
         district.setCity(districtDto.getCity());
         districtRepository.save(district);

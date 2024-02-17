@@ -33,10 +33,10 @@ public class CategoryService {
     }
 
     @Transactional
-    public void updateCategory(CategoryDto categoryDto, Long id) {
+    public void updateCategory(CategoryDto categoryDto) {
         Category category = categoryRepository
-                .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Category with ID " + id + " does not exist"));
+                .findById(categoryDto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Category with ID " + categoryDto.getId() + " does not exist"));
         category.setName(categoryDto.getName());
         categoryRepository.save(category);
     }

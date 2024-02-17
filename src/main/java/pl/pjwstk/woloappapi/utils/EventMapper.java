@@ -30,15 +30,15 @@ public interface EventMapper {
         return address;
     }
 
-    default EventResponseDto toEventResponseDto(Event event, List<String> translations) {
+    default EventResponseDto toEventResponseDto(Event event) {
         EventResponseDto eventResponseDto = new EventResponseDto();
         eventResponseDto.setId(event.getId());
-        eventResponseDto.setName(translations.get(0));
+        eventResponseDto.setName(event.getName());
         eventResponseDto.setOrganisation(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
         Address address = event.getAddressToEvents().get(0).getAddress();
         eventResponseDto.setStreet(address.getStreet());
-        eventResponseDto.setAddressDescription(translations.get(2));
+        eventResponseDto.setAddressDescription(address.getAddressDescription());
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setCity(address.getDistrict().getCity());
@@ -84,13 +84,13 @@ public interface EventMapper {
         return shiftDto;
     }
 
-    default EventResponseDetailsDto toEventResponseDetailsDto(Event event, List<String> translations) {
+    default EventResponseDetailsDto toEventResponseDetailsDto(Event event) {
         EventResponseDetailsDto eventResponseDto = new EventResponseDetailsDto();
-        eventResponseDto.setName(translations.get(0));
+        eventResponseDto.setName(event.getName());
         eventResponseDto.setOrganisationId(event.getOrganisation().getId());
         eventResponseDto.setOrganisationName(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
-        eventResponseDto.setDescription(translations.get(1));
+        eventResponseDto.setDescription(event.getDescription());
         eventResponseDto.setCategories(
                 event.getCategories().stream()
                         .map(categoryToEvent ->mapCategoryToCategoryDto( categoryToEvent.getCategory()))
@@ -99,7 +99,7 @@ public interface EventMapper {
         eventResponseDto.setStreet(address.getStreet());
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
-        eventResponseDto.setAddressDescription(translations.get(2));
+        eventResponseDto.setAddressDescription(address.getAddressDescription());
         eventResponseDto.setImageUrl(event.getImageUrl());
         List<ShiftDto> shifts =
                 event.getAddressToEvents().stream()

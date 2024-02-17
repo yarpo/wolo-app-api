@@ -47,10 +47,10 @@ public class CategoryController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{id}/edit")
+    @PutMapping("/edit")
     public ResponseEntity<HttpStatus> editCategory(
-            @Valid @RequestBody CategoryDto category, @PathVariable Long id) {
-        categoryService.updateCategory(category, id);
+            @Valid @RequestBody CategoryDto category) {
+        categoryService.updateCategory(category);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
