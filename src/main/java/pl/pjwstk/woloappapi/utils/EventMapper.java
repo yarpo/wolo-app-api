@@ -74,6 +74,7 @@ public interface EventMapper {
 
     default ShiftDto mapShiftToShiftDto(Shift shift) {
         ShiftDto shiftDto = new ShiftDto();
+        shiftDto.setId(shift.getId());
         shiftDto.setStartTime(shift.getStartTime());
         shiftDto.setEndTime(shift.getEndTime());
         shiftDto.setDate(shift.getDate());
