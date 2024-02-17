@@ -49,7 +49,8 @@ public class UserEntity {
     @Column(name = "is_adult", nullable = false)
     private boolean isAdult;
 
-    @OneToOne(mappedBy = "moderator", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "organisation_id", referencedColumnName = "id")
     private Organisation organisation;
 
     @OneToMany(mappedBy = "user")

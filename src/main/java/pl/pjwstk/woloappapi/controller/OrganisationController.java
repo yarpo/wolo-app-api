@@ -52,7 +52,7 @@ public class OrganisationController {
         List<Event> events = organisationService.getEventsByOrganisation(id);
         List<EventResponseDto> eventDtos =
                 events.stream()
-                        .map(e -> eventMapper.toEventResponseDto(e))
+                        .map(eventMapper::toEventResponseDto)
                         .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
