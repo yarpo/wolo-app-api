@@ -1,9 +1,7 @@
 package pl.pjwstk.woloappapi.service;
 
-import lombok.AllArgsConstructor;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
@@ -12,9 +10,10 @@ import pl.pjwstk.woloappapi.utils.NotFoundException;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RoleService {
     private final RoleRepository roleRepository;
+    private final UserService userService;
 
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
@@ -32,19 +31,25 @@ public class RoleService {
     }
 
     @Transactional
-    public void updateRole(Role role, Long id) {
+    public void updateRole(Role role) {
         roleRepository
-                .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Role with ID " + id + " does not exist"));
-        role.setId(id);
+                .findById(role.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Role with ID " + role.getId() + " does not exist"));
         roleRepository.save(role);
     }
 
     @Transactional
     public void deleteRole(Long id) {
-        if (!roleRepository.existsById(id)) {
-            throw new IllegalArgumentException("Role with ID " + id + " does not exist");
-        }
-        roleRepository.deleteById(id);
+        roleRepository.findById(id).ifPresent(r -> {
+            if (!"USER".equals(r.getName())) {
+                userService.getByRoleId(id).forEach(u -> {
+                    u.setRole(roleRepository.findByName("USER"));
+                    userService.updateUser(u, u.getId());
+                });
+                roleRepository.deleteById(id);
+            } else {
+                throw new IllegalArgumentException("Can't delete role User");
+            }
+        });
     }
 }

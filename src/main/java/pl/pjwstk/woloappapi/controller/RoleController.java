@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.model.RoleDto;
 import pl.pjwstk.woloappapi.service.RoleService;
-import pl.pjwstk.woloappapi.utils.UserMapper;
+import pl.pjwstk.woloappapi.utils.DictionariesMapper;
+
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,27 +18,26 @@ import java.util.stream.Collectors;
 public class RoleController {
 
     private final RoleService roleService;
-    private final UserMapper userMapper;
+    private final DictionariesMapper dictionariesMapper;
 
     @GetMapping()
     public ResponseEntity<List<RoleDto>> getRoles() {
-        List<Role> Roles = roleService.getAllRoles();
-        List<RoleDto> roleDtos = Roles.stream()
-                .map(userMapper::toRoleDto)
+        List<RoleDto> roleDtos = roleService.getAllRoles()
+                .stream()
+                .map(dictionariesMapper::toRoleDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(roleDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RoleDto> getRoleById(@PathVariable Long id) {
-        Role role = roleService.getRoleById(id);
-        RoleDto roleDto = userMapper.toRoleDto(role);
+        RoleDto roleDto = dictionariesMapper.toRoleDto(roleService.getRoleById(id));
         return new ResponseEntity<>(roleDto, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addRole(@RequestBody Role Role) {
-        roleService.createRole(Role);
+    public ResponseEntity<HttpStatus> addRole(@RequestBody RoleDto roleDto) {
+        roleService.createRole(dictionariesMapper.toRole(roleDto));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -48,10 +47,10 @@ public class RoleController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{id}/edit")
+    @PutMapping("/edit")
     public ResponseEntity<HttpStatus> editRole(
-            @Valid @RequestBody Role role, @PathVariable Long id) {
-        roleService.updateRole(role, id);
+            @Valid @RequestBody RoleDto roleDto) {
+        roleService.updateRole(dictionariesMapper.toRole(roleDto));
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

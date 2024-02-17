@@ -1,10 +1,7 @@
 package pl.pjwstk.woloappapi.utils;
 
 import org.mapstruct.Mapper;
-import pl.pjwstk.woloappapi.model.Category;
-import pl.pjwstk.woloappapi.model.CategoryDto;
-import pl.pjwstk.woloappapi.model.District;
-import pl.pjwstk.woloappapi.model.DistrictDto;
+import pl.pjwstk.woloappapi.model.*;
 
 @Mapper(componentModel = "spring")
 public interface DictionariesMapper {
@@ -38,5 +35,19 @@ public interface DictionariesMapper {
         district.setName(districtDto.getName());
         district.setCity(districtDto.getCity());
         return district;
+    }
+
+    default RoleDto toRoleDto(Role role) {
+        RoleDto roleDto = new RoleDto();
+        roleDto.setId(role.getId());
+        roleDto.setName(role.getName());
+        return roleDto;
+    }
+
+    default Role toRole(RoleDto roleDto) {
+        Role role = new Role();
+        role.setId(roleDto.getId());
+        role.setName(roleDto.getName());
+        return role;
     }
 }

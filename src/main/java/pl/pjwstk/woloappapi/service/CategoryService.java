@@ -47,7 +47,7 @@ public class CategoryService {
                 .findById(id)
                 .ifPresent(c -> {
                         c.getCategoryToEventList()
-                                    .forEach(cte -> cte.setCategory(categoryRepository
+                                .forEach(cte -> cte.setCategory(categoryRepository
                                                                             .findByName("Podstawowa")
                                                                             .get()));
                         categoryRepository.deleteById(id);

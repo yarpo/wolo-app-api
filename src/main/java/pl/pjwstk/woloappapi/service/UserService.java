@@ -59,31 +59,26 @@ public class UserService {
 
 
     @Transactional
-    public UserEntity updateUser(UserRequestDto userRequestDto, Long id) {
+    public UserEntity updateUser(UserEntity newUser, Long id) {
 
          UserEntity user = userRepository.findById(id).orElseThrow(
                 () ->
                         new IllegalArgumentException(
                                 "User with ID " + id + " does not exist"));
-        updateFieldIfDifferent(user::getFirstname, user::setFirstname, userRequestDto.getFirstname());
-        updateFieldIfDifferent(user::getLastname, user::setLastname, userRequestDto.getLastname());
-        updateFieldIfDifferent(user::getEmail, user::setEmail, userRequestDto.getEmail());
-        updateFieldIfDifferent(user::getPhoneNumber, user::setPhoneNumber, userRequestDto.getPhoneNumber());
-        updateFieldIfDifferent(user::isPeselVerified, user::setPeselVerified, userRequestDto.isPeselVerified());
-        updateFieldIfDifferent(user::isAgreementSigned, user::setAgreementSigned, userRequestDto.isAgreementSigned());
-        Role role = roleRepository.findById(userRequestDto.getRoleDto().getId()).orElse(user.getRole());
+        updateFieldIfDifferent(user::getFirstname, user::setFirstname, newUser.getFirstname());
+        updateFieldIfDifferent(user::getLastname, user::setLastname, newUser.getLastname());
+        updateFieldIfDifferent(user::getEmail, user::setEmail, newUser.getEmail());
+        updateFieldIfDifferent(user::getPhoneNumber, user::setPhoneNumber, newUser.getPhoneNumber());
+        updateFieldIfDifferent(user::isPeselVerified, user::setPeselVerified, newUser.isPeselVerified());
+        updateFieldIfDifferent(user::isAgreementSigned, user::setAgreementSigned, newUser.isAgreementSigned());
+        Role role = roleRepository.findById(newUser.getRole().getId()).orElse(user.getRole());
         updateFieldIfDifferent(user::getRole, user::setRole, role);
-        updateFieldIfDifferent(user::isAdult, user::setAdult, userRequestDto.isAdult());
+        updateFieldIfDifferent(user::isAdult, user::setAdult, newUser.isAdult());
         return userRepository.save(user);
     }
 
-    public List<UserEntity> getByRole(Long role) {
-
-        Optional<Role> roleById = roleRepository.findById(role);
-        if (roleById.isEmpty()) {
-            throw new IllegalArgumentException("Role does not exist");
-        }
-        return userRepository.getUsersByRole(roleById);
+    public List<UserEntity> getByRoleId(Long roleId) {
+        return userRepository.getUsersByRoleId(roleId);
     }
 
     public int getShiftsCountForUser(Long userId) {
