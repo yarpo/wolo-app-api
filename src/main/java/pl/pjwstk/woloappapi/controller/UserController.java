@@ -42,11 +42,11 @@ public class UserController {
     }
 
     @GetMapping("/{id}/events")
-    public ResponseEntity<List<EventAIRequest>>getUserEvents(@PathVariable Long id){
+    public ResponseEntity<List<EventResponseDto>>getUserEvents(@PathVariable Long id){
         List<Event> events = eventService.getEventsByUser(id);
-        List<EventAIRequest> aiRequests = events.stream()
-                .map(eventMapper::toEventAIRequest).toList();
-        return new ResponseEntity<>(aiRequests, HttpStatus.OK);
+        List<EventResponseDto> requests = events.stream()
+                .map(eventMapper::toEventResponseDto).toList();
+        return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
     //to do wyrzucenia
@@ -56,7 +56,6 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    //to nie wiem czy jest potrzebne
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);

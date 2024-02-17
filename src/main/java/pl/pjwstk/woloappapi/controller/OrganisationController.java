@@ -46,9 +46,8 @@ public class OrganisationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/events/{id}")
-    public ResponseEntity<List<EventResponseDto>> getEventsByOrganisation(@PathVariable Long id,
-                                                                          @RequestParam(value = "language") String language) {
+    @GetMapping("/{id}/events")
+    public ResponseEntity<List<EventResponseDto>> getEventsByOrganisation(@PathVariable Long id) {
         List<Event> events = organisationService.getEventsByOrganisation(id);
         List<EventResponseDto> eventDtos =
                 events.stream()

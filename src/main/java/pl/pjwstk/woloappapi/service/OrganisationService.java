@@ -1,9 +1,7 @@
 package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
-
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
@@ -12,10 +10,7 @@ import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 @Service
 @AllArgsConstructor
@@ -47,46 +42,24 @@ public class OrganisationService {
 
     @Transactional
     public void updateOrganisation(OrganisationRequestDto organisationDto, Long id) {
-        Organisation organisation =
-                organisationRepository
+        Organisation organisation =organisationRepository
                         .findById(id)
-                        .orElseThrow(
-                                () ->
-                                        new IllegalArgumentException(
-                                                "Organisation with ID " + id + " does not exist"));
+                        .orElseThrow(() ->
+                                new IllegalArgumentException("Organisation with ID " + id + " does not exist"));
+        organisation.setName(organisationDto.getName());
+        organisation.setDescription(organisationDto.getDescription());
+        organisation.setEmail(organisationDto.getEmail());
+        organisation.setPhoneNumber(organisationDto.getPhoneNumber());
+        organisation.setApproved(false);
+        organisation.setLogoUrl(organisationDto.getLogoUrl());
+
         Address address = organisation.getAddress();
-        updateFieldIfDifferent(
-                organisation::getName, organisation::setName, organisationDto.getName());
-        updateFieldIfDifferent(
-                organisation::getDescription,
-                organisation::setDescription,
-                organisationDto.getDescription());
-        updateFieldIfDifferent(
-                organisation::getEmail, organisation::setEmail, organisationDto.getEmail());
-
-        updateFieldIfDifferent(address::getStreet, address::setStreet, organisationDto.getStreet());
-        updateFieldIfDifferent(
-                address::getHomeNum, address::setHomeNum, organisationDto.getHomeNum());
-        updateFieldIfDifferent(
-                address::getAddressDescription,
-                address::setAddressDescription,
-                organisationDto.getAddressDescription());
-        updateFieldIfDifferent(
-                () -> address.getDistrict().getId(),
-                dId -> {
-                    District district = districtService.getDistrictById(dId);
-                    address.setDistrict(district);
-                },
-                organisationDto.getDistrictId());
+        address.setStreet(organisationDto.getStreet());
+        address.setHomeNum(organisationDto.getHomeNum());
+        address.setAddressDescription(organisationDto.getAddressDescription());
+        address.setDistrict(districtService.getDistrictById(organisationDto.getDistrictId()));
         organisation.setAddress(address);
-
-        updateFieldIfDifferent(
-                () -> organisation.getModerator().getId(),
-                mId -> userRepository.findById(mId).ifPresent(organisation::setModerator),
-                organisationDto.getModeratorId());
-        updateFieldIfDifferent(
-                organisation::getLogoUrl, organisation::setLogoUrl, organisationDto.getLogoUrl());
-
+        organisation.setLogoUrl(organisationDto.getLogoUrl());
         organisationRepository.save(organisation);
     }
 
@@ -95,12 +68,5 @@ public class OrganisationService {
                 .findById(id)
                 .map(Organisation::getEvents)
                 .orElseThrow(() -> new NotFoundException("Organizer id not found!"));
-    }
-
-    private <T> void updateFieldIfDifferent(
-            Supplier<T> currentSupplier, Consumer<T> updateConsumer, T newValue) {
-        if (!Objects.equals(currentSupplier.get(), newValue)) {
-            updateConsumer.accept(newValue);
-        }
     }
 }
