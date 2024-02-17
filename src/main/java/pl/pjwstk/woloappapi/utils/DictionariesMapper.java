@@ -47,4 +47,18 @@ public interface DictionariesMapper {
                 .id(roleDto.getId())
                 .name(roleDto.getName());
     }
+
+    default RoleDto toRoleDto(Role role) {
+        RoleDto roleDto = new RoleDto();
+        roleDto.setId(role.getId());
+        roleDto.setName(role.getName());
+        return roleDto;
+    }
+
+    default Role toRole(RoleDto roleDto) {
+        Role role = new Role();
+        role.setId(roleDto.getId());
+        role.setName(roleDto.getName());
+        return role;
+    }
 }
