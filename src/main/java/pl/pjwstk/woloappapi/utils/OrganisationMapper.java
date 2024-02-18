@@ -34,10 +34,10 @@ public interface OrganisationMapper {
     }
 
     default Address toAddress(OrganisationRequestDto organisationRequestDto) {
-        Address address = new Address();
-        address.setStreet(organisationRequestDto.getStreet());
-        address.setHomeNum(organisationRequestDto.getHomeNum());
-        address.setAddressDescription(organisationRequestDto.getAddressDescription());
-        return address;
+        return Address.builder()
+                .street(organisationRequestDto.getStreet())
+                .homeNum(organisationRequestDto.getHomeNum())
+                .addressDescription(organisationRequestDto.getAddressDescription())
+                .build();
     }
 }

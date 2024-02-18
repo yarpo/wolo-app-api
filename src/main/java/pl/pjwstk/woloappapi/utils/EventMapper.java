@@ -23,11 +23,11 @@ public interface EventMapper {
     List<Shift> toShifts(List<ShiftDto> shiftDtos);
 
     default Address toAddress(EventRequestDto dtoEvent) {
-        Address address = new Address();
-        address.setStreet(dtoEvent.getStreet());
-        address.setHomeNum(dtoEvent.getHomeNum());
-        address.setAddressDescription(dtoEvent.getAddressDescription());
-        return address;
+        return Address.builder()
+                .street(dtoEvent.getStreet())
+                .homeNum(dtoEvent.getHomeNum())
+                .addressDescription(dtoEvent.getAddressDescription())
+                .build();
     }
 
     default EventResponseDto toEventResponseDto(Event event) {
