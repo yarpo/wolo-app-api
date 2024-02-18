@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
+import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleService {
     private final RoleRepository roleRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
@@ -23,6 +24,9 @@ public class RoleService {
         return roleRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Role id not found!"));
+    }
+    public Role getRoleByName(String name){
+        return roleRepository.findByName(name);
     }
 
     @Transactional
@@ -42,9 +46,9 @@ public class RoleService {
     public void deleteRole(Long id) {
         roleRepository.findById(id).ifPresent(r -> {
             if (!"USER".equals(r.getName())) {
-                userService.getByRoleId(id).forEach(u -> {
+                userRepository.getUsersByRoleId(id).forEach(u -> {
                     u.setRole(roleRepository.findByName("USER"));
-                    userService.updateUser(u, u.getId());
+                    userRepository.save(u);
                 });
                 roleRepository.deleteById(id);
             } else {

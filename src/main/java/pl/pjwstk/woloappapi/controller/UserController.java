@@ -12,7 +12,6 @@ import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -29,9 +28,8 @@ public class UserController {
         List<UserEntity> users = userService.getAllUsers();
         List<UserResponseDto> userResponseDtos = users.stream()
                 .map(userMapper::toUserResponseDto)
-                .collect(Collectors.toList());
+                .toList();
         return new ResponseEntity<>(userResponseDtos, HttpStatus.OK);
-
     }
 
     @GetMapping("/{id}")
@@ -49,28 +47,29 @@ public class UserController {
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
-    //to do wyrzucenia
-    @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addUser(@RequestBody UserRequestDto userRequestDto) {
-        userService.createUser(userRequestDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     @PutMapping("/{id}/edit")
-    public ResponseEntity<Object> editUser(
-            @Valid @RequestBody UserRequestDto userRequestDto, @PathVariable Long id) {
-        try {
-            UserEntity updatedUser = userService.updateUser(userMapper.toUser(userRequestDto), id);
-            return ResponseEntity.ok(updatedUser);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+    public ResponseEntity<HttpStatus> editUser(@Valid @RequestBody UserRequestDto userRequestDto,
+                                           @PathVariable Long id) {
+        userService.updateUser(userRequestDto, id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+    @PostMapping("/assign")
+    public ResponseEntity<HttpStatus> assignOrganisation(@RequestParam(value = "user") Long userId,
+                                                         @RequestParam(value = "organisation") Long organisationId){
+        userService.assignOrganisation(userId, organisationId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/revoke")
+    public ResponseEntity<HttpStatus> revokeOrganisation(@RequestParam(value = "user") Long userId,
+                                                         @RequestParam(value = "organisation") Long organisationId){
+        userService.revokeOrganisation(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

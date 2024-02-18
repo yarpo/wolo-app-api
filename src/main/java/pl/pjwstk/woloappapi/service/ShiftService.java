@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.Shift;
 import pl.pjwstk.woloappapi.repository.ShiftRepository;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
 
@@ -12,6 +13,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ShiftService {
     private final ShiftRepository shiftRepository;
+
+    public Shift getShiftById(long id){
+        return shiftRepository.findById(id).orElseThrow(() -> new NotFoundException("Event id not found!"));
+    }
     @Transactional
     public void createShift(Shift shift) {
         shiftRepository.save(shift);
@@ -29,13 +34,7 @@ public class ShiftService {
         }
     }
 
-    public int getRegisteredUsersCountForShift(Long shiftId) {
-        Shift shift = shiftRepository.findById(shiftId).orElse(null);
-
-        if (shift != null) {
-            return shift.getRegisteredUsersCount();
-        } else {
-            return 0; // lub można zwrócić odpowiedni kod błędu
-        }
+    public void editShift(Shift shift) {
+        shiftRepository.save(shift);
     }
 }

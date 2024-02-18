@@ -1,7 +1,10 @@
 package pl.pjwstk.woloappapi.utils;
 
 import org.mapstruct.Mapper;
-import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.UserEntity;
+import pl.pjwstk.woloappapi.model.UserRequestDto;
+import pl.pjwstk.woloappapi.model.UserResponseDto;
+
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -28,6 +31,7 @@ public interface UserMapper {
             user.setPeselVerified(userRequestDto.isPeselVerified());
             user.setAgreementSigned(userRequestDto.isAgreementSigned());
             user.setAdult(userRequestDto.isAdult());
+            user.setPassword(userRequestDto.getPassword());
             return user;
         }
 
