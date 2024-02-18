@@ -14,7 +14,6 @@ public interface DictionariesMapper {
         return districtDto;
     }
 
-
     default CategoryDto toCategoryDto(Category category){
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setId(category.getId());
@@ -22,19 +21,18 @@ public interface DictionariesMapper {
         return categoryDto;
    }
 
-    default Category toCategory(CategoryDto categoryDto){
-        Category category = new Category();
-        category.setId(categoryDto.getId());
-        category.setName(category.getName());
-        return category;
+    default Category.CategoryBuilder toCategory(CategoryDto categoryDto) {
+        return Category.builder()
+                .id(categoryDto.getId())
+                .name(categoryDto.getName());
     }
 
-    default District toDistrict(DistrictDto districtDto){
-        District district = new District();
-        district.setId(districtDto.getId());
-        district.setName(districtDto.getName());
-        district.setCity(districtDto.getCity());
-        return district;
+
+    default District.DistrictBuilder toDistrict(DistrictDto districtDto){
+        return District.builder()
+                .id(districtDto.getId())
+                .name(districtDto.getName())
+                .city(districtDto.getCity());
     }
 
     default RoleDto toRoleDto(Role role) {
@@ -44,10 +42,9 @@ public interface DictionariesMapper {
         return roleDto;
     }
 
-    default Role toRole(RoleDto roleDto) {
-        Role role = new Role();
-        role.setId(roleDto.getId());
-        role.setName(roleDto.getName());
-        return role;
+    default Role.RoleBuilder toRole(RoleDto roleDto) {
+        return Role.builder()
+                .id(roleDto.getId())
+                .name(roleDto.getName());
     }
 }

@@ -8,16 +8,14 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface EventMapper {
-
-    default Shift toShift(ShiftDto shiftDto) {
-        Shift shift = new Shift();
-        shift.setStartTime(shiftDto.getStartTime());
-        shift.setEndTime(shiftDto.getEndTime());
-        shift.setDate(shiftDto.getDate());
-        shift.setLeaderRequired(shiftDto.getIsLeaderRequired());
-        shift.setCapacity(shiftDto.getCapacity());
-        shift.setRequiredMinAge(shiftDto.getRequiredMinAge());
-        return shift;
+    default Shift.ShiftBuilder toShift (ShiftDto shiftDto){
+        return Shift.builder()
+                .startTime(shiftDto.getStartTime())
+                .endTime(shiftDto.getEndTime())
+                .date(shiftDto.getDate())
+                .isLeaderRequired(shiftDto.getIsLeaderRequired())
+                .capacity(shiftDto.getCapacity())
+                .requiredMinAge(shiftDto.getRequiredMinAge());
     }
 
     List<Shift> toShifts(List<ShiftDto> shiftDtos);
@@ -130,13 +128,12 @@ public interface EventMapper {
         return aiRequest;
     }
 
-    default Event toEvent(EventRequestDto dtoEvent){
-        Event event = new Event();
-        event.setName(dtoEvent.getName());
-        event.setDescription(dtoEvent.getDescription());
-        event.setPeselVerificationRequired(dtoEvent.isPeselVerificationRequired());
-        event.setAgreementNeeded(dtoEvent.isAgreementNeeded());
-        event.setImageUrl(dtoEvent.getImageUrl());
-        return event;
+    default Event.EventBuilder toEvent(EventRequestDto dtoEvent){
+        return Event.builder()
+                .name(dtoEvent.getName())
+                .description(dtoEvent.getDescription())
+                .isPeselVerificationRequired(dtoEvent.isPeselVerificationRequired())
+                .isAgreementNeeded(dtoEvent.isAgreementNeeded())
+                .imageUrl(dtoEvent.getImageUrl());
     }
 }

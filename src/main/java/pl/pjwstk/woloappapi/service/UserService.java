@@ -39,7 +39,7 @@ public class UserService {
     }
     @Transactional
     public void createUser(UserRequestDto userDto) {
-        UserEntity user = userMapper.toUser(userDto);
+        UserEntity user = userMapper.toUser(userDto).build();
         userRepository.save(user);
     }
 

@@ -5,31 +5,28 @@ import pl.pjwstk.woloappapi.model.*;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-        default UserResponseDto toUserResponseDto(UserEntity user) {
-           UserResponseDto userResponseDto = new UserResponseDto();
-           userResponseDto.setId(user.getId());
-            userResponseDto.setFirstname(user.getFirstname());
-            userResponseDto.setLastname(user.getLastname());
-            userResponseDto.setAdult(user.isAdult());
-            userResponseDto.setEmail(user.getEmail());
-            userResponseDto.setPhoneNumber(user.getPhoneNumber());
-            userResponseDto.setAgreementSigned(user.isAgreementSigned());
-            userResponseDto.setPeselVerified(user.isPeselVerified());
-            userResponseDto.setRole(user.getRole().getName());
-            return userResponseDto;
-        }
-
-        default UserEntity toUser(UserRequestDto userRequestDto) {
-            UserEntity user = new UserEntity();
-            user.setFirstname(userRequestDto.getFirstname());
-            user.setLastname(userRequestDto.getLastname());
-            user.setEmail(userRequestDto.getEmail());
-            user.setPhoneNumber(userRequestDto.getPhoneNumber());
-            user.setPeselVerified(userRequestDto.isPeselVerified());
-            user.setAgreementSigned(userRequestDto.isAgreementSigned());
-            user.setAdult(userRequestDto.isAdult());
-            return user;
-        }
-
+    default UserResponseDto toUserResponseDto(UserEntity user) {
+        UserResponseDto userResponseDto = new UserResponseDto();
+        userResponseDto.setId(user.getId());
+        userResponseDto.setFirstname(user.getFirstname());
+        userResponseDto.setLastname(user.getLastname());
+        userResponseDto.setAdult(user.isAdult());
+        userResponseDto.setEmail(user.getEmail());
+        userResponseDto.setPhoneNumber(user.getPhoneNumber());
+        userResponseDto.setAgreementSigned(user.isAgreementSigned());
+        userResponseDto.setPeselVerified(user.isPeselVerified());
+        userResponseDto.setRole(user.getRole().getName());
+        return userResponseDto;
+    }
+    default UserEntity.UserEntityBuilder toUser(UserRequestDto userRequestDto) {
+        return UserEntity.builder()
+                .firstname(userRequestDto.getFirstname())
+                .lastname(userRequestDto.getLastname())
+                .email(userRequestDto.getEmail())
+                .phoneNumber(userRequestDto.getPhoneNumber())
+                .isPeselVerified(userRequestDto.isPeselVerified())
+                .isAgreementSigned(userRequestDto.isAgreementSigned())
+                .isAdult(userRequestDto.isAdult());
+    }
 
 }

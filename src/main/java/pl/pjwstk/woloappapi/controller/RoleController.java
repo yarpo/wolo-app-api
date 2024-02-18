@@ -37,7 +37,7 @@ public class RoleController {
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addRole(@RequestBody RoleDto roleDto) {
-        roleService.createRole(dictionariesMapper.toRole(roleDto));
+        roleService.createRole(dictionariesMapper.toRole(roleDto).build());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -50,7 +50,7 @@ public class RoleController {
     @PutMapping("/edit")
     public ResponseEntity<HttpStatus> editRole(
             @Valid @RequestBody RoleDto roleDto) {
-        roleService.updateRole(dictionariesMapper.toRole(roleDto));
+        roleService.updateRole(dictionariesMapper.toRole(roleDto).build());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

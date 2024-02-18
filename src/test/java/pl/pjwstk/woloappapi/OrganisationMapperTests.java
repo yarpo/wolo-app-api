@@ -57,7 +57,7 @@ public class OrganisationMapperTests {
         requestDto.setPhoneNumber("123456789");
         requestDto.setLogoUrl("http://example.com/logo");
 
-        Organisation organisation = organisationMapper.toOrganisation(requestDto);
+        Organisation organisation = organisationMapper.toOrganisation(requestDto).build();
 
         assertEquals("Test Organisation", organisation.getName());
         assertEquals("Test Description", organisation.getDescription());
@@ -76,7 +76,7 @@ public class OrganisationMapperTests {
         requestDto.setHomeNum("123");
         requestDto.setAddressDescription("Test Address");
 
-        Address address = organisationMapper.toAddress(requestDto);
+        Address address = organisationMapper.toAddress(requestDto).build();
 
         assertEquals("Test Street", address.getStreet());
         assertEquals("123", address.getHomeNum());

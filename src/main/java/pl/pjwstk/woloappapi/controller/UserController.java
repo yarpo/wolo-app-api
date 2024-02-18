@@ -65,7 +65,7 @@ public class UserController {
     public ResponseEntity<Object> editUser(
             @Valid @RequestBody UserRequestDto userRequestDto, @PathVariable Long id) {
         try {
-            UserEntity updatedUser = userService.updateUser(userMapper.toUser(userRequestDto), id);
+            UserEntity updatedUser = userService.updateUser(userMapper.toUser(userRequestDto).build(), id);
             return ResponseEntity.ok(updatedUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
