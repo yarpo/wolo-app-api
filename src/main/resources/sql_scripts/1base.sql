@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS shift (
                                      end_time TIME NOT NULL,
                                      "date" DATE NOT NULL,
                                      capacity INT NOT NULL,
+                                     registered INT default 0,
                                      is_leader_required BOOLEAN NOT NULL,
                                      required_min_age INT NOT NULL
                                      );
