@@ -37,9 +37,9 @@ public class EventService {
     @Transactional
     public void createEvent(EventRequestDto dtoEvent) {
         Event event = eventMapper.toEvent(dtoEvent);
-        Address address = eventMapper.toAddress(dtoEvent);
-        District district = districtService.getDistrictById(dtoEvent.getDistrictId());
-        address.setDistrict(district);
+        Address address = eventMapper.toAddress(dtoEvent)
+                .district(districtService.getDistrictById(dtoEvent.getDistrictId()))
+                .build();
         addressService.createAddress(address);
 
         Organisation organisation =
