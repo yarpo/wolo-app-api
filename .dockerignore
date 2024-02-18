@@ -8,4 +8,5 @@ bulid
 Dockerfile_backend
 *.yml
 .github
-.pre-commit-config.yaml
+README.md
+HELP.md
