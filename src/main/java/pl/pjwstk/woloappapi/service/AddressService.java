@@ -14,5 +14,4 @@ public class AddressService {
     public void createAddress(Address address) {
         addressRepository.save(address);
     }
-
 }

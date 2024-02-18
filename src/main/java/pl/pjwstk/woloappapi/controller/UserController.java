@@ -30,7 +30,6 @@ public class UserController {
                 .map(userMapper::toUserResponseDto)
                 .toList();
         return new ResponseEntity<>(userResponseDtos, HttpStatus.OK);
-
     }
 
     @GetMapping("/{id}")
