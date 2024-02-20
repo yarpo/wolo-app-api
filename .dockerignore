@@ -1,0 +1,11 @@
+# Intelij-IDEA
+.idea
+.gradle
+bulid
+.env
+.gitignore
+*.env
+Dockerfile_backend
+*.yml
+.github
+.pre-commit-config.yaml
