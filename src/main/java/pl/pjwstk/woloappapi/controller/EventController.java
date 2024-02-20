@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.Event;
+import pl.pjwstk.woloappapi.model.EventRequestDto;
+import pl.pjwstk.woloappapi.model.EventResponseDetailsDto;
+import pl.pjwstk.woloappapi.model.EventResponseDto;
 import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
@@ -103,10 +106,12 @@ public class EventController {
     }
 
     @GetMapping("/upcoming")
-    public ResponseEntity<List<EventAIRequest>>getUpcomingEvents(){
+    public ResponseEntity<List<EventResponseDto>>getUpcomingEvents(){
         List<Event> events = eventService.getUpcomingEvents();
-        List<EventAIRequest> aiRequests = events.stream()
-                .map(eventMapper::toEventAIRequest).toList();
-        return new ResponseEntity<>(aiRequests, HttpStatus.OK);
+        List<EventResponseDto> respons = events
+                .stream()
+                .map(eventMapper::toEventResponseDto)
+                .toList();
+        return new ResponseEntity<>(respons, HttpStatus.OK);
     }
 }
