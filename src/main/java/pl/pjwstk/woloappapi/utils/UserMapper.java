@@ -20,7 +20,7 @@ public interface UserMapper {
         userResponseDto.setRole(user.getRole().getName());
         return userResponseDto;
     }
-    default UserEntityBuilder toUser(UserRequestDto userRequestDto) {
+    default UserEntity.UserEntityBuilder toUser(UserRequestDto userRequestDto) {
         return UserEntity.builder()
                 .firstname(userRequestDto.getFirstname())
                 .lastname(userRequestDto.getLastname())
