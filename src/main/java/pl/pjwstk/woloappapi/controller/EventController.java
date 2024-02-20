@@ -38,6 +38,14 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/refuse")
+    public ResponseEntity<HttpStatus> refuseParticipateInEvent(
+            @RequestParam(value = "user") Long userId,
+            @RequestParam(value = "shift") Long shiftId){
+        userService.refuse(userId, shiftId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<EventResponseDto>> filterEvents(
             @RequestParam(value = "localization", required = false) String[] localizations,

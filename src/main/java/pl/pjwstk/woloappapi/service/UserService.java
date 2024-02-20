@@ -9,6 +9,7 @@ import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,11 +86,9 @@ public class UserService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         Shift shift = shiftService.getShiftById(shiftId);
-        if (!shiftToUserRepository.existsByShiftAndUser(shift,user)) {
-            shift.getShiftToUsers().add(new ShiftToUser(user, shift));
-            shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
-            shiftService.editShift(shift);
-        }
+        shift.getShiftToUsers().add(new ShiftToUser(user, shift));
+        shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
+        shiftService.editShift(shift);
     }
 
     @Transactional
@@ -114,5 +113,20 @@ public class UserService {
                 () -> new NotFoundException("User not found with id: " + userId));
         user.setOrganisation(null);
         userRepository.save(user);
+    }
+
+    public void refuse(Long userId, Long shiftId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+        Shift shift = shiftService.getShiftById(shiftId);
+        if (shift.getDate().isAfter(LocalDate.now())) {
+            var shiftToUser = shift.getShiftToUsers()
+                    .stream()
+                    .filter(stu -> stu.getUser().equals(user))
+                    .findFirst();
+            shiftToUser.ifPresent(shiftToUserRepository::delete);
+            shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
+            shiftService.editShift(shift);
+        }
     }
 }
