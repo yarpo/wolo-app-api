@@ -36,15 +36,14 @@ public class EventService {
 
     @Transactional
     public void createEvent(EventRequestDto dtoEvent) {
-        Event event = eventMapper.toEvent(dtoEvent);
-        Address address = eventMapper.toAddress(dtoEvent);
-        District district = districtService.getDistrictById(dtoEvent.getDistrictId());
-        address.setDistrict(district);
-        addressService.createAddress(address);
+        Event event = eventMapper.toEvent(dtoEvent)
+                .organisation(organisationService.getOrganisationById(dtoEvent.getOrganisationId())).build();
 
-        Organisation organisation =
-                organisationService.getOrganisationById(dtoEvent.getOrganisationId());
-        event.setOrganisation(organisation);
+        Address address = eventMapper.toAddress(dtoEvent)
+                .district(districtService.getDistrictById(dtoEvent.getDistrictId()))
+                .build();
+
+        addressService.createAddress(address);
 
         eventRepository.save(event);
 

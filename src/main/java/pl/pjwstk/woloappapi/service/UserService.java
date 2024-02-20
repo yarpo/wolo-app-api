@@ -33,8 +33,9 @@ public class UserService {
     }
     @Transactional
     public void createUser(UserRequestDto userDto) {
-        UserEntity user = userMapper.toUser(userDto);
-        user.setRole(roleService.getRoleByName("USER"));
+        UserEntity user = userMapper.toUser(userDto)
+                .role(roleService.getRoleByName("USER"))
+                .build();
         userRepository.save(user);
     }
 

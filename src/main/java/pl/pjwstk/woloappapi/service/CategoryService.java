@@ -29,7 +29,7 @@ public class CategoryService {
 
     @Transactional
     public void createCategory(CategoryDto category) {
-        categoryRepository.save(dictionariesMapper.toCategory(category));
+        categoryRepository.save(dictionariesMapper.toCategory(category).build());
     }
 
     @Transactional

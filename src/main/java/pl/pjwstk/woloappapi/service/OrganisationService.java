@@ -31,8 +31,8 @@ public class OrganisationService {
     @Transactional
     public void createOrganisation(OrganisationRequestDto organisationDto) {
         District district = districtService.getDistrictById(organisationDto.getDistrictId());
-        Address address = organisationMapper.toAddress(organisationDto);
-        Organisation organisation = organisationMapper.toOrganisation(organisationDto);
+        Address address = organisationMapper.toAddress(organisationDto).build();
+        Organisation organisation = organisationMapper.toOrganisation(organisationDto).build();
         address.setDistrict(district);
         organisation.setAddress(address);
         Optional<UserEntity> user = userRepository.findById(organisationDto.getModeratorId());
