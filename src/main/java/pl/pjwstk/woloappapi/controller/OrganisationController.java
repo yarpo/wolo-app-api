@@ -62,4 +62,15 @@ public class OrganisationController {
         organisationService.updateOrganisation(organisation, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PostMapping("/approve")
+    public ResponseEntity<HttpStatus> approveOrganisation(@RequestParam(value = "id") Long organisationId){
+        organisationService.approve(organisationId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping("/disapprove")
+    public ResponseEntity<HttpStatus> disapproveOrganisation(@RequestParam(value = "id") Long organisationId){
+        organisationService.disapprove(organisationId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
