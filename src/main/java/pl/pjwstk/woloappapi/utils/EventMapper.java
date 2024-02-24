@@ -75,7 +75,7 @@ public interface EventMapper {
         shiftDto.setStartTime(shift.getStartTime());
         shiftDto.setEndTime(shift.getEndTime());
         shiftDto.setDate(shift.getDate());
-        shiftDto.setSignedUp(shift.getRegisteredUsersCount());
+        shiftDto.setSignedUp(shift.getRegisteredUsers());
         shiftDto.setCapacity(shift.getCapacity());
         shiftDto.setIsLeaderRequired(shift.isLeaderRequired());
         shiftDto.setRequiredMinAge(shift.getRequiredMinAge());
