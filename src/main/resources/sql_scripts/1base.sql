@@ -184,3 +184,6 @@ INSERT INTO category ( "name") VALUES
                                    ( 'Ekologia'),
                                    ( 'Pomoc'),
                                    ( 'Podstawowa');
+
+ALTER TABLE district ADD COLUMN is_old BOOLEAN DEFAULT false;
+UPDATE district SET is_old = false;

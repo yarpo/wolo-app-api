@@ -28,6 +28,9 @@ public class District {
     @Column(name = "city")
     private String city;
 
+    @Column(name = "is_old")
+    private boolean isOld;
+
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
     private List<Address> addresses = new ArrayList<>();
 }

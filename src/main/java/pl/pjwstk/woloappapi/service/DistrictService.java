@@ -33,10 +33,11 @@ public class DistrictService {
 
 
     public void deleteDistrict(Long id) {
-        if (!districtRepository.existsById(id)) {
-            throw new IllegalArgumentException("District with ID " + id + " does not exist");
-        }
-        districtRepository.deleteById(id);
+        var district = districtRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("District not found!"));
+        district.setOld(true);
+        districtRepository.save(district);
     }
 
     @Transactional
