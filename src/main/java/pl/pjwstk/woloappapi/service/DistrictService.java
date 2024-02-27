@@ -17,7 +17,11 @@ public class DistrictService {
     private final DistrictRepository districtRepository;
     private final DictionariesMapper dictionariesMapper;
     public List<District> getAllDistricts() {
-        return districtRepository.findAll();
+        return districtRepository
+            .findAll()
+            .stream()
+            .filter(d -> d.isOld() == false)
+            .toList();
     }
 
     public District getDistrictById(Long id) {
