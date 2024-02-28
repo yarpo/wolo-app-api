@@ -15,7 +15,8 @@ public interface EventMapper {
                 .date(shiftDto.getDate())
                 .isLeaderRequired(shiftDto.getIsLeaderRequired())
                 .capacity(shiftDto.getCapacity())
-                .requiredMinAge(shiftDto.getRequiredMinAge());
+                .requiredMinAge(shiftDto.getRequiredMinAge())
+                .shiftDirections(shiftDto.getShiftDirections());
     }
 
     List<Shift> toShifts(List<ShiftDto> shiftDtos);
@@ -23,8 +24,7 @@ public interface EventMapper {
     default Address.AddressBuilder toAddress(EventRequestDto dtoEvent) {
         return Address.builder()
                 .street(dtoEvent.getStreet())
-                .homeNum(dtoEvent.getHomeNum())
-                .addressDescription(dtoEvent.getAddressDescription());
+                .homeNum(dtoEvent.getHomeNum());
     }
 
     default EventResponseDto toEventResponseDto(Event event) {
@@ -35,7 +35,6 @@ public interface EventMapper {
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
         Address address = event.getAddressToEvents().get(0).getAddress();
         eventResponseDto.setStreet(address.getStreet());
-        eventResponseDto.setAddressDescription(address.getAddressDescription());
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setCity(address.getDistrict().getCity());
@@ -75,10 +74,11 @@ public interface EventMapper {
         shiftDto.setStartTime(shift.getStartTime());
         shiftDto.setEndTime(shift.getEndTime());
         shiftDto.setDate(shift.getDate());
-        shiftDto.setSignedUp(shift.getRegisteredUsersCount());
+        shiftDto.setSignedUp(shift.getRegisteredUsers());
         shiftDto.setCapacity(shift.getCapacity());
         shiftDto.setIsLeaderRequired(shift.isLeaderRequired());
         shiftDto.setRequiredMinAge(shift.getRequiredMinAge());
+        shiftDto.setShiftDirections(shift.getShiftDirections());
         return shiftDto;
     }
 
@@ -97,7 +97,6 @@ public interface EventMapper {
         eventResponseDto.setStreet(address.getStreet());
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
-        eventResponseDto.setAddressDescription(address.getAddressDescription());
         eventResponseDto.setImageUrl(event.getImageUrl());
         List<ShiftDto> shifts =
                 event.getAddressToEvents().stream()
