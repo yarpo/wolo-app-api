@@ -56,7 +56,6 @@ public class OrganisationService {
         Address address = organisation.getAddress();
         address.setStreet(organisationDto.getStreet());
         address.setHomeNum(organisationDto.getHomeNum());
-        address.setAddressDescription(organisationDto.getAddressDescription());
         address.setDistrict(districtService.getDistrictById(organisationDto.getDistrictId()));
         organisation.setAddress(address);
         organisation.setLogoUrl(organisationDto.getLogoUrl());
