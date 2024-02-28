@@ -32,9 +32,6 @@ public class Address {
     @JoinColumn(name = "district_id") // nullable = false
     private District district;
 
-    @Column(name = "description")
-    private String addressDescription;
-
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
     private List<Organisation> organisations = new ArrayList<>();
 

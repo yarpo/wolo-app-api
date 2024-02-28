@@ -51,4 +51,7 @@ public class Shift {
 
     @Column(name = "registered")
     private int registeredUsers;
+
+    @Column(name = "directions")
+    private String shiftDirections;
 }

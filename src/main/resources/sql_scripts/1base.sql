@@ -187,3 +187,6 @@ INSERT INTO category ( "name") VALUES
 
 ALTER TABLE district ADD COLUMN is_old BOOLEAN DEFAULT false;
 UPDATE district SET is_old = false;
+
+ALTER TABLE address REMOVE COLUMN description;
+ALTER TABLE shift ADD COLUMN directions VARCHAR(255);
