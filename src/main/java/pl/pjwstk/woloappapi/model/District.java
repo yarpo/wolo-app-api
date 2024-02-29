@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,5 +28,5 @@ public class District {
     private String city;
 
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
-    private List<Address> addresses = new ArrayList<>();
+    private List<Address> addresses;
 }
