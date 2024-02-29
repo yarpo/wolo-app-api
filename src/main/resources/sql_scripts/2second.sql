@@ -1,10 +1,10 @@
 --liquibase formatted sql
 
 --changeset woloapp:2
-INSERT INTO address ( street, home_num, district_id, description) VALUES
-                                                                      ( 'ul. Kwiatowa', '10A', 2, 'Wejście ze strony parku'),
-                                                                      ( 'ul. Słoneczna', '5', 1, 'Biuro PJATK'),
-                                                                      ( 'ul. Parkowa', '7', 3, 'Wejście przez zieloną bramę, na domofonie #31');
+INSERT INTO address ( street, home_num, district_id) VALUES
+                                                                      ( 'ul. Kwiatowa', '10A', 2),
+                                                                      ( 'ul. Słoneczna', '5', 1),
+                                                                      ( 'ul. Parkowa', '7', 3);
 
 INSERT INTO "user" ( firstname, lastname, email, phone_number, role_id, is_pesel_verified, is_agreement_signed, is_adult, organisation_id, "password") VALUES
                                                                                                                                                  ( 'Jan', 'Kowalski', 'jan.kowalski@example.com', '123456789', 3, true, true, true, null, '$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi'),
@@ -31,10 +31,10 @@ INSERT INTO address_to_event ( event_id, address_id) VALUES
                                                          ( 2, 2),
                                                          ( 3, 3);
 
-INSERT INTO shift ( address_to_event_id, start_time, end_time, date, capacity, is_leader_required, required_min_age) VALUES
-                                                                                                                         ( 1, '09:00:00', '12:00:00', '2023-06-10', 20, true, 18),
-                                                                                                                         ( 2, '14:00:00', '18:00:00', '2023-06-12', 15, false, 16),
-                                                                                                                         ( 3, '10:30:00', '13:30:00', '2023-06-15', 10, true, 18);
+INSERT INTO shift ( address_to_event_id, start_time, end_time, date, capacity, is_leader_required, required_min_age, directions) VALUES
+                                                                                                                         ( 1, '09:00:00', '12:00:00', '2023-06-10', 20, true, 18, 'Wejście ze strony parku'),
+                                                                                                                         ( 2, '14:00:00', '18:00:00', '2023-06-12', 15, false, 16, 'Biuro PJATK'),
+                                                                                                                         ( 3, '10:30:00', '13:30:00', '2023-06-15', 10, true, 18, 'Wejście przez zieloną bramę, na domofonie #31');
 
 INSERT INTO shift_to_user ( user_id, shift_id, is_on_reserve_list, is_leader) VALUES
                                                                                   ( 1, 1, false, true),
