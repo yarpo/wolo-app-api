@@ -38,4 +38,5 @@ public class EventResponseDetailsDto {
     private String imageUrl;
 
     private List<ShiftDto> shifts;
+
 }

@@ -8,56 +8,34 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface EventMapper {
-
-    default Shift toShift(ShiftDto shiftDto) {
-        Shift shift = new Shift();
-        shift.setStartTime(shiftDto.getStartTime());
-        shift.setEndTime(shiftDto.getEndTime());
-        shift.setDate(shiftDto.getDate());
-        shift.setLeaderRequired(shiftDto.getIsLeaderRequired());
-        shift.setCapacity(shiftDto.getCapacity());
-        shift.setRequiredMinAge(shiftDto.getRequiredMinAge());
-        return shift;
+    default Shift.ShiftBuilder toShift (ShiftDto shiftDto){
+        return Shift.builder()
+                .startTime(shiftDto.getStartTime())
+                .endTime(shiftDto.getEndTime())
+                .date(shiftDto.getDate())
+                .isLeaderRequired(shiftDto.getIsLeaderRequired())
+                .capacity(shiftDto.getCapacity())
+                .requiredMinAge(shiftDto.getRequiredMinAge());
     }
 
     List<Shift> toShifts(List<ShiftDto> shiftDtos);
 
-    default Event toEvent(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
-        Event event = new Event();
-        event.setNamePL(translation.getTitlePL());
-        event.setNameEN(translation.getTitleEN());
-        event.setNameUA(translation.getTitleUA());
-        event.setNameRU(translation.getTitleRU());
-        event.setDescriptionPL(translation.getDescriptionPL());
-        event.setDescriptionEN(translation.getDescriptionEN());
-        event.setDescriptionUA(translation.getDescriptionUA());
-        event.setDescriptionRU(translation.getDescriptionRU());
-        event.setPeselVerificationRequired(eventRequestDto.isPeselVerificationRequired());
-        event.setAgreementNeeded(eventRequestDto.isAgreementNeeded());
-        event.setImageUrl(eventRequestDto.getImageUrl());
-        return event;
+    default Address.AddressBuilder toAddress(EventRequestDto dtoEvent) {
+        return Address.builder()
+                .street(dtoEvent.getStreet())
+                .homeNum(dtoEvent.getHomeNum())
+                .addressDescription(dtoEvent.getAddressDescription());
     }
 
-    default Address toAddress(EventTranslationResponsDto translation, EventRequestDto eventRequestDto) {
-        Address address = new Address();
-        address.setStreet(eventRequestDto.getStreet());
-        address.setHomeNum(eventRequestDto.getHomeNum());
-        address.setAddressDescriptionPL(translation.getAddressDescriptionPL());
-        address.setAddressDescriptionEN(translation.getAddressDescriptionEN());
-        address.setAddressDescriptionUA(translation.getAddressDescriptionUA());
-        address.setAddressDescriptionRU(translation.getAddressDescriptionRU());
-        return address;
-    }
-
-    default EventResponseDto toEventResponseDto(Event event, List<String> translations) {
+    default EventResponseDto toEventResponseDto(Event event) {
         EventResponseDto eventResponseDto = new EventResponseDto();
         eventResponseDto.setId(event.getId());
-        eventResponseDto.setName(translations.get(0));
+        eventResponseDto.setName(event.getName());
         eventResponseDto.setOrganisation(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
         Address address = event.getAddressToEvents().get(0).getAddress();
         eventResponseDto.setStreet(address.getStreet());
-        eventResponseDto.setAddressDescription(translations.get(2));
+        eventResponseDto.setAddressDescription(address.getAddressDescription());
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setCity(address.getDistrict().getCity());
@@ -93,23 +71,24 @@ public interface EventMapper {
 
     default ShiftDto mapShiftToShiftDto(Shift shift) {
         ShiftDto shiftDto = new ShiftDto();
+        shiftDto.setId(shift.getId());
         shiftDto.setStartTime(shift.getStartTime());
         shiftDto.setEndTime(shift.getEndTime());
         shiftDto.setDate(shift.getDate());
-        shiftDto.setSignedUp(shift.getRegisteredUsersCount());
+        shiftDto.setSignedUp(shift.getRegisteredUsers());
         shiftDto.setCapacity(shift.getCapacity());
         shiftDto.setIsLeaderRequired(shift.isLeaderRequired());
         shiftDto.setRequiredMinAge(shift.getRequiredMinAge());
         return shiftDto;
     }
 
-    default EventResponseDetailsDto toEventResponseDetailsDto(Event event, List<String> translations) {
+    default EventResponseDetailsDto toEventResponseDetailsDto(Event event) {
         EventResponseDetailsDto eventResponseDto = new EventResponseDetailsDto();
-        eventResponseDto.setName(translations.get(0));
+        eventResponseDto.setName(event.getName());
         eventResponseDto.setOrganisationId(event.getOrganisation().getId());
         eventResponseDto.setOrganisationName(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
-        eventResponseDto.setDescription(translations.get(1));
+        eventResponseDto.setDescription(event.getDescription());
         eventResponseDto.setCategories(
                 event.getCategories().stream()
                         .map(categoryToEvent ->mapCategoryToCategoryDto( categoryToEvent.getCategory()))
@@ -118,7 +97,7 @@ public interface EventMapper {
         eventResponseDto.setStreet(address.getStreet());
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
-        eventResponseDto.setAddressDescription(translations.get(2));
+        eventResponseDto.setAddressDescription(address.getAddressDescription());
         eventResponseDto.setImageUrl(event.getImageUrl());
         List<ShiftDto> shifts =
                 event.getAddressToEvents().stream()
@@ -133,12 +112,28 @@ public interface EventMapper {
         return eventResponseDto;
     }
 
-    default EventTranslationRequestDto toEventTranslationDto(EventRequestDto eventDto){
-        EventTranslationRequestDto translation = new EventTranslationRequestDto();
-        translation.setTitle(eventDto.getName());
-        translation.setDescription(eventDto.getDescription());
-        translation.setAddressDescription(eventDto.getAddressDescription());
-        translation.setLanguage(eventDto.getLanguage());
-        return translation;
+
+    default EventAIRequest toEventAIRequest(Event event){
+        EventAIRequest aiRequest = new EventAIRequest();
+        aiRequest.setId(event.getId());
+        aiRequest.setDistrict(event.getAddressToEvents().get(0).getAddress().getDistrict().getName());
+        aiRequest.setOrganisation(event.getOrganisation().getName());
+        aiRequest.setCategories(event.getCategories()
+                .stream()
+                .map(cte -> cte
+                        .getCategory()
+                        .getName())
+                .distinct()
+                .collect(Collectors.toList()));
+        return aiRequest;
+    }
+
+    default Event.EventBuilder toEvent(EventRequestDto dtoEvent){
+        return Event.builder()
+                .name(dtoEvent.getName())
+                .description(dtoEvent.getDescription())
+                .isPeselVerificationRequired(dtoEvent.isPeselVerificationRequired())
+                .isAgreementNeeded(dtoEvent.isAgreementNeeded())
+                .imageUrl(dtoEvent.getImageUrl());
     }
 }

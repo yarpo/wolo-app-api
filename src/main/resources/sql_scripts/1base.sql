@@ -5,56 +5,55 @@
 CREATE TABLE IF NOT EXISTS address (
                                        id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                        street VARCHAR(50) NOT NULL,
-    home_num VARCHAR(10) NOT NULL,
-    district_id BIGINT, -- NOT NULL
-    description VARCHAR(250) NOT NULL
-    );
+                                       home_num VARCHAR(10) NOT NULL,
+                                       district_id BIGINT, -- NOT NULL
+                                       description VARCHAR(250)
+                                       );
 -- Table: address_to_event
 CREATE TABLE IF NOT EXISTS address_to_event (
                                                 id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                                 event_id BIGINT NOT NULL,
                                                 address_id BIGINT NOT NULL
-);
+                                             );
 -- Table: category
 CREATE TABLE IF NOT EXISTS category (
                                         id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                         "name" VARCHAR(50) NOT NULL
-    );
+                                        );
 -- Table: district
 CREATE TABLE IF NOT EXISTS district (
                                         id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                         "name" VARCHAR(50) NOT NULL,
-    city VARCHAR(50) NOT NULL
-    );
+                                        city VARCHAR(50) NOT NULL
+                                        );
 
 -- Table: organisation
 CREATE TABLE IF NOT EXISTS organisation (
                                             id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                             "name" VARCHAR(250) NOT NULL,
-    description TEXT NOT NULL,
-    email VARCHAR(50) NOT NULL,
-    phone_num VARCHAR(9) NOT NULL,
-    address_id BIGINT NOT NULL,
-    is_approved BOOLEAN NOT NULL,
-    moderator_id BIGINT NOT NULL,
-    logo_url VARCHAR(255)
-    );
+                                            description TEXT NOT NULL,
+                                            email VARCHAR(50) NOT NULL,
+                                            phone_num VARCHAR(9) NOT NULL,
+                                            address_id BIGINT NOT NULL,
+                                            is_approved BOOLEAN NOT NULL,
+                                            logo_url VARCHAR(255)
+                                            );
 -- Table: event
 CREATE TABLE IF NOT EXISTS event (
                                      id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                      "name" VARCHAR(250) NOT NULL,
-    description TEXT NOT NULL,
-    is_pesel_ver_req BOOLEAN NOT NULL,
-    is_agreement_needed BOOLEAN NOT NULL,
-    organisation_id BIGINT NOT NULL,
-    image_url VARCHAR(255),
-    is_approved BOOLEAN NOT NULL
-    );
+                                     description TEXT NOT NULL,
+                                     is_pesel_ver_req BOOLEAN NOT NULL,
+                                     is_agreement_needed BOOLEAN NOT NULL,
+                                     organisation_id BIGINT NOT NULL,
+                                     image_url VARCHAR(255),
+                                     is_approved BOOLEAN NOT NULL
+                                     );
 -- Table: role
 CREATE TABLE IF NOT EXISTS role (
                                     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                     "name" VARCHAR(20) NOT NULL
-    );
+                                    );
 -- Table: shift
 CREATE TABLE IF NOT EXISTS shift (
                                      id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -63,9 +62,10 @@ CREATE TABLE IF NOT EXISTS shift (
                                      end_time TIME NOT NULL,
                                      "date" DATE NOT NULL,
                                      capacity INT NOT NULL,
+                                     registered INT default 0,
                                      is_leader_required BOOLEAN NOT NULL,
                                      required_min_age INT NOT NULL
-);
+                                     );
 -- Table: shift_to_user
 CREATE TABLE IF NOT EXISTS shift_to_user (
                                              id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS shift_to_user (
                                              shift_id BIGINT NOT NULL,
                                              is_on_reserve_list BOOLEAN NOT NULL,
                                              is_leader BOOLEAN NOT NULL
-);
+                                             );
 -- Table: user
 CREATE TABLE IF NOT EXISTS "user" (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -85,7 +85,8 @@ CREATE TABLE IF NOT EXISTS "user" (
     is_pesel_verified BOOLEAN NOT NULL,
     is_agreement_signed BOOLEAN NOT NULL,
     is_adult BOOLEAN NOT NULL,
-    password varchar(255) NOT NULL
+    organisation_id BIGINT UNIQUE,
+    "password" varchar(255) NOT NULL
     );
 
 -- Table: category_to_event
@@ -93,9 +94,7 @@ CREATE TABLE IF NOT EXISTS category_to_event (
                                                  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                                  category_id BIGINT NOT NULL,
                                                  event_id BIGINT NOT NULL
-);
-
---changeset woloapp:2
+                                                 );
 
 CREATE UNIQUE INDEX idx_unique_email ON "user" (email);
 -- foreign keys
@@ -116,11 +115,8 @@ ALTER TABLE address_to_event
 ALTER TABLE organisation
     ADD CONSTRAINT fk_organisation_address_id
         FOREIGN KEY (address_id)
-            REFERENCES address (id)
-            ON DELETE CASCADE,
-    ADD CONSTRAINT fk_organisation_moderator_id
-        FOREIGN KEY (moderator_id)
-            REFERENCES "user" (id);
+            REFERENCES address (id);
+
 -- Tabela: event
 ALTER TABLE event
     ADD CONSTRAINT fk_event_organisation_id
@@ -130,7 +126,10 @@ ALTER TABLE event
 ALTER TABLE "user"
     ADD CONSTRAINT fk_user_role_id
         FOREIGN KEY (role_id)
-            REFERENCES role (id);
+            REFERENCES role (id),
+    ADD CONSTRAINT fk_user_organisation_id
+        FOREIGN KEY (organisation_id)
+            REFERENCES organisation (id);
 -- Tabela: shift
 ALTER TABLE shift
     ADD CONSTRAINT fk_shift_address_to_event_id
@@ -164,10 +163,22 @@ INSERT INTO role ("name") VALUES
 INSERT INTO district ( "name", city) VALUES
                                          ( 'Centrum', 'Warszawa'),
                                          ( 'Wrzeszcz', 'Gdańsk'),
-                                         ( 'Śródmieście', 'Gdańsk');
+                                         ( 'Śródmieście', 'Gdańsk'),
+                                         ( 'Oliwa', 'Gdańsk'),
+                                         ( 'Aniołki', 'Gdańsk'),
+                                         ( 'Morena', 'Gdańsk'),
+                                         ( 'Orunia', 'Gdańsk'),
+                                         ( 'Jelitkowo', 'Gdańsk'),
+                                         ( 'Przymorze', 'Gdańsk'),
+                                         ( 'Zaspa', 'Gdańsk'),
+                                         ( 'Ujeścisko-Łostowice', 'Gdańsk'),
+                                         ( 'Siedlce', 'Gdańsk'),
+                                         ('Nowy Port', 'Gdańsk');
 
 INSERT INTO category ( "name") VALUES
+                                   ( 'Kultura'),
                                    ( 'Sport'),
-                                   ( 'Pomoc'),
                                    ( 'Edukacja'),
+                                   ( 'Ekologia'),
+                                   ( 'Pomoc'),
                                    ( 'Podstawowa');

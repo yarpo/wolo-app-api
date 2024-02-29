@@ -2,14 +2,12 @@ package pl.pjwstk.woloappapi.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.EventService;
+import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
-import pl.pjwstk.woloappapi.utils.Translator;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -22,16 +20,22 @@ import java.util.stream.Collectors;
 public class EventController {
     private final EventService eventService;
     private final EventMapper eventMapper;
-    private final Translator translator;
+    private final UserService userService;
 
     @GetMapping("")
-    public ResponseEntity<List<EventResponseDto>> getEvents(
-            @RequestParam(value = "language") String language) {
+    public ResponseEntity<List<EventResponseDto>> getEvents() {
         List<EventResponseDto> eventDtos = eventService.getAllEvents()
                 .stream()
-                .map(e -> eventMapper.toEventResponseDto(e, translator.translate(language, e)))
+                .map(eventMapper::toEventResponseDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
+    }
+    @PostMapping("/join")
+    public ResponseEntity<HttpStatus> joinEvent(
+            @RequestParam(value = "user") Long userId,
+            @RequestParam(value = "shift") Long shiftId){
+        userService.joinEvent(userId, shiftId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/search")
@@ -45,8 +49,7 @@ public class EventController {
             @RequestParam(value = "verification", required = false)
                     Boolean isPeselVerificationRequired,
             @RequestParam(value = "showAvailable", required = false)
-                    Boolean showWithAvailableCapacity,
-            @RequestParam(value = "language") String language) {
+                    Boolean showWithAvailableCapacity) {
 
         List<Event> filteredEvents =
                 eventService.filterEvents(
@@ -61,30 +64,20 @@ public class EventController {
         List<EventResponseDto> eventDtos =
                 filteredEvents
                         .stream()
-                        .map(e -> eventMapper.toEventResponseDto(e, translator.translate(language, e)))
+                        .map(eventMapper::toEventResponseDto)
                         .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EventResponseDetailsDto> getEventById(@PathVariable Long id,
-                                                                @RequestParam(value = "language") String language) {
+    public ResponseEntity<EventResponseDetailsDto> getEventById(@PathVariable Long id) {
         Event event = eventService.getEventById(id);
-        EventResponseDetailsDto eventDto = eventMapper.toEventResponseDetailsDto(event, translator.translate(language, event));
+        EventResponseDetailsDto eventDto = eventMapper.toEventResponseDetailsDto(event);
         return new ResponseEntity<>(eventDto, HttpStatus.OK);
     }
-
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
-        EventTranslationRequestDto translationDto = eventMapper.toEventTranslationDto(dtoEvent);
-        WebClient localClient = WebClient.create("http://localhost:5000");
-        localClient.post()
-                .uri("/translate")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(translationDto)
-                .retrieve()
-                .bodyToMono(EventTranslationResponsDto.class)
-                .subscribe(translatedObject -> eventService.createEvent(translatedObject, dtoEvent));
+            eventService.createEvent(dtoEvent);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -94,12 +87,18 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("/{id}/edit")
+    @PutMapping("/{id}/edit")
     public ResponseEntity<HttpStatus> editEvent(
             @Valid @RequestBody EventRequestDto eventRequestDto, @PathVariable Long id) {
-
         eventService.updateEvent(eventRequestDto, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<EventAIRequest>>getUpcomingEvents(){
+        List<Event> events = eventService.getUpcomingEvents();
+        List<EventAIRequest> aiRequests = events.stream()
+                .map(eventMapper::toEventAIRequest).toList();
+        return new ResponseEntity<>(aiRequests, HttpStatus.OK);
+    }
 }
