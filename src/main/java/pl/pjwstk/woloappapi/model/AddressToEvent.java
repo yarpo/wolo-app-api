@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,7 +26,7 @@ public class AddressToEvent {
     private Address address;
 
     @OneToMany(mappedBy = "addressToEvent", cascade = CascadeType.ALL)
-    private List<Shift> shifts = new ArrayList<>();
+    private List<Shift> shifts;
 
     public AddressToEvent(Event event, Address address) {
         this.address = address;
