@@ -96,8 +96,6 @@ CREATE TABLE IF NOT EXISTS category_to_event (
                                                  event_id BIGINT NOT NULL
                                                  );
 
---changeset woloapp:2
-
 CREATE UNIQUE INDEX idx_unique_email ON "user" (email);
 -- foreign keys
 -- Tabela: address
