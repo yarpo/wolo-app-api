@@ -1,19 +1,20 @@
 package pl.pjwstk.woloappapi.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import lombok.Data;
+import pl.pjwstk.woloappapi.security.AuthProvider;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
-@Builder
 @Table(name = "user")
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserEntity {
 
     @Id
@@ -22,15 +23,21 @@ public class UserEntity {
     private Long id;
 
     @Column(name = "firstname", nullable = false)
+    @NotBlank(message = "Name is required")
+    @Size(max = 50, message = "Name cannot exceed 50 characters")
     private String firstname;
 
     @Column(name = "lastname", nullable = false)
+    @NotBlank(message = "Surname is required")
+    @Size(max = 50, message = "Surname cannot exceed 50 characters")
     private String lastname;
 
     @Column(name = "email", nullable = false, unique = true)
+    @NotBlank(message = "Email is required")
     private String email;
 
     @Column(name = "phone_number")
+    @Pattern(regexp = "[0-9]{9}", message = "Phone number should consist of 9 digits")
     private String phoneNumber;
 
     @ManyToOne
@@ -46,13 +53,13 @@ public class UserEntity {
     @Column(name = "is_adult", nullable = false)
     private boolean isAdult;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "organisation_id", referencedColumnName = "id")
-    private Organisation organisation;
+    @OneToMany(mappedBy = "moderator", cascade = CascadeType.ALL)
+    private List<Organisation> organisations;
 
     @OneToMany(mappedBy = "user")
-    private List<ShiftToUser> shifts;
+    private List<ShiftToUser> shifts = new ArrayList<>();
 
     @Column(name = "password", nullable = false)
     private String password;
+
 }

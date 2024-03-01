@@ -101,8 +101,8 @@ public class EventControllerTest {
             boolean isAgreementNeeded) {
         Event event = new Event();
         event.setId(id);
-        event.setName(name);
-        event.setDescription(description);
+        event.setNamePL(name);
+        event.setDescriptionPL(description);
         event.setPeselVerificationRequired(isPeselVerificationRequired);
         event.setAgreementNeeded(isAgreementNeeded);
         return event;

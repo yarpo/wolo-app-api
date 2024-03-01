@@ -1,12 +1,11 @@
 package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import pl.pjwstk.woloappapi.model.Category;
-import pl.pjwstk.woloappapi.model.CategoryDto;
 import pl.pjwstk.woloappapi.repository.CategoryRepository;
-import pl.pjwstk.woloappapi.utils.DictionariesMapper;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
@@ -14,8 +13,8 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class CategoryService {
+    private final Long basicCategory = 4L;
     private final CategoryRepository categoryRepository;
-    private final DictionariesMapper dictionariesMapper;
 
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
@@ -27,30 +26,31 @@ public class CategoryService {
                 .orElseThrow(() -> new NotFoundException("Category id not found!"));
     }
 
-    @Transactional
-    public void createCategory(CategoryDto category) {
-        categoryRepository.save(dictionariesMapper.toCategory(category).build());
-    }
-
-    @Transactional
-    public void updateCategory(CategoryDto categoryDto) {
-        Category category = categoryRepository
-                .findById(categoryDto.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Category with ID " + categoryDto.getId() + " does not exist"));
-        category.setName(categoryDto.getName());
+    public void createCategory(Category category) {
         categoryRepository.save(category);
     }
 
-    @Transactional
+    public void updateCategory(Category category, Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new IllegalArgumentException("Category with ID " + id + " does not exist");
+        }
+        category.setId(id);
+        categoryRepository.save(category);
+    }
+
     public void deleteCategory(Long id) {
         categoryRepository
                 .findById(id)
-                .ifPresent(c -> {
-                        c.getCategoryToEventList()
-                                .forEach(cte -> cte.setCategory(categoryRepository
-                                                                            .findByName("Podstawowa")
-                                                                            .get()));
-                        categoryRepository.deleteById(id);
-                });
+                .ifPresent(
+                        category -> {
+                            category.getCategoryToEventList()
+                                    .forEach(
+                                            cte ->
+                                                    cte.setCategory(
+                                                            categoryRepository
+                                                                    .findById(basicCategory)
+                                                                    .orElse(null)));
+                            categoryRepository.deleteById(id);
+                        });
     }
 }

@@ -1,20 +1,18 @@
 package pl.pjwstk.woloappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "shift")
 public class Shift {
 
@@ -25,10 +23,12 @@ public class Shift {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_to_event_id") // nullable = false
+    @JsonBackReference
     private AddressToEvent addressToEvent;
 
     @OneToMany(mappedBy = "shift")
-    private List<ShiftToUser> shiftToUsers;
+    @JsonManagedReference
+    private List<ShiftToUser> shiftToUsers = new ArrayList<>();
 
     @Column(name = "start_time", nullable = false)
     private LocalTime startTime;
@@ -48,6 +48,7 @@ public class Shift {
     @Column(name = "required_min_age", nullable = false)
     private int requiredMinAge;
 
-    @Column(name = "registered")
-    private int registeredUsers;
+    public int getRegisteredUsersCount() {
+        return this.shiftToUsers.size();
+    }
 }

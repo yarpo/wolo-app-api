@@ -1,5 +1,6 @@
 package pl.pjwstk.woloappapi;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -13,9 +14,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @ExtendWith(MockitoExtension.class)
 public class EventMapperTests {
     private EventMapper eventMapper;
+    private EventTranslationResponsDto translation;
+
+    @BeforeEach
+    public void setUp() {
+        eventMapper = createEventMapper();
+
+        translation = new EventTranslationResponsDto();
+        translation.setAddressDescriptionPL("PL Address Description");
+        translation.setAddressDescriptionEN("EN Address Description");
+        translation.setAddressDescriptionUA("UA Address Description");
+        translation.setAddressDescriptionRU("RU Address Description");
+        translation.setTitlePL("Title PL");
+        translation.setTitleEN("Title EN");
+        translation.setTitleUA("Title UA");
+        translation.setTitleRU("Title RU");
+        translation.setDescriptionPL("Description PL");
+        translation.setDescriptionEN("Description EN");
+        translation.setDescriptionUA("Description UA");
+        translation.setDescriptionRU("Description RU");
+    }
+
     private EventMapper createEventMapper() {
         return Mappers.getMapper(EventMapper.class);
     }
@@ -31,7 +54,7 @@ public class EventMapperTests {
         shiftDto.setCapacity(10);
         shiftDto.setRequiredMinAge(18);
 
-        Shift shift = eventMapper.toShift(shiftDto).build();
+        Shift shift = eventMapper.toShift(shiftDto);
 
         assertNotNull(shift);
         assertEquals(LocalTime.of(9, 0), shift.getStartTime());
@@ -72,48 +95,47 @@ public class EventMapperTests {
         assertEquals(2, shifts.size());
     }
 
-//    @Test
-//    public void testToEvent() {
-//        EventRequestDto eventRequestDto = new EventRequestDto();
-//        eventRequestDto.setPeselVerificationRequired(true);
-//        eventRequestDto.setAgreementNeeded(false);
-//        eventRequestDto.setImageUrl("http://example.com/image");
-//
-//        Event event = eventMapper.toEvent(translation, eventRequestDto);
-//
-//        assertNotNull(event);
-//        assertEquals("Title PL", event.getNamePL());
-//        assertEquals("Title EN", event.getNameEN());
-//        assertEquals("Title UA", event.getNameUA());
-//        assertEquals("Title RU", event.getNameRU());
-//        assertEquals("Description PL", event.getDescriptionPL());
-//        assertEquals("Description EN", event.getDescriptionEN());
-//        assertEquals("Description UA", event.getDescriptionUA());
-//        assertEquals("Description RU", event.getDescriptionRU());
-//        assertTrue(event.isPeselVerificationRequired());
-//        assertFalse(event.isAgreementNeeded());
-//        assertEquals("http://example.com/image", event.getImageUrl());
-//        assertFalse(event.isApproved());
-//    }
+    @Test
+    public void testToEvent() {
+        EventRequestDto eventRequestDto = new EventRequestDto();
+        eventRequestDto.setPeselVerificationRequired(true);
+        eventRequestDto.setAgreementNeeded(false);
+        eventRequestDto.setImageUrl("http://example.com/image");
 
-//    @Test
-//    public void testToAddress() {
-//        EventRequestDto eventRequestDto = new EventRequestDto();
-//        eventRequestDto.setStreet("Test Street");
-//        eventRequestDto.setHomeNum("123");
-//
-//        Address address = eventMapper.toAddress(translation, eventRequestDto);
-//
-//        assertNotNull(address);
-//        assertEquals("Test Street", address.getStreet());
-//        assertEquals("123", address.getHomeNum());
-//        assertEquals("PL Address Description", address.getAddressDescriptionPL());
-//        assertEquals("EN Address Description", address.getAddressDescriptionEN());
-//        assertEquals("UA Address Description", address.getAddressDescriptionUA());
-//        assertEquals("RU Address Description", address.getAddressDescriptionRU());
-//    }
+        Event event = eventMapper.toEvent(translation, eventRequestDto);
 
-    /*
+        assertNotNull(event);
+        assertEquals("Title PL", event.getNamePL());
+        assertEquals("Title EN", event.getNameEN());
+        assertEquals("Title UA", event.getNameUA());
+        assertEquals("Title RU", event.getNameRU());
+        assertEquals("Description PL", event.getDescriptionPL());
+        assertEquals("Description EN", event.getDescriptionEN());
+        assertEquals("Description UA", event.getDescriptionUA());
+        assertEquals("Description RU", event.getDescriptionRU());
+        assertTrue(event.isPeselVerificationRequired());
+        assertFalse(event.isAgreementNeeded());
+        assertEquals("http://example.com/image", event.getImageUrl());
+        assertFalse(event.isApproved());
+    }
+
+    @Test
+    public void testToAddress() {
+        EventRequestDto eventRequestDto = new EventRequestDto();
+        eventRequestDto.setStreet("Test Street");
+        eventRequestDto.setHomeNum("123");
+
+        Address address = eventMapper.toAddress(translation, eventRequestDto);
+
+        assertNotNull(address);
+        assertEquals("Test Street", address.getStreet());
+        assertEquals("123", address.getHomeNum());
+        assertEquals("PL Address Description", address.getAddressDescriptionPL());
+        assertEquals("EN Address Description", address.getAddressDescriptionEN());
+        assertEquals("UA Address Description", address.getAddressDescriptionUA());
+        assertEquals("RU Address Description", address.getAddressDescriptionRU());
+    }
+
     @Test
     public void testToEventResponseDtoStructure() {
         Event event = new Event();
@@ -168,8 +190,6 @@ public class EventMapperTests {
         assertNotNull(eventResponseDto.getImageUrl());
         assertNotNull(eventResponseDto.getShifts());
     }
-
-     */
 
     @Test
     public void testMapShiftToShiftDto() {
@@ -263,7 +283,6 @@ public class EventMapperTests {
         assertEquals(20, shiftDto2.getRequiredMinAge());
     }
 
-    /*
     @Test
     public void testToEventResponseDetailsDto() {
         Event event = new Event();
@@ -350,6 +369,4 @@ public class EventMapperTests {
         assertEquals("http://example.com/image.jpg", eventResponseDetailsDto.getImageUrl());
         assertEquals(1, eventResponseDetailsDto.getShifts().size());
     }
-
-     */
 }

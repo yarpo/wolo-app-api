@@ -1,40 +1,56 @@
 package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import pl.pjwstk.woloappapi.model.Shift;
 import pl.pjwstk.woloappapi.repository.ShiftRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class ShiftService {
     private final ShiftRepository shiftRepository;
 
-    public Shift getShiftById(long id){
-        return shiftRepository.findById(id).orElseThrow(() -> new NotFoundException("Event id not found!"));
+    public List<Shift> getAllShifts() {
+        return shiftRepository.findAll();
     }
-    @Transactional
+
+    public Shift getShiftById(Long id) {
+        return shiftRepository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException("Shift id not found!"));
+    }
+
     public void createShift(Shift shift) {
         shiftRepository.save(shift);
     }
 
-    @Transactional
-    public void delete(Long id) {
-        Shift shiftToDelete = shiftRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Shift with ID " + id + " does not exist"));
-
-        if (shiftToDelete.getDate().isAfter(LocalDate.now())) {
-            shiftRepository.deleteById(id);
-        } else {
-            throw new IllegalArgumentException("Can't delete shift: it has a past or today's date");
+    public Shift updateShift(Shift shift) {
+        if (!shiftRepository.existsById(shift.getId())) {
+            throw new IllegalArgumentException(
+                    "Shift with ID " + shift.getId() + " does not exist");
         }
+        return shiftRepository.save(shift);
     }
 
-    public void editShift(Shift shift) {
-        shiftRepository.save(shift);
+    public void deleteShift(Long id) {
+        if (!shiftRepository.existsById(id)) {
+            throw new IllegalArgumentException("Shift with ID " + id + " does not exist");
+        }
+        shiftRepository.deleteById(id);
+    }
+
+    public int getRegisteredUsersCountForShift(Long shiftId) {
+        Shift shift = shiftRepository.findById(shiftId).orElse(null);
+
+        if (shift != null) {
+            return shift.getRegisteredUsersCount();
+        } else {
+            return 0; // lub można zwrócić odpowiedni kod błędu
+        }
     }
 }

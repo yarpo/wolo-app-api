@@ -1,10 +1,6 @@
 package pl.pjwstk.woloappapi.model;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -16,7 +12,7 @@ public class UserResponseDto {
     private String lastname;
     private String email;
     private String phoneNumber;
-    private String role;
+    private RoleDto roleDto;
     private boolean isPeselVerified;
     private boolean isAgreementSigned;
     private boolean isAdult;
