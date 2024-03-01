@@ -56,7 +56,6 @@ public class OrganisationService {
         Address address = organisation.getAddress();
         address.setStreet(organisationDto.getStreet());
         address.setHomeNum(organisationDto.getHomeNum());
-        address.setAddressDescription(organisationDto.getAddressDescription());
         address.setDistrict(districtService.getDistrictById(organisationDto.getDistrictId()));
         organisation.setAddress(address);
         organisation.setLogoUrl(organisationDto.getLogoUrl());
@@ -68,5 +67,15 @@ public class OrganisationService {
                 .findById(id)
                 .map(Organisation::getEvents)
                 .orElseThrow(() -> new NotFoundException("Organizer id not found!"));
+    }
+
+    public void approve(Long organisationId) {
+        var organisation = organisationRepository.findById(organisationId);
+        organisation.ifPresent(o -> o.setApproved(true));
+    }
+
+    public void disapprove(Long organisationId) {
+        var organisation = organisationRepository.findById(organisationId);
+        organisation.ifPresent(o -> o.setApproved(false));
     }
 }

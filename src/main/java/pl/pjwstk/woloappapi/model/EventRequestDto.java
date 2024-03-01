@@ -62,8 +62,6 @@ public class EventRequestDto {
     @NotNull(message = "District must be chosen")
     private Long districtId;
 
-    private String addressDescription;
-
     private String imageUrl;
 
     @NotNull(message = "Shifts are required")

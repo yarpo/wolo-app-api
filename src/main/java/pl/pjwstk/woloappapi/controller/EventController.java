@@ -23,27 +23,11 @@ import java.util.stream.Collectors;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/events")
-@Tag(name = "Events")
 public class EventController {
     private final EventService eventService;
     private final EventMapper eventMapper;
     private final UserService userService;
 
-    @Operation(
-            summary = "Get all events",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            schema = @Schema(type = "array",implementation = EventResponseDto.class)
-                                    )
-                            }
-                    )
-            }
-    )
     @GetMapping("")
     public ResponseEntity<List<EventResponseDto>> getEvents() {
         List<EventResponseDto> eventDtos = eventService.getAllEvents()
@@ -52,26 +36,19 @@ public class EventController {
                 .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
-
-    @Operation(
-            summary = "User joins the event",
-            description = "User and event must exist",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "user",description = "User id who wants to join the event"),
-                    @Parameter(name = "shift",description = "Shift id that the user wants to join"),
-            }
-    )
     @PostMapping("/join")
     public ResponseEntity<HttpStatus> joinEvent(
             @RequestParam(value = "user") Long userId,
             @RequestParam(value = "shift") Long shiftId){
         userService.joinEvent(userId, shiftId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/refuse")
+    public ResponseEntity<HttpStatus> refuseParticipateInEvent(
+            @RequestParam(value = "user") Long userId,
+            @RequestParam(value = "shift") Long shiftId){
+        userService.refuse(userId, shiftId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -195,22 +172,6 @@ public class EventController {
         EventResponseDetailsDto eventDto = eventMapper.toEventResponseDetailsDto(event);
         return new ResponseEntity<>(eventDto, HttpStatus.OK);
     }
-
-    @Operation(
-            summary = "Adding new event",
-            responses = {
-                    @ApiResponse(
-                            description = "Created",
-                            responseCode = "201"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "dtoEvent",
-                            description = "Category object to create",
-                            schema = @Schema(implementation = EventRequestDto.class)
-                    )
-            }
-    )
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
             eventService.createEvent(dtoEvent);
@@ -239,25 +200,6 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(
-            summary = "Edit event",
-            description = "Event must exist, you can change only upcoming events",
-            responses = {
-                    @ApiResponse(
-                            description = "No content",
-                            responseCode = "204"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "eventRequestDto",
-                            description = "Event object with changes",
-                            schema = @Schema(implementation = EventRequestDto.class)
-                    ),
-                    @Parameter(name = "id",
-                            description = "Event id to make changes"
-                    ),
-            }
-    )
     @PutMapping("/{id}/edit")
     public ResponseEntity<HttpStatus> editEvent(
             @Valid @RequestBody EventRequestDto eventRequestDto, @PathVariable Long id) {
@@ -283,8 +225,10 @@ public class EventController {
     @GetMapping("/upcoming")
     public ResponseEntity<List<EventResponseDto>>getUpcomingEvents(){
         List<Event> events = eventService.getUpcomingEvents();
-        List<EventResponseDto> respons = events.stream()
-                .map(eventMapper::toEventResponseDto).toList();
+        List<EventResponseDto> respons = events
+                .stream()
+                .map(eventMapper::toEventResponseDto)
+                .toList();
         return new ResponseEntity<>(respons, HttpStatus.OK);
     }
 }
