@@ -17,7 +17,6 @@ public interface OrganisationMapper {
         Address address = organisation.getAddress();
         organisationResponseDto.setStreet(address.getStreet());
         organisationResponseDto.setHomeNum(address.getHomeNum());
-        organisationResponseDto.setAddressDescription(address.getAddressDescription());
         organisationResponseDto.setLogoUrl(organisation.getLogoUrl());
         return organisationResponseDto;
     }
@@ -34,7 +33,6 @@ public interface OrganisationMapper {
     default Address.AddressBuilder toAddress(OrganisationRequestDto organisationRequestDto) {
         return Address.builder()
                 .street(organisationRequestDto.getStreet())
-                .homeNum(organisationRequestDto.getHomeNum())
-                .addressDescription(organisationRequestDto.getAddressDescription());
+                .homeNum(organisationRequestDto.getHomeNum());
     }
 }

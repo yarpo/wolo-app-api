@@ -37,8 +37,6 @@ public class OrganisationRequestDto {
     @NotBlank(message = "Home number is required")
     private String homeNum;
 
-    private String addressDescription;
-
     @NotNull(message = "District must be chosen")
     private Long districtId;
 

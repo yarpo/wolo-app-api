@@ -115,7 +115,6 @@ public class EventService {
         address.setDistrict(districtService.getDistrictById(eventDto.getDistrictId()));
         address.setStreet(eventDto.getStreet());
         address.setHomeNum(eventDto.getHomeNum());
-        address.setAddressDescription(eventDto.getAddressDescription());
         event.getAddressToEvents().forEach(ate -> ate.setAddress(address));
     }
 
@@ -152,6 +151,7 @@ public class EventService {
         shift.setLeaderRequired(newShift.isLeaderRequired());
         shift.setCapacity(newShift.getCapacity());
         shift.setRequiredMinAge(newShift.getRequiredMinAge());
+        shift.setShiftDirections(newShift.getShiftDirections());
     }
     @Transactional
     public void deleteEvent(Long id) {

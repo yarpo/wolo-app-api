@@ -17,7 +17,11 @@ public class DistrictService {
     private final DistrictRepository districtRepository;
     private final DictionariesMapper dictionariesMapper;
     public List<District> getAllDistricts() {
-        return districtRepository.findAll();
+        return districtRepository
+            .findAll()
+            .stream()
+            .filter(d -> d.isOld() == false)
+            .toList();
     }
 
     public District getDistrictById(Long id) {
@@ -33,10 +37,11 @@ public class DistrictService {
 
 
     public void deleteDistrict(Long id) {
-        if (!districtRepository.existsById(id)) {
-            throw new IllegalArgumentException("District with ID " + id + " does not exist");
-        }
-        districtRepository.deleteById(id);
+        var district = districtRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("District not found!"));
+        district.setOld(true);
+        districtRepository.save(district);
     }
 
     @Transactional
