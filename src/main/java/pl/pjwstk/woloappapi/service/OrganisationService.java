@@ -69,4 +69,14 @@ public class OrganisationService {
                 .map(Organisation::getEvents)
                 .orElseThrow(() -> new NotFoundException("Organizer id not found!"));
     }
+
+    public void approve(Long organisationId) {
+        var organisation = organisationRepository.findById(organisationId);
+        organisation.ifPresent(o -> o.setApproved(true));
+    }
+
+    public void disapprove(Long organisationId) {
+        var organisation = organisationRepository.findById(organisationId);
+        organisation.ifPresent(o -> o.setApproved(false));
+    }
 }
