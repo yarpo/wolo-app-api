@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,8 +32,8 @@ public class Address {
     private District district;
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
-    private List<Organisation> organisations = new ArrayList<>();
+    private List<Organisation> organisations;
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
-    private List<AddressToEvent> addressToEvents = new ArrayList<>();
+    private List<AddressToEvent> addressToEvents;
 }

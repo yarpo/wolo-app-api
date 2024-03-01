@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,7 +28,7 @@ public class Shift {
     private AddressToEvent addressToEvent;
 
     @OneToMany(mappedBy = "shift")
-    private List<ShiftToUser> shiftToUsers = new ArrayList<>();
+    private List<ShiftToUser> shiftToUsers;
 
     @Column(name = "start_time", nullable = false)
     private LocalTime startTime;

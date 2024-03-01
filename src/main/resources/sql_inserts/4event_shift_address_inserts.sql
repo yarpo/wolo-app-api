@@ -344,4 +344,16 @@ INSERT INTO category_to_event (category_id, event_id) VALUES
                                                           (1, 46),
                                                           (2, 47);
 
+INSERT INTO privilege (name) VALUES
+                                 ('JOIN_EVENT'),
+                                 ('CREATE_EVENT'),
+                                 ('EDIT_EVENT'),
+                                 ('ADMIN_PANEL');
 
+
+INSERT INTO privilege_to_role (role_id, privilege_id) VALUES
+                                                          (1, 4),
+                                                          (1, 3),
+                                                          (2, 2),
+                                                          (2, 3),
+                                                          (3, 1);

@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,6 +25,6 @@ public class Role {
     private String name;
 
     @OneToMany(mappedBy = "role")
-    private List<UserEntity> userEntities = new ArrayList<>();
+    private List<UserEntity> userEntities;
 
 }

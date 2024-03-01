@@ -131,7 +131,7 @@ public class EventServiceTest {
 
     private Event createInvalidEvent() {
         Event event = new Event();
-        event.setNamePL("");
+        event.setName("");
 
         return event;
     }

@@ -1,8 +1,6 @@
 package pl.pjwstk.woloappapi.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,13 +17,10 @@ public class ShiftToUser {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonBackReference
     private UserEntity user;
-
 
     @ManyToOne
     @JoinColumn(name = "shift_id", referencedColumnName = "id")
-    @JsonBackReference
     private Shift shift;
 
     @Column(name = "is_on_reserve_list", nullable = false)
