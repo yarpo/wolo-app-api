@@ -154,11 +154,44 @@ public class OrganisationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @Operation(
+            summary = "Approve organisation (by admin)",
+            description = "Organisation must exist",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    )
+            },
+            parameters = {
+                    @Parameter(name = "id",
+                            description = "Organisation id to approve",
+                            example = "1"
+                    )
+            }
+    )
     @PostMapping("/approve")
     public ResponseEntity<HttpStatus> approveOrganisation(@RequestParam(value = "id") Long organisationId){
         organisationService.approve(organisationId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Operation(
+            summary = "Disapprove organisation (by admin)",
+            description = "Organisation must exist",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    )
+            },
+            parameters = {
+                    @Parameter(name = "id",
+                            description = "Organisation id to disapprove",
+                            example = "1"
+                    )
+            }
+    )
     @PostMapping("/disapprove")
     public ResponseEntity<HttpStatus> disapproveOrganisation(@RequestParam(value = "id") Long organisationId){
         organisationService.disapprove(organisationId);

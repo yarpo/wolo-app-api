@@ -58,13 +58,12 @@ public class CategoryController {
                     @ApiResponse(
                             description = "Success",
                             responseCode = "200" ,
-                                content = {
-                                        @Content(
-                                                mediaType = "application/json",
-                                                schema = @Schema(implementation = CategoryDto.class)
-                                        )
-                                }
-
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = CategoryDto.class)
+                                    )
+                            }
                     )
             },
             parameters = {

@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +27,21 @@ public class EventController {
     private final EventMapper eventMapper;
     private final UserService userService;
 
+    @Operation(
+            summary = "Get all events",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(type = "array",implementation = EventResponseDto.class)
+                                    )
+                            }
+                    )
+            }
+    )
     @GetMapping("")
     public ResponseEntity<List<EventResponseDto>> getEvents() {
         List<EventResponseDto> eventDtos = eventService.getAllEvents()
@@ -36,6 +50,26 @@ public class EventController {
                 .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
+
+    @Operation(
+            summary = "The user join shift of the event",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    )
+            },
+            parameters = {
+                    @Parameter(name = "user",
+                            description = "Id of the user who wants to join the event",
+                            example = "1"
+                    ),
+                    @Parameter(name = "shift",
+                            description = "Id of the shift user wants to join",
+                            example = "1"
+                    )
+            }
+    )
     @PostMapping("/join")
     public ResponseEntity<HttpStatus> joinEvent(
             @RequestParam(value = "user") Long userId,
@@ -44,6 +78,25 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "The user refuses to participate in the event",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    )
+            },
+            parameters = {
+                    @Parameter(name = "user",
+                            description = "Id of the user who wants to refuse to participate in the event",
+                            example = "1"
+                    ),
+                    @Parameter(name = "shift",
+                            description = "Id of the shift from which the user wants to unsubscribe",
+                            example = "1"
+                    )
+            }
+    )
     @PostMapping("/refuse")
     public ResponseEntity<HttpStatus> refuseParticipateInEvent(
             @RequestParam(value = "user") Long userId,
@@ -156,7 +209,6 @@ public class EventController {
                                             schema = @Schema(implementation = EventResponseDetailsDto.class)
                                     )
                             }
-
                     )
             },
             parameters = {
@@ -172,6 +224,22 @@ public class EventController {
         EventResponseDetailsDto eventDto = eventMapper.toEventResponseDetailsDto(event);
         return new ResponseEntity<>(eventDto, HttpStatus.OK);
     }
+
+    @Operation(
+            summary = "Adding new event",
+            responses = {
+                    @ApiResponse(
+                            description = "Created",
+                            responseCode = "201"
+                    )
+            },
+            parameters = {
+                    @Parameter(name = "event",
+                            description = "Event object to create",
+                            schema = @Schema(implementation = EventRequestDto.class)
+                    )
+            }
+    )
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
             eventService.createEvent(dtoEvent);
@@ -200,6 +268,26 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @Operation(
+            summary = "Edit event",
+            description = "Only upcomming events can be changed",
+            responses = {
+                    @ApiResponse(
+                            description = "No content",
+                            responseCode = "204"
+                    )
+            },
+            parameters = {
+                    @Parameter(name = "event",
+                            description = "event object with changes",
+                            schema = @Schema(implementation = EventRequestDto.class)
+                    ),
+                    @Parameter(name = "id",
+                            description = "event id",
+                            example = "1"
+                    ),
+            }
+    )
     @PutMapping("/{id}/edit")
     public ResponseEntity<HttpStatus> editEvent(
             @Valid @RequestBody EventRequestDto eventRequestDto, @PathVariable Long id) {

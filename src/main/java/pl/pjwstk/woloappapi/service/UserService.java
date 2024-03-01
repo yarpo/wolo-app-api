@@ -70,17 +70,7 @@ public class UserService {
         user.setRole(role);
         userRepository.save(user);
     }
-
-    public int getShiftsCountForUser(Long userId) {
-        UserEntity userEntity = userRepository.findById(userId).orElse(null);
-
-        if (userEntity != null) {
-            return userEntity.getShifts().size();
-        } else {
-            return 0;
-        }
-    }
-
+    
     @Transactional
     public void joinEvent(Long userId, Long shiftId) {
         UserEntity user = userRepository.findById(userId)
@@ -101,9 +91,11 @@ public class UserService {
             user.setOrganisation(organisation);
         }else{
             moderator.setOrganisation(null);
+            moderator.setRole(roleService.getRoleByName("USER"));
             userRepository.save(moderator);
             user.setOrganisation(organisation);
         }
+        user.setRole(roleService.getRoleByName("MODERATOR"));
         userRepository.save(user);
     }
 
@@ -112,6 +104,7 @@ public class UserService {
         UserEntity user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User not found with id: " + userId));
         user.setOrganisation(null);
+        user.setRole(roleService.getRoleByName("USER"));
         userRepository.save(user);
     }
 

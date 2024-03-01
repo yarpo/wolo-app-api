@@ -63,7 +63,6 @@ public class DistrictController {
                                             schema = @Schema(implementation = DistrictDto.class)
                                     )
                             }
-
                     )
             },
             parameters = {
