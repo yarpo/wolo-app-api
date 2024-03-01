@@ -70,7 +70,7 @@ public class UserService {
         user.setRole(role);
         userRepository.save(user);
     }
-    
+
     @Transactional
     public void joinEvent(Long userId, Long shiftId) {
         UserEntity user = userRepository.findById(userId)
