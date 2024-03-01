@@ -83,6 +83,7 @@ public class CategoryController {
 
     @Operation(
             summary = "Adding new category",
+            description = "id = null",
             responses = {
                     @ApiResponse(
                             description = "Created",
@@ -126,6 +127,7 @@ public class CategoryController {
 
     @Operation(
             summary = "Edit category",
+            description = "Category must exist",
             responses = {
                     @ApiResponse(
                             description = "No content",
