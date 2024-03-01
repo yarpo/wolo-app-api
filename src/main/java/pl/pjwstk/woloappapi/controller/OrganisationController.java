@@ -1,5 +1,10 @@
 package pl.pjwstk.woloappapi.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -23,6 +28,21 @@ public class OrganisationController {
     private final OrganisationMapper organisationMapper;
     private final EventMapper eventMapper;
 
+    @Operation(
+            summary = "Get all organisations",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(type = "array",implementation = OrganisationResponseDto.class)
+                                    )
+                            }
+                    )
+            }
+    )
     @GetMapping()
     public ResponseEntity<List<OrganisationResponseDto>> getOrganisations() {
         List<Organisation> organisations = organisationService.getAllOrganisations();
@@ -33,6 +53,28 @@ public class OrganisationController {
         return new ResponseEntity<>(organisationDtos, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Get organisation by id",
+            description = "Organisation must exist",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200" ,
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = OrganisationResponseDto.class)
+                                    )
+                            }
+                    )
+            },
+            parameters = {
+                    @Parameter(name = "id",
+                            description = "Organisation id",
+                            example = "1"
+                    )
+            }
+    )
     @GetMapping("/{id}")
     public ResponseEntity<OrganisationResponseDto> getOrganisationById(@PathVariable Long id) {
         Organisation organisation = organisationService.getOrganisationById(id);
@@ -41,6 +83,22 @@ public class OrganisationController {
         return new ResponseEntity<>(organisationDto, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Adding new organisation",
+            description = "id = null",
+            responses = {
+                    @ApiResponse(
+                            description = "Created",
+                            responseCode = "201"
+                    )
+            },
+            parameters = {
+                    @Parameter(name = "organisationDto",
+                            description = "Organisation object to create",
+                            schema = @Schema(implementation = OrganisationRequestDto.class)
+                    )
+            }
+    )
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addOrganisation(
             @Valid @RequestBody OrganisationRequestDto organisationDto) {
@@ -48,6 +106,21 @@ public class OrganisationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @Operation(
+            summary = "Get all events from the selected organisation",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(type = "array",implementation = EventResponseDto.class)
+                                    )
+                            }
+                    )
+            }
+    )
     @GetMapping("/{id}/events")
     public ResponseEntity<List<EventResponseDto>> getEventsByOrganisation(@PathVariable Long id) {
         List<Event> events = organisationService.getEventsByOrganisation(id);
@@ -58,6 +131,22 @@ public class OrganisationController {
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Edit organisation",
+            description = "Organisation must exist",
+            responses = {
+                    @ApiResponse(
+                            description = "No content",
+                            responseCode = "204"
+                    )
+            },
+            parameters = {
+                    @Parameter(name = "organisation",
+                            description = "Organisation object with changes",
+                            schema = @Schema(implementation = OrganisationRequestDto.class)
+                    )
+            }
+    )
     @PutMapping("/{id}/edit")
     public ResponseEntity<HttpStatus> editOrganisation(
             @Valid @RequestBody OrganisationRequestDto organisation, @PathVariable Long id) {
