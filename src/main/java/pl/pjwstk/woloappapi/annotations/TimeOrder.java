@@ -1,11 +1,12 @@
 package pl.pjwstk.woloappapi.annotations;
 
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import pl.pjwstk.woloappapi.validators.TimeOrderValidator;
 
 import java.lang.annotation.*;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+
 
 @Documented
 @Constraint(validatedBy = TimeOrderValidator.class)
