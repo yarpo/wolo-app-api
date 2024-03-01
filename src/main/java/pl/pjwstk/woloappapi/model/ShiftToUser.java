@@ -1,11 +1,12 @@
 package pl.pjwstk.woloappapi.model;
 
 import jakarta.persistence.*;
-
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
 @Table(name = "shift_to_user")
 public class ShiftToUser {
 
@@ -27,4 +28,9 @@ public class ShiftToUser {
 
     @Column(name = "is_leader", nullable = false)
     private boolean isLeader;
+
+    public ShiftToUser(UserEntity user, Shift shift) {
+        this.shift =shift;
+        this.user = user;
+    }
 }

@@ -44,14 +44,10 @@ public class EventRequestDto {
     @NotNull(message = "District must be chosen")
     private Long districtId;
 
-    private String addressDescription;
-
     private String imageUrl;
 
     @NotNull(message = "Shifts are required")
     @Size(min = 1, message = "At least one shift is required")
     @Valid
     private List<ShiftDto> shifts;
-
-    private Language language;
 }

@@ -1,10 +1,10 @@
 version: '3.1'
 services:
   backend:
+    container_name: wolo-app-api
     build:
       context: .
       dockerfile: Dockerfile_backend
-    container_name: wolo-app-api
     ports:
       - "8080:8080"
     env_file:
@@ -13,14 +13,16 @@ services:
       - dbpostgresql
     restart: on-failure
   dbpostgresql:
-    image: postgres
     container_name: dbpostgresql
+    image: postgres:latest
     ports:
       - "5432:5432"
     env_file:
       - .env
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     expose:
       - 5432
     restart: on-failure
+volumes:
+  db-data:

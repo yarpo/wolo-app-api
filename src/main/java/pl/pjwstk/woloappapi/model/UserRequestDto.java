@@ -27,13 +27,12 @@ public class UserRequestDto {
     private String phoneNumber;
 
     @NotBlank(message = "role is required")
-    private RoleDto roleDto;
+    private Long roleId;
 
     private boolean isPeselVerified;
 
     private boolean isAgreementSigned;
 
     private boolean isAdult;
-
-
+    private String password;
 }

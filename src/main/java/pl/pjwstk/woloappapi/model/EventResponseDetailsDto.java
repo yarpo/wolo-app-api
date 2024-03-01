@@ -29,8 +29,6 @@ public class EventResponseDetailsDto {
 
     private String street;
 
-    private String addressDescription;
-
     private String homeNum;
 
     private String district;
@@ -38,4 +36,5 @@ public class EventResponseDetailsDto {
     private String imageUrl;
 
     private List<ShiftDto> shifts;
+
 }

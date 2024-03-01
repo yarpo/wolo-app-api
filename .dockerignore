@@ -1,0 +1,12 @@
+# Intelij-IDEA
+.idea
+.gradle
+bulid
+.env
+.gitignore
+*.env
+Dockerfile_backend
+*.yml
+.github
+README.md
+HELP.md

@@ -1,13 +1,18 @@
 package pl.pjwstk.woloappapi.model;
 
 import jakarta.persistence.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "organisation")
 public class Organisation {
 
@@ -35,9 +40,9 @@ public class Organisation {
     @Column(name = "is_approved", nullable = false)
     private boolean isApproved;
 
-    @ManyToOne
-    @JoinColumn(name = "moderator_id", nullable = false)
+    @OneToOne(mappedBy = "organisation")
     private UserEntity moderator;
+
 
     @Column(name = "logo_url")
     private String logoUrl;

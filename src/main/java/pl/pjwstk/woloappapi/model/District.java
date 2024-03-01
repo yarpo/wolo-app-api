@@ -1,15 +1,18 @@
 package pl.pjwstk.woloappapi.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "district")
 public class District {
 
@@ -24,7 +27,9 @@ public class District {
     @Column(name = "city")
     private String city;
 
+    @Column(name = "is_old")
+    private boolean isOld;
+
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Address> addresses = new ArrayList<>();
+    private List<Address> addresses;
 }

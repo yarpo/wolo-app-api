@@ -1,16 +1,16 @@
 package pl.pjwstk.woloappapi.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import lombok.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "address")
@@ -29,26 +29,11 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name = "district_id") // nullable = false
-    @JsonBackReference
     private District district;
 
-    @Column(name = "description_pl")
-    private String addressDescriptionPL;
-
-    @Column(name = "description_en")
-    private String addressDescriptionEN;
-
-    @Column(name = "description_ua")
-    private String addressDescriptionUA;
-
-    @Column(name = "description_ru")
-    private String addressDescriptionRU;
+    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
+    private List<Organisation> organisations;
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Organisation> organisations = new ArrayList<>();
-
-    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<AddressToEvent> addressToEvents = new ArrayList<>();
+    private List<AddressToEvent> addressToEvents;
 }
