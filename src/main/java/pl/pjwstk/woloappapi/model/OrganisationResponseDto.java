@@ -23,7 +23,5 @@ public class OrganisationResponseDto {
 
     private String homeNum;
 
-    private String addressDescription;
-
     private String logoUrl;
 }

@@ -30,4 +30,6 @@ public class ShiftDto {
     private Boolean isLeaderRequired;
 
     private Integer requiredMinAge;
+
+    private String shiftDirections;
 }
