@@ -1,5 +1,7 @@
 package pl.pjwstk.woloappapi.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,13 +11,13 @@ import pl.pjwstk.woloappapi.service.OrganisationService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/organisations")
+@Tag(name = "Organisations")
 public class OrganisationController {
     private final OrganisationService organisationService;
     private final OrganisationMapper organisationMapper;

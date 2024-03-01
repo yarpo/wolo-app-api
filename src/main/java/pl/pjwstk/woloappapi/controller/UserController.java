@@ -1,5 +1,7 @@
 package pl.pjwstk.woloappapi.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +12,12 @@ import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/users")
+@Tag(name = "Users")
 public class UserController {
 
     private final UserService userService;
@@ -68,8 +70,7 @@ public class UserController {
     }
 
     @PostMapping("/revoke")
-    public ResponseEntity<HttpStatus> revokeOrganisation(@RequestParam(value = "user") Long userId,
-                                                         @RequestParam(value = "organisation") Long organisationId){
+    public ResponseEntity<HttpStatus> revokeOrganisation(@RequestParam(value = "user") Long userId){
         userService.revokeOrganisation(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

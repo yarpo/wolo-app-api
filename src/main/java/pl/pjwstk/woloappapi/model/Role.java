@@ -27,4 +27,7 @@ public class Role {
     @OneToMany(mappedBy = "role")
     private List<UserEntity> userEntities;
 
+    @ManyToMany
+    private List<Privilege> privileges;
+
 }

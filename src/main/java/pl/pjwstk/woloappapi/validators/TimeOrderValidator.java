@@ -1,10 +1,10 @@
 package pl.pjwstk.woloappapi.validators;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import pl.pjwstk.woloappapi.annotations.TimeOrder;
 import pl.pjwstk.woloappapi.model.ShiftDto;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 public class TimeOrderValidator implements ConstraintValidator<TimeOrder, ShiftDto> {
 

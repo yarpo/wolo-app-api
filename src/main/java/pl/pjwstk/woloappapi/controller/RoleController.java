@@ -1,5 +1,7 @@
 package pl.pjwstk.woloappapi.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,13 +10,13 @@ import pl.pjwstk.woloappapi.model.RoleDto;
 import pl.pjwstk.woloappapi.service.RoleService;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/roles")
+@Tag(name = "Roles")
 public class RoleController {
 
     private final RoleService roleService;

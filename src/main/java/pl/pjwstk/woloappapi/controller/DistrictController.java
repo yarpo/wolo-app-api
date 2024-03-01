@@ -1,5 +1,7 @@
 package pl.pjwstk.woloappapi.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +11,12 @@ import pl.pjwstk.woloappapi.model.DistrictDto;
 import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/districts")
+@Tag(name = "Districts")
 public class DistrictController {
 
     private final DistrictService districtService;
