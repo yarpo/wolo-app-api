@@ -41,6 +41,26 @@ Run the Database and Backend
   docker-compose --env-file .env --profile standalone up
 ```
 
+Run with clear before
+```bash
+  .\RemoveAndUp
+```
+## Running with Docker & Gradle
+
+Start Docker Desktop
+
+Run the Database
+
+```bash
+  docker-compose start dbpostgresql
+```
+
+Run the Backend
+
+```bash
+  ./gradlew bootRun
+```
+
 ## Running Tests
 
 To run tests, run the following command
@@ -86,6 +106,11 @@ Mapping
 
 2. Delete .gradle folder
 
+### Docker Issues
+
+1. In Docker Desktop, remove data created by the "docker-compose" script in "Containers," "Images," and "Volumes" panels.
+2. Restart the previously used script.
+
 ### Rare Scenario:
 
 Ensure Docker Desktop is running without any warnings. If there are warnings:
@@ -125,3 +150,4 @@ _Link to project documentation:_
 - [@Filiposki54](https://github.com/Filiposki54)
 - [@Fylyp19](https://github.com/Fylyp19)
 - [@Aleksander Mielczarek](https://github.com/15465)
+  

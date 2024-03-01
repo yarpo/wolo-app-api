@@ -8,6 +8,7 @@ import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.OrganisationService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
+import pl.pjwstk.woloappapi.utils.Translator;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -20,6 +21,7 @@ public class OrganisationController {
     private final OrganisationService organisationService;
     private final OrganisationMapper organisationMapper;
     private final EventMapper eventMapper;
+    private final Translator translator;
 
     @GetMapping()
     public ResponseEntity<List<OrganisationResponseDto>> getOrganisations() {
@@ -46,17 +48,24 @@ public class OrganisationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}/events")
-    public ResponseEntity<List<EventResponseDto>> getEventsByOrganisation(@PathVariable Long id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteOrganisation(@PathVariable Long id) {
+        organisationService.deleteOrganisation(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/events/{id}")
+    public ResponseEntity<List<EventResponseDto>> getEventsByOrganisation(@PathVariable Long id,
+                                                                          @RequestParam(value = "language") String language) {
         List<Event> events = organisationService.getEventsByOrganisation(id);
         List<EventResponseDto> eventDtos =
                 events.stream()
-                        .map(eventMapper::toEventResponseDto)
+                        .map(e -> eventMapper.toEventResponseDto(e, translator.translate(language, e)))
                         .collect(Collectors.toList());
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/edit")
+    @PatchMapping("/{id}/edit")
     public ResponseEntity<HttpStatus> editOrganisation(
             @Valid @RequestBody OrganisationRequestDto organisation, @PathVariable Long id) {
         organisationService.updateOrganisation(organisation, id);

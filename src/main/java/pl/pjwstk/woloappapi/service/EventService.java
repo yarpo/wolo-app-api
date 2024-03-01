@@ -2,7 +2,6 @@ package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.utils.EventMapper;
@@ -10,6 +9,9 @@ import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Service
 @AllArgsConstructor
@@ -34,16 +36,16 @@ public class EventService {
                 .orElseThrow(() -> new NotFoundException("Event id not found!"));
     }
 
-    @Transactional
-    public void createEvent(EventRequestDto dtoEvent) {
-        Event event = eventMapper.toEvent(dtoEvent)
-                .organisation(organisationService.getOrganisationById(dtoEvent.getOrganisationId())).build();
-
-        Address address = eventMapper.toAddress(dtoEvent)
-                .district(districtService.getDistrictById(dtoEvent.getDistrictId()))
-                .build();
-
+    public void createEvent(EventTranslationResponsDto translation, EventRequestDto dtoEvent) {
+        Address address = eventMapper.toAddress(translation, dtoEvent);
+        District district = districtService.getDistrictById(dtoEvent.getDistrictId());
+        address.setDistrict(district);
         addressService.createAddress(address);
+
+        Event event = eventMapper.toEvent(translation, dtoEvent);
+        Organisation organisation =
+                organisationService.getOrganisationById(dtoEvent.getOrganisationId());
+        event.setOrganisation(organisation);
 
         eventRepository.save(event);
 
@@ -69,16 +71,31 @@ public class EventService {
                         });
     }
 
-    @Transactional
     public void updateEvent(EventRequestDto eventDto, Long id) {
-        Event event = eventRepository
-                .findById(id)
-                .orElseThrow(() -> new NotFoundException("Event id not found!"));
-        event.setName(eventDto.getName());
-        event.setDescription(eventDto.getDescription());
-        event.setPeselVerificationRequired(eventDto.isPeselVerificationRequired());
-        event.setAgreementNeeded(eventDto.isAgreementNeeded());
-        event.setImageUrl(eventDto.getImageUrl());
+        Event event =
+                eventRepository
+                        .findById(id)
+                        .orElseThrow(
+                                () ->
+                                        new IllegalArgumentException(
+                                                "Event with ID " + id + " does not exist"));
+
+        updateFieldIfDifferent(event::getNamePL, event::setNamePL, eventDto.getName());
+        updateFieldIfDifferent(
+                event::getDescriptionPL, event::setDescriptionPL, eventDto.getDescription());
+        updateFieldIfDifferent(
+                event::isPeselVerificationRequired,
+                event::setPeselVerificationRequired,
+                eventDto.isPeselVerificationRequired());
+        updateFieldIfDifferent(
+                event::isAgreementNeeded, event::setAgreementNeeded, eventDto.isAgreementNeeded());
+
+        Organisation organisation =
+                organisationService.getOrganisationById(eventDto.getOrganisationId());
+        updateFieldIfDifferent(
+                () -> event.getOrganisation().getId(),
+                oId -> event.setOrganisation(organisation),
+                eventDto.getOrganisationId());
 
         updateEventCategories(event, eventDto);
         updateEventAddress(event, eventDto);
@@ -88,18 +105,25 @@ public class EventService {
     }
 
     private void updateEventCategories(Event event, EventRequestDto eventDto) {
-        event.getCategories().removeIf(cte ->!eventDto.getCategories()
-                                        .contains(cte.getCategory().getId()));
+        event.getCategories()
+                .removeIf(
+                        categoryToEvent ->
+                                !eventDto.getCategories()
+                                        .contains(categoryToEvent.getCategory().getId()));
 
-        eventDto.getCategories()
-                .stream()
-                .filter(categoryId ->event.getCategories().stream()
-                                        .noneMatch(categoryToEvent ->
-                                                categoryId.equals(categoryToEvent
-                                                        .getCategory()
-                                                        .getId())))
+        eventDto.getCategories().stream()
+                .filter(
+                        categoryId ->
+                                event.getCategories().stream()
+                                        .noneMatch(
+                                                categoryToEvent ->
+                                                        categoryId.equals(
+                                                                categoryToEvent
+                                                                        .getCategory()
+                                                                        .getId())))
                 .map(categoryService::getCategoryById)
-                .map(category -> {
+                .map(
+                        category -> {
                             CategoryToEvent newCategoryToEvent = new CategoryToEvent();
                             newCategoryToEvent.setCategory(category);
                             newCategoryToEvent.setEvent(event);
@@ -112,10 +136,17 @@ public class EventService {
         List<AddressToEvent> addressToEvent = event.getAddressToEvents();
         Address address = addressToEvent.get(0).getAddress();
 
-        address.setDistrict(districtService.getDistrictById(eventDto.getDistrictId()));
-        address.setStreet(eventDto.getStreet());
-        address.setHomeNum(eventDto.getHomeNum());
-        address.setAddressDescription(eventDto.getAddressDescription());
+        updateFieldIfDifferent(
+                address.getDistrict()::getId,
+                districtId -> address.setDistrict(districtService.getDistrictById(districtId)),
+                eventDto.getDistrictId());
+        updateFieldIfDifferent(address::getStreet, address::setStreet, eventDto.getStreet());
+        updateFieldIfDifferent(address::getHomeNum, address::setHomeNum, eventDto.getHomeNum());
+        updateFieldIfDifferent(
+                address::getAddressDescriptionPL,
+                address::setAddressDescriptionPL,
+                eventDto.getAddressDescription());
+
         event.getAddressToEvents().forEach(ate -> ate.setAddress(address));
     }
 
@@ -123,39 +154,47 @@ public class EventService {
         List<Shift> newShifts = eventMapper.toShifts(eventDto.getShifts());
 
         event.getAddressToEvents()
-                .forEach(ate ->ate.getShifts()
-                                        .removeIf(s ->!newShifts.stream()
+                .forEach(
+                        ate ->
+                                ate.getShifts()
+                                        .removeIf(
+                                                shift ->
+                                                        !newShifts.stream()
                                                                 .map(Shift::getId)
                                                                 .toList()
-                                                                .contains(s.getId())));
+                                                                .contains(shift.getId())));
 
-        newShifts.forEach(ns -> {
-                    if (ns.getId() == null) {
+        newShifts.forEach(
+                newShift -> {
+                    if (newShift.getId() == null) {
                         event.getAddressToEvents()
                                 .get(0)
                                 .getShifts()
-                                .add(ns);
+                                .add(newShift); // adding new shifts
                     } else {
                         event.getAddressToEvents().get(0).getShifts().stream()
-                                .filter(sh -> sh.getId().equals(ns.getId()))
+                                .filter(sh -> sh.getId().equals(newShift.getId()))
                                 .findFirst()
                                 .ifPresent(
                                         existingShift ->
-                                                updateShiftFields(existingShift, ns));
+                                                updateShiftFields(existingShift, newShift));
                     }
                 });
     }
+
     private void updateShiftFields(Shift shift, Shift newShift) {
-        shift.setStartTime(newShift.getStartTime());
-        shift.setEndTime(newShift.getEndTime());
-        shift.setDate(newShift.getDate());
-        shift.setLeaderRequired(newShift.isLeaderRequired());
-        shift.setCapacity(newShift.getCapacity());
-        shift.setRequiredMinAge(newShift.getRequiredMinAge());
+        updateFieldIfDifferent(shift::getDate, shift::setDate, newShift.getDate());
+        updateFieldIfDifferent(shift::getStartTime, shift::setStartTime, newShift.getStartTime());
+        updateFieldIfDifferent(shift::getEndTime, shift::setEndTime, newShift.getEndTime());
+        updateFieldIfDifferent(shift::getCapacity, shift::setCapacity, newShift.getCapacity());
+        updateFieldIfDifferent(
+                shift::isLeaderRequired, shift::setLeaderRequired, newShift.isLeaderRequired());
+        updateFieldIfDifferent(
+                shift::getRequiredMinAge, shift::setRequiredMinAge, newShift.getRequiredMinAge());
     }
-    @Transactional
+
     public void deleteEvent(Long id) {
-        eventRepository.findById(id).ifPresent(e -> eventRepository.deleteById(id));
+        eventRepository.deleteById(id);
     }
 
     public List<Event> filterEvents(
@@ -178,11 +217,11 @@ public class EventService {
                 showWithAvailableCapacity);
     }
 
-    public List<Event> getEventsByUser(Long id) {
-        return eventRepository.findEventsByUserId(id);
+    private <T> void updateFieldIfDifferent(
+            Supplier<T> currentSupplier, Consumer<T> updateConsumer, T newValue) {
+        if (!Objects.equals(currentSupplier.get(), newValue)) {
+            updateConsumer.accept(newValue);
+        }
     }
 
-    public List<Event> getUpcomingEvents() {
-        return eventRepository.findAllNotBeforeNow();
-    }
 }

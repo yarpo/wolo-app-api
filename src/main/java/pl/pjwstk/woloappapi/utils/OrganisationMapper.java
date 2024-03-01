@@ -17,24 +17,27 @@ public interface OrganisationMapper {
         Address address = organisation.getAddress();
         organisationResponseDto.setStreet(address.getStreet());
         organisationResponseDto.setHomeNum(address.getHomeNum());
-        organisationResponseDto.setAddressDescription(address.getAddressDescription());
+        organisationResponseDto.setAddressDescription(address.getAddressDescriptionPL());
         organisationResponseDto.setLogoUrl(organisation.getLogoUrl());
         return organisationResponseDto;
     }
-    default Organisation.OrganisationBuilder toOrganisation(OrganisationRequestDto organisationRequestDto){
-        return Organisation.builder()
-                .name(organisationRequestDto.getName())
-                .description(organisationRequestDto.getDescription())
-                .email(organisationRequestDto.getEmail())
-                .phoneNumber(organisationRequestDto.getPhoneNumber())
-                .isApproved(false)
-                .logoUrl(organisationRequestDto.getLogoUrl());
+
+    default Organisation toOrganisation(OrganisationRequestDto organisationRequestDto) {
+        Organisation organisation = new Organisation();
+        organisation.setName(organisationRequestDto.getName());
+        organisation.setDescription(organisationRequestDto.getDescription());
+        organisation.setEmail(organisationRequestDto.getEmail());
+        organisation.setPhoneNumber(organisationRequestDto.getPhoneNumber());
+        organisation.setApproved(false);
+        organisation.setLogoUrl(organisationRequestDto.getLogoUrl());
+        return organisation;
     }
 
-    default Address.AddressBuilder toAddress(OrganisationRequestDto organisationRequestDto) {
-        return Address.builder()
-                .street(organisationRequestDto.getStreet())
-                .homeNum(organisationRequestDto.getHomeNum())
-                .addressDescription(organisationRequestDto.getAddressDescription());
+    default Address toAddress(OrganisationRequestDto organisationRequestDto) {
+        Address address = new Address();
+        address.setStreet(organisationRequestDto.getStreet());
+        address.setHomeNum(organisationRequestDto.getHomeNum());
+        address.setAddressDescriptionPL(organisationRequestDto.getAddressDescription());
+        return address;
     }
 }

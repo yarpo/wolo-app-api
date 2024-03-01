@@ -1,20 +1,19 @@
 package pl.pjwstk.woloappapi.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
-import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RoleService {
     private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
 
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
@@ -25,35 +24,23 @@ public class RoleService {
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Role id not found!"));
     }
-    public Role getRoleByName(String name){
-        return roleRepository.findByName(name);
-    }
 
-    @Transactional
     public void createRole(Role role) {
         roleRepository.save(role);
     }
 
-    @Transactional
-    public void updateRole(Role role) {
-        roleRepository
-                .findById(role.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Role with ID " + role.getId() + " does not exist"));
+    public void updateRole(Role role, Long id) {
+        if (!roleRepository.existsById(id)) {
+            throw new IllegalArgumentException("Role with ID " + id + " does not exist");
+        }
+        role.setId(id);
         roleRepository.save(role);
     }
 
-    @Transactional
     public void deleteRole(Long id) {
-        roleRepository.findById(id).ifPresent(r -> {
-            if (!"USER".equals(r.getName())) {
-                userRepository.getUsersByRoleId(id).forEach(u -> {
-                    u.setRole(roleRepository.findByName("USER"));
-                    userRepository.save(u);
-                });
-                roleRepository.deleteById(id);
-            } else {
-                throw new IllegalArgumentException("Can't delete role User");
-            }
-        });
+        if (!roleRepository.existsById(id)) {
+            throw new IllegalArgumentException("Role with ID " + id + " does not exist");
+        }
+        roleRepository.deleteById(id);
     }
 }

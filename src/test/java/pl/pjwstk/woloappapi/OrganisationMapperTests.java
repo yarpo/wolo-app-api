@@ -31,7 +31,7 @@ public class OrganisationMapperTests {
         Address address = new Address();
         address.setStreet("Test Street");
         address.setHomeNum("123");
-        address.setAddressDescription("Test Address");
+        address.setAddressDescriptionPL("Test Address");
         organisation.setAddress(address);
         organisation.setLogoUrl("http://example.com/logo");
 
@@ -57,7 +57,7 @@ public class OrganisationMapperTests {
         requestDto.setPhoneNumber("123456789");
         requestDto.setLogoUrl("http://example.com/logo");
 
-        Organisation organisation = organisationMapper.toOrganisation(requestDto).build();
+        Organisation organisation = organisationMapper.toOrganisation(requestDto);
 
         assertEquals("Test Organisation", organisation.getName());
         assertEquals("Test Description", organisation.getDescription());
@@ -76,10 +76,10 @@ public class OrganisationMapperTests {
         requestDto.setHomeNum("123");
         requestDto.setAddressDescription("Test Address");
 
-        Address address = organisationMapper.toAddress(requestDto).build();
+        Address address = organisationMapper.toAddress(requestDto);
 
         assertEquals("Test Street", address.getStreet());
         assertEquals("123", address.getHomeNum());
-        assertEquals("Test Address", address.getAddressDescription());
+        assertEquals("Test Address", address.getAddressDescriptionPL());
     }
 }

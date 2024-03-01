@@ -2,7 +2,6 @@ package pl.pjwstk.woloappapi.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "event")
@@ -22,14 +20,32 @@ public class Event {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "name_pl", nullable = false)
+    private String namePL;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "name_en")
+    private String nameEN;
+
+    @Column(name = "name_ua")
+    private String nameUA;
+
+    @Column(name = "name_ru")
+    private String nameRU;
+
+    @Column(name = "description_pl", nullable = false)
+    private String descriptionPL;
+
+    @Column(name = "description_en")
+    private String descriptionEN;
+
+    @Column(name = "description_ua")
+    private String descriptionUA;
+
+    @Column(name = "description_ru")
+    private String descriptionRU;
 
     @ManyToOne
-    @JoinColumn(name = "organisation_id", nullable = false)
+    @JoinColumn(name = "organisation_en", nullable = false)
     private Organisation organisation;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
