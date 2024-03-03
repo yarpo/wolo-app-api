@@ -10,8 +10,7 @@ import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -23,26 +22,26 @@ public class UserService {
     private final OrganisationService organisationService;
     private ShiftService shiftService;
 
-    public List<UserEntity> getAllUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public UserEntity getUserById(Long id) {
+    public User getUserById(Long id) {
         return userRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("User id not found!"));
     }
     @Transactional
     public void createUser(UserRequestDto userDto) {
-        UserEntity user = userMapper.toUser(userDto)
-                .role(roleService.getRoleByName("USER"))
+        User user = userMapper.toUser(userDto)
+                .roles(Collections.singletonList(roleService.getRoleByName("USER")))
                 .build();
         userRepository.save(user);
     }
 
     @Transactional
         public void deleteUser(Long userId) {
-            Optional<UserEntity> userOptional = userRepository.findById(userId);
+            Optional<User> userOptional = userRepository.findById(userId);
             if (userOptional.isPresent()) {
                 Organisation organisation = userOptional.get().getOrganisation();
                 if(organisation != null){
@@ -57,7 +56,7 @@ public class UserService {
 
     @Transactional
     public void updateUser(UserRequestDto userDto, Long id) {
-         UserEntity user = userRepository.findById(id).orElseThrow(
+         User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException( "User with ID " + id + " does not exist"));
         user.setFirstname(userDto.getFirstname());
         user.setLastname(userDto.getLastname());
@@ -66,14 +65,28 @@ public class UserService {
         user.setPeselVerified(userDto.isPeselVerified());
         user.setAgreementSigned(userDto.isAgreementSigned());
         user.setAdult(userDto.isAdult());
-        Role role = roleService.getRoleById(userDto.getRoleId());
-        user.setRole(role);
         userRepository.save(user);
     }
 
     @Transactional
+    public void updateUserRoles(Long userId, List<Long> rolesToUpdate) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException( "User with ID " + userId + " does not exist"));
+
+        user.getRoles().removeIf(rtu ->!rolesToUpdate.contains(rtu.getId()));
+
+        rolesToUpdate.stream()
+                .filter(roleId ->user.getRoles()
+                        .stream()
+                        .noneMatch(rtu ->
+                                roleId.equals(rtu.getId())))
+                .map(roleService::getRoleById)
+                .forEach(user.getRoles()::add);
+    }
+
+    @Transactional
     public void joinEvent(Long userId, Long shiftId) {
-        UserEntity user = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         Shift shift = shiftService.getShiftById(shiftId);
         shift.getShiftToUsers().add(new ShiftToUser(user, shift));
@@ -84,32 +97,32 @@ public class UserService {
     @Transactional
     public void assignOrganisation(Long userId, Long organisationId) {
         Organisation organisation = organisationService.getOrganisationById(organisationId);
-        UserEntity moderator = organisation.getModerator();
-        UserEntity user = userRepository.findById(userId).orElseThrow(
+        User moderator = organisation.getModerator();
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User not found with id: " + userId));
         if(moderator == null){
             user.setOrganisation(organisation);
         }else{
             moderator.setOrganisation(null);
-            moderator.setRole(roleService.getRoleByName("USER"));
+            moderator.getRoles().removeIf(r -> r.getName().equals("MODERATOR"));
             userRepository.save(moderator);
             user.setOrganisation(organisation);
         }
-        user.setRole(roleService.getRoleByName("MODERATOR"));
+        user.getRoles().add(roleService.getRoleByName("MODERATOR"));
         userRepository.save(user);
     }
 
     @Transactional
     public void revokeOrganisation(Long userId) {
-        UserEntity user = userRepository.findById(userId).orElseThrow(
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User not found with id: " + userId));
         user.setOrganisation(null);
-        user.setRole(roleService.getRoleByName("USER"));
+        user.getRoles().removeIf(r -> r.getName().equals("MODERATOR"));
         userRepository.save(user);
     }
 
     public void refuse(Long userId, Long shiftId) {
-        UserEntity user = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         Shift shift = shiftService.getShiftById(shiftId);
         if (shift.getDate().isAfter(LocalDate.now())) {

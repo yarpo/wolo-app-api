@@ -6,10 +6,10 @@ INSERT INTO address ( street, home_num, district_id) VALUES
                                                                       ( 'ul. Słoneczna', '5', 1),
                                                                       ( 'ul. Parkowa', '7', 3);
 
-INSERT INTO "user" ( firstname, lastname, email, phone_number, role_id, is_pesel_verified, is_agreement_signed, is_adult, organisation_id, "password") VALUES
-                                                                                                                                                 ( 'Jan', 'Kowalski', 'jan.kowalski@example.com', '123456789', 3, true, true, true, null, '$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi'),
-                                                                                                                                                 ( 'Anna', 'Nowak', 'anna.nowak@example.com', '987654321', 3, false, true, true, null, '$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi'),
-                                                                                                                                                 ( 'Piotr', 'Wójcik', 'piotr.wojcik@example.com', '456789123', 2, true, false, false, null, '$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi');
+INSERT INTO "user" ( firstname, lastname, email, phone_number, is_pesel_verified, is_agreement_signed, is_adult, organisation_id, "password") VALUES
+                                                                                                                                                 ( 'Jan', 'Kowalski', 'jan.kowalski@example.com', '123456789', true, true, true, null, '$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi'),
+                                                                                                                                                 ( 'Anna', 'Nowak', 'anna.nowak@example.com', '987654321', false, true, true, null, '$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi'),
+                                                                                                                                                 ( 'Piotr', 'Wójcik', 'piotr.wojcik@example.com', '456789123', true, false, false, null, '$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi');
 
 
 

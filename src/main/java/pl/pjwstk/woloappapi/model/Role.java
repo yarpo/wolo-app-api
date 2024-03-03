@@ -24,10 +24,16 @@ public class Role {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "role")
-    private List<UserEntity> userEntities;
+    @ManyToMany(mappedBy = "roles")
+    private List<User> userEntities;
 
     @ManyToMany
+    @JoinTable(
+            name = "privilege_to_role",
+            joinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "privilege_id", referencedColumnName = "id"))
     private List<Privilege> privileges;
 
 }

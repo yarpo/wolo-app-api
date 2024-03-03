@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,9 +18,9 @@ public class UserResponseDto {
     private String lastname;
     private String email;
     private String phoneNumber;
-    private String role;
     private boolean isPeselVerified;
     private boolean isAgreementSigned;
     private boolean isAdult;
+    private List<String> roles;
 
 }

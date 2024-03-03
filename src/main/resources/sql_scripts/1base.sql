@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS event (
                                      is_approved BOOLEAN NOT NULL
                                      );
 -- Table: role
-CREATE TABLE IF NOT EXISTS role (
+CREATE TABLE IF NOT EXISTS "role" (
                                     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                     "name" VARCHAR(20) NOT NULL
                                     );
@@ -81,7 +81,6 @@ CREATE TABLE IF NOT EXISTS "user" (
     lastname VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     phone_number VARCHAR(9) NOT NULL,
-    role_id BIGINT NOT NULL,
     is_pesel_verified BOOLEAN NOT NULL,
     is_agreement_signed BOOLEAN NOT NULL,
     is_adult BOOLEAN NOT NULL,
@@ -124,9 +123,6 @@ ALTER TABLE event
             REFERENCES organisation (id);
 -- Tabela: user
 ALTER TABLE "user"
-    ADD CONSTRAINT fk_user_role_id
-        FOREIGN KEY (role_id)
-            REFERENCES role (id),
     ADD CONSTRAINT fk_user_organisation_id
         FOREIGN KEY (organisation_id)
             REFERENCES organisation (id);
@@ -155,7 +151,7 @@ ALTER TABLE category_to_event
 
 
 
-INSERT INTO role ("name") VALUES
+INSERT INTO "role" ("name") VALUES
                               ( 'ADMIN'),
                               ( 'MODERATOR'),
                               ( 'USER');

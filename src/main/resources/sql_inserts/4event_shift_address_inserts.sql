@@ -357,3 +357,10 @@ INSERT INTO privilege_to_role (role_id, privilege_id) VALUES
                                                           (2, 2),
                                                           (2, 3),
                                                           (3, 1);
+
+INSERT INTO user_to_role (role_id, user_id) VALUES
+                                                          (1, 1),
+                                                          (2, 1),
+                                                          (1, 2),
+                                                          (2, 2),
+                                                          (3, 3);
