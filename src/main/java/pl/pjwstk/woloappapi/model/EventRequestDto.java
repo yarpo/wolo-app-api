@@ -18,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class EventRequestDto {
 
+    @NotNull
     @NotBlank(message = "Name is required")
     @Size(max = 250, message = "Name cannot exceed 250 characters")
     @Schema(name = "Event title", example = "Animal shelter assistance")
@@ -39,9 +40,11 @@ public class EventRequestDto {
                     Interact with potential adopters and provide information about available animals.
                     Assist in the adoption process, ensuring a smooth transition for both the animal and the new owner.""")
     @NotBlank(message = "Description is required")
+    @NotNull
     private String description;
 
     @Schema(name = "Organisation", example = "Compassion Paws: Animal Shelter Support Initiative")
+    @NotNull
     private Long organisationId;
 
     @NotNull(message = "Category ID is required")
@@ -51,10 +54,12 @@ public class EventRequestDto {
 
     private boolean isAgreementNeeded;
 
+    @NotNull
     @NotBlank(message = "Street is required")
     @Size(max = 200, message = "Street cannot exceed 200 characters")
     private String street;
 
+    @NotNull
     @NotBlank(message = "Home number is required")
     @Size(max = 20, message = "Home number cannot exceed 20 characters")
     private String homeNum;
