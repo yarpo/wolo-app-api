@@ -46,10 +46,6 @@ public class RoleService {
     public void deleteRole(Long id) {
         roleRepository.findById(id).ifPresent(r -> {
             if (!"USER".equals(r.getName())) {
-                userRepository.getUsersByRoleId(id).forEach(u -> {
-                    u.setRole(roleRepository.findByName("USER"));
-                    userRepository.save(u);
-                });
                 roleRepository.deleteById(id);
             } else {
                 throw new IllegalArgumentException("Can't delete role User");

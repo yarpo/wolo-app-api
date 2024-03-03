@@ -42,7 +42,7 @@ public class Event {
     private boolean isAgreementNeeded;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<AddressToEvent> addressToEvents = new ArrayList<>();
+    private List<AddressToEvent> addressToEvents;
 
     @Column(name = "image_url")
     private String imageUrl;

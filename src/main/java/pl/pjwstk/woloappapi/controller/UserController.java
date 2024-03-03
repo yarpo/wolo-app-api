@@ -47,7 +47,7 @@ public class UserController {
     )
     @GetMapping()
     public ResponseEntity<List<UserResponseDto>> getUsers() {
-        List<UserEntity> users = userService.getAllUsers();
+        List<User> users = userService.getAllUsers();
         List<UserResponseDto> userResponseDtos = users.stream()
                 .map(userMapper::toUserResponseDto)
                 .toList();
@@ -79,7 +79,7 @@ public class UserController {
     )
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
-        UserEntity user = userService.getUserById(id);
+        User user = userService.getUserById(id);
         UserResponseDto userResponseDto= userMapper.toUserResponseDto(user);
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
@@ -209,6 +209,33 @@ public class UserController {
     @PostMapping("/revoke")
     public ResponseEntity<HttpStatus> revokeOrganisation(@RequestParam(value = "user") Long userId){
         userService.revokeOrganisation(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Change user's roles",
+            description = "User must exist",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    )
+            },
+            parameters = {
+                    @Parameter(name = "user",
+                            description = "User id",
+                            example = "1"
+                    ),
+                    @Parameter(name = "roles",
+                            description = "New Roles Ids",
+                            schema = @Schema(type = "array", implementation = Long.class)
+                    )
+            }
+    )
+    @PostMapping("/changerole")
+    public ResponseEntity<HttpStatus> changeRole(@RequestParam(value = "user") Long userId,
+                                                         @RequestParam(value = "roles") List<Long> rolesToUpdate){
+        userService.updateUserRoles(userId, rolesToUpdate);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
