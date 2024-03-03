@@ -3,10 +3,7 @@ package pl.pjwstk.woloappapi.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +33,7 @@ public class UserResponseDto {
     @NotNull
     @NotBlank(message = "Email is required")
     @Size(max = 50, message = "Email cannot exceed 50 characters")
+    @Email(message = "Invalid email format")
     private String email;
 
     @NotNull
