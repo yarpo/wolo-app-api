@@ -51,8 +51,6 @@ To run tests, run the following command
 
 Mapping
 
-- http://localhost:8080/profile
-
 - http://localhost:8080/events
 
 - http://localhost:8080/shifts
@@ -61,8 +59,6 @@ Mapping
 
 - http://localhost:8080/roles
 
-- http://localhost:8080/shiftToUsers
-
 - http://localhost:8080/addresses
 
 - http://localhost:8080/users
@@ -70,8 +66,6 @@ Mapping
 - http://localhost:8080/districts
 
 - http://localhost:8080/organisations
-
-- http://localhost:8080/addressToEvents
 
 ## Troubleshooting
 

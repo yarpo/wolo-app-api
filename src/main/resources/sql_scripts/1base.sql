@@ -157,7 +157,7 @@ ALTER TABLE category_to_event
 
 INSERT INTO role ("name") VALUES
                               ( 'ADMIN'),
-                              ( 'ORGANIZATION'),
+                              ( 'MODERATOR'),
                               ( 'USER');
 
 INSERT INTO district ( "name", city) VALUES

@@ -110,23 +110,6 @@ public interface EventMapper {
 
         return eventResponseDto;
     }
-
-
-    default EventAIRequest toEventAIRequest(Event event){
-        EventAIRequest aiRequest = new EventAIRequest();
-        aiRequest.setId(event.getId());
-        aiRequest.setDistrict(event.getAddressToEvents().get(0).getAddress().getDistrict().getName());
-        aiRequest.setOrganisation(event.getOrganisation().getName());
-        aiRequest.setCategories(event.getCategories()
-                .stream()
-                .map(cte -> cte
-                        .getCategory()
-                        .getName())
-                .distinct()
-                .collect(Collectors.toList()));
-        return aiRequest;
-    }
-
     default Event.EventBuilder toEvent(EventRequestDto dtoEvent){
         return Event.builder()
                 .name(dtoEvent.getName())
