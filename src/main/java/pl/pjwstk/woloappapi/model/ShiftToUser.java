@@ -17,7 +17,7 @@ public class ShiftToUser {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserEntity user;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "shift_id", referencedColumnName = "id")
@@ -29,7 +29,7 @@ public class ShiftToUser {
     @Column(name = "is_leader", nullable = false)
     private boolean isLeader;
 
-    public ShiftToUser(UserEntity user, Shift shift) {
+    public ShiftToUser(User user, Shift shift) {
         this.shift =shift;
         this.user = user;
     }

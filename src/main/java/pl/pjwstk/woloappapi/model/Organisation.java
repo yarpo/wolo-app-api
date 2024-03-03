@@ -41,7 +41,7 @@ public class Organisation {
     private boolean isApproved;
 
     @OneToOne(mappedBy = "organisation")
-    private UserEntity moderator;
+    private User moderator;
 
 
     @Column(name = "logo_url")
