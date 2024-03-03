@@ -1,6 +1,7 @@
 package pl.pjwstk.woloappapi.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +25,7 @@ public class Organisation {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
     @Column(name = "email", nullable = false)
@@ -42,7 +43,6 @@ public class Organisation {
 
     @OneToOne(mappedBy = "organisation")
     private User moderator;
-
 
     @Column(name = "logo_url")
     private String logoUrl;

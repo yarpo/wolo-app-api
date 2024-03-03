@@ -1,5 +1,6 @@
 package pl.pjwstk.woloappapi.model;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,12 +18,19 @@ import java.time.LocalTime;
 public class ShiftDto {
 
     private Long id;
-    @TimeOrder private LocalTime startTime;
 
-    @TimeOrder private LocalTime endTime;
+    @NotNull
+    @TimeOrder
+    private LocalTime startTime;
 
+    @NotNull
+    @TimeOrder
+    private LocalTime endTime;
+
+    @NotNull
     private LocalDate date;
 
+    @NotNull
     private Integer capacity;
 
     private Integer signedUp;

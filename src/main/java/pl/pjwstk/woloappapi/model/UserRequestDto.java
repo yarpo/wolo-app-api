@@ -16,17 +16,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRequestDto {
+    @NotNull
     @NotBlank(message = "Name is required")
     @Size(max = 50, message = "Name cannot exceed 50 characters")
     private String firstname;
 
+    @NotNull
     @NotBlank(message = "Surname is required")
     @Size(max = 50, message = "Surname cannot exceed 50 characters")
     private String lastname;
 
+    @NotNull
     @NotBlank(message = "Email is required")
     private String email;
 
+    @NotNull
     @Pattern(regexp = "[0-9]{9}", message = "Phone number should consist of 9 digits")
     private String phoneNumber;
 
@@ -38,5 +42,7 @@ public class UserRequestDto {
     private boolean isAgreementSigned;
 
     private boolean isAdult;
+
+    @NotNull
     private String password;
 }

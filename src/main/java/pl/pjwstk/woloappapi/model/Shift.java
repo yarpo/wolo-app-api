@@ -24,7 +24,7 @@ public class Shift {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_to_event_id") // nullable = false
+    @JoinColumn(name = "address_to_event_id", nullable = false)
     private AddressToEvent addressToEvent;
 
     @OneToMany(mappedBy = "shift")
@@ -45,7 +45,7 @@ public class Shift {
     @Column(name = "is_leader_required", nullable = false)
     private boolean isLeaderRequired;
 
-    @Column(name = "required_min_age", nullable = false)
+    @Column(name = "required_min_age")
     private int requiredMinAge;
 
     @Column(name = "registered")
