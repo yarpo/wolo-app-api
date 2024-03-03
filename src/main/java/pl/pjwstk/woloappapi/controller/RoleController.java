@@ -2,6 +2,7 @@ package pl.pjwstk.woloappapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,7 +37,8 @@ public class RoleController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(type = "array",implementation = RoleDto.class)
+                                            array = @ArraySchema(schema = @Schema(
+                                                    implementation = RoleDto.class))
                                     )
                             }
                     )

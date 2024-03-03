@@ -40,7 +40,8 @@ public class UserController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(type = "array",implementation = UserResponseDto.class)
+                                            array = @ArraySchema(schema = @Schema(
+                                                    implementation = UserResponseDto.class))
                                     )
                             }
                     )
@@ -94,7 +95,8 @@ public class UserController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(type = "array",implementation = EventResponseDto.class)
+                                            array = @ArraySchema(schema = @Schema(
+                                                    implementation = EventResponseDto.class))
                                     )
                             }
                     )
@@ -229,7 +231,7 @@ public class UserController {
                     ),
                     @Parameter(name = "roles",
                             description = "New Roles Ids",
-                            array = @ArraySchema( schema = @Schema(type = "string"))
+                            array = @ArraySchema( schema = @Schema(type = "long"))
                     )
             }
     )
