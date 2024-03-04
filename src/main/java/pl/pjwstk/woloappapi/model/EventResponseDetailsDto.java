@@ -1,5 +1,10 @@
 package pl.pjwstk.woloappapi.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,28 +18,65 @@ import java.util.List;
 @NoArgsConstructor
 public class EventResponseDetailsDto {
 
+    @NotNull
+    @NotBlank(message = "Name is required")
+    @Size(max = 250, message = "Name cannot exceed 250 characters")
+    @Schema(name = "Event title", example = "Animal shelter assistance")
     private String name;
 
+    @Schema(name = "Organisation ID", example = "1")
+    @NotNull
     private Long organisationId;
 
+    @Schema(name = "Organisation", example = "Compassion Paws: Animal Shelter Support Initiative")
+    @NotNull
     private String organisationName;
 
     private boolean isPeselVerificationRequired;
 
     private boolean isAgreementNeeded;
 
+    @Schema(name = "Event description", example = """
+            Are you passionate about making a positive impact on the lives of animals in need? Join us in our mission\040
+            to provide compassionate care and support for animals at our local animal shelter.\040
+            As an Animal Shelter Assistant, you play a crucial role in ensuring the well-being\040
+            and happiness of animals awaiting their forever homes.
+
+            Responsibilities:
+
+                Animal Care:
+                    Feed, groom, and provide basic care for shelter animals.
+                    Ensure clean and sanitary living conditions for all animals.
+
+                Assistance with Adoptions:
+                    Interact with potential adopters and provide information about available animals.
+                    Assist in the adoption process, ensuring a smooth transition for both the animal and the new owner.""")
+    @NotBlank(message = "Description is required")
+    @NotNull
     private String description;
 
+    @NotNull(message = "Category ID is required")
     private List<CategoryDto> categories;
 
+    @NotNull
+    @NotBlank(message = "Street is required")
+    @Size(max = 50, message = "Street cannot exceed 50 characters")
     private String street;
 
+    @NotNull
+    @NotBlank(message = "Home number is required")
+    @Size(max = 10, message = "Home number cannot exceed 10 characters")
     private String homeNum;
 
+    @NotNull(message = "District must be chosen")
     private String district;
 
+    @Size(max = 255, message = "Image Url cannot exceed 255 characters")
     private String imageUrl;
 
+    @NotNull(message = "Shifts are required")
+    @Size(min = 1, message = "At least one shift is required")
+    @Valid
     private List<ShiftDto> shifts;
 
 }
