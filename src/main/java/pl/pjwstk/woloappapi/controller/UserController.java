@@ -2,6 +2,7 @@ package pl.pjwstk.woloappapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,7 +40,8 @@ public class UserController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(type = "array",implementation = UserResponseDto.class)
+                                            array = @ArraySchema(schema = @Schema(
+                                                    implementation = UserResponseDto.class))
                                     )
                             }
                     )
@@ -93,7 +95,8 @@ public class UserController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(type = "array",implementation = EventResponseDto.class)
+                                            array = @ArraySchema(schema = @Schema(
+                                                    implementation = EventResponseDto.class))
                                     )
                             }
                     )
@@ -228,7 +231,7 @@ public class UserController {
                     ),
                     @Parameter(name = "roles",
                             description = "New Roles Ids",
-                            schema = @Schema(type = "array", implementation = Long.class)
+                            array = @ArraySchema( schema = @Schema(type = "long"))
                     )
             }
     )

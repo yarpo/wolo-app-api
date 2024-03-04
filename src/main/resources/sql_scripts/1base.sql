@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS address (
                                        id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                        street VARCHAR(50) NOT NULL,
                                        home_num VARCHAR(10) NOT NULL,
-                                       district_id BIGINT, -- NOT NULL
+                                       district_id BIGINT NOT NULL,
                                        description VARCHAR(250)
                                        );
 -- Table: address_to_event
@@ -31,9 +31,9 @@ CREATE TABLE IF NOT EXISTS district (
 CREATE TABLE IF NOT EXISTS organisation (
                                             id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                             "name" VARCHAR(250) NOT NULL,
-                                            description TEXT NOT NULL,
+                                            description TEXT,
                                             email VARCHAR(50) NOT NULL,
-                                            phone_num VARCHAR(9) NOT NULL,
+                                            phone_num VARCHAR(9),
                                             address_id BIGINT NOT NULL,
                                             is_approved BOOLEAN NOT NULL,
                                             logo_url VARCHAR(255)
@@ -57,14 +57,14 @@ CREATE TABLE IF NOT EXISTS "role" (
 -- Table: shift
 CREATE TABLE IF NOT EXISTS shift (
                                      id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                     address_to_event_id BIGINT, -- NOT NULL
+                                     address_to_event_id BIGINT NOT NULL,
                                      start_time TIME NOT NULL,
                                      end_time TIME NOT NULL,
                                      "date" DATE NOT NULL,
                                      capacity INT NOT NULL,
                                      registered INT default 0,
                                      is_leader_required BOOLEAN NOT NULL,
-                                     required_min_age INT NOT NULL
+                                     required_min_age INT default 0
                                      );
 -- Table: shift_to_user
 CREATE TABLE IF NOT EXISTS shift_to_user (
@@ -76,16 +76,16 @@ CREATE TABLE IF NOT EXISTS shift_to_user (
                                              );
 -- Table: user
 CREATE TABLE IF NOT EXISTS "user" (
-    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    firstname VARCHAR(50) NOT NULL,
-    lastname VARCHAR(50) NOT NULL,
-    email VARCHAR(50) NOT NULL,
-    phone_number VARCHAR(9) NOT NULL,
-    is_pesel_verified BOOLEAN NOT NULL,
-    is_agreement_signed BOOLEAN NOT NULL,
-    is_adult BOOLEAN NOT NULL,
-    organisation_id BIGINT UNIQUE,
-    "password" varchar(255) NOT NULL
+                                            id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                                            firstname VARCHAR(50) NOT NULL,
+                                            lastname VARCHAR(50) NOT NULL,
+                                            email VARCHAR(50) NOT NULL,
+                                            phone_number VARCHAR(9) NOT NULL,
+                                            is_pesel_verified BOOLEAN NOT NULL,
+                                            is_agreement_signed BOOLEAN NOT NULL,
+                                            is_adult BOOLEAN NOT NULL,
+                                            organisation_id BIGINT UNIQUE,
+                                            "password" varchar(255) NOT NULL
     );
 
 -- Table: category_to_event

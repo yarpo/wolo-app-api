@@ -24,7 +24,7 @@ public class District {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "city")
+    @Column(name = "city", nullable = false)
     private String city;
 
     @Column(name = "is_old")

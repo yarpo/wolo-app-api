@@ -2,6 +2,7 @@ package pl.pjwstk.woloappapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,7 +38,8 @@ public class CategoryController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(type = "array",implementation = CategoryDto.class)
+                                            array = @ArraySchema(schema = @Schema(
+                                                    implementation = CategoryDto.class))
                                     )
                             }
                     )

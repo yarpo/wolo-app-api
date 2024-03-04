@@ -15,6 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OrganisationRequestDto {
 
+    @NotNull
     @NotBlank(message = "Name is required")
     @Size(max = 200, message = "Name cannot exceed 200 characters")
     private String name;
@@ -22,6 +23,7 @@ public class OrganisationRequestDto {
     @NotBlank(message = "Description is required")
     private String description;
 
+    @NotNull
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;
@@ -30,9 +32,11 @@ public class OrganisationRequestDto {
     @Size(min = 9, max = 9, message = "Phone number must be 9 digits")
     private String phoneNumber;
 
+    @NotNull
     @NotBlank(message = "Street is required")
     private String street;
 
+    @NotNull
     @NotBlank(message = "Home number is required")
     private String homeNum;
 
