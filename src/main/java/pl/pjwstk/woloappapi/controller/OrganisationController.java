@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.OrganisationService;
@@ -102,6 +103,7 @@ public class OrganisationController {
             }
     )
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('ADD_ORGANISATION')")
     public ResponseEntity<HttpStatus> addOrganisation(
             @Valid @RequestBody OrganisationRequestDto organisationDto) {
         organisationService.createOrganisation(organisationDto);
@@ -151,6 +153,7 @@ public class OrganisationController {
             }
     )
     @PutMapping("/{id}/edit")
+    @PreAuthorize("hasAuthority('EDIT_ORGANISATION')")
     public ResponseEntity<HttpStatus> editOrganisation(
             @Valid @RequestBody OrganisationRequestDto organisation, @PathVariable Long id) {
         organisationService.updateOrganisation(organisation, id);
@@ -174,6 +177,7 @@ public class OrganisationController {
             }
     )
     @PostMapping("/approve")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> approveOrganisation(@RequestParam(value = "id") Long organisationId){
         organisationService.approve(organisationId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -196,6 +200,7 @@ public class OrganisationController {
             }
     )
     @PostMapping("/disapprove")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> disapproveOrganisation(@RequestParam(value = "id") Long organisationId){
         organisationService.disapprove(organisationId);
         return new ResponseEntity<>(HttpStatus.OK);

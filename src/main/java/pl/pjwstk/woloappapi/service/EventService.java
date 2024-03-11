@@ -150,7 +150,7 @@ public class EventService {
         shift.setDate(newShift.getDate());
         shift.setLeaderRequired(newShift.isLeaderRequired());
         shift.setCapacity(newShift.getCapacity());
-        shift.setRequiredMinAge(newShift.getRequiredMinAge());
+        shift.setRequiredMinAge(newShift.getRequiredMinAge()); //???
         shift.setShiftDirections(newShift.getShiftDirections());
     }
     @Transactional
@@ -184,5 +184,12 @@ public class EventService {
 
     public List<Event> getUpcomingEvents() {
         return eventRepository.findAllNotBeforeNow();
+    }
+
+    public void setOrganisation(Long eventId, Long organisationId){
+        var event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event id not found!"));
+        event.setOrganisation(organisationService.getOrganisationById(organisationId));
+        eventRepository.save(event);
     }
 }

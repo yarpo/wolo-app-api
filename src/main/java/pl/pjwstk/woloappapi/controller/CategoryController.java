@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.Category;
 import pl.pjwstk.woloappapi.model.CategoryDto;
@@ -98,11 +99,14 @@ public class CategoryController {
                     )
             }
     )
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addCategory(@Valid @RequestBody CategoryDto category) {
         categoryService.createCategory(category);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
 
     @Operation(
             summary = "Delete category",
@@ -121,6 +125,7 @@ public class CategoryController {
             }
     )
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -143,6 +148,7 @@ public class CategoryController {
             }
     )
     @PutMapping("/edit")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> editCategory(
             @Valid @RequestBody CategoryDto category) {
         categoryService.updateCategory(category);

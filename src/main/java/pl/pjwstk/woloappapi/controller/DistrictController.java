@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.District;
 import pl.pjwstk.woloappapi.model.DistrictDto;
@@ -98,6 +99,7 @@ public class DistrictController {
             }
     )
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> addDistrict(@Valid @RequestBody DistrictDto district) {
         districtService.createDistrict(district);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -120,6 +122,7 @@ public class DistrictController {
             }
     )
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteDistrict(@PathVariable Long id) {
         districtService.deleteDistrict(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -142,6 +145,7 @@ public class DistrictController {
             }
     )
     @PutMapping("/edit")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> editDistrict(
             @Valid @RequestBody DistrictDto district) {
         districtService.updateDistrict(district);

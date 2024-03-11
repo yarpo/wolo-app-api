@@ -11,7 +11,9 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.pjwstk.woloappapi.model.Privilege;
 import pl.pjwstk.woloappapi.model.RoleDto;
 import pl.pjwstk.woloappapi.service.RoleService;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
@@ -51,6 +53,11 @@ public class RoleController {
                 .map(dictionariesMapper::toRoleDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(roleDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/privileges")
+    public ResponseEntity<List<Privilege>> getAllPrivileges(){
+        return new ResponseEntity<>(roleService.getAllPrivileges(), HttpStatus.OK);
     }
 
     @Operation(
@@ -98,6 +105,7 @@ public class RoleController {
             }
     )
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> addRole(@RequestBody RoleDto roleDto) {
         roleService.createRole(dictionariesMapper.toRole(roleDto).build());
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -120,6 +128,7 @@ public class RoleController {
             }
     )
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteRole(@PathVariable Long id) {
         roleService.deleteRole(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -142,6 +151,7 @@ public class RoleController {
             }
     )
     @PutMapping("/edit")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> editRole(
             @Valid @RequestBody RoleDto roleDto) {
         roleService.updateRole(dictionariesMapper.toRole(roleDto).build());

@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.EventService;
@@ -25,7 +26,6 @@ import java.util.List;
 @RequestMapping("/users")
 @Tag(name = "Users")
 public class UserController {
-
     private final UserService userService;
     private final EventService eventService;
     private final UserMapper userMapper;
@@ -48,6 +48,7 @@ public class UserController {
             }
     )
     @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponseDto>> getUsers() {
         List<User> users = userService.getAllUsers();
         List<UserResponseDto> userResponseDtos = users.stream()
@@ -80,6 +81,7 @@ public class UserController {
             }
     )
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('SHOW_USER')")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
         UserResponseDto userResponseDto= userMapper.toUserResponseDto(user);
@@ -109,6 +111,7 @@ public class UserController {
             }
     )
     @GetMapping("/{id}/events")
+    @PreAuthorize("hasAuthority('SHOW_USER')")
     public ResponseEntity<List<EventResponseDto>>getUserEvents(@PathVariable Long id){
         List<Event> events = eventService.getEventsByUser(id);
         List<EventResponseDto> requests = events.stream()
@@ -133,6 +136,7 @@ public class UserController {
             }
     )
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('DELETE_USER')")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -159,6 +163,7 @@ public class UserController {
             }
     )
     @PutMapping("/{id}/edit")
+    @PreAuthorize("hasAuthority('EDIT_USER')")
     public ResponseEntity<HttpStatus> editUser(@Valid @RequestBody UserRequestDto userRequestDto,
                                            @PathVariable Long id) {
         userService.updateUser(userRequestDto, id);
@@ -187,6 +192,7 @@ public class UserController {
             }
     )
     @PostMapping("/assign")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> assignOrganisation(@RequestParam(value = "user") Long userId,
                                                          @RequestParam(value = "organisation") Long organisationId){
         userService.assignOrganisation(userId, organisationId);
@@ -210,6 +216,7 @@ public class UserController {
             }
     )
     @PostMapping("/revoke")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> revokeOrganisation(@RequestParam(value = "user") Long userId){
         userService.revokeOrganisation(userId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -236,9 +243,11 @@ public class UserController {
             }
     )
     @PostMapping("/changerole")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> changeRole(@RequestParam(value = "user") Long userId,
                                                          @RequestParam(value = "roles") List<Long> rolesToUpdate){
         userService.updateUserRoles(userId, rolesToUpdate);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

@@ -50,7 +50,6 @@ public class OrganisationService {
         organisation.setDescription(organisationDto.getDescription());
         organisation.setEmail(organisationDto.getEmail());
         organisation.setPhoneNumber(organisationDto.getPhoneNumber());
-        organisation.setApproved(false);
         organisation.setLogoUrl(organisationDto.getLogoUrl());
 
         Address address = organisation.getAddress();

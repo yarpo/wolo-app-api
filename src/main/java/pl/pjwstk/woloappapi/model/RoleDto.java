@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,4 +19,7 @@ public class RoleDto {
     @NotNull
     @Size(max = 50, message = "Name cannot exceed 50 characters")
     private String name;
+
+    @NotNull
+    private List<Privilege> privileges;
 }

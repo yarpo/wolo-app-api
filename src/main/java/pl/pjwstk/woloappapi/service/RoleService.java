@@ -3,9 +3,10 @@ package pl.pjwstk.woloappapi.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.pjwstk.woloappapi.model.Privilege;
 import pl.pjwstk.woloappapi.model.Role;
+import pl.pjwstk.woloappapi.repository.PrivilegeRepository;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
-import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleService {
     private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
+    private final PrivilegeRepository privilegeRepository;
 
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
@@ -51,5 +52,9 @@ public class RoleService {
                 throw new IllegalArgumentException("Can't delete role User");
             }
         });
+    }
+
+    public List<Privilege> getAllPrivileges() {
+        return privilegeRepository.findAll();
     }
 }

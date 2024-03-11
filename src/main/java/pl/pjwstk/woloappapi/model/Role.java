@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
 
@@ -35,5 +36,14 @@ public class Role {
             inverseJoinColumns = @JoinColumn(
                     name = "privilege_id", referencedColumnName = "id"))
     private List<Privilege> privileges;
+
+    public List<SimpleGrantedAuthority> getAuthorities(){
+        var authorities = new java.util.ArrayList<>(getPrivileges()
+                .stream()
+                .map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
+                .toList());
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.getName()));
+        return authorities;
+    }
 
 }

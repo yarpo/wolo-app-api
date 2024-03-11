@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.EventService;
@@ -75,6 +76,7 @@ public class EventController {
             }
     )
     @PostMapping("/join")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<HttpStatus> joinEvent(
             @RequestParam(value = "user") Long userId,
             @RequestParam(value = "shift") Long shiftId){
@@ -102,10 +104,20 @@ public class EventController {
             }
     )
     @PostMapping("/refuse")
+    @PreAuthorize("hasAuthority('JOIN_EVENT')")
     public ResponseEntity<HttpStatus> refuseParticipateInEvent(
             @RequestParam(value = "user") Long userId,
             @RequestParam(value = "shift") Long shiftId){
         userService.refuse(userId, shiftId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/organisation")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> changeOrganiser(
+            @RequestParam(value = "event") Long eventId,
+            @RequestParam(value = "organisation") Long organisationId){
+        eventService.setOrganisation(eventId, organisationId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -248,6 +260,7 @@ public class EventController {
             }
     )
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('CREATE_EVENT')")
     public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
             eventService.createEvent(dtoEvent);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -270,6 +283,7 @@ public class EventController {
             }
     )
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('DELETE_EVENT')")
     public ResponseEntity<HttpStatus> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -296,6 +310,7 @@ public class EventController {
             }
     )
     @PutMapping("/{id}/edit")
+    @PreAuthorize("hasAuthority('EDIT_EVENT')")
     public ResponseEntity<HttpStatus> editEvent(
             @Valid @RequestBody EventRequestDto eventRequestDto, @PathVariable Long id) {
         eventService.updateEvent(eventRequestDto, id);

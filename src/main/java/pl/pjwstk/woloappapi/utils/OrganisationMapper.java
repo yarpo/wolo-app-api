@@ -1,14 +1,14 @@
 package pl.pjwstk.woloappapi.utils;
 
-import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.Address;
 import pl.pjwstk.woloappapi.model.Organisation;
 import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
 import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
 
-@Mapper(componentModel = "spring")
-public interface OrganisationMapper {
-    default OrganisationResponseDto toOrganisationResponseDto(Organisation organisation) {
+@Component
+public class OrganisationMapper {
+    public OrganisationResponseDto toOrganisationResponseDto(Organisation organisation) {
         OrganisationResponseDto organisationResponseDto = new OrganisationResponseDto();
         organisationResponseDto.setName(organisation.getName());
         organisationResponseDto.setDescription(organisation.getDescription());
@@ -20,7 +20,7 @@ public interface OrganisationMapper {
         organisationResponseDto.setLogoUrl(organisation.getLogoUrl());
         return organisationResponseDto;
     }
-    default Organisation.OrganisationBuilder toOrganisation(OrganisationRequestDto organisationRequestDto){
+    public Organisation.OrganisationBuilder toOrganisation(OrganisationRequestDto organisationRequestDto){
         return Organisation.builder()
                 .name(organisationRequestDto.getName())
                 .description(organisationRequestDto.getDescription())
@@ -30,7 +30,7 @@ public interface OrganisationMapper {
                 .logoUrl(organisationRequestDto.getLogoUrl());
     }
 
-    default Address.AddressBuilder toAddress(OrganisationRequestDto organisationRequestDto) {
+    public Address.AddressBuilder toAddress(OrganisationRequestDto organisationRequestDto) {
         return Address.builder()
                 .street(organisationRequestDto.getStreet())
                 .homeNum(organisationRequestDto.getHomeNum());

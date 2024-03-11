@@ -348,7 +348,11 @@ INSERT INTO privilege (name) VALUES
                                  ('JOIN_EVENT'),
                                  ('CREATE_EVENT'),
                                  ('EDIT_EVENT'),
-                                 ('ADMIN_PANEL');
+                                 ('DELETE_EVENT'),
+                                 ('EDIT_ORGANISATION'),
+                                 ('SHOW_USER'),
+                                 ('DELETE_USER'),
+                                 ('EDIT_USER');
 
 
 INSERT INTO privilege_to_role (role_id, privilege_id) VALUES
