@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CategoryDto {
 
-    @Schema(name = "Category id", example = "1")
+    @Schema(name = "Category ID", example = "1")
     private Long id;
 
     @NotNull

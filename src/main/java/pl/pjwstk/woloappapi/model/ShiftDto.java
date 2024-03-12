@@ -1,5 +1,6 @@
 package pl.pjwstk.woloappapi.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ShiftDto {
 
+    @Schema(name = "Shift ID", example = "1")
     private Long id;
 
     @NotNull

@@ -43,8 +43,8 @@ public class EventRequestDto {
     @NotNull
     private String description;
 
+    @NotNull(message = "Organisation ID is required")
     @Schema(name = "Organisation", example = "Compassion Paws: Animal Shelter Support Initiative")
-    @NotNull
     private Long organisationId;
 
     @NotNull(message = "Category ID is required")
@@ -56,17 +56,19 @@ public class EventRequestDto {
 
     @NotNull
     @NotBlank(message = "Street is required")
-    @Size(max = 200, message = "Street cannot exceed 200 characters")
+    @Size(max = 50, message = "Street cannot exceed 50 characters")
     private String street;
 
     @NotNull
     @NotBlank(message = "Home number is required")
-    @Size(max = 20, message = "Home number cannot exceed 20 characters")
+    @Size(max = 10, message = "Home number cannot exceed 10 characters")
     private String homeNum;
 
     @NotNull(message = "District must be chosen")
+    @Schema(name = "District id", example = "1")
     private Long districtId;
 
+    @Size(max = 255, message = "Image Url cannot exceed 255 characters")
     private String imageUrl;
 
     @NotNull(message = "Shifts are required")
