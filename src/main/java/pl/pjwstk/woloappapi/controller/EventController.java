@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,7 @@ public class EventController {
             }
     )
     @GetMapping("")
+    @PermitAll
     public ResponseEntity<List<EventResponseDto>> getEvents() {
         List<EventResponseDto> eventDtos = eventService.getAllEvents()
                 .stream()
@@ -76,7 +78,7 @@ public class EventController {
             }
     )
     @PostMapping("/join")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('JOIN_EVENT')")
     public ResponseEntity<HttpStatus> joinEvent(
             @RequestParam(value = "user") Long userId,
             @RequestParam(value = "shift") Long shiftId){
@@ -113,7 +115,7 @@ public class EventController {
     }
 
     @PostMapping("/organisation")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('CHANGE_ORGANISATION_FOR_EVENT')")
     public ResponseEntity<HttpStatus> changeOrganiser(
             @RequestParam(value = "event") Long eventId,
             @RequestParam(value = "organisation") Long organisationId){
@@ -185,6 +187,7 @@ public class EventController {
             }
     )
     @GetMapping("/search")
+    @PermitAll
     public ResponseEntity<List<EventResponseDto>> filterEvents(
             @RequestParam(value = "localization", required = false) String[] localizations,
             @RequestParam(value = "startDate", required = false) LocalDate startDate,
@@ -238,6 +241,7 @@ public class EventController {
             }
     )
     @GetMapping("/{id}")
+    @PermitAll
     public ResponseEntity<EventResponseDetailsDto> getEventById(@PathVariable Long id) {
         Event event = eventService.getEventById(id);
         EventResponseDetailsDto eventDto = eventMapper.toEventResponseDetailsDto(event);
@@ -334,6 +338,7 @@ public class EventController {
             }
     )
     @GetMapping("/upcoming")
+    @PermitAll
     public ResponseEntity<List<EventResponseDto>>getUpcomingEvents(){
         List<Event> events = eventService.getUpcomingEvents();
         List<EventResponseDto> respons = events

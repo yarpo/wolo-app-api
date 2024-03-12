@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,7 @@ public class CategoryController {
             }
     )
     @GetMapping()
+    @PermitAll
     public ResponseEntity<List<CategoryDto>> getCategories() {
         List<Category> categories = categoryService.getAllCategories();
         List<CategoryDto> categoryDtos =
@@ -77,6 +79,7 @@ public class CategoryController {
             }
     )
     @GetMapping("/{id}")
+    @PermitAll
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
         CategoryDto categoryDto = dictionariesMapper
                 .toCategoryDto(categoryService.getCategoryById(id));
@@ -100,7 +103,7 @@ public class CategoryController {
             }
     )
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('CREATE_CATEGORY')")
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addCategory(@Valid @RequestBody CategoryDto category) {
         categoryService.createCategory(category);
@@ -125,7 +128,7 @@ public class CategoryController {
             }
     )
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_CATEGORY')")
     public ResponseEntity<HttpStatus> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -148,7 +151,7 @@ public class CategoryController {
             }
     )
     @PutMapping("/edit")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('EDIT_CATEGORY')")
     public ResponseEntity<HttpStatus> editCategory(
             @Valid @RequestBody CategoryDto category) {
         categoryService.updateCategory(category);

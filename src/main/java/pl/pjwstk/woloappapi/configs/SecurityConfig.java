@@ -21,8 +21,8 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-    private AuthenticationProvider authenticationProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -32,7 +32,7 @@ public class SecurityConfig {
                     req.requestMatchers("/auth/**",
                                         "/api-docs",
                                         "/api-docs/**",
-                                        "/swagger-ui.html")
+                                        "/swagger-ui/index.html")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,7 @@ public class DistrictController {
             }
     )
     @GetMapping()
+    @PermitAll
     public ResponseEntity<List<DistrictDto>> getDistricts() {
         List<District> districts = districtService.getAllDistricts();
         List<DistrictDto> districtDtos =
@@ -76,6 +78,7 @@ public class DistrictController {
             }
     )
     @GetMapping("/{id}")
+    @PermitAll
     public ResponseEntity<DistrictDto> getDistrictById(@PathVariable Long id) {
         DistrictDto districtDto = dictionariesMapper
                 .toDistrictDto(districtService.getDistrictById(id));
@@ -99,7 +102,7 @@ public class DistrictController {
             }
     )
     @PostMapping("/add")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('CREATE_DISTRICT')")
     public ResponseEntity<HttpStatus> addDistrict(@Valid @RequestBody DistrictDto district) {
         districtService.createDistrict(district);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -122,7 +125,7 @@ public class DistrictController {
             }
     )
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_DISTRICT')")
     public ResponseEntity<HttpStatus> deleteDistrict(@PathVariable Long id) {
         districtService.deleteDistrict(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -145,7 +148,7 @@ public class DistrictController {
             }
     )
     @PutMapping("/edit")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('EDIT_DISTRICT')")
     public ResponseEntity<HttpStatus> editDistrict(
             @Valid @RequestBody DistrictDto district) {
         districtService.updateDistrict(district);

@@ -72,7 +72,7 @@ INSERT INTO organisation ("name", description, email, phone_num, address_id, is_
                                                                                                                       ('Stowarzyszenie Przyjaciół Zwierząt "Serce dla Puchatka"', 'Działa na rzecz ochrony zwierząt domowych, organizując adopcje i akcje edukacyjne.', 'info@serce-dla-puchatka.org', '456321789', 16, true, 'https://www.creativefabrica.com/wp-content/uploads/2022/05/18/Unique-and-Modern-S-Logo-Design-Graphics-30778385-2-580x387.jpg'),
                                                                                                                       ('Fundacja Pomocy Chorym "Nadzieja Zdrowia"', 'Zbiera fundusze na leczenie chorych osób, organizuje akcje charytatywne.', 'info@nadzieja-zdrowia.org', '789321456', 17, true, 'https://fiverr-res.cloudinary.com/t_profile_original,q_auto,f_auto/attachments/profile/photo/27b8dd26b7c4789d6c623eb905d25c21-1612373830838/2effc771-4df1-42dd-92b0-796e257c318e.jpg');
 
-INSERT INTO event ( name, description, is_pesel_ver_req, is_agreement_needed, organisation_id, image_url, is_approved) VALUES
+INSERT INTO event ( "name", description, is_pesel_ver_req, is_agreement_needed, organisation_id, image_url, is_approved) VALUES
                                                                                                                                                          ('Dzień Dobra na Ulicach Miasta',
                                                                                                                                                           'Czy chciałbyś/aś dołączyć do nas, aby sprawić, że ulice naszego miasta staną się lepszym miejscem? Razem możemy pomóc osobom bezdomnym, oferując ciepłe posiłki, ubrania i wsparcie psychologiczne. Twoja dobra wola jest mile widziana!',
                                                                                                                                                           true, true, 1, 'https://images.unsplash.com/photo-1608342381036-15657da6bf58?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', true),
@@ -250,7 +250,7 @@ INSERT INTO address_to_event ( event_id, address_id) VALUES
                                                          (45,45),
                                                          (46,46),
                                                          (47,47);
-INSERT INTO shift ( address_to_event_id, start_time, end_time, date, capacity, is_leader_required, required_min_age, directions) VALUES
+INSERT INTO shift ( address_to_event_id, start_time, end_time, "date", capacity, is_leader_required, required_min_age, directions) VALUES
                                                                                                                             (4, '08:00:00', '11:00:00', '2023-06-17', 25, false, 12, 'Manhattan Gdańskie Centrum Handlowe'),
                                                                                                                             (5, '13:30:00', '16:30:00', '2023-06-20', 18, false, 16, 'Gdańska Spółdzielnia Socjalna, na domofonie 11'),
                                                                                                                             (6, '09:45:00', '12:45:00', '2023-06-22', 12, false, 18, 'w trakcie roku szkolnego w godzinach 12:00-17:00'),
@@ -344,15 +344,29 @@ INSERT INTO category_to_event (category_id, event_id) VALUES
                                                           (1, 46),
                                                           (2, 47);
 
-INSERT INTO privilege (name) VALUES
+INSERT INTO privilege ("name") VALUES
                                  ('JOIN_EVENT'),
                                  ('CREATE_EVENT'),
+                                 ('JOIN_EVENT'),
                                  ('EDIT_EVENT'),
                                  ('DELETE_EVENT'),
                                  ('EDIT_ORGANISATION'),
                                  ('SHOW_USER'),
                                  ('DELETE_USER'),
-                                 ('EDIT_USER');
+                                 ('EDIT_USER'),
+                                 ('EDIT_CATEGORY'),
+                                 ('DELETE_CATEGORY'),
+                                 ('CREATE_CATEGORY'),
+                                 ('CREATE_DISTRICT'),
+                                 ('DELETE_DISTRICT'),
+                                 ('EDIT_DISTRICT'),
+                                 ('APPROVE_ORGANISATION'),
+                                 ('CHANGE_ORGANISATION_FOR_EVENT'),
+                                 ('SHOW_ROLES'),
+                                 ('SHOW_PRIVILEGES'),
+                                 ('CREATE_ROLE'),
+                                 ('DELETE_ROLE'),
+                                 ('EDIT_ROLE');
 
 
 INSERT INTO privilege_to_role (role_id, privilege_id) VALUES

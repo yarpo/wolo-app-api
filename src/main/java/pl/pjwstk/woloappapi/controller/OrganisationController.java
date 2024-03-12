@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,7 @@ public class OrganisationController {
             }
     )
     @GetMapping()
+    @PermitAll
     public ResponseEntity<List<OrganisationResponseDto>> getOrganisations() {
         List<Organisation> organisations = organisationService.getAllOrganisations();
         List<OrganisationResponseDto> organisationDtos =
@@ -79,6 +81,7 @@ public class OrganisationController {
             }
     )
     @GetMapping("/{id}")
+    @PermitAll
     public ResponseEntity<OrganisationResponseDto> getOrganisationById(@PathVariable Long id) {
         Organisation organisation = organisationService.getOrganisationById(id);
         OrganisationResponseDto organisationDto =
@@ -127,6 +130,7 @@ public class OrganisationController {
             }
     )
     @GetMapping("/{id}/events")
+    @PermitAll
     public ResponseEntity<List<EventResponseDto>> getEventsByOrganisation(@PathVariable Long id) {
         List<Event> events = organisationService.getEventsByOrganisation(id);
         List<EventResponseDto> eventDtos =
@@ -177,7 +181,7 @@ public class OrganisationController {
             }
     )
     @PostMapping("/approve")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('APPROVE_ORGANISATION')")
     public ResponseEntity<HttpStatus> approveOrganisation(@RequestParam(value = "id") Long organisationId){
         organisationService.approve(organisationId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -200,7 +204,7 @@ public class OrganisationController {
             }
     )
     @PostMapping("/disapprove")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('APPROVE_ORGANISATION')")
     public ResponseEntity<HttpStatus> disapproveOrganisation(@RequestParam(value = "id") Long organisationId){
         organisationService.disapprove(organisationId);
         return new ResponseEntity<>(HttpStatus.OK);

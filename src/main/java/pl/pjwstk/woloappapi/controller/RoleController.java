@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,7 @@ public class RoleController {
             }
     )
     @GetMapping()
+    @PreAuthorize("hasAuthority('SHOW_ROLES')")
     public ResponseEntity<List<RoleDto>> getRoles() {
         List<RoleDto> roleDtos = roleService.getAllRoles()
                 .stream()
@@ -56,6 +58,7 @@ public class RoleController {
     }
 
     @GetMapping("/privileges")
+    @PreAuthorize("hasAuthority('SHOW_PRIVILEGES')")
     public ResponseEntity<List<Privilege>> getAllPrivileges(){
         return new ResponseEntity<>(roleService.getAllPrivileges(), HttpStatus.OK);
     }
@@ -83,6 +86,7 @@ public class RoleController {
             }
     )
     @GetMapping("/{id}")
+    @PermitAll
     public ResponseEntity<RoleDto> getRoleById(@PathVariable Long id) {
         RoleDto roleDto = dictionariesMapper.toRoleDto(roleService.getRoleById(id));
         return new ResponseEntity<>(roleDto, HttpStatus.OK);
@@ -105,7 +109,7 @@ public class RoleController {
             }
     )
     @PostMapping("/add")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('CREATE_ROLE')")
     public ResponseEntity<HttpStatus> addRole(@RequestBody RoleDto roleDto) {
         roleService.createRole(dictionariesMapper.toRole(roleDto).build());
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -128,7 +132,7 @@ public class RoleController {
             }
     )
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('DELETE_ROLE')")
     public ResponseEntity<HttpStatus> deleteRole(@PathVariable Long id) {
         roleService.deleteRole(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -151,7 +155,7 @@ public class RoleController {
             }
     )
     @PutMapping("/edit")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('EDIT_ROLE')")
     public ResponseEntity<HttpStatus> editRole(
             @Valid @RequestBody RoleDto roleDto) {
         roleService.updateRole(dictionariesMapper.toRole(roleDto).build());
