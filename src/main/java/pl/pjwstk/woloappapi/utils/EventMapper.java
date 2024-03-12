@@ -97,7 +97,7 @@ public interface EventMapper {
                 ShiftResponseDto shiftResponseDto = new ShiftResponseDto();
                 shiftResponseDto.setShiftId(shift.getId());
                 shiftResponseDto.setEventId(event.getId());
-                shiftResponseDto.setEventName(event.getName());
+                shiftResponseDto.setName(event.getName());
                 shiftResponseDto.setStartTime(shift.getStartTime());
                 shiftResponseDto.setEndTime(shift.getEndTime());
                 shiftResponseDto.setDate(shift.getDate());
