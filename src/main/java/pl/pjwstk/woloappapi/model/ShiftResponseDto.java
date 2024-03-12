@@ -29,7 +29,7 @@ public class ShiftResponseDto {
     @NotBlank(message = "Name is required")
     @Size(max = 250, message = "Name cannot exceed 250 characters")
     @Schema(name = "Event title", example = "Animal shelter assistance")
-    private String eventName;
+    private String name;
 
     @NotNull
     @TimeOrder
