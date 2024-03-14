@@ -15,11 +15,14 @@ import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import java.util.Collections;
 
+import static pl.pjwstk.woloappapi.security.TokenType.BEARER;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
 
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final RoleService roleService;
@@ -35,9 +38,11 @@ public class AuthenticationService {
                 .roles(Collections.singletonList(roleService.getRoleByName("USER")))
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        var jwt = jwtService.generateToken(user);
+        saveToken(savedUser, jwt);
         return AuthenticationRespons.builder()
-                .token(jwtService.generateToken(user))
+                .token(jwt)
                 .build();
     }
 
@@ -46,9 +51,29 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User email not found!"));
+        var jwt = jwtService.generateToken(user);
+        revokeUserTokens(user);
+        saveToken(user, jwt);
         return AuthenticationRespons.builder()
-                .token(jwtService.generateToken(user))
+                .token(jwt)
                 .build();
+    }
 
+    private void revokeUserTokens(User user){
+        var tokens = tokenRepository.findAllValidTokensByUser(user.getId());
+        if(tokens.isEmpty()){
+            return;
+        }
+        tokens.forEach(t -> t.setExpired(true));
+        tokenRepository.saveAll(tokens);
+    }
+    private void saveToken(User user, String jwt) {
+        var token = Token.builder()
+                .user(user)
+                .token(jwt)
+                .tokenType(BEARER)
+                .expired(false)
+                .build();
+        tokenRepository.save(token);
     }
 }

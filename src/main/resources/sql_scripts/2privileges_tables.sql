@@ -4,15 +4,15 @@
 
 -- Table: privilege
 CREATE TABLE privilege (
-        id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-        name VARCHAR(255) NOT NULL
+                                     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                                     "name" VARCHAR(255) NOT NULL
 );
 
 -- Table: privilege_to_role
 CREATE TABLE privilege_to_role (
-        id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-        role_id BIGINT NOT NULL,
-        privilege_id BIGINT NOT NULL
+                                     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                                     role_id BIGINT NOT NULL,
+                                     privilege_id BIGINT NOT NULL
 );
 
 ALTER TABLE privilege_to_role
@@ -25,9 +25,17 @@ ALTER TABLE privilege_to_role
 
 -- Table: user_to_role
 CREATE TABLE user_to_role (
-       id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-       role_id BIGINT NOT NULL,
-       user_id BIGINT NOT NULL
+                                     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                                     role_id BIGINT NOT NULL,
+                                     user_id BIGINT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS token (
+                                     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                                     token VARCHAR(255) NOT NULL,
+                                     "type" VARCHAR(50) NOT NULL,
+                                     expired BOOLEAN NOT NULL,
+                                     user_id BIGINT
 );
 
 ALTER TABLE user_to_role
@@ -37,3 +45,8 @@ ALTER TABLE user_to_role
         ADD CONSTRAINT fk_user_to_role_user_id
                 FOREIGN KEY (user_id)
                         REFERENCES "user" (id);
+
+ALTER TABLE token
+    ADD CONSTRAINT fk_user_id
+        FOREIGN KEY (user_id)
+            REFERENCES "user"(id);
