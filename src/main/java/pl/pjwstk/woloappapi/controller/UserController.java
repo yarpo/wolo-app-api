@@ -117,6 +117,38 @@ public class UserController {
     }
 
     @Operation(
+            summary = "Get all user shifts",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            array = @ArraySchema(schema = @Schema(
+                                                    implementation = EventResponseDto.class))
+                                    )
+                            }
+                    )
+            },
+            parameters = {
+                    @Parameter(name = "id",
+                            description = "User id",
+                            example = "1"
+                    )
+            }
+    )
+    @GetMapping("/{id}/shifts")
+    public ResponseEntity<List<ShiftResponseDto>> getUserShifts(@PathVariable Long id){
+        List<Event> events = eventService.getEventsByUser(id);
+        List<ShiftResponseDto> shifts = events.stream()
+                .map(eventMapper::toShiftResponseDto)
+                .flatMap(List::stream)
+                .toList();
+        return new ResponseEntity<>(shifts, HttpStatus.OK);
+    }
+
+    @Operation(
             summary = "Delete user",
             description = "If the user has the moderator role, it cannot be deleted",
             responses = {
