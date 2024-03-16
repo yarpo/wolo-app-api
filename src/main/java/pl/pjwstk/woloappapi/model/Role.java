@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -36,4 +39,12 @@ public class Role {
                     name = "privilege_id", referencedColumnName = "id"))
     private List<Privilege> privileges;
 
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        var authorities = new java.util.ArrayList<>(getPrivileges()
+                .stream()
+                .map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
+                .toList());
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.getName()));
+        return authorities;
+    }
 }
