@@ -18,12 +18,12 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationRespons> register(@RequestBody UserRequestDto request){
+    public ResponseEntity<AuthenticationRespons> authenticate(@RequestBody UserRequestDto request){
         return new ResponseEntity<>(authenticationService.register(request), HttpStatus.OK);
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationRespons> register(@RequestBody AuthenticationRequest request){
+    public ResponseEntity<AuthenticationRespons> authenticate(@RequestBody AuthenticationRequest request){
         return new ResponseEntity<>(authenticationService.authenticate(request), HttpStatus.OK);
     }
 
