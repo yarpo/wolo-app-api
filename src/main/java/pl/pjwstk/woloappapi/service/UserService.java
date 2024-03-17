@@ -19,7 +19,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final ShiftToUserRepository shiftToUserRepository;
     private final RoleService roleService;
-    private final UserMapper userMapper;
     private final OrganisationService organisationService;
     private final ShiftService shiftService;
 
@@ -82,11 +81,14 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         Shift shift = shiftService.getShiftById(shiftId);
-
-        ShiftToUser shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift));
-        shift.getShiftToUsers().add(shiftToUser);
-        shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
-        shiftService.editShift(shift);
+        if(shift.getCapacity() > shift.getRegisteredUsers()) {
+            shift.getShiftToUsers().add(new ShiftToUser(user, shift));
+            shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
+            shiftService.editShift(shift);
+        }
+        else{
+            throw new IllegalArgumentException("The event is fully booked");
+        }
     }
 
     @Transactional
