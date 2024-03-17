@@ -8,10 +8,10 @@ import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
-import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,14 +32,6 @@ public class UserService {
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("User id not found!"));
     }
-    @Transactional
-    public void createUser(UserRequestDto userDto) {
-        User user = userMapper.toUser(userDto)
-                .roles(Collections.singletonList(roleService.getRoleByName("USER")))
-                .build();
-        userRepository.save(user);
-    }
-
     @Transactional
         public void deleteUser(Long userId) {
             Optional<User> userOptional = userRepository.findById(userId);
@@ -90,6 +82,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         Shift shift = shiftService.getShiftById(shiftId);
+
         ShiftToUser shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift));
         shift.getShiftToUsers().add(shiftToUser);
         shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
@@ -135,6 +128,8 @@ public class UserService {
             shiftToUser.ifPresent(shiftToUserRepository::delete);
             shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
             shiftService.editShift(shift);
+        }else{
+            throw new IllegalArgumentException("Can't refuse take part in event that has already taken place");
         }
     }
 }

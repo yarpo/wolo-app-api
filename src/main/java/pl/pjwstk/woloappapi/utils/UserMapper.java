@@ -27,8 +27,6 @@ public interface UserMapper {
                 .lastname(userRequestDto.getLastname())
                 .email(userRequestDto.getEmail())
                 .phoneNumber(userRequestDto.getPhoneNumber())
-                .isPeselVerified(userRequestDto.isPeselVerified())
-                .isAgreementSigned(userRequestDto.isAgreementSigned())
                 .isAdult(userRequestDto.isAdult())
                 .password(userRequestDto.getPassword());
     }
