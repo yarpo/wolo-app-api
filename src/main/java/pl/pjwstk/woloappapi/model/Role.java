@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -43,7 +44,7 @@ public class Role {
         var authorities = new java.util.ArrayList<>(getPrivileges()
                 .stream()
                 .map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
-                .toList());
+                .collect(Collectors.toList()));
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.getName()));
         return authorities;
     }

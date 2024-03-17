@@ -72,7 +72,7 @@ INSERT INTO organisation ("name", description, email, phone_num, address_id, is_
                                                                                                                       ('Stowarzyszenie Przyjaciół Zwierząt "Serce dla Puchatka"', 'Działa na rzecz ochrony zwierząt domowych, organizując adopcje i akcje edukacyjne.', 'info@serce-dla-puchatka.org', '456321789', 16, true, 'https://www.creativefabrica.com/wp-content/uploads/2022/05/18/Unique-and-Modern-S-Logo-Design-Graphics-30778385-2-580x387.jpg'),
                                                                                                                       ('Fundacja Pomocy Chorym "Nadzieja Zdrowia"', 'Zbiera fundusze na leczenie chorych osób, organizuje akcje charytatywne.', 'info@nadzieja-zdrowia.org', '789321456', 17, true, 'https://fiverr-res.cloudinary.com/t_profile_original,q_auto,f_auto/attachments/profile/photo/27b8dd26b7c4789d6c623eb905d25c21-1612373830838/2effc771-4df1-42dd-92b0-796e257c318e.jpg');
 
-INSERT INTO event ( name, description, is_pesel_ver_req, is_agreement_needed, organisation_id, image_url, is_approved) VALUES
+INSERT INTO event ( "name", description, is_pesel_ver_req, is_agreement_needed, organisation_id, image_url, is_approved) VALUES
                                                                                                                                                          ('Dzień Dobra na Ulicach Miasta',
                                                                                                                                                           'Czy chciałbyś/aś dołączyć do nas, aby sprawić, że ulice naszego miasta staną się lepszym miejscem? Razem możemy pomóc osobom bezdomnym, oferując ciepłe posiłki, ubrania i wsparcie psychologiczne. Twoja dobra wola jest mile widziana!',
                                                                                                                                                           true, true, 1, 'https://images.unsplash.com/photo-1608342381036-15657da6bf58?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', true),
@@ -344,19 +344,60 @@ INSERT INTO category_to_event (category_id, event_id) VALUES
                                                           (1, 46),
                                                           (2, 47);
 
-INSERT INTO privilege (name) VALUES
+INSERT INTO privilege ("name")VALUES
+                                 ('CREATE_CATEGORY'),
+                                 ('EDIT_CATEGORY'),
+                                 ('DELETE_CATEGORY'),
+                                 ('CREATE_DISTRICT'),
+                                 ('EDIT_DISTRICT'),
+                                 ('DELETE_DISTRICT'),
                                  ('JOIN_EVENT'),
                                  ('CREATE_EVENT'),
                                  ('EDIT_EVENT'),
-                                 ('ADMIN_PANEL');
+                                 ('DELETE_EVENT'),
+                                 ('CREATE_ORGANISATION'),
+                                 ('APPROVE_ORGANISATION'),
+                                 ('EDIT_ORGANISATION'),
+                                 ('READ_ROLE'),
+                                 ('CREATE_ROLE'),
+                                 ('EDIT_ROLE'),
+                                 ('DELETE_ROLE'),
+                                 ('READ_USERS'),
+                                 ('EDIT_USERS'),
+                                 ('DELETE_USERS'),
+                                 ('ASSIGN_ORGANISATION_TO_USER'),
+                                 ('DELETE_USERS'),
+                                 ('CHANGE_USERS_ROLE');
 
 
 INSERT INTO privilege_to_role (role_id, privilege_id) VALUES
-                                                          (1, 4),
+                                                          (1, 1),
+                                                          (1, 2),
                                                           (1, 3),
-                                                          (2, 2),
-                                                          (2, 3),
-                                                          (3, 1);
+                                                          (1, 4),
+                                                          (1, 5),
+                                                          (1, 6),
+                                                          (3, 7),
+                                                          (1, 8),
+                                                          (2, 8),
+                                                          (1, 9),
+                                                          (2, 9),
+                                                          (1, 10),
+                                                          (2, 10),
+                                                          (1, 11),
+                                                          (1, 12),
+                                                          (1, 13),
+                                                          (2, 13),
+                                                          (1, 14),
+                                                          (1, 15),
+                                                          (1, 16),
+                                                          (1, 17),
+                                                          (1, 18),
+                                                          (1, 19),
+                                                          (3, 19),
+                                                          (1, 20),
+                                                          (3, 20),
+                                                          (1, 21);
 
 INSERT INTO user_to_role (role_id, user_id) VALUES
                                                           (1, 1),

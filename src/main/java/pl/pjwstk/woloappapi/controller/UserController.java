@@ -108,7 +108,7 @@ public class UserController {
                     )
             }
     )
-    @GetMapping("/{id}/events")
+    @GetMapping("/events/{id}")
     public ResponseEntity<List<EventResponseDto>>getUserEvents(@PathVariable Long id){
         List<Event> events = eventService.getEventsByUser(id);
         List<EventResponseDto> requests = events.stream()
