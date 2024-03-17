@@ -2,6 +2,7 @@ package pl.pjwstk.woloappapi.service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
@@ -13,13 +14,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final ShiftToUserRepository shiftToUserRepository;
     private final RoleService roleService;
-        private final OrganisationService organisationService;
-    private ShiftService shiftService;
+    private final UserMapper userMapper;
+    private final OrganisationService organisationService;
+    private final ShiftService shiftService;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -80,14 +82,11 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         Shift shift = shiftService.getShiftById(shiftId);
-        if(shift.getCapacity() > shift.getRegisteredUsers()) {
-            shift.getShiftToUsers().add(new ShiftToUser(user, shift));
-            shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
-            shiftService.editShift(shift);
-        }
-        else{
-            throw new IllegalArgumentException("The event is fully booked");
-        }
+
+        ShiftToUser shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift));
+        shift.getShiftToUsers().add(shiftToUser);
+        shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
+        shiftService.editShift(shift);
     }
 
     @Transactional
