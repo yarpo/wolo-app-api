@@ -3,6 +3,7 @@ package pl.pjwstk.woloappapi.utils;
 import org.mapstruct.Mapper;
 import pl.pjwstk.woloappapi.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,6 +81,33 @@ public interface EventMapper {
         shiftDto.setRequiredMinAge(shift.getRequiredMinAge());
         shiftDto.setShiftDirections(shift.getShiftDirections());
         return shiftDto;
+    }
+
+    default List<ShiftResponseDto> toShiftResponseDto(Event event){
+        List<ShiftResponseDto> shiftResponseDtos = new ArrayList<>();
+        List<AddressToEvent> addressToEvents = event.getAddressToEvents();
+        for (AddressToEvent addressToEvent : addressToEvents) {
+            Address address = addressToEvent.getAddress();
+            String street = address.getStreet();
+            String homeNum = address.getHomeNum();
+            String city = address.getDistrict().getCity();
+
+            List<Shift> shifts = addressToEvent.getShifts();
+            for (Shift shift : shifts) {
+                ShiftResponseDto shiftResponseDto = new ShiftResponseDto();
+                shiftResponseDto.setShiftId(shift.getId());
+                shiftResponseDto.setEventId(event.getId());
+                shiftResponseDto.setName(event.getName());
+                shiftResponseDto.setStartTime(shift.getStartTime());
+                shiftResponseDto.setEndTime(shift.getEndTime());
+                shiftResponseDto.setDate(shift.getDate());
+                shiftResponseDto.setStreet(street);
+                shiftResponseDto.setHomeNum(homeNum);
+                shiftResponseDto.setCity(city);
+                shiftResponseDtos.add(shiftResponseDto);
+            }
+        }
+        return shiftResponseDtos;
     }
 
     default EventResponseDetailsDto toEventResponseDetailsDto(Event event) {

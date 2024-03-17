@@ -2,6 +2,7 @@ package pl.pjwstk.woloappapi.service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
@@ -13,13 +14,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final ShiftToUserRepository shiftToUserRepository;
     private final RoleService roleService;
-        private final OrganisationService organisationService;
-    private ShiftService shiftService;
+    private final OrganisationService organisationService;
+    private final ShiftService shiftService;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
