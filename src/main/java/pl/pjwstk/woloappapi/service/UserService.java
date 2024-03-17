@@ -7,10 +7,10 @@ import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
-import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -18,8 +18,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final ShiftToUserRepository shiftToUserRepository;
     private final RoleService roleService;
-    private final UserMapper userMapper;
-    private final OrganisationService organisationService;
+        private final OrganisationService organisationService;
     private ShiftService shiftService;
 
     public List<User> getAllUsers() {
@@ -31,14 +30,6 @@ public class UserService {
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("User id not found!"));
     }
-    @Transactional
-    public void createUser(UserRequestDto userDto) {
-        User user = userMapper.toUser(userDto)
-                .roles(Collections.singletonList(roleService.getRoleByName("USER")))
-                .build();
-        userRepository.save(user);
-    }
-
     @Transactional
         public void deleteUser(Long userId) {
             Optional<User> userOptional = userRepository.findById(userId);
@@ -89,9 +80,14 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         Shift shift = shiftService.getShiftById(shiftId);
-        shift.getShiftToUsers().add(new ShiftToUser(user, shift));
-        shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
-        shiftService.editShift(shift);
+        if(shift.getCapacity() > shift.getRegisteredUsers()) {
+            shift.getShiftToUsers().add(new ShiftToUser(user, shift));
+            shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
+            shiftService.editShift(shift);
+        }
+        else{
+            throw new IllegalArgumentException("The event is fully booked");
+        }
     }
 
     @Transactional
@@ -133,6 +129,8 @@ public class UserService {
             shiftToUser.ifPresent(shiftToUserRepository::delete);
             shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
             shiftService.editShift(shift);
+        }else{
+            throw new IllegalArgumentException("Can't refuse take part in event that has already taken place");
         }
     }
 }
