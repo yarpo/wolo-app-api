@@ -36,6 +36,9 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
         <sqlFile path="sql_mockup/004-insert-example_user.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
+        <sqlFile path="sql_mockup/004-insert-shift.sql"
+        relativeToChangelogFile="true"
+        stripComments="true"/>
     </changeSet>
 
 </databaseChangeLog >
