@@ -1,0 +1,58 @@
+--liquibase formatted sql
+
+--changeset woloapp:001
+
+INSERT INTO privilege ("name")VALUES
+                                  ('CREATE_CATEGORY'),
+                                  ('EDIT_CATEGORY'),
+                                  ('DELETE_CATEGORY'),
+                                  ('CREATE_DISTRICT'),
+                                  ('EDIT_DISTRICT'),
+                                  ('DELETE_DISTRICT'),
+                                  ('JOIN_EVENT'),
+                                  ('CREATE_EVENT'),
+                                  ('EDIT_EVENT'),
+                                  ('DELETE_EVENT'),
+                                  ('CREATE_ORGANISATION'),
+                                  ('APPROVE_ORGANISATION'),
+                                  ('EDIT_ORGANISATION'),
+                                  ('READ_ROLE'),
+                                  ('CREATE_ROLE'),
+                                  ('EDIT_ROLE'),
+                                  ('DELETE_ROLE'),
+                                  ('READ_USERS'),
+                                  ('EDIT_USERS'),
+                                  ('DELETE_USERS'),
+                                  ('ASSIGN_ORGANISATION_TO_USER'),
+                                  ('DELETE_USERS'),
+                                  ('CHANGE_USERS_ROLE');
+
+
+INSERT INTO privilege_to_role (role_id, privilege_id) VALUES
+                                                          (1, 1),
+                                                          (1, 2),
+                                                          (1, 3),
+                                                          (1, 4),
+                                                          (1, 5),
+                                                          (1, 6),
+                                                          (3, 7),
+                                                          (1, 8),
+                                                          (2, 8),
+                                                          (1, 9),
+                                                          (2, 9),
+                                                          (1, 10),
+                                                          (2, 10),
+                                                          (1, 11),
+                                                          (1, 12),
+                                                          (1, 13),
+                                                          (2, 13),
+                                                          (1, 14),
+                                                          (1, 15),
+                                                          (1, 16),
+                                                          (1, 17),
+                                                          (1, 18),
+                                                          (1, 19),
+                                                          (3, 19),
+                                                          (1, 20),
+                                                          (3, 20),
+                                                          (1, 21);

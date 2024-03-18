@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset woloapp:2
+--changeset woloapp:002
 
 -- Table: privilege
 CREATE TABLE privilege (

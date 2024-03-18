@@ -10,11 +10,11 @@ REST API for web Application for Regional Volunteer Centre in Gdańsk, which hel
 
 Create and setup an `.env` file with the following Environment Variables:
 ```bash
-  SPRING_DATASOURCE_URL = jdbc:postgresql://dbpostgresql:5432/mydb2
+  SPRING_DATASOURCE_URL = jdbc:postgresql://dbpostgresql:5432/woloapp-db
   SPRING_DATASOURCE_USERNAME = {spring_username}
   SPRING_DATASOURCE_PASSWORD = {spring_password}
 
-  POSTGRES_DB = mydb2
+  POSTGRES_DB = woloapp-db
   POSTGRES_USER= {postgres_username}
   POSTGRES_PASSWORD= {postgres_password}
 ```
