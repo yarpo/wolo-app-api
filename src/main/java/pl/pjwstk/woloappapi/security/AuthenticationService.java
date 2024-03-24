@@ -6,7 +6,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pjwstk.woloappapi.model.UserRequestDto;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.service.RoleService;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
@@ -25,17 +24,15 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Transactional
-    public AuthenticationRespons register(UserRequestDto request) {
+    public AuthenticationRespons register(RegistrationRequest request) {
         if(userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("There is an account with that email address: " + request.getEmail());
         }
         var user = userMapper.toUser(request)
                 .roles(Collections.singletonList(roleService.getRoleByName("USER")))
                 .password(passwordEncoder.encode(request.getPassword()))
-                .isPeselVerified(false)
-                .isAgreementSigned(false)
                 .build();
-        var savedUser = userRepository.save(user);
+        userRepository.save(user);
         var jwt = jwtService.generateToken(user);
         return AuthenticationRespons.builder()
                 .token(jwt)

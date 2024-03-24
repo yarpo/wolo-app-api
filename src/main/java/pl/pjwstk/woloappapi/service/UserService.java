@@ -1,7 +1,6 @@
 package pl.pjwstk.woloappapi.service;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.*;
@@ -40,6 +39,14 @@ public class UserService {
                     throw new IllegalArgumentException("User with ID " + userId
                             + " is moderator of "+ organisation.getName()
                             + "firstly assign new moderator to organisation");
+                }
+                if(userOptional.get().getRoles().stream().anyMatch(r ->
+                        r.getName().equals(roleService.getRoleByName("ADMIN").getName()))){
+                    List<User> admins = userRepository.findUsersByRole("ADMIN");
+                    if(admins.size() == 1){
+                        throw new IllegalArgumentException("User with ID " + userId
+                        + "  is the only administrator of the application, to remove it, first create another administrator");
+                    }
                 }
                 userRepository.deleteById(userId);
             }

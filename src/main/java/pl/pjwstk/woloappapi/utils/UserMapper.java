@@ -3,8 +3,8 @@ package pl.pjwstk.woloappapi.utils;
 import org.mapstruct.Mapper;
 import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.model.User;
-import pl.pjwstk.woloappapi.model.UserRequestDto;
 import pl.pjwstk.woloappapi.model.UserResponseDto;
+import pl.pjwstk.woloappapi.security.RegistrationRequest;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -21,14 +21,15 @@ public interface UserMapper {
         userResponseDto.setRoles(user.getRoles().stream().map(Role::getName).toList());
         return userResponseDto;
     }
-    default User.UserBuilder toUser(UserRequestDto userRequestDto) {
+    default User.UserBuilder toUser(RegistrationRequest request) {
         return User.builder()
-                .firstname(userRequestDto.getFirstname())
-                .lastname(userRequestDto.getLastname())
-                .email(userRequestDto.getEmail())
-                .phoneNumber(userRequestDto.getPhoneNumber())
-                .isAdult(userRequestDto.isAdult())
-                .password(userRequestDto.getPassword());
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .email(request.getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .isAdult(request.isAdult())
+                .isPeselVerified(false)
+                .isAgreementSigned(false);
     }
 
 }
