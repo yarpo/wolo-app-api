@@ -136,4 +136,10 @@ public class EventMapper {
                 .isAgreementNeeded(dtoEvent.isAgreementNeeded())
                 .imageUrl(dtoEvent.getImageUrl());
     }
+
+    public List<Shift> toShifts(List<ShiftDto> shiftDtos) {
+        return shiftDtos.stream()
+                .map(s -> this.toShift(s).build())
+                .collect(Collectors.toList());
+    }
 }
