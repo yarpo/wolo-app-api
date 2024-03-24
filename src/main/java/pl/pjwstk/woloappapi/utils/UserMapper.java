@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.model.User;
 import pl.pjwstk.woloappapi.model.UserResponseDto;
+import pl.pjwstk.woloappapi.model.UserShortRespons;
 import pl.pjwstk.woloappapi.security.RegistrationRequest;
 
 @Component
@@ -30,5 +31,14 @@ public class UserMapper {
                 .isAdult(request.isAdult())
                 .isPeselVerified(false)
                 .isAgreementSigned(false);
+    }
+
+    public UserShortRespons toUserShortRespons(User user) {
+        return UserShortRespons.builder()
+                .firstname(user.getFirstname())
+                .lastname(user.getLastname())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .build();
     }
 }
