@@ -2,7 +2,7 @@ package pl.pjwstk.woloappapi;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
+
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.Category;
 import pl.pjwstk.woloappapi.model.CategoryDto;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(MockitoExtension.class)
 public class DictionariesMapperTests {
     private DictionariesMapper createDictionariesMapper() {
-        return Mappers.getMapper(DictionariesMapper.class);
+        return new DictionariesMapper();
     }
 
     @Test
