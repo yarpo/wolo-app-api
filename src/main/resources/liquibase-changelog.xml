@@ -5,6 +5,40 @@
         xsi:schemaLocation ="http://www.liquibase.org/xml/ns/dbchangelog
 https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
 
-    <includeAll path="sql_scripts"/>
-    <includeAll path="sql_inserts"/>
+    <changeSet author="woloapp" id="001">
+        <sqlFile path="sql_scripts/001-create-base_tables.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_inserts/001-insert-category_district_role.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="woloapp" id="002">
+        <sqlFile path="sql_scripts/002-create-privilege_tables.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_inserts/002-insert-privilege.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="woloapp" id="003">
+        <sqlFile path="sql_mockup/003-insert-event_shift_address.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="woloapp" id="004">
+        <sqlFile path="sql_inserts/004-insert-base_admin.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/004-insert-example_user.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/004-insert-shift.sql"
+        relativeToChangelogFile="true"
+        stripComments="true"/>
+    </changeSet>
+
 </databaseChangeLog >
