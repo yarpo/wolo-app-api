@@ -367,7 +367,8 @@ INSERT INTO privilege ("name")VALUES
                                  ('DELETE_USERS'),
                                  ('ASSIGN_ORGANISATION_TO_USER'),
                                  ('DELETE_USERS'),
-                                 ('CHANGE_USERS_ROLE');
+                                 ('CHANGE_USERS_ROLE'),
+                                 ('READ_USERS_BY_SHIFT');
 
 
 INSERT INTO privilege_to_role (role_id, privilege_id) VALUES
@@ -397,7 +398,11 @@ INSERT INTO privilege_to_role (role_id, privilege_id) VALUES
                                                           (3, 19),
                                                           (1, 20),
                                                           (3, 20),
-                                                          (1, 21);
+                                                          (1, 21),
+                                                          (1, 22),
+                                                          (3, 22),
+                                                          (1, 23),
+                                                          (1, 24);
 
 INSERT INTO user_to_role (role_id, user_id) VALUES
                                                           (1, 1),
