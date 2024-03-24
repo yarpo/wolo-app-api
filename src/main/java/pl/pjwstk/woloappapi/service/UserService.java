@@ -1,7 +1,6 @@
 package pl.pjwstk.woloappapi.service;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.*;
@@ -133,5 +132,9 @@ public class UserService {
         }else{
             throw new IllegalArgumentException("Can't refuse take part in event that has already taken place");
         }
+    }
+
+    public List<User> getUsersByShift(Long shift) {
+        return userRepository.findAllByShiftId(shift);
     }
 }

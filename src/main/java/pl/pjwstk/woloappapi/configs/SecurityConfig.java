@@ -44,7 +44,7 @@ public class SecurityConfig {
                     auth.requestMatchers("events/refuse").hasAuthority("JOIN_EVENT");
                     auth.requestMatchers("events/add").hasAuthority("CREATE_EVENT");
                     auth.requestMatchers(PUT, "events/**").hasAuthority("EDIT_EVENT");
-                    auth.requestMatchers(DELETE).hasAuthority("DELETE_EVENT");
+                    auth.requestMatchers(DELETE, "/").hasAuthority("DELETE_EVENT");
                     auth.requestMatchers(GET, "/organisations").permitAll();
                     auth.requestMatchers(GET, "/organisations/**").permitAll();
                     auth.requestMatchers( "/organisations/add").hasAuthority("CREATE_ORGANISATION");

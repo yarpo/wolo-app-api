@@ -16,6 +16,7 @@ import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
+import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +30,8 @@ public class EventController {
     private final EventService eventService;
     private final EventMapper eventMapper;
     private final UserService userService;
+    private final UserMapper userMapper;
+
 
     @Operation(
             summary = "Get all events",
@@ -107,6 +110,17 @@ public class EventController {
             @RequestParam(value = "shift") Long shiftId){
         userService.refuse(userId, shiftId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserShortRespons>> getUsersByShift(
+            @RequestParam(value = "shift", required = false) Long shift){
+        List<User> users = userService.getUsersByShift(shift);
+        List<UserShortRespons> userDetails = users.stream()
+                .map(userMapper::toUserShortRespons)
+                .toList();
+        return new ResponseEntity<>(userDetails, HttpStatus.OK);
+
     }
 
     @Operation(
