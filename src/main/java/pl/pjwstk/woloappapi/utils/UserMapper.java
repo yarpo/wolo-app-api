@@ -6,6 +6,7 @@ import pl.pjwstk.woloappapi.model.User;
 import pl.pjwstk.woloappapi.model.UserResponseDto;
 import pl.pjwstk.woloappapi.security.RegistrationRequest;
 
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     default UserResponseDto toUserResponseDto(User user) {
@@ -32,4 +33,12 @@ public interface UserMapper {
                 .isAgreementSigned(false);
     }
 
+    default UserShortRespons toUserShortRespons(User user){
+        return UserShortRespons.builder()
+                .firstname(user.getFirstname())
+                .lastname(user.getLastname())
+                .phoneNumber(user.getPhoneNumber())
+                .email(user.getEmail())
+                .build();
+    }
 }
