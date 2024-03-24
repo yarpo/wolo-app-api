@@ -1,14 +1,14 @@
 package pl.pjwstk.woloappapi.utils;
 
-import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.model.User;
 import pl.pjwstk.woloappapi.model.UserResponseDto;
 import pl.pjwstk.woloappapi.security.RegistrationRequest;
 
-@Mapper(componentModel = "spring")
-public interface UserMapper {
-    default UserResponseDto toUserResponseDto(User user) {
+@Component
+public class UserMapper {
+    public UserResponseDto toUserResponseDto(User user) {
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setId(user.getId());
         userResponseDto.setFirstname(user.getFirstname());
@@ -21,7 +21,7 @@ public interface UserMapper {
         userResponseDto.setRoles(user.getRoles().stream().map(Role::getName).toList());
         return userResponseDto;
     }
-    default User.UserBuilder toUser(RegistrationRequest request) {
+    public User.UserBuilder toUser(RegistrationRequest request) {
         return User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -31,5 +31,4 @@ public interface UserMapper {
                 .isPeselVerified(false)
                 .isAgreementSigned(false);
     }
-
 }
