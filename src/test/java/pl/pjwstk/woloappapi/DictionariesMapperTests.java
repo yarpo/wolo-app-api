@@ -2,26 +2,19 @@ package pl.pjwstk.woloappapi;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.pjwstk.woloappapi.model.Category;
-import pl.pjwstk.woloappapi.model.CategoryDto;
-import pl.pjwstk.woloappapi.model.District;
-import pl.pjwstk.woloappapi.model.DistrictDto;
+import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 public class DictionariesMapperTests {
-    private DictionariesMapper createDictionariesMapper() {
-        return new DictionariesMapper();
-    }
+
+    DictionariesMapper dictionariesMapper = new DictionariesMapper();
 
     @Test
     public void testToDistrictDto() {
-        DictionariesMapper dictionariesMapper = createDictionariesMapper();
         District district = new District();
         district.setId(1L);
         district.setName("Sample District");
@@ -29,7 +22,6 @@ public class DictionariesMapperTests {
 
         DistrictDto districtDto = dictionariesMapper.toDistrictDto(district);
 
-        assertNotNull(districtDto);
         assertEquals(1L, districtDto.getId());
         assertEquals("Sample District", districtDto.getName());
         assertEquals("Sample City", districtDto.getCity());
@@ -37,15 +29,63 @@ public class DictionariesMapperTests {
 
     @Test
     public void testToCategoryDto() {
-        DictionariesMapper dictionariesMapper = createDictionariesMapper();
         Category category = new Category();
         category.setId(1L);
         category.setName("Sample Category");
 
         CategoryDto categoryDto = dictionariesMapper.toCategoryDto(category);
 
-        assertNotNull(categoryDto);
         assertEquals(1L, categoryDto.getId());
         assertEquals("Sample Category", categoryDto.getName());
+    }
+
+    @Test
+    public void testToCategory() {
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setId(1L);
+        categoryDto.setName("Sample Category");
+
+        Category category = dictionariesMapper.toCategory(categoryDto).build();
+
+        assertEquals(1L, category.getId());
+        assertEquals("Sample Category", category.getName());
+    }
+
+    @Test
+    public void testToDisctrict(){
+        DistrictDto districtDto = new DistrictDto();
+        districtDto.setId(1L);
+        districtDto.setName("Sample District");
+        districtDto.setCity("Sample City");
+
+        District district = dictionariesMapper.toDistrict(districtDto).build();
+
+        assertEquals(1L, district.getId());
+        assertEquals("Sample District", district.getName());
+        assertEquals("Sample City", district.getCity());
+    }
+
+    @Test
+    public void testToRoleDto(){
+        Role role = new Role();
+        role.setId(1L);
+        role.setName("Sample Role");
+
+        RoleDto roleDto = dictionariesMapper.toRoleDto(role);
+
+        assertEquals(1L, roleDto.getId());
+        assertEquals("Sample Role", roleDto.getName());
+    }
+
+    @Test
+    public void testToRole(){
+        RoleDto roleDto = new RoleDto();
+        roleDto.setId(1L);
+        roleDto.setName("Sample Role");
+
+        Role role = dictionariesMapper.toRole(roleDto).build();
+
+        assertEquals(1L, role.getId());
+        assertEquals("Sample Role", role.getName());
     }
 }
