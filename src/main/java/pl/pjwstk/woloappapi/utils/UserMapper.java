@@ -1,10 +1,7 @@
 package pl.pjwstk.woloappapi.utils;
 
 import org.mapstruct.Mapper;
-import pl.pjwstk.woloappapi.model.Role;
-import pl.pjwstk.woloappapi.model.User;
-import pl.pjwstk.woloappapi.model.UserRequestDto;
-import pl.pjwstk.woloappapi.model.UserResponseDto;
+import pl.pjwstk.woloappapi.model.*;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -31,4 +28,12 @@ public interface UserMapper {
                 .password(userRequestDto.getPassword());
     }
 
+    default UserShortRespons toUserShortRespons(User user){
+        return UserShortRespons.builder()
+                .firstname(user.getFirstname())
+                .lastname(user.getLastname())
+                .phoneNumber(user.getPhoneNumber())
+                .email(user.getEmail())
+                .build();
+    }
 }
