@@ -1,4 +1,4 @@
-package pl.pjwstk.woloappapi;
+package pl.pjwstk.woloappapi.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
