@@ -1,11 +1,15 @@
 package pl.pjwstk.woloappapi.utils;
 
-import org.mapstruct.Mapper;
-import pl.pjwstk.woloappapi.model.*;
+import org.springframework.stereotype.Component;
+import pl.pjwstk.woloappapi.model.Role;
+import pl.pjwstk.woloappapi.model.User;
+import pl.pjwstk.woloappapi.model.UserResponseDto;
+import pl.pjwstk.woloappapi.model.UserShortRespons;
+import pl.pjwstk.woloappapi.security.RegistrationRequest;
 
-@Mapper(componentModel = "spring")
-public interface UserMapper {
-    default UserResponseDto toUserResponseDto(User user) {
+@Component
+public class UserMapper {
+    public UserResponseDto toUserResponseDto(User user) {
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setId(user.getId());
         userResponseDto.setFirstname(user.getFirstname());
@@ -18,22 +22,23 @@ public interface UserMapper {
         userResponseDto.setRoles(user.getRoles().stream().map(Role::getName).toList());
         return userResponseDto;
     }
-    default User.UserBuilder toUser(UserRequestDto userRequestDto) {
+    public User.UserBuilder toUser(RegistrationRequest request) {
         return User.builder()
-                .firstname(userRequestDto.getFirstname())
-                .lastname(userRequestDto.getLastname())
-                .email(userRequestDto.getEmail())
-                .phoneNumber(userRequestDto.getPhoneNumber())
-                .isAdult(userRequestDto.isAdult())
-                .password(userRequestDto.getPassword());
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .email(request.getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .isAdult(request.isAdult())
+                .isPeselVerified(false)
+                .isAgreementSigned(false);
     }
 
-    default UserShortRespons toUserShortRespons(User user){
+    public UserShortRespons toUserShortRespons(User user) {
         return UserShortRespons.builder()
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
-                .phoneNumber(user.getPhoneNumber())
                 .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
                 .build();
     }
 }
