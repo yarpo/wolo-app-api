@@ -141,4 +141,8 @@ public class UserService {
             throw new IllegalArgumentException("Can't refuse take part in event that has already taken place");
         }
     }
+
+    public List<User> getUsersByShift(Long shift) {
+        return userRepository.findAllByShiftId(shift);
+    }
 }

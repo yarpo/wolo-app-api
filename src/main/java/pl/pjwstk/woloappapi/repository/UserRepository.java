@@ -2,6 +2,9 @@ package pl.pjwstk.woloappapi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import org.springframework.data.repository.query.Param;
+
 import org.springframework.stereotype.Repository;
 import pl.pjwstk.woloappapi.model.User;
 
@@ -18,4 +21,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "JOIN u.roles r " +
             "WHERE r.name = :roleName")
     List<User> findUsersByRole(String roleName);
+
+    @Query("SELECT DISTINCT u FROM User u " +
+            "JOIN u.shifts uts " +
+            "JOIN uts.shift s " +
+            "WHERE s.id = :shiftId")
+    List<User> findAllByShiftId(@Param("shiftId") Long shiftId);
+
 }
