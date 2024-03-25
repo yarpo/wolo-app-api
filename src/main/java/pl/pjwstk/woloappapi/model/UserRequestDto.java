@@ -17,14 +17,14 @@ import java.util.List;
 public class UserRequestDto {
 
     @NotNull
-    @NotBlank(message = "Firstname is required")
-    @Size(max = 50, message = "Firstname cannot exceed 50 characters")
-    private String firstname;
+    @NotBlank(message = "First Name is required")
+    @Size(max = 50, message = "First Name cannot exceed 50 characters")
+    private String firstName;
 
     @NotNull
     @NotBlank(message = "Surname is required")
     @Size(max = 50, message = "Surname cannot exceed 50 characters")
-    private String lastname;
+    private String lastName;
 
     @NotNull
     @NotBlank(message = "Email is required")

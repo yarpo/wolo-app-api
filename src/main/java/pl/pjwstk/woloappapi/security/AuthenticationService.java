@@ -24,7 +24,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Transactional
-    public AuthenticationRespons register(RegistrationRequest request) {
+    public AuthenticationResponse register(RegistrationRequest request) {
         if(userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("There is an account with that email address: " + request.getEmail());
         }
@@ -34,17 +34,17 @@ public class AuthenticationService {
                 .build();
         userRepository.save(user);
         var jwt = jwtService.generateToken(user);
-        return AuthenticationRespons.builder()
+        return AuthenticationResponse.builder()
                 .token(jwt)
                 .build();
     }
-    public AuthenticationRespons authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User email not found!"));
         var jwt = jwtService.generateToken(user);
-        return AuthenticationRespons.builder()
+        return AuthenticationResponse.builder()
                 .token(jwt)
                 .build();
     }
