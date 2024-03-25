@@ -51,7 +51,8 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
-	include '**/service/OrganisationServiceTests.class'
+	include '**/mapper/**'
+	include '**/service/**'
 }
 
 pmd {
