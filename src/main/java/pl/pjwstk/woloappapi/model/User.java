@@ -25,11 +25,11 @@ public class User implements UserDetails {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "firstname", nullable = false)
-    private String firstname;
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
 
-    @Column(name = "lastname", nullable = false)
-    private String lastname;
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;

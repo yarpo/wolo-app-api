@@ -21,14 +21,14 @@ public class UserResponseDto {
     private Long id;
 
     @NotNull
-    @NotBlank(message = "Firstname is required")
+    @NotBlank(message = "First Name is required")
     @Size(max = 50, message = "Firstname cannot exceed 50 characters")
-    private String firstname;
+    private String firstName;
 
     @NotNull
     @NotBlank(message = "Surname is required")
     @Size(max = 50, message = "Surname cannot exceed 50 characters")
-    private String lastname;
+    private String lastName;
 
     @NotNull
     @NotBlank(message = "Email is required")

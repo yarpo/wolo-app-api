@@ -57,8 +57,8 @@ public class UserService {
     public void updateUser(UserRequestDto userDto, Long id) {
          User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException( "User with ID " + id + " does not exist"));
-        user.setFirstname(userDto.getFirstname());
-        user.setLastname(userDto.getLastname());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setPhoneNumber(userDto.getPhoneNumber());
         user.setPeselVerified(userDto.isPeselVerified());
