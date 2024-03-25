@@ -113,10 +113,10 @@ public class EventController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserShortRespons>> getUsersByShift(
+    public ResponseEntity<List<UserShortResponse>> getUsersByShift(
             @RequestParam(value = "shift", required = false) Long shift){
         List<User> users = userService.getUsersByShift(shift);
-        List<UserShortRespons> userDetails = users.stream()
+        List<UserShortResponse> userDetails = users.stream()
                 .map(userMapper::toUserShortRespons)
                 .toList();
         return new ResponseEntity<>(userDetails, HttpStatus.OK);

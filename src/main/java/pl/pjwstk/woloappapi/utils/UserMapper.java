@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.Role;
 import pl.pjwstk.woloappapi.model.User;
 import pl.pjwstk.woloappapi.model.UserResponseDto;
-import pl.pjwstk.woloappapi.model.UserShortRespons;
+import pl.pjwstk.woloappapi.model.UserShortResponse;
 import pl.pjwstk.woloappapi.security.RegistrationRequest;
 
 @Component
@@ -12,8 +12,8 @@ public class UserMapper {
     public UserResponseDto toUserResponseDto(User user) {
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setId(user.getId());
-        userResponseDto.setFirstname(user.getFirstname());
-        userResponseDto.setLastname(user.getLastname());
+        userResponseDto.setFirstName(user.getFirstName());
+        userResponseDto.setLastName(user.getLastName());
         userResponseDto.setAdult(user.isAdult());
         userResponseDto.setEmail(user.getEmail());
         userResponseDto.setPhoneNumber(user.getPhoneNumber());
@@ -24,8 +24,8 @@ public class UserMapper {
     }
     public User.UserBuilder toUser(RegistrationRequest request) {
         return User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .isAdult(request.isAdult())
@@ -33,10 +33,10 @@ public class UserMapper {
                 .isAgreementSigned(false);
     }
 
-    public UserShortRespons toUserShortRespons(User user) {
-        return UserShortRespons.builder()
-                .firstname(user.getFirstname())
-                .lastname(user.getLastname())
+    public UserShortResponse toUserShortRespons(User user) {
+        return UserShortResponse.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .build();
