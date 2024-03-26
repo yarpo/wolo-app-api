@@ -7,5 +7,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class TokenConfig {
     private final String tokenSecret;
-    private final long tokenExpirationMsec;
+    private final long accessTokenExpiration;
+    private final long refreshTokenExpiration;
 }

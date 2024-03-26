@@ -41,19 +41,30 @@ public class JwtService {
         return Keys.hmacShaKeyFor(tokenConfig.getTokenSecret().getBytes());
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails user){
+    public String buildToken(Map<String, Object> extraClaims, UserDetails user, long expiration){
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime()+tokenConfig.getTokenExpirationMsec()))
+                .setExpiration(new Date(new Date().getTime()+expiration))
                 .signWith(getKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    public String generateToken(UserDetails user){
-        return generateToken(new HashMap<>(),user);
+    public String generateToken(UserDetails userDetails){
+        return generateToken(new HashMap<>(), userDetails);
+    }
+
+    public String generateToken(
+            Map<String, Object> extraClaims,
+            UserDetails userDetails){
+        return buildToken(extraClaims, userDetails, tokenConfig.getAccessTokenExpiration());
+    }
+
+    public String generateRefreshToken(
+            UserDetails userDetails){
+        return buildToken(new HashMap<>(), userDetails, tokenConfig.getRefreshTokenExpiration());
     }
 
     public boolean isTokenValid(String token, UserDetails user){
