@@ -3,7 +3,7 @@ package pl.pjwstk.woloappapi.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pjwstk.woloappapi.model.Role;
+import pl.pjwstk.woloappapi.model.entities.Role;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;

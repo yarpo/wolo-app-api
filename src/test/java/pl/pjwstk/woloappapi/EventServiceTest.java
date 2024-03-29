@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.pjwstk.woloappapi.model.Event;
+import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.utils.NotFoundException;

@@ -7,7 +7,7 @@ import jakarta.persistence.criteria.*;
 
 import org.springframework.stereotype.Repository;
 
-import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.entities.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

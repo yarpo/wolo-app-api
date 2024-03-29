@@ -1,30 +1,30 @@
-package pl.pjwstk.woloappapi.model;
-
+package pl.pjwstk.woloappapi.model.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.Collection;
+
+import java.util.List;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
+
 @NoArgsConstructor
-@Table(name = "privilege")
-public class Privilege {
+@Table(name = "category")
+public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "privileges")
-    private Collection<Role> roles;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<CategoryToEvent> categoryToEventList;
 }

@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.entities.Event;
+import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.EventMapper;

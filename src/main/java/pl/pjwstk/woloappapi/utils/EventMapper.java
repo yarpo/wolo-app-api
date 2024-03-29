@@ -3,6 +3,7 @@ package pl.pjwstk.woloappapi.utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.entities.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,5 +142,18 @@ public class EventMapper {
         return shiftDtos.stream()
                 .map(s -> this.toShift(s).build())
                 .collect(Collectors.toList());
+    }
+
+    public Report.ReportBuilder toReport(ReportDto reportDto) {
+        return Report.builder()
+                .report(reportDto.getReport())
+                .published(reportDto.isPublished());
+    }
+
+    public ReportDto.ReportDtoBuilder toReportDto(Report report) {
+        return ReportDto.builder()
+                .event(report.getEvent().getId())
+                .published(report.isPublished())
+                .report(report.getReport());
     }
 }

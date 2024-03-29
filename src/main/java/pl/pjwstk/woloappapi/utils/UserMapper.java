@@ -1,8 +1,8 @@
 package pl.pjwstk.woloappapi.utils;
 
 import org.springframework.stereotype.Component;
-import pl.pjwstk.woloappapi.model.Role;
-import pl.pjwstk.woloappapi.model.User;
+import pl.pjwstk.woloappapi.model.entities.Role;
+import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.model.UserResponseDto;
 import pl.pjwstk.woloappapi.model.UserShortResponse;
 import pl.pjwstk.woloappapi.security.RegistrationRequest;

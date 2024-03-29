@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import pl.pjwstk.woloappapi.model.Event;
+import pl.pjwstk.woloappapi.model.entities.Event;
 
 import java.util.List;
 

@@ -48,6 +48,10 @@ public class SecurityConfig {
                     auth.requestMatchers(PUT, "events/**").hasAuthority("EDIT_EVENT");
                     auth.requestMatchers(DELETE, "/events/**").hasAuthority("DELETE_EVENT");
                     auth.requestMatchers(GET, "/events/users").hasAuthority("READ_USERS_BY_SHIFT");
+                    auth.requestMatchers(GET, "/report/**").permitAll();
+                    auth.requestMatchers(POST, "/report/**").hasAuthority("CREATE_REPORT");
+                    auth.requestMatchers(PUT, "/report/**").hasAuthority("EDIT_REPORT");
+                    auth.requestMatchers(DELETE, "/report/**").hasAuthority("DELETE_REPORT");
                     auth.requestMatchers(GET, "/organisations").permitAll();
                     auth.requestMatchers(GET, "/organisations/**").permitAll();
                     auth.requestMatchers( "/organisations/add").hasAuthority("CREATE_ORGANISATION");

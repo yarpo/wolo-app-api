@@ -6,7 +6,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import pl.pjwstk.woloappapi.controller.EventController;
-import pl.pjwstk.woloappapi.model.Event;
+import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.service.EventService;
 
 @ExtendWith(MockitoExtension.class)
