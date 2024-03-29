@@ -23,8 +23,9 @@ public class ApplicationConfig {
     @Bean
     public TokenConfig tokenConfig() {
         var tokenSecret = System.getenv("TOKEN_SECRET");
-        long tokenExpirationMsec = Long.parseLong(System.getenv("TOKEN_EXPIRATION_MSEC"));
-        return new TokenConfig(tokenSecret, tokenExpirationMsec);
+        var accessTokenExpiration = Long.parseLong(System.getenv("ACCESS_TOKEN_EXPIRATION"));
+        var refreshTokenExpiration = Long.parseLong(System.getenv("REFRESH_TOKEN_EXPIRATION"));
+        return new TokenConfig(tokenSecret, accessTokenExpiration, refreshTokenExpiration);
     }
 
     @Bean

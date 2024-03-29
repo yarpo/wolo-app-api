@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import pl.pjwstk.woloappapi.security.JwtAuthenticationFilter;
 
 import static org.springframework.http.HttpMethod.*;
@@ -50,7 +52,8 @@ public class SecurityConfig {
                     auth.requestMatchers("events/refuse").hasAuthority("JOIN_EVENT");
                     auth.requestMatchers("events/add").hasAuthority("CREATE_EVENT");
                     auth.requestMatchers(PUT, "events/**").hasAuthority("EDIT_EVENT");
-                    auth.requestMatchers(DELETE).hasAuthority("DELETE_EVENT");
+                    auth.requestMatchers(DELETE, "/events/**").hasAuthority("DELETE_EVENT");
+                    auth.requestMatchers(GET, "/events/users").hasAuthority("READ_USERS_BY_SHIFT");
                     auth.requestMatchers(GET, "/organisations").permitAll();
                     auth.requestMatchers(GET, "/organisations/**").permitAll();
                     auth.requestMatchers( "/organisations/add").hasAuthority("CREATE_ORGANISATION");
@@ -68,8 +71,14 @@ public class SecurityConfig {
                     auth.requestMatchers(DELETE, "/users/**").hasAuthority("DELETE_USER");
                     auth.requestMatchers(DELETE, "/users/assign").hasAuthority("ASSIGN_ORGANISATION_TO_USER");
                     auth.requestMatchers(DELETE, "/users/revoke").hasAuthority("ASSIGN_ORGANISATION_TO_USER");
-                    auth.requestMatchers(DELETE, "/users//changerole").hasAuthority("CHANGE_USERS_ROLE");
+                    auth.requestMatchers(DELETE, "/users/changerole").hasAuthority("CHANGE_USERS_ROLE");
                     auth.anyRequest().authenticated();
+                })
+                .logout(logout -> {
+                    logout.logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"))
+                            .logoutSuccessHandler((request, response, authentication) ->
+                                    SecurityContextHolder.clearContext())
+                            .permitAll();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

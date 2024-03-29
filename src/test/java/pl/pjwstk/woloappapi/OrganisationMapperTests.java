@@ -2,7 +2,6 @@ package pl.pjwstk.woloappapi;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.Address;
 import pl.pjwstk.woloappapi.model.Organisation;
@@ -17,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @ExtendWith(MockitoExtension.class)
 public class OrganisationMapperTests {
     private OrganisationMapper createOrganisationMapper() {
-        return Mappers.getMapper(OrganisationMapper.class);
+        return new OrganisationMapper();
     }
 
     @Test

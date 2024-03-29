@@ -1,28 +1,17 @@
-package pl.pjwstk.woloappapi.model;
+package pl.pjwstk.woloappapi.security;
 
-
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.List;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponseDto {
-
-    @Schema(name = "User ID", example = "1")
-    private Long id;
-
+public class RegistrationRequest {
     @NotNull
     @NotBlank(message = "First Name is required")
-    @Size(max = 50, message = "Firstname cannot exceed 50 characters")
+    @Size(max = 50, message = "First Name cannot exceed 50 characters")
     private String firstName;
 
     @NotNull
@@ -41,15 +30,10 @@ public class UserResponseDto {
     @Size(min = 9, max = 9, message = "Phone number must be 9 digits")
     private String phoneNumber;
 
-    private boolean isPeselVerified;
-
-    private boolean isAgreementSigned;
-
     private boolean isAdult;
 
-    @NotNull(message = "Roles are required")
-    @Size(min = 1, message = "At least one role is required")
-    @Valid
-    private List<String> roles;
-
+    @NotNull
+    @NotBlank(message = "Password is required")
+    @Size(max = 255, message = "Password cannot exceed 255 characters")
+    private String password;
 }

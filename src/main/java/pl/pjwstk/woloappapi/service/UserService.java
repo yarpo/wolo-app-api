@@ -1,7 +1,6 @@
 package pl.pjwstk.woloappapi.service;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.*;
@@ -41,6 +40,14 @@ public class UserService {
                             + " is moderator of "+ organisation.getName()
                             + "firstly assign new moderator to organisation");
                 }
+                if(userOptional.get().getRoles().stream().anyMatch(r ->
+                        r.getName().equals(roleService.getRoleByName("ADMIN").getName()))){
+                    List<User> admins = userRepository.findUsersByRole("ADMIN");
+                    if(admins.size() == 1){
+                        throw new IllegalArgumentException("User with ID " + userId
+                        + "  is the only administrator of the application, to remove it, first create another administrator");
+                    }
+                }
                 userRepository.deleteById(userId);
             }
         }
@@ -50,8 +57,8 @@ public class UserService {
     public void updateUser(UserRequestDto userDto, Long id) {
          User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException( "User with ID " + id + " does not exist"));
-        user.setFirstname(userDto.getFirstname());
-        user.setLastname(userDto.getLastname());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setPhoneNumber(userDto.getPhoneNumber());
         user.setPeselVerified(userDto.isPeselVerified());
@@ -133,5 +140,9 @@ public class UserService {
         }else{
             throw new IllegalArgumentException("Can't refuse take part in event that has already taken place");
         }
+    }
+
+    public List<User> getUsersByShift(Long shift) {
+        return userRepository.findAllByShiftId(shift);
     }
 }
