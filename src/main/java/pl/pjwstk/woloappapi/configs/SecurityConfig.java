@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
+                    auth.requestMatchers("/openapi.yaml").permitAll();
                     auth.requestMatchers("/api-docs/**").permitAll();
                     auth.requestMatchers("/swagger-ui/**").permitAll();
                     auth.requestMatchers("/v3/api-docs/**").permitAll();

@@ -400,6 +400,7 @@ paths:
             format: int64
           example: 1
       responses:
+        responses:
         '200':
           $ref: '#/components/responses/OK'
         '400':
