@@ -30,6 +30,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.1.0'
+	implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.0.Beta1'
 	implementation 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.2.3'
@@ -54,18 +56,18 @@ dependencies {
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
-    include '**/*BasicUnitTest.class'
+	useJUnitPlatform()
+	include '**/*BasicUnitTest.class'
 }
 
 task testRestAssured(type: Test) {
-    useJUnitPlatform()
-    include '**/*RestAssuredTest.class'
+	useJUnitPlatform()
+	include '**/*RestAssuredTest.class'
 }
 
 pmd {
-    consoleOutput = true
-    toolVersion = "6.21.0"
-    rulesMinimumPriority = 5
-    ruleSets = ["category/java/errorprone.xml", "category/java/bestpractices.xml"]
+	consoleOutput = true
+	toolVersion = "6.21.0"
+	rulesMinimumPriority = 5
+	ruleSets = ["category/java/errorprone.xml", "category/java/bestpractices.xml"]
 }

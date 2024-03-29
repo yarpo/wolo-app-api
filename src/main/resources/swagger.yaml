@@ -1,0 +1,1728 @@
+openapi: 3.0.1
+info:
+  title: WoloApp
+  description: >-
+    The WoloApp API facilitates the management of events and user participation
+    through Create, Read, Update, and Delete operations. It allows users to
+    interact with the following key functionalities such as exploring events
+    through different filters or joining them.
+  termsOfService: >-
+    https://opensource.guide/legal/?fbclid=IwAR0NUY2SAm3x5HHkhxOmb6piB-WETsmqeifvIB5_pBrHWFhQu31oYBl7WJs
+  contact:
+    name: Agata Dobrzyniewicz
+    email: s24305@pjwstk.edu.pl
+servers:
+  - url: http://localhost:8080
+    description: local
+paths:
+  /users/{id}/edit:
+    put:
+      tags:
+        - Users
+      summary: Edit user
+      description: User must exist
+      operationId: editUser
+      parameters:
+        - name: user
+          in: query
+          description: User object with changes
+          schema:
+            $ref: '#/components/schemas/UserRequestDto'
+        - name: id
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequestDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /roles/edit:
+    put:
+      tags:
+        - Roles
+      summary: Edit role
+      description: Role must exist
+      operationId: editRole
+      parameters:
+        - name: role
+          in: query
+          description: Role object with changes
+          schema:
+            $ref: '#/components/schemas/RoleDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /organisations/{id}/edit:
+    put:
+      tags:
+        - Organisations
+      summary: Edit organisation
+      description: Organisation must exist
+      operationId: editOrganisation
+      parameters:
+        - name: organisation
+          in: query
+          description: Organisation object with changes
+          schema:
+            $ref: '#/components/schemas/OrganisationRequestDto'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganisationRequestDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /events/{id}/edit:
+    put:
+      tags:
+        - Event
+      summary: Edit event
+      description: Only upcomming events can be changed
+      operationId: editEvent
+      parameters:
+        - name: event
+          in: query
+          description: event object with changes
+          schema:
+            $ref: '#/components/schemas/EventRequestDto'
+        - name: id
+          in: path
+          description: event id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequestDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /districts/edit:
+    put:
+      tags:
+        - Districts
+      summary: Edit district
+      description: District must exist
+      operationId: editDistrict
+      parameters:
+        - name: district
+          in: query
+          description: district object with changes
+          schema:
+            $ref: '#/components/schemas/DistrictDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DistrictDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /categories/edit:
+    put:
+      tags:
+        - Categories
+      summary: Edit category
+      description: Category must exist
+      operationId: editCategory
+      parameters:
+        - name: category
+          in: query
+          description: Category object with changes
+          schema:
+            $ref: '#/components/schemas/CategoryDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/revoke:
+    post:
+      tags:
+        - Users
+      summary: Revoke the user from the role of moderator of the organization
+      description: User and organisation must exist
+      operationId: revokeOrganisation
+      parameters:
+        - name: user
+          in: query
+          description: User id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/changerole:
+    post:
+      tags:
+        - Users
+      summary: Change user's roles
+      description: User must exist
+      operationId: changeRole
+      parameters:
+        - name: user
+          in: query
+          description: User id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+        - name: roles
+          in: query
+          description: New Roles Ids
+          required: true
+          schema:
+            type: array
+            items:
+              type: long
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/assign:
+    post:
+      tags:
+        - Users
+      summary: Make user moderator of organisation
+      description: User and organisation must exist
+      operationId: assignOrganisation
+      parameters:
+        - name: user
+          in: query
+          description: User id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+        - name: organisation
+          in: query
+          description: Organisation id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /roles/add:
+    post:
+      tags:
+        - Roles
+      summary: Adding new role
+      description: id = null
+      operationId: addRole
+      parameters:
+        - name: role
+          in: query
+          description: Role object to create
+          schema:
+            $ref: '#/components/schemas/RoleDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleDto'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /organisations/disapprove:
+    post:
+      tags:
+        - Organisations
+      summary: Disapprove organisation (by admin)
+      description: Organisation must exist
+      operationId: disapproveOrganisation
+      parameters:
+        - name: id
+          in: query
+          description: Organisation id to disapprove
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /organisations/approve:
+    post:
+      tags:
+        - Organisations
+      summary: Approve organisation (by admin)
+      description: Organisation must exist
+      operationId: approveOrganisation
+      parameters:
+        - name: id
+          in: query
+          description: Organisation id to approve
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /organisations/add:
+    post:
+      tags:
+        - Organisations
+      summary: Adding new organisation
+      description: id = null
+      operationId: addOrganisation
+      parameters:
+        - name: organisationDto
+          in: query
+          description: Organisation object to create
+          schema:
+            $ref: '#/components/schemas/OrganisationRequestDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganisationRequestDto'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /events/refuse:
+    post:
+      tags:
+        - Event
+      summary: The user refuses to participate in the event
+      operationId: refuseParticipateInEvent
+      parameters:
+        - name: user
+          in: query
+          description: Id of the user who wants to refuse to participate in the event
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+        - name: shift
+          in: query
+          description: Id of the shift from which the user wants to unsubscribe
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /events/join:
+    post:
+      tags:
+        - Event
+      summary: The user join shift of the event
+      operationId: joinEvent
+      parameters:
+        - name: user
+          in: query
+          description: Id of the user who wants to join the event
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+        - name: shift
+          in: query
+          description: Id of the shift user wants to join
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /events/add:
+    post:
+      tags:
+        - Event
+      summary: Adding new event
+      operationId: addEvent
+      parameters:
+        - name: event
+          in: query
+          description: Event object to create
+          schema:
+            $ref: '#/components/schemas/EventRequestDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequestDto'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /districts/add:
+    post:
+      tags:
+        - Districts
+      summary: Adding new district
+      description: id = null
+      operationId: addDistrict
+      parameters:
+        - name: district
+          in: query
+          description: District object to create
+          schema:
+            $ref: '#/components/schemas/DistrictDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DistrictDto'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /categories/add:
+    post:
+      tags:
+        - Categories
+      summary: Adding new category
+      description: id = null
+      operationId: addCategory
+      parameters:
+        - name: category
+          in: query
+          description: Category object to create
+          schema:
+            $ref: '#/components/schemas/CategoryDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryDto'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequestDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationRespons'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /auth/authenticate:
+    post:
+      tags:
+        - Authentication
+      operationId: register_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationRespons'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      operationId: getUsers
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user by id
+      description: User must exist
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/{id}/shifts:
+    get:
+      tags:
+        - Users
+      summary: Get all user shifts
+      operationId: getUserShifts
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/events/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get all user events
+      operationId: getUserEvents
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /roles:
+    get:
+      tags:
+        - Roles
+      summary: Get all rols
+      operationId: getRoles
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoleDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /roles/{id}:
+    get:
+      tags:
+        - Roles
+      summary: Get role by id
+      description: Role must exist
+      operationId: getRoleById
+      parameters:
+        - name: id
+          in: path
+          description: Role id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /organisations:
+    get:
+      tags:
+        - Organisations
+      summary: Get all organisations
+      operationId: getOrganisations
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrganisationResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /organisations/{id}:
+    get:
+      tags:
+        - Organisations
+      summary: Get organisation by id
+      description: Organisation must exist
+      operationId: getOrganisationById
+      parameters:
+        - name: id
+          in: path
+          description: Organisation id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganisationResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /organisations/{id}/events:
+    get:
+      tags:
+        - Organisations
+      summary: Get all events from the selected organisation
+      operationId: getEventsByOrganisation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /health:
+    get:
+      tags:
+        - Health check
+      operationId: checkHealth
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /events:
+    get:
+      tags:
+        - Event
+      summary: Get all events
+      operationId: getEvents
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /events/{id}:
+    get:
+      tags:
+        - Event
+      summary: Get event by id
+      description: Event must exist
+      operationId: getEventById
+      parameters:
+        - name: id
+          in: path
+          description: Event id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponseDetailsDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /events/upcoming:
+    get:
+      tags:
+        - Event
+      summary: Get only upcoming events
+      operationId: getUpcomingEvents
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /events/search:
+    get:
+      tags:
+        - Event
+      summary: Filter events
+      operationId: filterEvents
+      parameters:
+        - name: localization
+          in: query
+          description: Array of District names
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: startDate
+          in: query
+          description: >-
+            The beginning of the time interval within which to search for an
+            event
+          required: false
+          schema:
+            type: string
+            format: date
+          example: '2022-01-01'
+        - name: endDate
+          in: query
+          description: The end of the time interval within which to search for an event
+          required: false
+          schema:
+            type: string
+            format: date
+          example: '2022-12-31'
+        - name: categories
+          in: query
+          description: Array of category ids
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: organizer
+          in: query
+          description: Id of the organization organizing the event
+          required: false
+          schema:
+            type: long
+        - name: ageRestriction
+          in: query
+          description: From what age are participants allowed
+          required: false
+          schema:
+            type: integer
+          example: 18
+        - name: isPeselVerificationRequired
+          in: query
+          description: Whether pesel verification is required
+          schema:
+            type: boolean
+        - name: showWithAvailableCapacity
+          in: query
+          description: Show only those events that are still looking for volunteers
+          schema:
+            type: boolean
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - name: verification
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: showAvailable
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /districts:
+    get:
+      tags:
+        - Districts
+      summary: Get all districts
+      operationId: getDistricts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DistrictDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /districts/{id}:
+    get:
+      tags:
+        - Districts
+      summary: Get district by id
+      description: District must exist
+      operationId: getDistrictById
+      parameters:
+        - name: id
+          in: path
+          description: District id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistrictDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /categories:
+    get:
+      tags:
+        - Categories
+      summary: Get all categories
+      operationId: getCategories
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /categories/{id}:
+    get:
+      tags:
+        - Categories
+      summary: Get category by id
+      description: Category must exist
+      operationId: getCategoryById
+      parameters:
+        - name: id
+          in: path
+          description: Category id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/delete/{id}:
+    delete:
+      tags:
+        - Users
+      summary: Delete user
+      description: If the user has the moderator role, it cannot be deleted
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /roles/delete/{id}:
+    delete:
+      tags:
+        - Roles
+      summary: Delete role
+      description: all users who had deleted role will be assigned the role "USER"
+      operationId: deleteRole
+      parameters:
+        - name: id
+          in: path
+          description: Role id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /events/delete/{id}:
+    delete:
+      tags:
+        - Event
+      summary: Delete event
+      description: Only upcoming events can be deleted
+      operationId: deleteEvent
+      parameters:
+        - name: id
+          in: path
+          description: Event id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /districts/delete/{id}:
+    delete:
+      tags:
+        - Districts
+      summary: Delete district
+      description: >-
+        District will not be removed from DB, but isOld property will became
+        true
+      operationId: deleteDistrict
+      parameters:
+        - name: id
+          in: path
+          description: District id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /categories/delete/{id}:
+    delete:
+      tags:
+        - Categories
+      summary: Delete category
+      description: All events from this category will be assigned to Basic category
+      operationId: deleteCategory
+      parameters:
+        - name: id
+          in: path
+          description: Category id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+components:
+  responses:
+    OK:
+      description: OK
+      content:
+        application/hal+json:
+          schema:
+            type: string
+            enum:
+              - 200 OK
+    Created:
+      description: Created
+      content:
+        application/hal+json:
+          schema:
+            type: string
+            enum:
+              - 201 CREATED          
+    NoContentResponse:
+      description: No content
+      content:
+        application/hal+json:
+          schema:
+            type: string
+            enum:
+              - 204 NO_CONTENT
+    BadRequestResponse:
+      description: Bad Request
+      content:
+        application/hal+json:
+          schema:
+            oneOf:
+              - type: object
+                additionalProperties:
+                  type: string
+              - type: string
+    NotFoundResponse:
+      description: Not Found
+      content:
+        application/hal+json:
+          schema:
+            type: string           
+  schemas:
+    UserRequestDto:
+      required:
+        - email
+        - firstname
+        - lastname
+        - password
+        - phoneNumber
+        - roles
+      type: object
+      properties:
+        firstname:
+          maxLength: 50
+          minLength: 0
+          type: string
+        lastname:
+          maxLength: 50
+          minLength: 0
+          type: string
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        roles:
+          type: array
+          items:
+            type: integer
+            format: int64
+        password:
+          maxLength: 255
+          minLength: 0
+          type: string
+        peselVerified:
+          type: boolean
+        agreementSigned:
+          type: boolean
+        adult:
+          type: boolean
+    RoleDto:
+      required:
+        - name
+      type: object
+      properties:
+        Role ID:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          maxLength: 20
+          minLength: 0
+          type: string
+    OrganisationRequestDto:
+      required:
+        - District ID
+        - Moderator ID
+        - Organisation Name
+        - Organization Description
+        - email
+        - homeNum
+        - phoneNumber
+        - street
+      type: object
+      properties:
+        Organisation Name:
+          maxLength: 250
+          minLength: 0
+          type: string
+          example: Animal Helpers
+        Organization Description:
+          type: string
+          example: >-
+            Are you passionate about making a positive impact on the lives of
+            animals in need? Animal Helpers is
+
+            dedicated to providing compassionate care and support for animals at
+            our local animal shelter.
+
+            As part of our organization, you'll have the opportunity to play a
+            vital role in ensuring the well-being
+
+            and happiness of animals awaiting their forever homes.
+
+
+            Our Mission:
+                - Provide shelter and care for animals in need.
+                - Facilitate adoptions and find loving homes for our animals.
+                - Educate the community about responsible pet ownership and animal welfare.
+
+            Volunteer Opportunities:
+                - Animal Care: Assist in feeding, grooming, and providing basic care for shelter animals.
+                - Adoption Assistance: Interact with potential adopters and facilitate the adoption process.
+                - Community Outreach: Participate in events and educational programs to promote animal welfare.
+
+            Join us today and make a difference in the lives of animals in need!
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        street:
+          maxLength: 50
+          minLength: 0
+          type: string
+        homeNum:
+          maxLength: 10
+          minLength: 0
+          type: string
+        District ID:
+          type: integer
+          format: int64
+          example: 1
+        Moderator ID:
+          type: integer
+          format: int64
+          example: 1
+        logoUrl:
+          maxLength: 255
+          minLength: 0
+          type: string
+    EventRequestDto:
+      required:
+        - District id
+        - Event description
+        - Event title
+        - Organisation
+        - categories
+        - homeNum
+        - shifts
+        - street
+      type: object
+      properties:
+        Event title:
+          maxLength: 250
+          minLength: 0
+          type: string
+          example: Animal shelter assistance
+        Event description:
+          type: string
+          example: >-
+            Are you passionate about making a positive impact on the lives of
+            animals in need? Join us in our mission 
+
+            to provide compassionate care and support for animals at our local
+            animal shelter. 
+
+            As an Animal Shelter Assistant, you play a crucial role in ensuring
+            the well-being 
+
+            and happiness of animals awaiting their forever homes.
+
+
+            Responsibilities:
+
+                Animal Care:
+                    Feed, groom, and provide basic care for shelter animals.
+                    Ensure clean and sanitary living conditions for all animals.
+
+                Assistance with Adoptions:
+                    Interact with potential adopters and provide information about available animals.
+                    Assist in the adoption process, ensuring a smooth transition for both the animal and the new owner.
+        Organisation:
+          type: integer
+          format: int64
+        categories:
+          type: array
+          items:
+            type: integer
+            format: int64
+        street:
+          maxLength: 50
+          minLength: 0
+          type: string
+        homeNum:
+          maxLength: 10
+          minLength: 0
+          type: string
+        District id:
+          type: integer
+          format: int64
+          example: 1
+        imageUrl:
+          maxLength: 255
+          minLength: 0
+          type: string
+        shifts:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftDto'
+        peselVerificationRequired:
+          type: boolean
+        agreementNeeded:
+          type: boolean
+    LocalTime:
+      type: object
+      properties:
+        hour:
+          type: integer
+          format: int32
+        minute:
+          type: integer
+          format: int32
+        second:
+          type: integer
+          format: int32
+        nano:
+          type: integer
+          format: int32
+    ShiftDto:
+      required:
+        - capacity
+        - date
+        - endTime
+        - startTime
+      type: object
+      properties:
+        Shift ID:
+          type: integer
+          format: int64
+          example: 1
+        startTime:
+          $ref: '#/components/schemas/LocalTime'
+        endTime:
+          $ref: '#/components/schemas/LocalTime'
+        date:
+          type: string
+          format: date
+        capacity:
+          type: integer
+          format: int32
+        signedUp:
+          type: integer
+          format: int32
+        isLeaderRequired:
+          type: boolean
+        requiredMinAge:
+          type: integer
+          format: int32
+        shiftDirections:
+          type: string
+    DistrictDto:
+      required:
+        - City name
+        - District name
+      type: object
+      properties:
+        District ID:
+          type: integer
+          format: int64
+          example: 1
+        District name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: DownTown
+        City name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: New York City
+    CategoryDto:
+      required:
+        - Category title
+      type: object
+      properties:
+        Category ID:
+          type: integer
+          format: int64
+          example: 1
+        Category title:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Health
+    AuthenticationRespons:
+      type: object
+      properties:
+        token:
+          type: string
+    AuthenticationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    UserResponseDto:
+      required:
+        - email
+        - firstname
+        - lastname
+        - phoneNumber
+        - roles
+      type: object
+      properties:
+        User ID:
+          type: integer
+          format: int64
+          example: 1
+        firstname:
+          maxLength: 50
+          minLength: 0
+          type: string
+        lastname:
+          maxLength: 50
+          minLength: 0
+          type: string
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        roles:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          items:
+            type: string
+        peselVerified:
+          type: boolean
+        agreementSigned:
+          type: boolean
+        adult:
+          type: boolean
+    EventResponseDto:
+      required:
+        - City name
+        - Organisation
+        - Organisation ID
+        - categories
+        - district
+        - homeNum
+        - shifts
+        - street
+      type: object
+      properties:
+        Organisation ID:
+          type: integer
+          format: int64
+          example: 1
+        Organisation:
+          type: string
+          example: 'Compassion Paws: Animal Shelter Support Initiative'
+        organisation:
+          type: string
+        street:
+          maxLength: 50
+          minLength: 0
+          type: string
+        homeNum:
+          maxLength: 10
+          minLength: 0
+          type: string
+        district:
+          type: string
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryDto'
+        City name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: New York City
+        imageUrl:
+          maxLength: 255
+          minLength: 0
+          type: string
+        shifts:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftDto'
+        peselVerificationRequired:
+          type: boolean
+    OrganisationResponseDto:
+      required:
+        - Organisation Name
+        - Organization Description
+        - email
+        - homeNum
+        - phoneNumber
+        - street
+      type: object
+      properties:
+        Organisation Name:
+          maxLength: 250
+          minLength: 0
+          type: string
+          example: Animal Helpers
+        Organization Description:
+          type: string
+          example: >-
+            Are you passionate about making a positive impact on the lives of
+            animals in need? Animal Helpers is
+
+            dedicated to providing compassionate care and support for animals at
+            our local animal shelter.
+
+            As part of our organization, you'll have the opportunity to play a
+            vital role in ensuring the well-being
+
+            and happiness of animals awaiting their forever homes.
+
+
+            Our Mission:
+                - Provide shelter and care for animals in need.
+                - Facilitate adoptions and find loving homes for our animals.
+                - Educate the community about responsible pet ownership and animal welfare.
+
+            Volunteer Opportunities:
+                - Animal Care: Assist in feeding, grooming, and providing basic care for shelter animals.
+                - Adoption Assistance: Interact with potential adopters and facilitate the adoption process.
+                - Community Outreach: Participate in events and educational programs to promote animal welfare.
+
+            Join us today and make a difference in the lives of animals in need!
+        email:
+          type: string
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          type: string
+        street:
+          maxLength: 50
+          minLength: 0
+          type: string
+        homeNum:
+          maxLength: 10
+          minLength: 0
+          type: string
+        logoUrl:
+          maxLength: 255
+          minLength: 0
+          type: string
+    EventResponseDetailsDto:
+      required:
+        - Event description
+        - Event title
+        - Organisation
+        - Organisation ID
+        - categories
+        - district
+        - homeNum
+        - shifts
+        - street
+      type: object
+      properties:
+        Event title:
+          maxLength: 250
+          minLength: 0
+          type: string
+          example: Animal shelter assistance
+        Organisation ID:
+          type: integer
+          format: int64
+          example: 1
+        Organisation:
+          type: string
+          example: 'Compassion Paws: Animal Shelter Support Initiative'
+        Event description:
+          type: string
+          example: >-
+            Are you passionate about making a positive impact on the lives of
+            animals in need? Join us in our mission 
+
+            to provide compassionate care and support for animals at our local
+            animal shelter. 
+
+            As an Animal Shelter Assistant, you play a crucial role in ensuring
+            the well-being 
+
+            and happiness of animals awaiting their forever homes.
+
+
+            Responsibilities:
+
+                Animal Care:
+                    Feed, groom, and provide basic care for shelter animals.
+                    Ensure clean and sanitary living conditions for all animals.
+
+                Assistance with Adoptions:
+                    Interact with potential adopters and provide information about available animals.
+                    Assist in the adoption process, ensuring a smooth transition for both the animal and the new owner.
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryDto'
+        street:
+          maxLength: 50
+          minLength: 0
+          type: string
+        homeNum:
+          maxLength: 10
+          minLength: 0
+          type: string
+        district:
+          type: string
+        imageUrl:
+          maxLength: 255
+          minLength: 0
+          type: string
+        shifts:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftDto'
+        peselVerificationRequired:
+          type: boolean
+        agreementNeeded:
+          type: boolean

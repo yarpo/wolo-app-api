@@ -33,10 +33,8 @@ public class SecurityConfig {
                     auth.requestMatchers("/api-docs/**").permitAll();
                     auth.requestMatchers("/swagger-ui/**").permitAll();
                     auth.requestMatchers("/v3/api-docs/**").permitAll();
-                    auth.requestMatchers("/v2/api-docs/**").permitAll();
+                    auth.requestMatchers("/swagger-ui.html").permitAll();
                     auth.requestMatchers("/swagger-resources/**").permitAll();
-                    auth.requestMatchers("/bus/v2/api-docs/**").permitAll();
-                    auth.requestMatchers("/bus/v3/api-docs/**").permitAll();
                     auth.requestMatchers(GET, "/categories").permitAll();
                     auth.requestMatchers(GET, "/categories/**").permitAll();
                     auth.requestMatchers(POST,"/categories/**").hasAuthority("CREATE_CATEGORY");
