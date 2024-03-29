@@ -1,5 +1,8 @@
 package pl.pjwstk.woloappapi.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,7 +14,10 @@ import pl.pjwstk.woloappapi.service.RoleService;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
+import java.io.IOException;
 import java.util.Collections;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Service
 @RequiredArgsConstructor
@@ -33,9 +39,9 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
         userRepository.save(user);
-        var jwt = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
-                .token(jwt)
+                .accessToken(jwtService.generateToken(user))
+                .refreshToken(jwtService.generateRefreshToken(user))
                 .build();
     }
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -43,9 +49,28 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User email not found!"));
-        var jwt = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
-                .token(jwt)
+                .accessToken(jwtService.generateToken(user))
+                .refreshToken(jwtService.generateRefreshToken(user))
                 .build();
+    }
+
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        final String header = request.getHeader(AUTHORIZATION);
+        if(header == null || !header.startsWith("Bearer ")){
+            return;
+        }
+        final String refreshToken = header.substring(7);
+        final String username = jwtService.extractUsername(refreshToken);
+        if(username != null){
+            var user = userRepository.findByEmail(username).orElseThrow();
+            if(jwtService.isTokenValid(refreshToken, user)){
+                var authResponse = AuthenticationResponse.builder()
+                        .accessToken(jwtService.generateToken(user))
+                        .refreshToken(refreshToken)
+                        .build();
+                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+            }
+        }
     }
 }
