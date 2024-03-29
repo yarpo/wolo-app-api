@@ -40,10 +40,6 @@ dependencies {
 	testImplementation 'io.rest-assured:rest-assured:5.3.0'
 	implementation 'org.liquibase:liquibase-core'
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.3.0'
-	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
-	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
-	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
-
 
 	implementation 'org.springframework.security:spring-security-web'
 	implementation 'org.springframework.security:spring-security-config'
@@ -56,18 +52,18 @@ dependencies {
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
-	include '**/*BasicUnitTest.class'
+    useJUnitPlatform()
+    include '**/*BasicUnitTest.class'
 }
 
 task testRestAssured(type: Test) {
-	useJUnitPlatform()
-	include '**/*RestAssuredTest.class'
+    useJUnitPlatform()
+    include '**/*RestAssuredTest.class'
 }
 
 pmd {
-	consoleOutput = true
-	toolVersion = "6.21.0"
-	rulesMinimumPriority = 5
-	ruleSets = ["category/java/errorprone.xml", "category/java/bestpractices.xml"]
+    consoleOutput = true
+    toolVersion = "6.21.0"
+    rulesMinimumPriority = 5
+    ruleSets = ["category/java/errorprone.xml", "category/java/bestpractices.xml"]
 }

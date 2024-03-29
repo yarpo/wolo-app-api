@@ -7,6 +7,7 @@ import pl.pjwstk.woloappapi.model.ShiftDto;
 
 
 public class TimeOrderValidator implements ConstraintValidator<TimeOrder, ShiftDto> {
+
     @Override
     public void initialize(TimeOrder timeOrder) {}
 
