@@ -29,22 +29,6 @@ public class CategoryController {
     private final CategoryService categoryService;
     private final DictionariesMapper dictionariesMapper;
 
-    @Operation(
-            summary = "Get all categories",
-            responses = {
-                    @ApiResponse(
-                    description = "Success",
-                    responseCode = "200",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(
-                                                    implementation = CategoryDto.class))
-                                    )
-                            }
-                    )
-            }
-    )
     @GetMapping()
     public ResponseEntity<List<CategoryDto>> getCategories() {
         List<Category> categories = categoryService.getAllCategories();
@@ -53,28 +37,6 @@ public class CategoryController {
         return new ResponseEntity<>(categoryDtos, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Get category by id",
-            description = "Category must exist",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200" ,
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            schema = @Schema(implementation = CategoryDto.class)
-                                    )
-                            }
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "id",
-                            description = "Category id",
-                            example = "1"
-                    )
-            }
-    )
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
         CategoryDto categoryDto = dictionariesMapper
@@ -82,66 +44,18 @@ public class CategoryController {
         return new ResponseEntity<>(categoryDto, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Adding new category",
-            description = "id = null",
-            responses = {
-                    @ApiResponse(
-                            description = "Created",
-                            responseCode = "201"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "category",
-                            description = "Category object to create",
-                            schema = @Schema(implementation = CategoryDto.class)
-                    )
-            }
-    )
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addCategory(@Valid @RequestBody CategoryDto category) {
         categoryService.createCategory(category);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @Operation(
-            summary = "Delete category",
-            description = "All events from this category will be assigned to Basic category",
-            responses = {
-                    @ApiResponse(
-                            description = "No content",
-                            responseCode = "204"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "id",
-                            description = "Category id",
-                            example = "1"
-                    )
-            }
-    )
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(
-            summary = "Edit category",
-            description = "Category must exist",
-            responses = {
-                    @ApiResponse(
-                            description = "No content",
-                            responseCode = "204"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "category",
-                            description = "Category object with changes",
-                            schema = @Schema(implementation = CategoryDto.class)
-                    )
-            }
-    )
     @PutMapping("/edit")
     public ResponseEntity<HttpStatus> editCategory(
             @Valid @RequestBody CategoryDto category) {

@@ -30,7 +30,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
+                    auth.requestMatchers("/openapi.yaml").permitAll();
+                    auth.requestMatchers("/api-docs/**").permitAll();
+                    auth.requestMatchers("/swagger-ui/**").permitAll();
+                    auth.requestMatchers("/v3/api-docs/**").permitAll();
                     auth.requestMatchers("/swagger-ui.html").permitAll();
+                    auth.requestMatchers("/swagger-resources/**").permitAll();
                     auth.requestMatchers(GET, "/categories").permitAll();
                     auth.requestMatchers(GET, "/categories/**").permitAll();
                     auth.requestMatchers(POST,"/categories/**").hasAuthority("CREATE_CATEGORY");
