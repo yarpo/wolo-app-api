@@ -31,22 +31,6 @@ public class OrganisationController {
     private final OrganisationMapper organisationMapper;
     private final EventMapper eventMapper;
 
-    @Operation(
-            summary = "Get all organisations",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(
-                                                    implementation = OrganisationResponseDto.class))
-                                    )
-                            }
-                    )
-            }
-    )
     @GetMapping()
     public ResponseEntity<List<OrganisationResponseDto>> getOrganisations() {
         List<Organisation> organisations = organisationService.getAllOrganisations();
@@ -57,28 +41,6 @@ public class OrganisationController {
         return new ResponseEntity<>(organisationDtos, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Get organisation by id",
-            description = "Organisation must exist",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200" ,
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            schema = @Schema(implementation = OrganisationResponseDto.class)
-                                    )
-                            }
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "id",
-                            description = "Organisation id",
-                            example = "1"
-                    )
-            }
-    )
     @GetMapping("/{id}")
     public ResponseEntity<OrganisationResponseDto> getOrganisationById(@PathVariable Long id) {
         Organisation organisation = organisationService.getOrganisationById(id);
@@ -87,22 +49,6 @@ public class OrganisationController {
         return new ResponseEntity<>(organisationDto, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Adding new organisation",
-            description = "id = null",
-            responses = {
-                    @ApiResponse(
-                            description = "Created",
-                            responseCode = "201"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "organisationDto",
-                            description = "Organisation object to create",
-                            schema = @Schema(implementation = OrganisationRequestDto.class)
-                    )
-            }
-    )
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addOrganisation(
             @Valid @RequestBody OrganisationRequestDto organisationDto) {
@@ -110,22 +56,6 @@ public class OrganisationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @Operation(
-            summary = "Get all events from the selected organisation",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(
-                                                    implementation = EventResponseDto.class))
-                                    )
-                            }
-                    )
-            }
-    )
     @GetMapping("/{id}/events")
     public ResponseEntity<List<EventResponseDto>> getEventsByOrganisation(@PathVariable Long id) {
         List<Event> events = organisationService.getEventsByOrganisation(id);
@@ -136,22 +66,6 @@ public class OrganisationController {
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Edit organisation",
-            description = "Organisation must exist",
-            responses = {
-                    @ApiResponse(
-                            description = "No content",
-                            responseCode = "204"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "organisation",
-                            description = "Organisation object with changes",
-                            schema = @Schema(implementation = OrganisationRequestDto.class)
-                    )
-            }
-    )
     @PutMapping("/{id}/edit")
     public ResponseEntity<HttpStatus> editOrganisation(
             @Valid @RequestBody OrganisationRequestDto organisation, @PathVariable Long id) {
@@ -159,44 +73,12 @@ public class OrganisationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(
-            summary = "Approve organisation (by admin)",
-            description = "Organisation must exist",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "id",
-                            description = "Organisation id to approve",
-                            example = "1"
-                    )
-            }
-    )
     @PostMapping("/approve")
     public ResponseEntity<HttpStatus> approveOrganisation(@RequestParam(value = "id") Long organisationId){
         organisationService.approve(organisationId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Disapprove organisation (by admin)",
-            description = "Organisation must exist",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "id",
-                            description = "Organisation id to disapprove",
-                            example = "1"
-                    )
-            }
-    )
     @PostMapping("/disapprove")
     public ResponseEntity<HttpStatus> disapproveOrganisation(@RequestParam(value = "id") Long organisationId){
         organisationService.disapprove(organisationId);
