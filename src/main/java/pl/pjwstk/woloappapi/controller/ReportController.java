@@ -16,9 +16,12 @@ import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.service.ReportService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @AllArgsConstructor
-@RequestMapping("/report")
+@RequestMapping("/reports")
 @Tag(name = "Report")
 public class ReportController {
     private final ReportService reportService;
@@ -26,7 +29,7 @@ public class ReportController {
 
     private final EventService eventService;
     @Operation(
-            summary = "Get report by event id",
+            summary = "Get report by id",
             description = "report must exist",
             responses = {
                     @ApiResponse(
@@ -42,15 +45,24 @@ public class ReportController {
             },
             parameters = {
                     @Parameter(name = "id",
-                            description = "Event id",
+                            description = "Report id",
                             example = "1"
                     )
             }
     )
-    @GetMapping("/{id}")
-    public ResponseEntity<ReportDto> getReportByEventId(@PathVariable Long id) {
-        var report = eventMapper.toReportDto(reportService.getReportByEventId(id)).build();
+    @GetMapping("/one/{id}")
+    public ResponseEntity<ReportDto> getReportById(@PathVariable Long id) {
+        var report = eventMapper.toReportDto(reportService.getReportById(id));
         return new ResponseEntity<>(report, HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<ReportDto>> getAllReportsByEventId(@RequestParam(value = "eventId") Long eventId){
+        var reports = reportService.getAllReportsByEventId(eventId)
+                .stream()
+                .map(eventMapper::toReportDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(reports, HttpStatus.OK);
     }
 
     @Operation(
@@ -85,7 +97,7 @@ public class ReportController {
             },
             parameters = {
                     @Parameter(name = "id",
-                            description = "Event id",
+                            description = "Report id",
                             example = "1"
                     )
             }

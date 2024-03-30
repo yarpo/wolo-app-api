@@ -49,7 +49,7 @@ public class Event {
     @Column(name = "is_approved", nullable = false)
     private boolean approved;
 
-    @OneToOne(mappedBy = "event", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Report report;
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reports;
 
 }

@@ -150,10 +150,11 @@ public class EventMapper {
                 .published(reportDto.isPublished());
     }
 
-    public ReportDto.ReportDtoBuilder toReportDto(Report report) {
+    public ReportDto toReportDto(Report report) {
         return ReportDto.builder()
                 .event(report.getEvent().getId())
                 .published(report.isPublished())
-                .report(report.getReport());
+                .report(report.getReport())
+                .build();
     }
 }

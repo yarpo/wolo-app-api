@@ -3,12 +3,14 @@ package pl.pjwstk.woloappapi.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pjwstk.woloappapi.model.entities.Report;
 import pl.pjwstk.woloappapi.model.ReportDto;
+import pl.pjwstk.woloappapi.model.entities.Report;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.repository.ReportRepository;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,14 +19,10 @@ public class ReportService {
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
 
-    public Report getReportByEventId(Long id) {
-        var event = eventRepository
-                .findById(id).orElseThrow(() -> new NotFoundException("Event id not found!"));
-        var report = event.getReport();
-        if (report != null) {
-            return report;
-        }
-        throw new NotFoundException("Report not found for this event!");
+    public Report getReportById(Long id) {
+        var report = reportRepository
+                .findById(id).orElseThrow(() -> new NotFoundException("Report id not found!"));
+        return report;
     }
 
     @Transactional
@@ -37,9 +35,8 @@ public class ReportService {
 
     @Transactional
     public void updateReport(ReportDto reportDto) {
-        var report = eventRepository.findById(reportDto.getEvent())
-                .orElseThrow(() -> new NotFoundException("Event id not found!"))
-                        .getReport();
+        var report = reportRepository.findById(reportDto.getId())
+                .orElseThrow(() -> new NotFoundException("Report id not found!"));
         report.setReport(reportDto.getReport());
         report.setPublished(report.isPublished());
         reportRepository.save(report);
@@ -47,9 +44,13 @@ public class ReportService {
 
     @Transactional
     public void deleteReport(Long id) {
-        var report = eventRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Event id not found!"))
-                .getReport();
+        var report = reportRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Report id not found!"));
         reportRepository.delete(report);
+    }
+
+    public List<Report> getAllReportsByEventId(Long eventId) {
+        return reportRepository
+                .findAllByEventId(eventId);
     }
 }

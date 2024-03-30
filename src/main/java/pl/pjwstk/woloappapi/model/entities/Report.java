@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.pjwstk.woloappapi.model.entities.Event;
 
 @Entity
 @Data
@@ -25,7 +24,7 @@ public class Report {
     @Column(name = "published")
     private boolean published;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id", updatable = false)
     private Event event;
 }

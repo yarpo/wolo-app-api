@@ -1,3 +1,6 @@
+--liquibase formatted sql
+
+--changeset woloapp:006
 CREATE TABLE IF NOT EXISTS report (
                                       id BIGSERIAL PRIMARY KEY,
                                       report TEXT NOT NULL,

@@ -11,6 +11,8 @@ import lombok.*;
 @NoArgsConstructor
 public class ReportDto {
 
+    private Long id;
+
     @NotEmpty
     private String report;
 
