@@ -51,7 +51,7 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
         <sqlFile path="sql_scripts/006-report-table.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
-        <sqlFile path="sql_insert/006-insert-privilege-report.sql"
+        <sqlFile path="sql_inserts/006-insert-privilege-report.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
     </changeSet>

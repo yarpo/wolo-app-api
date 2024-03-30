@@ -44,6 +44,7 @@ public class AuthenticationService {
                 .refreshToken(jwtService.generateRefreshToken(user))
                 .build();
     }
+
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
