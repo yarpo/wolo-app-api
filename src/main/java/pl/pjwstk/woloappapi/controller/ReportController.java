@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.ReportDto;
-import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.service.ReportService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 
@@ -27,7 +26,6 @@ public class ReportController {
     private final ReportService reportService;
     private final EventMapper eventMapper;
 
-    private final EventService eventService;
     @Operation(
             summary = "Get report by id",
             description = "report must exist",

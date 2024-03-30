@@ -62,8 +62,7 @@ public class JwtService {
         return buildToken(extraClaims, userDetails, tokenConfig.getAccessTokenExpiration());
     }
 
-    public String generateRefreshToken(
-            UserDetails userDetails){
+    public String generateRefreshToken(UserDetails userDetails){
         return buildToken(new HashMap<>(), userDetails, tokenConfig.getRefreshTokenExpiration());
     }
 

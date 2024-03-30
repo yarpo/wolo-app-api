@@ -6,10 +6,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+import pl.pjwstk.woloappapi.model.UserResponseDto;
+import pl.pjwstk.woloappapi.service.UserService;
+import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import java.io.IOException;
 
@@ -19,6 +20,8 @@ import java.io.IOException;
 @Tag(name = "Authentication")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
+    private final UserService userService;
+    private final UserMapper userMapper;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegistrationRequest request){
@@ -33,6 +36,14 @@ public class AuthenticationController {
     @PostMapping("/refresh")
     public void refresh(HttpServletRequest request, HttpServletResponse response) throws IOException {
         authenticationService.refreshToken(request, response);
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<UserResponseDto> current(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var user = userService.getCurrentUser(authentication);
+        var userResponse = userMapper.toUserResponseDto(user);
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
 }

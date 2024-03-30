@@ -63,6 +63,21 @@ public class EventMapper {
                 .collect(Collectors.toList());
     }
 
+    public ShiftInfoRespons toShiftInfoRespons(Shift shift){
+        return ShiftInfoRespons.builder()
+                .id(shift.getId())
+                .startTime(shift.getStartTime())
+                .endTime(shift.getEndTime())
+                .date(shift.getDate())
+                .shiftDirections(shift.getShiftDirections())
+                .eventId(shift.getAddressToEvent().getEvent().getId())
+                .eventName(shift.getAddressToEvent().getEvent().getName())
+                .address(shift.getAddressToEvent().getAddress().getStreet()
+                        + " "
+                        + shift.getAddressToEvent().getAddress().getHomeNum())
+                .build();
+    }
+
     public ShiftDto mapShiftToShiftDto(Shift shift) {
         ShiftDto shiftDto = new ShiftDto();
         shiftDto.setId(shift.getId());

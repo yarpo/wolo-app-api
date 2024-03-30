@@ -1,18 +1,15 @@
 package pl.pjwstk.woloappapi.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.EventResponseDto;
+import pl.pjwstk.woloappapi.model.ShiftResponseDto;
+import pl.pjwstk.woloappapi.model.UserRequestDto;
+import pl.pjwstk.woloappapi.model.UserResponseDto;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.service.EventService;

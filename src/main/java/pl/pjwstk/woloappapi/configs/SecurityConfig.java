@@ -70,7 +70,7 @@ public class SecurityConfig {
                     auth.requestMatchers(PUT, "/roles/**").hasAuthority("EDIT_ROLE");
                     auth.requestMatchers(DELETE, "/roles/**").hasAuthority("DELETE_ROLE");
                     auth.requestMatchers(GET, "/users").hasAuthority("READ_USERS");
-                    auth.requestMatchers(GET, "/users/**").permitAll();
+                    auth.requestMatchers(GET, "/users/**").hasAuthority("READ_USERS");
                     auth.requestMatchers(PUT, "/users/**").hasAuthority("EDIT_USER");
                     auth.requestMatchers(DELETE, "/users/**").hasAuthority("DELETE_USER");
                     auth.requestMatchers(DELETE, "/users/assign").hasAuthority("ASSIGN_ORGANISATION_TO_USER");
