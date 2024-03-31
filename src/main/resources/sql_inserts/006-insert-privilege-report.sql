@@ -8,11 +8,11 @@ INSERT INTO privilege ("name")VALUES
                                   ('DELETE_REPORT');
 
 INSERT INTO privilege_to_role (role_id, privilege_id) VALUES
+                                                          (2, 24),
+                                                          (1, 24),
                                                           (2, 25),
                                                           (1, 25),
                                                           (2, 26),
                                                           (1, 26),
                                                           (2, 27),
-                                                          (1, 27),
-                                                          (2, 28),
-                                                          (1, 28);
+                                                          (1, 27);
