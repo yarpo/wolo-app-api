@@ -35,14 +35,10 @@ public class AuthenticationService {
         if(userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("There is an account with that email address: " + request.getEmail());
         }
-        System.out.println("mmmmmmmmmmmmmmmmmmmmmmmappppppppppppppppppppper");
-        System.out.println(roleService.getRoleByName("USER").getName());
         var user = userMapper.toUser(request)
                 .roles(Collections.singletonList(roleService.getRoleByName("USER")))
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
-        System.out.println("______________________");
-        System.out.println(user);
         userRepository.save(user);
         return AuthenticationResponse.builder()
                 .accessToken(jwtService.generateToken(user))
