@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.District;
+import pl.pjwstk.woloappapi.model.entities.District;
 import pl.pjwstk.woloappapi.model.DistrictDto;
 import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;

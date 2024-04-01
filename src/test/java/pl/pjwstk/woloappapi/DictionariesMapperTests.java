@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.pjwstk.woloappapi.model.Category;
+import pl.pjwstk.woloappapi.model.entities.Category;
 import pl.pjwstk.woloappapi.model.CategoryDto;
-import pl.pjwstk.woloappapi.model.District;
+import pl.pjwstk.woloappapi.model.entities.District;
 import pl.pjwstk.woloappapi.model.DistrictDto;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
 

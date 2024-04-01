@@ -2,8 +2,13 @@ package pl.pjwstk.woloappapi.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.entities.Organisation;
+import pl.pjwstk.woloappapi.model.entities.Shift;
+import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
+import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
@@ -144,5 +149,11 @@ public class UserService {
 
     public List<User> getUsersByShift(Long shift) {
         return userRepository.findAllByShiftId(shift);
+    }
+
+    public User getCurrentUser(Authentication authentication) {
+        var email = authentication.getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 }

@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,12 +45,13 @@ public class AuthenticationService {
                 .refreshToken(jwtService.generateRefreshToken(user))
                 .build();
     }
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+
+    public AuthenticationResponse authenticate(AuthenticationRequest request) throws AuthenticationException {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User email not found!"));
-        return AuthenticationResponse.builder()
+         return AuthenticationResponse.builder()
                 .accessToken(jwtService.generateToken(user))
                 .refreshToken(jwtService.generateRefreshToken(user))
                 .build();

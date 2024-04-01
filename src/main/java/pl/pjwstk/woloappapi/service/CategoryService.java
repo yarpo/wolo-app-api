@@ -3,7 +3,7 @@ package pl.pjwstk.woloappapi.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pjwstk.woloappapi.model.Category;
+import pl.pjwstk.woloappapi.model.entities.Category;
 import pl.pjwstk.woloappapi.model.CategoryDto;
 import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;

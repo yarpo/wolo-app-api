@@ -2,6 +2,9 @@ package pl.pjwstk.woloappapi.utils;
 
 import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.entities.Category;
+import pl.pjwstk.woloappapi.model.entities.District;
+import pl.pjwstk.woloappapi.model.entities.Role;
 
 @Component
 public class DictionariesMapper {

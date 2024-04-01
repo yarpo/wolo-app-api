@@ -3,9 +3,9 @@ package pl.pjwstk.woloappapi;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.pjwstk.woloappapi.model.Shift;
+import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.model.ShiftDto;
-import pl.pjwstk.woloappapi.model.ShiftToUser;
+import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 
 import java.time.LocalDate;

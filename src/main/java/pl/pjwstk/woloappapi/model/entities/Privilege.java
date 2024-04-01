@@ -1,12 +1,12 @@
-package pl.pjwstk.woloappapi.model;
+package pl.pjwstk.woloappapi.model.entities;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.Collection;
 
 @Entity
@@ -25,6 +25,6 @@ public class Privilege {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "privileges")
+    @ManyToMany(mappedBy = "privileges", fetch = FetchType.EAGER)
     private Collection<Role> roles;
 }

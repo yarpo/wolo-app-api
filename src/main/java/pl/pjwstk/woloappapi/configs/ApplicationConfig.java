@@ -7,18 +7,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.pjwstk.woloappapi.repository.UserRepository;
-import pl.pjwstk.woloappapi.utils.NotFoundException;
+import pl.pjwstk.woloappapi.security.CustomUserDetailsService;
 
 
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository userRepository;
+    private final CustomUserDetailsService userDetailsService;
 
     @Bean
     public TokenConfig tokenConfig() {
@@ -29,15 +27,9 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
-        return username -> userRepository.findByEmail(username)
-                .orElseThrow(() ->new NotFoundException("User with this email not found"));
-    }
-
-    @Bean
     public AuthenticationProvider authenticationProvider(){
         var provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService());
+        provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }

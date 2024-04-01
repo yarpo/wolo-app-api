@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/").permitAll();
+                    auth.requestMatchers("/error").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers("/openapi.yaml").permitAll();
                     auth.requestMatchers("/api-docs/**").permitAll();
@@ -53,6 +54,11 @@ public class SecurityConfig {
                     auth.requestMatchers(PUT, "events/**").hasAuthority("EDIT_EVENT");
                     auth.requestMatchers(DELETE, "/events/**").hasAuthority("DELETE_EVENT");
                     auth.requestMatchers(GET, "/events/users").hasAuthority("READ_USERS_BY_SHIFT");
+                    auth.requestMatchers( "/reports/one/**").permitAll();
+                    auth.requestMatchers("/reports/all").hasAuthority("READ_REPORTS");
+                    auth.requestMatchers(POST, "/reports/**").hasAuthority("CREATE_REPORT");
+                    auth.requestMatchers(PUT, "/reports/**").hasAuthority("EDIT_REPORT");
+                    auth.requestMatchers(DELETE, "/reports/**").hasAuthority("DELETE_REPORT");
                     auth.requestMatchers(GET, "/organisations").permitAll();
                     auth.requestMatchers(GET, "/organisations/**").permitAll();
                     auth.requestMatchers( "/organisations/add").hasAuthority("CREATE_ORGANISATION");
@@ -65,9 +71,9 @@ public class SecurityConfig {
                     auth.requestMatchers(PUT, "/roles/**").hasAuthority("EDIT_ROLE");
                     auth.requestMatchers(DELETE, "/roles/**").hasAuthority("DELETE_ROLE");
                     auth.requestMatchers(GET, "/users").hasAuthority("READ_USERS");
-                    auth.requestMatchers(GET, "/users/**").permitAll();
+                    auth.requestMatchers(GET, "/users/**").hasAuthority("READ_USERS");
                     auth.requestMatchers(PUT, "/users/**").hasAuthority("EDIT_USER");
-                    auth.requestMatchers(DELETE, "/users/**").hasAuthority("DELETE_USER");
+                    auth.requestMatchers(DELETE, "/users/**").hasAuthority("DELETE_USERS");
                     auth.requestMatchers(DELETE, "/users/assign").hasAuthority("ASSIGN_ORGANISATION_TO_USER");
                     auth.requestMatchers(DELETE, "/users/revoke").hasAuthority("ASSIGN_ORGANISATION_TO_USER");
                     auth.requestMatchers(DELETE, "/users/changerole").hasAuthority("CHANGE_USERS_ROLE");

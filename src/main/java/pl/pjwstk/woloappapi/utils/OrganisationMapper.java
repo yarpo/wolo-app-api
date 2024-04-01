@@ -1,8 +1,8 @@
 package pl.pjwstk.woloappapi.utils;
 
 import org.springframework.stereotype.Component;
-import pl.pjwstk.woloappapi.model.Address;
-import pl.pjwstk.woloappapi.model.Organisation;
+import pl.pjwstk.woloappapi.model.entities.Address;
+import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
 import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
 
