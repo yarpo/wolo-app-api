@@ -25,6 +25,6 @@ public class Privilege {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "privileges")
+    @ManyToMany(mappedBy = "privileges", fetch = FetchType.EAGER)
     private Collection<Role> roles;
 }

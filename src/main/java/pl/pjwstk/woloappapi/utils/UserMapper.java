@@ -26,8 +26,8 @@ public class UserMapper {
         userResponseDto.setAgreementSigned(user.isAgreementSigned());
         userResponseDto.setPeselVerified(user.isPeselVerified());
         userResponseDto.setRoles(user.getRoles().stream().map(Role::getName).toList());
-        userResponseDto.setOrganisationId(user.getOrganisation().getId());
-        userResponseDto.setOrganisationName(user.getOrganisation().getName());
+        userResponseDto.setOrganisationId(user.getOrganisation() != null ? user.getOrganisation().getId() : null);
+        userResponseDto.setOrganisationName(user.getOrganisation() != null ? user.getOrganisation().getName() : null);
         var shifts = user.getShifts()
                 .stream()
                 .map(stu -> eventMapper.toShiftInfoRespons(stu.getShift()))

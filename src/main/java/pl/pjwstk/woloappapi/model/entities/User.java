@@ -7,13 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.pjwstk.woloappapi.model.entities.Organisation;
-import pl.pjwstk.woloappapi.model.entities.Role;
-import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -53,13 +51,13 @@ public class User implements UserDetails {
     @JoinColumn(name = "organisation_id", referencedColumnName = "id")
     private Organisation organisation;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<ShiftToUser> shifts;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_to_role",
             joinColumns = @JoinColumn(
@@ -98,5 +96,23 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        var organisationString =(organisation != null) ? String.valueOf(organisation.getId()) : "null";
+        String roleNames = roles.stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(", "));
+
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roleNames +
+                '}';
     }
 }

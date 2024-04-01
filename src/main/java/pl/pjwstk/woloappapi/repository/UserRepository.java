@@ -28,4 +28,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE s.id = :shiftId")
     List<User> findAllByShiftId(@Param("shiftId") Long shiftId);
 
+    @Query("SELECT DISTINCT u " +
+            "FROM User u " +
+            "LEFT JOIN FETCH u.roles "+
+            "WHERE u.email = :email")
+    Optional<User> findUserWithRolesByEmail(@Param("email") String email);
 }

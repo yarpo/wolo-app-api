@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/").permitAll();
+                    auth.requestMatchers("/error").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers("/openapi.yaml").permitAll();
                     auth.requestMatchers("/api-docs/**").permitAll();
@@ -72,7 +73,7 @@ public class SecurityConfig {
                     auth.requestMatchers(GET, "/users").hasAuthority("READ_USERS");
                     auth.requestMatchers(GET, "/users/**").hasAuthority("READ_USERS");
                     auth.requestMatchers(PUT, "/users/**").hasAuthority("EDIT_USER");
-                    auth.requestMatchers(DELETE, "/users/**").hasAuthority("DELETE_USER");
+                    auth.requestMatchers(DELETE, "/users/**").hasAuthority("DELETE_USERS");
                     auth.requestMatchers(DELETE, "/users/assign").hasAuthority("ASSIGN_ORGANISATION_TO_USER");
                     auth.requestMatchers(DELETE, "/users/revoke").hasAuthority("ASSIGN_ORGANISATION_TO_USER");
                     auth.requestMatchers(DELETE, "/users/changerole").hasAuthority("CHANGE_USERS_ROLE");

@@ -28,10 +28,10 @@ public class Role {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
     private List<User> userEntities;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "privilege_to_role",
             joinColumns = @JoinColumn(
@@ -41,11 +41,27 @@ public class Role {
     private List<Privilege> privileges;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        var authorities = new java.util.ArrayList<>(getPrivileges()
+        var authorities = this.privileges
                 .stream()
-                .map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
-                .collect(Collectors.toList()));
+                .map(p -> new SimpleGrantedAuthority(p.getName()))
+                .collect(Collectors.toList());
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.getName()));
         return authorities;
+    }
+
+    @Override
+    public String toString() {
+        String userEntitiesString = "{" +
+                userEntities.stream()
+                        .map(user -> String.valueOf(user.getId()))
+                        .collect(Collectors.joining(", ")) +
+                "}";
+
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", userEntities=" + userEntitiesString +
+                ", privileges=" + privileges +
+                '}';
     }
 }
