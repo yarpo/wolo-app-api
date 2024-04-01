@@ -50,13 +50,9 @@ dependencies {
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
-    include '**/*BasicUnitTest.class'
-}
-
-task testRestAssured(type: Test) {
-    useJUnitPlatform()
-    include '**/*RestAssuredTest.class'
+	useJUnitPlatform()
+	include '**/mapper/**'
+	include '**/service/**'
 }
 
 pmd {
