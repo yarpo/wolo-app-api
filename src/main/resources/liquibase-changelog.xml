@@ -56,5 +56,10 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
+    <changeSet author="woloapp" id="007">
+        <sqlFile path="sql_mockup/007-insert-more_example_users.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+    </changeSet>
 
 </databaseChangeLog >
