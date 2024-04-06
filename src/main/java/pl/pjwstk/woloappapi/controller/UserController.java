@@ -3,6 +3,7 @@ package pl.pjwstk.woloappapi.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.apache.commons.collections4.Get;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,9 @@ import pl.pjwstk.woloappapi.model.ShiftResponseDto;
 import pl.pjwstk.woloappapi.model.UserRequestDto;
 import pl.pjwstk.woloappapi.model.UserResponseDto;
 import pl.pjwstk.woloappapi.model.entities.Event;
+import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.model.entities.User;
+import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
@@ -29,6 +32,7 @@ public class UserController {
     private final EventService eventService;
     private final UserMapper userMapper;
     private final EventMapper eventMapper;
+    private final ShiftToUserRepository shiftToUserRepository;
 
     @GetMapping()
     public ResponseEntity<List<UserResponseDto>> getUsers() {
@@ -57,10 +61,9 @@ public class UserController {
 
     @GetMapping("/{id}/shifts")
     public ResponseEntity<List<ShiftResponseDto>> getUserShifts(@PathVariable Long id){
-        List<Event> events = eventService.getEventsByUser(id);
-        List<ShiftResponseDto> shifts = events.stream()
-                .map(eventMapper::toShiftResponseDto)
-                .flatMap(List::stream)
+        List<ShiftToUser> shiftToUsers = shiftToUserRepository.findShiftToUsersByUserId(id);
+        List<ShiftResponseDto> shifts = shiftToUsers.stream()
+                .map(userMapper::toShiftResponseDto)
                 .toList();
         return new ResponseEntity<>(shifts, HttpStatus.OK);
     }
