@@ -71,6 +71,8 @@ public class SecurityConfig {
                     auth.requestMatchers(POST, "/roles/**").hasAuthority("CREATE_ROLE");
                     auth.requestMatchers(PUT, "/roles/**").hasAuthority("EDIT_ROLE");
                     auth.requestMatchers(DELETE, "/roles/**").hasAuthority("DELETE_ROLE");
+                    auth.requestMatchers(OPTIONS,"/users/**").permitAll();
+                    auth.requestMatchers(GET, "/users/*/shifts").hasAuthority("READ_USERS_SHIFTS");
                     auth.requestMatchers(GET, "/users").hasAuthority("READ_USERS");
                     auth.requestMatchers(GET, "/users/**").hasAuthority("READ_USERS");
                     auth.requestMatchers(PUT, "/users/**").hasAuthority("EDIT_USER");
