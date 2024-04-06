@@ -1,12 +1,12 @@
-package pl.pjwstk.woloappapi;
+package pl.pjwstk.woloappapi.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.pjwstk.woloappapi.model.entities.Address;
-import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
 import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
+import pl.pjwstk.woloappapi.model.entities.Address;
+import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,13 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ExtendWith(MockitoExtension.class)
 public class OrganisationMapperTests {
-    private OrganisationMapper createOrganisationMapper() {
-        return new OrganisationMapper();
-    }
+
+    OrganisationMapper organisationMapper = new OrganisationMapper();
 
     @Test
     public void testToOrganisationResponseDto() {
-        OrganisationMapper organisationMapper = createOrganisationMapper();
         Organisation organisation = new Organisation();
         organisation.setName("Test Organisation");
         organisation.setDescription("Test Description");
@@ -46,7 +44,6 @@ public class OrganisationMapperTests {
 
     @Test
     public void testToOrganisation() {
-        OrganisationMapper organisationMapper = createOrganisationMapper();
         OrganisationRequestDto requestDto = new OrganisationRequestDto();
         requestDto.setName("Test Organisation");
         requestDto.setDescription("Test Description");
@@ -67,7 +64,6 @@ public class OrganisationMapperTests {
 
     @Test
     public void testToAddress() {
-        OrganisationMapper organisationMapper = createOrganisationMapper();
         OrganisationRequestDto requestDto = new OrganisationRequestDto();
         requestDto.setStreet("Test Street");
         requestDto.setHomeNum("123");
