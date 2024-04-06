@@ -1,9 +1,10 @@
 package pl.pjwstk.woloappapi.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.EventRequestDto;
 import pl.pjwstk.woloappapi.model.entities.*;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.utils.EventMapper;
@@ -185,5 +186,17 @@ public class EventService {
 
     public List<Event> getUpcomingEvents() {
         return eventRepository.findAllNotBeforeNow();
+    }
+
+    public List<Event> getTheyNeedYouList() {
+        var thresholdDate = LocalDate.now().minusDays(5);
+
+        List<Event> eventsTheyNeedYou = eventRepository.findEventsForTheyNeedYou(thresholdDate);
+        if (!eventsTheyNeedYou.isEmpty()) {
+            return eventsTheyNeedYou;
+        } else {
+            var pageable = PageRequest.of(0, 5);
+            return eventRepository.findNearestEventsSortedByDate(LocalDate.now(), pageable);
+        }
     }
 }
