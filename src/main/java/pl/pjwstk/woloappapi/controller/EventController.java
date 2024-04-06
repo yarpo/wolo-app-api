@@ -39,6 +39,15 @@ public class EventController {
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
+    @GetMapping("/need")
+    public ResponseEntity<List<EventResponseDto>> getTheyNeedYouList() {
+        List<EventResponseDto> eventDtos = eventService.getTheyNeedYouList()
+                .stream()
+                .map(eventMapper::toEventResponseDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(eventDtos, HttpStatus.OK);
+    }
+
     @PostMapping("/join")
     public ResponseEntity<HttpStatus> joinEvent(
             @RequestParam(value = "user") Long userId,
