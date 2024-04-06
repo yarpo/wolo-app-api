@@ -92,33 +92,6 @@ public class EventMapper {
         return shiftDto;
     }
 
-    public List<ShiftResponseDto> toShiftResponseDto(Event event){
-        List<ShiftResponseDto> shiftResponseDtos = new ArrayList<>();
-        List<AddressToEvent> addressToEvents = event.getAddressToEvents();
-        for (AddressToEvent addressToEvent : addressToEvents) {
-            Address address = addressToEvent.getAddress();
-            String street = address.getStreet();
-            String homeNum = address.getHomeNum();
-            String city = address.getDistrict().getCity();
-
-            List<Shift> shifts = addressToEvent.getShifts();
-            for (Shift shift : shifts) {
-                ShiftResponseDto shiftResponseDto = new ShiftResponseDto();
-                shiftResponseDto.setShiftId(shift.getId());
-                shiftResponseDto.setEventId(event.getId());
-                shiftResponseDto.setName(event.getName());
-                shiftResponseDto.setStartTime(shift.getStartTime());
-                shiftResponseDto.setEndTime(shift.getEndTime());
-                shiftResponseDto.setDate(shift.getDate());
-                shiftResponseDto.setStreet(street);
-                shiftResponseDto.setHomeNum(homeNum);
-                shiftResponseDto.setCity(city);
-                shiftResponseDtos.add(shiftResponseDto);
-            }
-        }
-        return shiftResponseDtos;
-    }
-
     public EventResponseDetailsDto toEventResponseDetailsDto(Event event) {
         EventResponseDetailsDto eventResponseDto = new EventResponseDetailsDto();
         eventResponseDto.setName(event.getName());
