@@ -821,6 +821,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EventResponseDto'
+                  
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'          
   /events/need:
     get:
       tags:
@@ -836,6 +841,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EventResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'          
   /events/{id}:
     get:
       tags:
