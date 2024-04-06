@@ -400,7 +400,6 @@ paths:
             format: int64
           example: 1
       responses:
-        responses:
         '200':
           $ref: '#/components/responses/OK'
         '400':
@@ -822,10 +821,21 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EventResponseDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+  /events/need:
+    get:
+      tags:
+        - Event
+      summary: Get list of events for They Need You
+      operationId: getTheyNeedYouList
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventResponseDto'
   /events/{id}:
     get:
       tags:

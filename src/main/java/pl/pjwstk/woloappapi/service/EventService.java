@@ -189,8 +189,7 @@ public class EventService {
     }
 
     public List<Event> getTheyNeedYouList() {
-        var daysThreshold = Integer.parseInt(System.getenv("DAYS_THRESHOLD_FOR_THEY_NEED_YOU"));
-        var thresholdDate = LocalDate.now().minusDays(daysThreshold);
+        var thresholdDate = LocalDate.now().minusDays(5);
 
         List<Event> eventsTheyNeedYou = eventRepository.findEventsForTheyNeedYou(thresholdDate);
         if (!eventsTheyNeedYou.isEmpty()) {
