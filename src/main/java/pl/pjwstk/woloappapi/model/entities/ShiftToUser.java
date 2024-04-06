@@ -29,6 +29,17 @@ public class ShiftToUser {
     @Column(name = "is_leader", nullable = false)
     private boolean isLeader;
 
+    @Override
+    public String toString() {
+        return "ShiftToUser{" +
+                "id=" + id +
+                ", user=" + user.getUsername() +
+                ", shift=" + shift.getId()+
+                ", isOnReserveList=" + isOnReserveList +
+                ", isLeader=" + isLeader +
+                '}';
+    }
+
     public ShiftToUser(User user, Shift shift) {
         this.shift =shift;
         this.user = user;

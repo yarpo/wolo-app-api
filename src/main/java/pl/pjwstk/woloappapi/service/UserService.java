@@ -90,11 +90,12 @@ public class UserService {
 
     @Transactional
     public void joinEvent(Long userId, Long shiftId) {
-        User user = userRepository.findById(userId)
+        var user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
-        Shift shift = shiftService.getShiftById(shiftId);
+        var shift = shiftService.getShiftById(shiftId);
         if(shift.getCapacity() > shift.getRegisteredUsers()) {
-            shift.getShiftToUsers().add(new ShiftToUser(user, shift));
+            var shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift));
+            shift.getShiftToUsers().add(shiftToUser);
             shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
             shiftService.editShift(shift);
         }

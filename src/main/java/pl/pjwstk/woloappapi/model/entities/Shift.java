@@ -53,4 +53,22 @@ public class Shift {
 
     @Column(name = "directions")
     private String shiftDirections;
+
+
+    @Override
+    public String toString() {
+        return "Shift{" +
+                "id=" + id +
+                ", event=" + addressToEvent.getEvent().getName() +
+                ", shiftToUsers=" + shiftToUsers +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", date=" + date +
+                ", capacity=" + capacity +
+                ", isLeaderRequired=" + isLeaderRequired +
+                ", requiredMinAge=" + requiredMinAge +
+                ", registeredUsers=" + registeredUsers +
+                ", shiftDirections='" + shiftDirections + '\'' +
+                '}';
+    }
 }

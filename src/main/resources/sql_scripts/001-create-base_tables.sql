@@ -1,4 +1,4 @@
---liquibase formatted sql
+ --liquibase formatted sql
 
 --changeset woloapp:001
 -- Table: address
