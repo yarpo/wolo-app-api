@@ -48,6 +48,8 @@ public class ShiftResponseDto {
     @Size(max = 50, message = "City cannot exceed 50 characters")
     private String city;
 
+    private String district;
+
     @NotNull
     @NotBlank(message = "Street is required")
     @Size(max = 50, message = "Street cannot exceed 50 characters")

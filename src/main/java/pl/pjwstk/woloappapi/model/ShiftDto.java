@@ -42,4 +42,10 @@ public class ShiftDto {
     private Integer requiredMinAge;
 
     private String shiftDirections;
+
+    private String street;
+
+    private String homeNum;
+
+    private String district;
 }
