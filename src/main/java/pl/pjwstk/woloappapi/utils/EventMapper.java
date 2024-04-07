@@ -39,19 +39,9 @@ public class EventMapper {
         eventResponseDto.setName(event.getName());
         eventResponseDto.setOrganisation(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
-        Address address = event.getAddressToEvents().get(0).getAddress();
-        eventResponseDto.setStreet(address.getStreet());
-        eventResponseDto.setHomeNum(address.getHomeNum());
-        eventResponseDto.setDistrict(address.getDistrict().getName());
-        eventResponseDto.setCity(address.getDistrict().getCity());
+        eventResponseDto.setCity(event.getCity().getName());
         eventResponseDto.setImageUrl(event.getImageUrl());
-        List<ShiftRequestDto> shifts =
-                event.getAddressToEvents().stream()
-                        .flatMap(
-                                addressToEvent ->
-                                        mapShiftListToShiftDtoList(addressToEvent.getShifts())
-                                                .stream())
-                        .collect(Collectors.toList());
+        List<ShiftRequestDto> shifts = mapShiftListToShiftDtoList(event.getShifts());
         eventResponseDto.setShifts(shifts);
         List<String> categories = event.getCategories().stream()
                         .map(cte -> cte.getCategory().getName()).toList();
@@ -75,11 +65,11 @@ public class EventMapper {
                 .endTime(shift.getEndTime())
                 .date(shift.getDate())
                 .shiftDirections(shift.getShiftDirections())
-                .eventId(shift.getAddressToEvent().getEvent().getId())
-                .eventName(shift.getAddressToEvent().getEvent().getName())
-                .address(shift.getAddressToEvent().getAddress().getStreet()
+                .eventId(shift.getEvent().getId())
+                .eventName(shift.getEvent().getName())
+                .address(shift.getAddress().getStreet()
                         + " "
-                        + shift.getAddressToEvent().getAddress().getHomeNum())
+                        + shift.getAddress().getHomeNum())
                 .build();
     }
 
@@ -89,11 +79,13 @@ public class EventMapper {
         shiftDto.setStartTime(shift.getStartTime());
         shiftDto.setEndTime(shift.getEndTime());
         shiftDto.setDate(shift.getDate());
-        shiftDto.setSignedUp(shift.getRegisteredUsers());
         shiftDto.setCapacity(shift.getCapacity());
         shiftDto.setIsLeaderRequired(shift.isLeaderRequired());
         shiftDto.setRequiredMinAge(shift.getRequiredMinAge());
         shiftDto.setShiftDirections(shift.getShiftDirections());
+        shiftDto.setStreet(shift.getAddress().getStreet());
+        shiftDto.setHomeNum(shift.getAddress().getHomeNum());
+        shiftDto.setDistrictId(shift.getAddress().getDistrict().getId());
         return shiftDto;
     }
 
@@ -106,18 +98,10 @@ public class EventMapper {
         eventResponseDto.setDescription(event.getDescription());
         eventResponseDto.setCategories(event.getCategories().stream()
                         .map(cte ->cte.getCategory().getName()).toList());
-        Address address = event.getAddressToEvents().get(0).getAddress();
-        eventResponseDto.setStreet(address.getStreet());
-        eventResponseDto.setHomeNum(address.getHomeNum());
-        eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setImageUrl(event.getImageUrl());
-        List<ShiftRequestDto> shifts =
-                event.getAddressToEvents().stream()
-                        .flatMap(addressToEvent ->
-                                mapShiftListToShiftDtoList(addressToEvent.getShifts())
-                                        .stream()).toList();
-
+        List<ShiftRequestDto> shifts = mapShiftListToShiftDtoList(event.getShifts());
         eventResponseDto.setShifts(shifts);
+        eventResponseDto.setCity(event.getCity().getName());
 
         return eventResponseDto;
     }

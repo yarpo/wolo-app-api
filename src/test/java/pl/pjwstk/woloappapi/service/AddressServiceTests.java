@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.entities.Address;
-import pl.pjwstk.woloappapi.model.entities.AddressToEvent;
 import pl.pjwstk.woloappapi.model.entities.District;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.repository.AddressRepository;
@@ -48,15 +47,6 @@ public class AddressServiceTests {
         organisationList.add(organisation2);
         address.setOrganisations(organisationList);
 
-        List<AddressToEvent> addressToEventList = new ArrayList<>();
-        AddressToEvent addressToEvent1 = new AddressToEvent();
-        AddressToEvent addressToEvent2 = new AddressToEvent();
-        addressToEvent1.setId(1L);
-        addressToEvent2.setId(2L);
-        addressToEventList.add(addressToEvent1);
-        addressToEventList.add(addressToEvent2);
-        address.setAddressToEvents(addressToEventList);
-
         addressService.createAddress(address);
 
         ArgumentCaptor<Address> addressCaptor = ArgumentCaptor.forClass(Address.class);
@@ -66,8 +56,6 @@ public class AddressServiceTests {
         assertEquals("Sample Street", capturedAddress.getStreet());
         assertEquals("123", capturedAddress.getHomeNum());
         assertEquals(1L, capturedAddress.getDistrict().getId());
-        assertEquals(2, capturedAddress.getOrganisations().size());
-        assertEquals(2, capturedAddress.getAddressToEvents().size());
-    }
+        assertEquals(2, capturedAddress.getOrganisations().size());}
 
 }

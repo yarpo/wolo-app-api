@@ -13,7 +13,7 @@ public class DictionariesMapper {
         DistrictDto districtDto = new DistrictDto();
         districtDto.setId(district.getId());
         districtDto.setName(district.getName());
-        districtDto.setCity(district.getCity());
+        districtDto.setCityId(district.getCity().getId());
         return districtDto;
     }
 

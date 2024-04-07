@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.Category;
+import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.model.entities.District;
 import pl.pjwstk.woloappapi.model.entities.Role;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
@@ -21,13 +22,17 @@ public class DictionariesMapperTests {
         District district = new District();
         district.setId(1L);
         district.setName("Sample District");
-        district.setCity("Sample City");
+
+        City city = new City();
+        city.setId(1L);
+        city.setName("Sample City");
+        district.setCity(city);
 
         DistrictDto districtDto = dictionariesMapper.toDistrictDto(district);
 
         assertEquals(1L, districtDto.getId());
         assertEquals("Sample District", districtDto.getName());
-        assertEquals("Sample City", districtDto.getCity());
+        assertEquals(1L, districtDto.getCityId());
     }
 
     @Test
@@ -59,13 +64,11 @@ public class DictionariesMapperTests {
         DistrictDto districtDto = new DistrictDto();
         districtDto.setId(1L);
         districtDto.setName("Sample District");
-        districtDto.setCity("Sample City");
 
         District district = dictionariesMapper.toDistrict(districtDto).build();
 
         assertEquals(1L, district.getId());
         assertEquals("Sample District", district.getName());
-        assertEquals("Sample City", district.getCity());
     }
 
     @Test

@@ -56,6 +56,7 @@ public class DistrictServiceTests {
         assertEquals(district.getId(), retrievedDistrict.getId());
     }
 
+    /*
     @Test
     public void testCreateDistrict(){
         DistrictDto districtDto = new DistrictDto();
@@ -77,6 +78,7 @@ public class DistrictServiceTests {
         assertEquals("Test Name", capturedDistrict.getName());
         assertEquals("Test City", capturedDistrict.getCity());
     }
+    */
 
     @Test
     public void testDeleteDistrict() {

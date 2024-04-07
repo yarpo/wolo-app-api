@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.entities.Address;
-import pl.pjwstk.woloappapi.model.entities.AddressToEvent;
 import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.repository.ShiftRepository;
@@ -59,11 +58,6 @@ public class ShiftServiceTests {
         Address address = new Address();
         address.setId(1L);
 
-        AddressToEvent addressToEvent = new AddressToEvent();
-        addressToEvent.setId(1L);
-        addressToEvent.setAddress(address);
-        shift.setAddressToEvent(addressToEvent);
-
         List<ShiftToUser> shiftToUserList = new ArrayList<>();
         ShiftToUser shiftToUser = new ShiftToUser();
         shiftToUser.setId(1L);
@@ -84,7 +78,6 @@ public class ShiftServiceTests {
         assertTrue(capturedShift.isLeaderRequired());
         assertEquals(18, capturedShift.getRequiredMinAge());
         assertEquals("Test Shift Directions", capturedShift.getShiftDirections());
-        assertEquals(1L, capturedShift.getAddressToEvent().getId());
         assertEquals(1L, capturedShift.getShiftToUsers().get(0).getId());
     }
 

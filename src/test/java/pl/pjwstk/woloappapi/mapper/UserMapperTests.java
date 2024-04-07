@@ -1,5 +1,6 @@
 package pl.pjwstk.woloappapi.mapper;
 
+import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -10,6 +11,7 @@ import pl.pjwstk.woloappapi.model.UserResponseDto;
 import pl.pjwstk.woloappapi.model.UserShortResponse;
 import pl.pjwstk.woloappapi.model.entities.*;
 import pl.pjwstk.woloappapi.security.RegistrationRequest;
+import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
@@ -25,22 +27,23 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class UserMapperTests {
 
+    private DistrictService districtService;
+
     private EventMapper eventMapper;
 
-    /*
     @Test
     public void testToUserResponseDto(){
-        EventMapper eventMapper = new EventMapper();
+        EventMapper eventMapper = new EventMapper(districtService);
         UserMapper userMapper = new UserMapper(eventMapper);
         User user = new User();
         user.setId(1L);
         user.setFirstName("Test Firstname");
         user.setLastName("Test Lastname");
-        user.setAdult(true);
         user.setEmail("test@example.com");
         user.setPhoneNumber("123456789");
-        user.setAgreementSigned(true);
         user.setPeselVerified(true);
+        user.setAgreementSigned(true);
+        user.setAdult(true);
 
         Role role = new Role();
         role.setName("ROLE_USER");
@@ -49,30 +52,28 @@ public class UserMapperTests {
         roles.add(role);
         user.setRoles(roles);
 
+        Organisation organisation = new Organisation();
+        organisation.setId(1L);
+        organisation.setName("Organisation Name");
+
+        user.setOrganisation(organisation);
+
         Event event = new Event();
-        event.setId(1L);
-
         Address address = new Address();
-
-        AddressToEvent addressToEvent = new AddressToEvent();
-        addressToEvent.setEvent(event);
-        addressToEvent.setAddress(address);
 
         Shift shift = new Shift();
         shift.setId(1L);
-        shift.setAddressToEvent(addressToEvent);
+        shift.setEvent(event);
+        shift.setAddress(address);
 
         ShiftToUser shiftToUser = new ShiftToUser();
         shiftToUser.setId(1L);
+        shiftToUser.setShift(shift);
 
         List<ShiftToUser> shifts = new ArrayList<>();
         shifts.add(shiftToUser);
+
         user.setShifts(shifts);
-
-        ShiftInfoRespons shiftInfoRespons = new ShiftInfoRespons();
-        shiftInfoRespons.setId(1L);
-
-        eventMapper.toShiftInfoRespons(shift);
 
         UserResponseDto userResponseDto = userMapper.toUserResponseDto(user);
 
@@ -85,12 +86,14 @@ public class UserMapperTests {
         assertTrue(userResponseDto.isAgreementSigned());
         assertTrue(userResponseDto.isPeselVerified());
         assertEquals(Collections.singletonList("ROLE_USER"), userResponseDto.getRoles());
+        assertEquals(1L, userResponseDto.getOrganisationId());
+        assertEquals("Organisation Name", userResponseDto.getOrganisationName());
+        assertEquals(1, userResponseDto.getShifts().size());
     }
-    */
 
     @Test
     public void testToShiftResponseDto(){
-        EventMapper eventMapper = new EventMapper();
+        EventMapper eventMapper = new EventMapper(districtService);
         UserMapper userMapper = new UserMapper(eventMapper);
         Event event = new Event();
         event.setName("Test Event");
@@ -99,51 +102,34 @@ public class UserMapperTests {
         User user = new User();
         user.setId(1L);
 
-
-        List<AddressToEvent> addressToEvents = new ArrayList<>();
-
         Shift shift = new Shift();
         shift.setId(1L);
+        shift.setEvent(event);
         shift.setStartTime(LocalTime.of(9, 0));
         shift.setEndTime(LocalTime.of(17, 0));
         shift.setDate(LocalDate.now());
-        shift.setRegisteredUsers(1);
-        shift.setCapacity(10);
         shift.setLeaderRequired(true);
         shift.setRequiredMinAge(18);
+        shift.setRegisteredUsers(1);
+        shift.setShiftDirections("Test Directions");
 
         District district = new District();
         district.setName("Test Name");
-        district.setCity("Test City");
 
         Address address = new Address();
         address.setStreet("Test Street");
         address.setHomeNum("123");
         address.setDistrict(district);
-
-        AddressToEvent addressToEvent = new AddressToEvent();
-        addressToEvent.setAddress(address);
-        addressToEvent.setEvent(event);
-        shift.setAddressToEvent(addressToEvent);
-
-        List<Shift> shiftList = new ArrayList<>();
-        shiftList.add(shift);
-
-        addressToEvent.setShifts(shiftList);
-        addressToEvents.add(addressToEvent);
-
-        event.setAddressToEvents(addressToEvents);
+        shift.setAddress(address);
 
         ShiftToUser shiftToUser = new ShiftToUser();
         shiftToUser.setId(1L);
         shiftToUser.setUser(user);
         shiftToUser.setShift(shift);
-        shiftToUser.setLeader(false);
         ShiftResponseDto shiftResponseDto = userMapper.toShiftResponseDto(shiftToUser);
 
         assertEquals(1L, shiftResponseDto.getShiftId());
         assertEquals(1L, shiftResponseDto.getEventId());
-        assertEquals("Test Event", shiftResponseDto.getName());
         assertEquals(LocalTime.of(9, 0), shiftResponseDto.getStartTime());
         assertEquals(LocalTime.of(17, 0), shiftResponseDto.getEndTime());
         assertEquals(LocalDate.now(), shiftResponseDto.getDate());
