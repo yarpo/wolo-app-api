@@ -30,8 +30,8 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
     @Query("SELECT e FROM Event e " +
             "JOIN e.addressToEvents ae " +
             "JOIN ae.shifts s " +
-            "WHERE s.date >= :thresholdDate " +
-            "AND s.date > CURRENT_DATE " +
+            "WHERE s.date < :thresholdDate " +
+            "AND s.date >= CURRENT_DATE " +
             "AND e.approved = true " +
             "ORDER BY s.date ASC")
     List<Event> findEventsForTheyNeedYou(LocalDate thresholdDate);
@@ -39,8 +39,8 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
     @Query("SELECT e FROM Event e " +
             "JOIN e.addressToEvents ae " +
             "JOIN ae.shifts s " +
-            "WHERE s.date > :currentDate " +
+            "WHERE s.date > CURRENT_DATE " +
             "AND e.approved = true " +
             "ORDER BY s.date ASC")
-    List<Event> findNearestEventsSortedByDate(@Param("currentDate") LocalDate currentDate, Pageable pageable);
+    List<Event> findNearestEventsSortedByDate(Pageable pageable);
 }

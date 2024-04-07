@@ -196,7 +196,7 @@ public class EventService {
             return eventsTheyNeedYou;
         } else {
             var pageable = PageRequest.of(0, 5);
-            return eventRepository.findNearestEventsSortedByDate(LocalDate.now(), pageable);
+            return eventRepository.findNearestEventsSortedByDate(pageable);
         }
     }
 }

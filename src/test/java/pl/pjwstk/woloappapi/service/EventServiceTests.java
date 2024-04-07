@@ -94,7 +94,7 @@ public class EventServiceTests {
 
         assertEquals(expectedEvents.size(), result.size());
         verify(eventRepository, times(1)).findEventsForTheyNeedYou(thresholdDate);
-        verify(eventRepository, never()).findNearestEventsSortedByDate(any(LocalDate.class), any(PageRequest.class));
+        verify(eventRepository, never()).findNearestEventsSortedByDate(any(PageRequest.class));
 }
 
     @Test
@@ -105,12 +105,12 @@ public class EventServiceTests {
         nearestEvents.add(new Event());
         nearestEvents.add(new Event());
         nearestEvents.add(new Event());
-        when(eventRepository.findNearestEventsSortedByDate(any(LocalDate.class), any(PageRequest.class)))
+        when(eventRepository.findNearestEventsSortedByDate(any(PageRequest.class)))
                 .thenReturn(nearestEvents);
 
         List<Event> result = eventService.getTheyNeedYouList();
 
         assertEquals(nearestEvents.size(), result.size());
-        verify(eventRepository, times(1)).findNearestEventsSortedByDate(LocalDate.now(), PageRequest.of(0, 5));
+        verify(eventRepository, times(1)).findNearestEventsSortedByDate(PageRequest.of(0, 5));
     }
 }
