@@ -27,4 +27,16 @@ ALTER TABLE event
         FOREIGN KEY (city_id)
             REFERENCES city (id);
 
-DROP TABLE IF EXISTS adress_to_event;
+ALTER TABLE shift DROP CONSTRAINT fk_shift_address_to_event_id;
+ALTER TABLE shift DROP COLUMN address_to_event_id;
+
+ALTER TABLE shift
+    ADD COLUMN
+        IF NOT EXISTS address_id BIGINT;
+
+ALTER TABLE shift
+    ADD CONSTRAINT fk_shift_address
+        FOREIGN KEY (address_id)
+            REFERENCES address (id);
+
+DROP TABLE IF EXISTS address_to_event;
