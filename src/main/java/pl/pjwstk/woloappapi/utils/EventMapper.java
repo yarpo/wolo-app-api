@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.service.DistrictService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,20 +12,25 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class EventMapper {
+    private final DistrictService districtService;
     public Shift.ShiftBuilder toShift (ShiftRequestDto shiftDto){
+        var address = toAddress(shiftDto)
+                .district(districtService.getDistrictById(shiftDto.getDistrictId()))
+                .build();
         return Shift.builder()
                 .startTime(shiftDto.getStartTime())
                 .endTime(shiftDto.getEndTime())
                 .date(shiftDto.getDate())
+                .address(address)
                 .isLeaderRequired(shiftDto.getIsLeaderRequired())
                 .capacity(shiftDto.getCapacity())
                 .requiredMinAge(shiftDto.getRequiredMinAge())
                 .shiftDirections(shiftDto.getShiftDirections());
     }
-    public Address.AddressBuilder toAddress(EventRequestDto dtoEvent) {
+    public Address.AddressBuilder toAddress(ShiftRequestDto shiftDto) {
         return Address.builder()
-                .street(dtoEvent.getStreet())
-                .homeNum(dtoEvent.getHomeNum());
+                .street(shiftDto.getStreet())
+                .homeNum(shiftDto.getHomeNum());
     }
 
     public EventResponseDto toEventResponseDto(Event event) {
@@ -123,12 +129,6 @@ public class EventMapper {
                 .isPeselVerificationRequired(dtoEvent.isPeselVerificationRequired())
                 .isAgreementNeeded(dtoEvent.isAgreementNeeded())
                 .imageUrl(dtoEvent.getImageUrl());
-    }
-
-    public List<Shift> toShifts(List<ShiftRequestDto> shiftDtos) {
-        return shiftDtos.stream()
-                .map(s -> this.toShift(s).build())
-                .collect(Collectors.toList());
     }
 
     public Report.ReportBuilder toReport(ReportDto reportDto) {

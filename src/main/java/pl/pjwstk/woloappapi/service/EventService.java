@@ -5,12 +5,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.EventRequestDto;
-import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.model.entities.CategoryToEvent;
+import pl.pjwstk.woloappapi.model.entities.Event;
+import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,7 +26,6 @@ public class EventService {
     private final CategoryService categoryService;
     private final ShiftService shiftService;
     private final CategoryToEventService categoryToEventService;
-    private final AddressService addressService;
 
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
@@ -36,42 +38,36 @@ public class EventService {
     }
 
     @Transactional
-    public void createEvent(EventRequestDto dtoEvent) {
-        Event event = eventMapper.toEvent(dtoEvent)
-                .organisation(organisationService.getOrganisationById(dtoEvent.getOrganisationId())).build();
+    public void createEvent(EventRequestDto eventDto) {
+        var eventBuilder = eventMapper.toEvent(eventDto)
+                .organisation(organisationService.getOrganisationById(eventDto.getOrganisationId()));
 
-        Address address = eventMapper.toAddress(dtoEvent)
-                .district(districtService.getDistrictById(dtoEvent.getDistrictId()))
-                .build();
-
-        addressService.createAddress(address);
-
+        var shifts = new ArrayList<Shift>();
+        eventDto.getShifts().forEach(s -> {
+                    var shift = eventMapper.toShift(s)
+                            .address(eventMapper.toAddress(s)
+                                    .district(districtService.getDistrictById(s.getDistrictId()))
+                                    .build())
+                            .event(eventBuilder.build())
+                            .build();
+                    shiftService.createShift(shift);
+                    shifts.add(shift);
+                });
+        var event = eventBuilder.shifts(shifts).build();
         eventRepository.save(event);
 
-        AddressToEvent addressToEvent = new AddressToEvent(event, address);
-
-        addressToEventService.createAddressToEvent(addressToEvent);
-
-        List<Shift> shifts = eventMapper.toShifts(dtoEvent.getShifts());
-        shifts.forEach(
-                shift -> {
-                    shift.setAddressToEvent(addressToEvent);
-                    shiftService.createShift(shift);
-                });
-
-        dtoEvent.getCategories()
-                .forEach(
-                        categoryId -> {
-                            CategoryToEvent categoryToEvent = new CategoryToEvent();
-                            categoryToEvent.setCategory(
-                                    categoryService.getCategoryById(categoryId));
+        eventDto.getCategories()
+                .forEach(categoryId -> {
+                            var categoryToEvent = new CategoryToEvent();
+                            categoryToEvent.setCategory(categoryService.getCategoryById(categoryId));
                             categoryToEvent.setEvent(event);
                             categoryToEventService.createCategoryToEvent(categoryToEvent);
-                        });
+                });
     }
 
     @Transactional
     public void updateEvent(EventRequestDto eventDto, Long id) {
+        var city = districtService.getDistrictById(eventDto.getShifts().get(0).getDistrictId()).getCity();
         Event event = eventRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Event id not found!"));
@@ -80,9 +76,9 @@ public class EventService {
         event.setPeselVerificationRequired(eventDto.isPeselVerificationRequired());
         event.setAgreementNeeded(eventDto.isAgreementNeeded());
         event.setImageUrl(eventDto.getImageUrl());
+        event.setCity(city);
 
         updateEventCategories(event, eventDto);
-        updateEventAddress(event, eventDto);
         updateEventShifts(event, eventDto);
 
         eventRepository.save(event);
@@ -109,35 +105,31 @@ public class EventService {
                 .forEach(event.getCategories()::add);
     }
 
-    private void updateEventAddress(Event event, EventRequestDto eventDto) {
-        List<AddressToEvent> addressToEvent = event.getAddressToEvents();
-        Address address = addressToEvent.get(0).getAddress();
-
-        address.setDistrict(districtService.getDistrictById(eventDto.getDistrictId()));
-        address.setStreet(eventDto.getStreet());
-        address.setHomeNum(eventDto.getHomeNum());
-        event.getAddressToEvents().forEach(ate -> ate.setAddress(address));
+    private void updateShiftAddress(Shift shift, Shift newShift) {
+        var address = shift.getAddress();
+        var newAddress =newShift.getAddress();
+        address.setDistrict(newAddress.getDistrict());
+        address.setStreet(newAddress.getStreet());
+        address.setHomeNum(newAddress.getHomeNum());
     }
 
     private void updateEventShifts(Event event, EventRequestDto eventDto) {
-        List<Shift> newShifts = eventMapper.toShifts(eventDto.getShifts());
+        var newShifts = eventDto.getShifts().stream()
+                .map(s -> eventMapper.toShift(s)
+                        .event(event)
+                        .build())
+                .toList();
+        var newShiftIds = newShifts.stream().map(Shift::getId).toList();
 
-        event.getAddressToEvents()
-                .forEach(ate ->ate.getShifts()
-                                        .removeIf(s ->!newShifts.stream()
-                                                                .map(Shift::getId)
-                                                                .toList()
-                                                                .contains(s.getId())));
+        event.getShifts().retainAll(event.getShifts()
+                .stream().filter(s -> newShiftIds.contains(s.getId())).toList());
 
         newShifts.forEach(ns -> {
                     if (ns.getId() == null) {
-                        event.getAddressToEvents()
-                                .get(0)
-                                .getShifts()
-                                .add(ns);
+                        event.getShifts().add(ns);
                     } else {
-                        event.getAddressToEvents().get(0).getShifts().stream()
-                                .filter(sh -> sh.getId().equals(ns.getId()))
+                        event.getShifts().stream()
+                                .filter(s -> s.getId().equals(ns.getId()))
                                 .findFirst()
                                 .ifPresent(
                                         existingShift ->
@@ -153,6 +145,7 @@ public class EventService {
         shift.setCapacity(newShift.getCapacity());
         shift.setRequiredMinAge(newShift.getRequiredMinAge());
         shift.setShiftDirections(newShift.getShiftDirections());
+        updateShiftAddress(shift, newShift);
     }
     @Transactional
     public void deleteEvent(Long id) {

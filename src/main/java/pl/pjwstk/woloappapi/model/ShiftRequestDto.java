@@ -20,6 +20,8 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ShiftRequestDto {
 
+    private Long id;
+
     @NotNull
     @TimeOrder
     private LocalTime startTime;
