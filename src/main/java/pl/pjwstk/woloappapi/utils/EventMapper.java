@@ -5,14 +5,13 @@ import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class EventMapper {
-    public Shift.ShiftBuilder toShift (ShiftDto shiftDto){
+    public Shift.ShiftBuilder toShift (ShiftRequestDto shiftDto){
         return Shift.builder()
                 .startTime(shiftDto.getStartTime())
                 .endTime(shiftDto.getEndTime())
@@ -40,7 +39,7 @@ public class EventMapper {
         eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setCity(address.getDistrict().getCity());
         eventResponseDto.setImageUrl(event.getImageUrl());
-        List<ShiftDto> shifts =
+        List<ShiftRequestDto> shifts =
                 event.getAddressToEvents().stream()
                         .flatMap(
                                 addressToEvent ->
@@ -57,7 +56,7 @@ public class EventMapper {
         return eventResponseDto;
     }
 
-    private List<ShiftDto> mapShiftListToShiftDtoList(List<Shift> shifts) {
+    private List<ShiftRequestDto> mapShiftListToShiftDtoList(List<Shift> shifts) {
         return shifts.stream()
                 .map(this::mapShiftToShiftDto)
                 .collect(Collectors.toList());
@@ -78,8 +77,8 @@ public class EventMapper {
                 .build();
     }
 
-    public ShiftDto mapShiftToShiftDto(Shift shift) {
-        ShiftDto shiftDto = new ShiftDto();
+    public ShiftRequestDto mapShiftToShiftDto(Shift shift) {
+        ShiftRequestDto shiftDto = new ShiftRequestDto();
         shiftDto.setId(shift.getId());
         shiftDto.setStartTime(shift.getStartTime());
         shiftDto.setEndTime(shift.getEndTime());
@@ -106,7 +105,7 @@ public class EventMapper {
         eventResponseDto.setHomeNum(address.getHomeNum());
         eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setImageUrl(event.getImageUrl());
-        List<ShiftDto> shifts =
+        List<ShiftRequestDto> shifts =
                 event.getAddressToEvents().stream()
                         .flatMap(addressToEvent ->
                                 mapShiftListToShiftDtoList(addressToEvent.getShifts())
@@ -126,7 +125,7 @@ public class EventMapper {
                 .imageUrl(dtoEvent.getImageUrl());
     }
 
-    public List<Shift> toShifts(List<ShiftDto> shiftDtos) {
+    public List<Shift> toShifts(List<ShiftRequestDto> shiftDtos) {
         return shiftDtos.stream()
                 .map(s -> this.toShift(s).build())
                 .collect(Collectors.toList());

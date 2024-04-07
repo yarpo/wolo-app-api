@@ -68,6 +68,10 @@ public class OrganisationRequestDto {
     @Schema(name = "District ID", example = "1")
     private Long districtId;
 
+    @NotNull(message = "City must be chosen")
+    @Schema(name = "City ID", example = "1")
+    private Long cityId;
+
     @NotNull(message = "Moderator must be chosen")
     @Schema(name = "Moderator ID", example = "1")
     private Long moderatorId;

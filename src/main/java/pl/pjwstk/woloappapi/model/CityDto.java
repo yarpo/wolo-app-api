@@ -13,16 +13,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DistrictDto {
-
+public class CityDto {
     @Schema(name = "District ID", example = "1")
     private Long id;
 
     @NotNull
-    @Schema(name = "District name", example = "DownTown")
-    @NotBlank(message = "District name is required")
-    @Size(max = 50, message = "District name cannot exceed 50 characters")
-    private String name;
-
-
+    @Schema(name = "City name", example = "New York City")
+    @NotBlank(message = "City is required")
+    @Size(max = 50, message = "City cannot exceed 50 characters")
+    private String city;
 }

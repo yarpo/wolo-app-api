@@ -54,25 +54,11 @@ public class EventRequestDto {
 
     private boolean isAgreementNeeded;
 
-    @NotNull
-    @NotBlank(message = "Street is required")
-    @Size(max = 50, message = "Street cannot exceed 50 characters")
-    private String street;
-
-    @NotNull
-    @NotBlank(message = "Home number is required")
-    @Size(max = 10, message = "Home number cannot exceed 10 characters")
-    private String homeNum;
-
-    @NotNull(message = "District must be chosen")
-    @Schema(name = "District id", example = "1")
-    private Long districtId;
-
     @Size(max = 255, message = "Image Url cannot exceed 255 characters")
     private String imageUrl;
 
     @NotNull(message = "Shifts are required")
     @Size(min = 1, message = "At least one shift is required")
     @Valid
-    private List<ShiftDto> shifts;
+    private List<ShiftRequestDto> shifts;
 }

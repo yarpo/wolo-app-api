@@ -57,7 +57,6 @@ public class Shift {
     @Column(name = "directions")
     private String shiftDirections;
 
-
     @Override
     public String toString() {
         return "Shift{" +

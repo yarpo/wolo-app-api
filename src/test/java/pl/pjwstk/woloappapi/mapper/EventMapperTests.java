@@ -22,7 +22,7 @@ public class EventMapperTests {
 
     @Test
     public void testToShift() {
-        ShiftDto shiftDto = new ShiftDto();
+        ShiftRequestDto shiftDto = new ShiftRequestDto();
         shiftDto.setStartTime(LocalTime.of(9, 0));
         shiftDto.setEndTime(LocalTime.of(17, 0));
         shiftDto.setDate(LocalDate.now());
@@ -161,11 +161,11 @@ public class EventMapperTests {
         //List<ShiftDto> shiftDtoList = eventMapper.mapShiftListToShiftDtoList(shiftList);
 
         @SuppressWarnings("unchecked")
-        List<ShiftDto> shiftDtoList = (List<ShiftDto>) method.invoke(eventMapper, shiftList);
+        List<ShiftRequestDto> shiftDtoList = (List<ShiftRequestDto>) method.invoke(eventMapper, shiftList);
 
         assertEquals(2, shiftDtoList.size());
 
-        ShiftDto shiftDto1 = shiftDtoList.get(0);
+        ShiftRequestDto shiftDto1 = shiftDtoList.get(0);
         assertEquals(LocalTime.of(9, 0), shiftDto1.getStartTime());
         assertEquals(LocalTime.of(17, 0), shiftDto1.getEndTime());
         assertEquals(LocalDate.now(), shiftDto1.getDate());
@@ -174,7 +174,7 @@ public class EventMapperTests {
         assertTrue(shiftDto1.getIsLeaderRequired());
         assertEquals(18, shiftDto1.getRequiredMinAge());
 
-        ShiftDto shiftDto2 = shiftDtoList.get(1);
+        ShiftRequestDto shiftDto2 = shiftDtoList.get(1);
         assertEquals(LocalTime.of(10, 0), shiftDto2.getStartTime());
         assertEquals(LocalTime.of(18, 0), shiftDto2.getEndTime());
         assertEquals(LocalDate.now(), shiftDto2.getDate());
@@ -195,7 +195,7 @@ public class EventMapperTests {
         shift.setLeaderRequired(true);
         shift.setRequiredMinAge(18);
 
-        ShiftDto shiftDto = eventMapper.mapShiftToShiftDto(shift);
+        ShiftRequestDto shiftDto = eventMapper.mapShiftToShiftDto(shift);
 
         assertEquals(LocalTime.of(9, 0), shiftDto.getStartTime());
         assertEquals(LocalTime.of(17, 0), shiftDto.getEndTime());
@@ -303,9 +303,9 @@ public class EventMapperTests {
 
     @Test
     public void testToShifts() {
-        List<ShiftDto> shiftDtoList = new ArrayList<>();
+        List<ShiftRequestDto> shiftDtoList = new ArrayList<>();
 
-        ShiftDto shiftDto1 = new ShiftDto();
+        ShiftRequestDto shiftDto1 = new ShiftRequestDto();
         shiftDto1.setStartTime(LocalTime.of(9, 0));
         shiftDto1.setEndTime(LocalTime.of(17, 0));
         shiftDto1.setDate(LocalDate.now());
@@ -313,7 +313,7 @@ public class EventMapperTests {
         shiftDto1.setCapacity(10);
         shiftDto1.setRequiredMinAge(18);
 
-        ShiftDto shiftDto2 = new ShiftDto();
+        ShiftRequestDto shiftDto2 = new ShiftRequestDto();
         shiftDto2.setStartTime(LocalTime.of(10, 0));
         shiftDto2.setEndTime(LocalTime.of(18, 0));
         shiftDto2.setDate(LocalDate.now());
