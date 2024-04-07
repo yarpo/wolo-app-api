@@ -26,7 +26,7 @@ public class OrganisationMapper {
                 .description(organisationRequestDto.getDescription())
                 .email(organisationRequestDto.getEmail())
                 .phoneNumber(organisationRequestDto.getPhoneNumber())
-                .isApproved(false)
+                .isApproved(true)
                 .logoUrl(organisationRequestDto.getLogoUrl());
     }
 

@@ -20,7 +20,6 @@ public class EventService {
     private final EventMapper eventMapper;
     private final DistrictService districtService;
     private final OrganisationService organisationService;
-    private final AddressToEventSevice addressToEventService;
     private final CategoryService categoryService;
     private final ShiftService shiftService;
     private final CategoryToEventService categoryToEventService;
