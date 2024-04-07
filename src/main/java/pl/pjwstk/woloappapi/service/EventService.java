@@ -181,7 +181,7 @@ public class EventService {
     }
 
     public List<Event> getTheyNeedYouList() {
-        var thresholdDate = LocalDate.now().minusDays(5);
+        var thresholdDate = LocalDate.now().plusDays(5);
 
         List<Event> eventsTheyNeedYou = eventRepository.findEventsForTheyNeedYou(thresholdDate);
         if (!eventsTheyNeedYou.isEmpty()) {
