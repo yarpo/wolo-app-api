@@ -26,7 +26,7 @@ public class City {
     @Column(name = "is_old")
     private boolean isOld;
 
-    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<District> districts;
 
     @OneToMany(mappedBy = "city",cascade = CascadeType.ALL)

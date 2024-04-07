@@ -35,7 +35,7 @@ public class DictionariesMapper {
         return District.builder()
                 .id(districtDto.getId())
                 .name(districtDto.getName())
-                .city(districtDto.getCity());
+                .isOld(false);
     }
 
     public RoleDto toRoleDto(Role role) {
