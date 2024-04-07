@@ -24,5 +24,7 @@ public class DistrictDto {
     @Size(max = 50, message = "District name cannot exceed 50 characters")
     private String name;
 
-
+    @NotNull
+    @Schema(name = "City id", example = "1")
+    private Long cityId;
 }

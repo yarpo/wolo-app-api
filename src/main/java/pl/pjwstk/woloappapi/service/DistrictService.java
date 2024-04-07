@@ -32,6 +32,7 @@ public class DistrictService {
 
     @Transactional
     public void createDistrict(DistrictDto districtDto) {
+
         districtRepository.save(dictionariesMapper.toDistrict(districtDto).build());
     }
 
