@@ -9,8 +9,7 @@ import pl.pjwstk.woloappapi.model.entities.Address;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -57,7 +56,7 @@ public class OrganisationMapperTests {
         assertEquals("Test Description", organisation.getDescription());
         assertEquals("test@example.com", organisation.getEmail());
         assertEquals("123456789", organisation.getPhoneNumber());
-        assertFalse(organisation.isApproved());
+        assertTrue(organisation.isApproved());
         assertEquals("http://example.com/logo", organisation.getLogoUrl());
     }
 
