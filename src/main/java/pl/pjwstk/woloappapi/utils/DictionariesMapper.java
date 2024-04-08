@@ -32,6 +32,7 @@ public class DictionariesMapper {
 
     public City.CityBuilder toCity(CityDto cityDto){
         return City.builder()
+                .id(cityDto.getId())
                 .name(cityDto.getName())
                 .isOld(false);
     }

@@ -17,7 +17,6 @@ public class CityService {
 
     private final CityRepository cityRepository;
     private final DictionariesMapper dictionariesMapper;
-
     private final DistrictService districtService;
 
     public List<City> getAllCities() {
