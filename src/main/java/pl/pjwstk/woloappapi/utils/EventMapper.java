@@ -4,28 +4,33 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.service.DistrictService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class EventMapper {
-    public Shift.ShiftBuilder toShift (ShiftDto shiftDto){
+    private final DistrictService districtService;
+    public Shift.ShiftBuilder toShift (ShiftRequestDto shiftDto){
+        var address = toAddress(shiftDto)
+                .district(districtService.getDistrictById(shiftDto.getDistrictId()))
+                .build();
         return Shift.builder()
                 .startTime(shiftDto.getStartTime())
                 .endTime(shiftDto.getEndTime())
                 .date(shiftDto.getDate())
+                .address(address)
                 .isLeaderRequired(shiftDto.getIsLeaderRequired())
                 .capacity(shiftDto.getCapacity())
                 .requiredMinAge(shiftDto.getRequiredMinAge())
                 .shiftDirections(shiftDto.getShiftDirections());
     }
-    public Address.AddressBuilder toAddress(EventRequestDto dtoEvent) {
+    public Address.AddressBuilder toAddress(ShiftRequestDto shiftDto) {
         return Address.builder()
-                .street(dtoEvent.getStreet())
-                .homeNum(dtoEvent.getHomeNum());
+                .street(shiftDto.getStreet())
+                .homeNum(shiftDto.getHomeNum());
     }
 
     public EventResponseDto toEventResponseDto(Event event) {
@@ -34,19 +39,9 @@ public class EventMapper {
         eventResponseDto.setName(event.getName());
         eventResponseDto.setOrganisation(event.getOrganisation().getName());
         eventResponseDto.setPeselVerificationRequired(event.isPeselVerificationRequired());
-        Address address = event.getAddressToEvents().get(0).getAddress();
-        eventResponseDto.setStreet(address.getStreet());
-        eventResponseDto.setHomeNum(address.getHomeNum());
-        eventResponseDto.setDistrict(address.getDistrict().getName());
-        eventResponseDto.setCity(address.getDistrict().getCity());
+        eventResponseDto.setCity(event.getCity().getName());
         eventResponseDto.setImageUrl(event.getImageUrl());
-        List<ShiftDto> shifts =
-                event.getAddressToEvents().stream()
-                        .flatMap(
-                                addressToEvent ->
-                                        mapShiftListToShiftDtoList(addressToEvent.getShifts())
-                                                .stream())
-                        .collect(Collectors.toList());
+        List<ShiftRequestDto> shifts = mapShiftListToShiftDtoList(event.getShifts());
         eventResponseDto.setShifts(shifts);
         List<String> categories = event.getCategories().stream()
                         .map(cte -> cte.getCategory().getName()).toList();
@@ -57,7 +52,7 @@ public class EventMapper {
         return eventResponseDto;
     }
 
-    private List<ShiftDto> mapShiftListToShiftDtoList(List<Shift> shifts) {
+    private List<ShiftRequestDto> mapShiftListToShiftDtoList(List<Shift> shifts) {
         return shifts.stream()
                 .map(this::mapShiftToShiftDto)
                 .collect(Collectors.toList());
@@ -70,25 +65,27 @@ public class EventMapper {
                 .endTime(shift.getEndTime())
                 .date(shift.getDate())
                 .shiftDirections(shift.getShiftDirections())
-                .eventId(shift.getAddressToEvent().getEvent().getId())
-                .eventName(shift.getAddressToEvent().getEvent().getName())
-                .address(shift.getAddressToEvent().getAddress().getStreet()
+                .eventId(shift.getEvent().getId())
+                .eventName(shift.getEvent().getName())
+                .address(shift.getAddress().getStreet()
                         + " "
-                        + shift.getAddressToEvent().getAddress().getHomeNum())
+                        + shift.getAddress().getHomeNum())
                 .build();
     }
 
-    public ShiftDto mapShiftToShiftDto(Shift shift) {
-        ShiftDto shiftDto = new ShiftDto();
+    public ShiftRequestDto mapShiftToShiftDto(Shift shift) {
+        ShiftRequestDto shiftDto = new ShiftRequestDto();
         shiftDto.setId(shift.getId());
         shiftDto.setStartTime(shift.getStartTime());
         shiftDto.setEndTime(shift.getEndTime());
         shiftDto.setDate(shift.getDate());
-        shiftDto.setSignedUp(shift.getRegisteredUsers());
         shiftDto.setCapacity(shift.getCapacity());
         shiftDto.setIsLeaderRequired(shift.isLeaderRequired());
         shiftDto.setRequiredMinAge(shift.getRequiredMinAge());
         shiftDto.setShiftDirections(shift.getShiftDirections());
+        shiftDto.setStreet(shift.getAddress().getStreet());
+        shiftDto.setHomeNum(shift.getAddress().getHomeNum());
+        shiftDto.setDistrictId(shift.getAddress().getDistrict().getId());
         return shiftDto;
     }
 
@@ -101,18 +98,10 @@ public class EventMapper {
         eventResponseDto.setDescription(event.getDescription());
         eventResponseDto.setCategories(event.getCategories().stream()
                         .map(cte ->cte.getCategory().getName()).toList());
-        Address address = event.getAddressToEvents().get(0).getAddress();
-        eventResponseDto.setStreet(address.getStreet());
-        eventResponseDto.setHomeNum(address.getHomeNum());
-        eventResponseDto.setDistrict(address.getDistrict().getName());
         eventResponseDto.setImageUrl(event.getImageUrl());
-        List<ShiftDto> shifts =
-                event.getAddressToEvents().stream()
-                        .flatMap(addressToEvent ->
-                                mapShiftListToShiftDtoList(addressToEvent.getShifts())
-                                        .stream()).toList();
-
+        List<ShiftRequestDto> shifts = mapShiftListToShiftDtoList(event.getShifts());
         eventResponseDto.setShifts(shifts);
+        eventResponseDto.setCity(event.getCity().getName());
 
         return eventResponseDto;
     }
@@ -124,12 +113,6 @@ public class EventMapper {
                 .isPeselVerificationRequired(dtoEvent.isPeselVerificationRequired())
                 .isAgreementNeeded(dtoEvent.isAgreementNeeded())
                 .imageUrl(dtoEvent.getImageUrl());
-    }
-
-    public List<Shift> toShifts(List<ShiftDto> shiftDtos) {
-        return shiftDtos.stream()
-                .map(s -> this.toShift(s).build())
-                .collect(Collectors.toList());
     }
 
     public Report.ReportBuilder toReport(ReportDto reportDto) {

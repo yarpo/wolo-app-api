@@ -35,5 +35,5 @@ public class Address {
     private List<Organisation> organisations;
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
-    private List<AddressToEvent> addressToEvents;
+    private List<Shift> shifts;
 }

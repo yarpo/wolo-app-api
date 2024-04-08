@@ -41,7 +41,7 @@ public class Event {
     private boolean isAgreementNeeded;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<AddressToEvent> addressToEvents;
+    private List<Shift> shifts;
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -52,4 +52,7 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reports;
 
+    @ManyToOne
+    @JoinColumn(name = "city_id", nullable = false)
+    private City city;
 }

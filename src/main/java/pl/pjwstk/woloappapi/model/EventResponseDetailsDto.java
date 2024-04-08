@@ -46,14 +46,11 @@ public class EventResponseDetailsDto {
 
     private List<String> categories;
 
-    private String street;
-
-    private String homeNum;
-
-    private String district;
-
     private String imageUrl;
 
-    private List<ShiftDto> shifts;
+    private List<ShiftRequestDto> shifts;
+
+    @Schema(name = "City name", example = "New York City")
+    private String city;
 
 }

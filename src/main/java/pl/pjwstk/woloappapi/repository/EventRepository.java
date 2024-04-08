@@ -13,32 +13,28 @@ import java.util.List;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long>, EventRepositoryCustom {
     @Query("SELECT DISTINCT e FROM Event e " +
-            "JOIN e.addressToEvents ae " +
-            "JOIN ae.shifts s " +
+            "JOIN e.shifts s " +
             "JOIN s.shiftToUsers stu " +
             "JOIN stu.user u " +
             "WHERE u.id = :userId")
     List<Event> findEventsByUserId(@Param("userId") Long userId);
 
     @Query("SELECT e FROM Event e " +
-            "JOIN e.addressToEvents ae " +
-            "JOIN ae.shifts s " +
-            "WHERE s.date >= CURRENT_DATE " +
+            "JOIN e.shifts s " +
+            "WHERE s.date > CURRENT_DATE " +
             "AND e.approved = true ")
     List<Event> findAllNotBeforeNow();
 
     @Query("SELECT e FROM Event e " +
-            "JOIN e.addressToEvents ae " +
-            "JOIN ae.shifts s " +
+            "JOIN e.shifts s " +
             "WHERE s.date < :thresholdDate " +
-            "AND s.date >= CURRENT_DATE " +
+            "AND s.date > CURRENT_DATE " +
             "AND e.approved = true " +
             "ORDER BY s.date ASC")
     List<Event> findEventsForTheyNeedYou(LocalDate thresholdDate);
 
     @Query("SELECT e FROM Event e " +
-            "JOIN e.addressToEvents ae " +
-            "JOIN ae.shifts s " +
+            "JOIN e.shifts s " +
             "WHERE s.date > CURRENT_DATE " +
             "AND e.approved = true " +
             "ORDER BY s.date ASC")

@@ -24,8 +24,8 @@ public class Shift {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_to_event_id", nullable = false)
-    private AddressToEvent addressToEvent;
+    @JoinColumn(name = "event_id", nullable = false)
+    private Event event;
 
     @OneToMany(mappedBy = "shift")
     private List<ShiftToUser> shiftToUsers;
@@ -51,15 +51,18 @@ public class Shift {
     @Column(name = "registered")
     private int registeredUsers;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
+
     @Column(name = "directions")
     private String shiftDirections;
-
 
     @Override
     public String toString() {
         return "Shift{" +
                 "id=" + id +
-                ", event=" + addressToEvent.getEvent().getName() +
+                ", event=" + event.getName() +
                 ", shiftToUsers=" + shiftToUsers +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
@@ -68,6 +71,7 @@ public class Shift {
                 ", isLeaderRequired=" + isLeaderRequired +
                 ", requiredMinAge=" + requiredMinAge +
                 ", registeredUsers=" + registeredUsers +
+                ", address=" + address +
                 ", shiftDirections='" + shiftDirections + '\'' +
                 '}';
     }

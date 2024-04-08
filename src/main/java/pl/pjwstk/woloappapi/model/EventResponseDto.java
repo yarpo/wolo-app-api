@@ -24,12 +24,6 @@ public class EventResponseDto {
 
     private boolean isPeselVerificationRequired;
 
-    private String street;
-
-    private String homeNum;
-
-    private String district;
-
     private List<String> categories;
 
     @Schema(name = "City name", example = "New York City")
@@ -37,5 +31,5 @@ public class EventResponseDto {
 
     private String imageUrl;
 
-    private List<ShiftDto> shifts;
+    private List<ShiftRequestDto> shifts;
 }

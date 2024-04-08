@@ -1,20 +1,40 @@
 package pl.pjwstk.woloappapi.utils;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.CategoryDto;
+import pl.pjwstk.woloappapi.model.CityDto;
+import pl.pjwstk.woloappapi.model.DistrictDto;
+import pl.pjwstk.woloappapi.model.RoleDto;
 import pl.pjwstk.woloappapi.model.entities.Category;
+import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.model.entities.District;
 import pl.pjwstk.woloappapi.model.entities.Role;
 
 @Component
+@RequiredArgsConstructor
 public class DictionariesMapper {
-
     public DistrictDto toDistrictDto(District district){
         DistrictDto districtDto = new DistrictDto();
         districtDto.setId(district.getId());
         districtDto.setName(district.getName());
-        districtDto.setCity(district.getCity());
+        districtDto.setCityId(district.getCity().getId());
         return districtDto;
+    }
+
+    public CityDto toCityDto(City city){
+        CityDto cityDto = new CityDto();
+        cityDto.setId(city.getId());
+        cityDto.setName(city.getName());
+        cityDto.setDistricts(city.getDistricts().stream().map(District::getId).toList());
+        return cityDto;
+    }
+
+    public City.CityBuilder toCity(CityDto cityDto){
+        return City.builder()
+                .id(cityDto.getId())
+                .name(cityDto.getName())
+                .isOld(false);
     }
 
     public CategoryDto toCategoryDto(Category category){
@@ -35,7 +55,7 @@ public class DictionariesMapper {
         return District.builder()
                 .id(districtDto.getId())
                 .name(districtDto.getName())
-                .city(districtDto.getCity());
+                .isOld(false);
     }
 
     public RoleDto toRoleDto(Role role) {

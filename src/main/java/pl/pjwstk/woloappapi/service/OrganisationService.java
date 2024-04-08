@@ -3,15 +3,16 @@ package pl.pjwstk.woloappapi.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pjwstk.woloappapi.model.*;
-import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
+import pl.pjwstk.woloappapi.model.entities.Event;
+import pl.pjwstk.woloappapi.model.entities.Organisation;
+import pl.pjwstk.woloappapi.repository.AddressRepository;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -20,6 +21,7 @@ public class OrganisationService {
     private final OrganisationMapper organisationMapper;
     private final DistrictService districtService;
     private final UserRepository userRepository;
+    private final AddressRepository addressRepository;
 
     public List<Organisation> getAllOrganisations() {
         return organisationRepository.findAll();
@@ -31,13 +33,16 @@ public class OrganisationService {
     }
     @Transactional
     public void createOrganisation(OrganisationRequestDto organisationDto) {
-        District district = districtService.getDistrictById(organisationDto.getDistrictId());
-        Address address = organisationMapper.toAddress(organisationDto).build();
-        Organisation organisation = organisationMapper.toOrganisation(organisationDto).build();
-        address.setDistrict(district);
-        organisation.setAddress(address);
-        Optional<User> user = userRepository.findById(organisationDto.getModeratorId());
-        user.ifPresent(organisation::setModerator);
+        var district = districtService.getDistrictById(organisationDto.getDistrictId());
+        var user = userRepository.findById(organisationDto.getModeratorId())
+                .orElseThrow(()-> new NotFoundException("User id not found!"));
+        var address = addressRepository.save(organisationMapper.toAddress(organisationDto)
+                .district(district)
+                .build());
+        var organisation = organisationMapper.toOrganisation(organisationDto)
+                .moderator(user)
+                .address(address)
+                .build();
         organisationRepository.save(organisation);
     }
 
@@ -51,10 +56,9 @@ public class OrganisationService {
         organisation.setDescription(organisationDto.getDescription());
         organisation.setEmail(organisationDto.getEmail());
         organisation.setPhoneNumber(organisationDto.getPhoneNumber());
-        organisation.setApproved(false);
         organisation.setLogoUrl(organisationDto.getLogoUrl());
 
-        Address address = organisation.getAddress();
+        var address = organisation.getAddress();
         address.setStreet(organisationDto.getStreet());
         address.setHomeNum(organisationDto.getHomeNum());
         address.setDistrict(districtService.getDistrictById(organisationDto.getDistrictId()));

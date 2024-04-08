@@ -17,7 +17,7 @@ public class ShiftService {
     public Shift getShiftById(long id){
         return shiftRepository.findById(id).orElseThrow(() -> new NotFoundException("Event id not found!"));
     }
-    @Transactional
+
     public void createShift(Shift shift) {
         shiftRepository.save(shift);
     }
