@@ -28,7 +28,7 @@ public class District {
     private boolean isOld;
 
     @ManyToOne
-    @JoinColumn(name = "district_id", nullable = false)
+    @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
