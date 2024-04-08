@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,5 +23,7 @@ public class CityDto {
     @Schema(name = "City name", example = "New York City")
     @NotBlank(message = "City is required")
     @Size(max = 50, message = "City cannot exceed 50 characters")
-    private String city;
+    private String name;
+
+    private List<Long> districts;
 }
