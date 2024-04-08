@@ -10,13 +10,10 @@ import pl.pjwstk.woloappapi.model.entities.Category;
 import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.model.entities.District;
 import pl.pjwstk.woloappapi.model.entities.Role;
-import pl.pjwstk.woloappapi.service.DistrictService;
 
 @Component
 @RequiredArgsConstructor
 public class DictionariesMapper {
-    private final DistrictService districtService;
-
     public DistrictDto toDistrictDto(District district){
         DistrictDto districtDto = new DistrictDto();
         districtDto.setId(district.getId());
@@ -33,13 +30,10 @@ public class DictionariesMapper {
         return cityDto;
     }
 
-    public City toCity(CityDto cityDto){
-        var districts = cityDto.getDistricts().stream().map(districtService::getDistrictById).toList();
+    public City.CityBuilder toCity(CityDto cityDto){
         return City.builder()
                 .name(cityDto.getName())
-                .isOld(false)
-                .districts(districts)
-                .build();
+                .isOld(false);
     }
 
     public CategoryDto toCategoryDto(Category category){

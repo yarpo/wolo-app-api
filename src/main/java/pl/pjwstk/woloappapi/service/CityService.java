@@ -17,7 +17,9 @@ public class CityService {
 
     private final CityRepository cityRepository;
     private final DictionariesMapper dictionariesMapper;
+
     private final DistrictService districtService;
+
     public List<City> getAllCities() {
         return cityRepository.findAll();
     }
@@ -28,7 +30,8 @@ public class CityService {
 
     @Transactional
     public void createCity(CityDto cityDto) {
-        var city = dictionariesMapper.toCity(cityDto);
+        var districts = cityDto.getDistricts().stream().map(districtService::getDistrictById).toList();
+        var city = dictionariesMapper.toCity(cityDto).districts(districts).build();
         cityRepository.save(city);
     }
 
