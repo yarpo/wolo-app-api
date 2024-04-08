@@ -35,8 +35,16 @@ ALTER TABLE shift
         IF NOT EXISTS address_id BIGINT;
 
 ALTER TABLE shift
+    ADD COLUMN event_id BIGINT;
+
+ALTER TABLE shift
     ADD CONSTRAINT fk_shift_address
         FOREIGN KEY (address_id)
             REFERENCES address (id);
+
+ALTER TABLE shift
+    ADD CONSTRAINT fk_shift_event
+        FOREIGN KEY (event_id)
+            REFERENCES event (id);
 
 DROP TABLE IF EXISTS address_to_event;
