@@ -16,7 +16,8 @@ import java.util.List;
 
 @Repository
 public class EventRepositoryImpl implements EventRepositoryCustom {
-    @PersistenceContext private EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public List<Event> findAllByFilter(
@@ -63,18 +64,16 @@ public class EventRepositoryImpl implements EventRepositoryCustom {
         if (localizations != null && localizations.length > 0) {
             List<Predicate> orPredicates =
                     Arrays.stream(localizations)
-                            .map(
-                                    localization -> {
-                                        Join<Event, AddressToEvent> addressToEventJoin =
-                                                root.join("addressToEvents", JoinType.INNER);
-                                        Join<AddressToEvent, Address> addressJoin =
-                                                addressToEventJoin.join("address", JoinType.INNER);
+                            .map(localization -> {
+                                        Join<Event, Shift> shiftJoin =
+                                                root.join("shifts", JoinType.INNER);
+                                        Join<Shift, Address> addressJoin =
+                                                shiftJoin.join("address", JoinType.INNER);
                                         Join<Address, District> districtJoin =
                                                 addressJoin.join("district", JoinType.INNER);
                                         return criteriaBuilder.equal(
                                                 districtJoin.get("name"), localization);
-                                    })
-                            .toList();
+                                    }).toList();
 
             predicates.add(criteriaBuilder.or(orPredicates.toArray(new Predicate[0])));
         }
@@ -87,19 +86,15 @@ public class EventRepositoryImpl implements EventRepositoryCustom {
             Root<Event> root,
             List<Predicate> predicates) {
         if (startDate != null) {
-            Join<Event, AddressToEvent> addressToEventJoin =
-                    root.join("addressToEvents", JoinType.INNER);
-            Join<AddressToEvent, Shift> shiftJoin =
-                    addressToEventJoin.join("shifts", JoinType.INNER);
+            Join<Event, Shift> shiftJoin =
+                    root.join("shifts", JoinType.INNER);
 
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(shiftJoin.get("date"), startDate));
         }
 
         if (endDate != null) {
-            Join<Event, AddressToEvent> addressToEventJoin =
-                    root.join("addressToEvents", JoinType.INNER);
-            Join<AddressToEvent, Shift> shiftJoin =
-                    addressToEventJoin.join("shifts", JoinType.INNER);
+            Join<Event, Shift> shiftJoin =
+                    root.join("shifts", JoinType.INNER);
 
             predicates.add(criteriaBuilder.lessThanOrEqualTo(shiftJoin.get("date"), endDate));
         }
@@ -113,8 +108,8 @@ public class EventRepositoryImpl implements EventRepositoryCustom {
         if (categories != null && categories.length > 0) {
             List<Predicate> orPredicates =
                     Arrays.stream(categories)
-                            .map(
-                                    category -> {
+                            .map(category ->
+                            {
                                         Join<Event, CategoryToEvent> categoryToEventJoin =
                                                 root.join("categories", JoinType.INNER);
                                         Join<CategoryToEvent, Category> categoryJoin =
@@ -122,8 +117,7 @@ public class EventRepositoryImpl implements EventRepositoryCustom {
                                                         "category", JoinType.INNER);
                                         return criteriaBuilder.equal(
                                                 categoryJoin.get("id"), category);
-                                    })
-                            .toList();
+                                    }).toList();
 
             predicates.add(criteriaBuilder.or(orPredicates.toArray(new Predicate[0])));
         }
@@ -147,10 +141,8 @@ public class EventRepositoryImpl implements EventRepositoryCustom {
             Root<Event> root,
             List<Predicate> predicates) {
         if (ageRestriction != null) {
-            Join<Event, AddressToEvent> addressToEventJoin =
-                    root.join("addressToEvents", JoinType.INNER);
-            Join<AddressToEvent, Shift> shiftJoin =
-                    addressToEventJoin.join("shifts", JoinType.INNER);
+            Join<Event, Shift> shiftJoin =
+                    root.join("shifts", JoinType.INNER);
 
             predicates.add(
                     criteriaBuilder.greaterThanOrEqualTo(
@@ -176,10 +168,8 @@ public class EventRepositoryImpl implements EventRepositoryCustom {
             Root<Event> root,
             List<Predicate> predicates) {
         if (Boolean.TRUE.equals(sortByAvailableCapacity)) {
-            Join<Event, AddressToEvent> addressToEventJoin =
-                    root.join("addressToEvents", JoinType.INNER);
-            Join<AddressToEvent, Shift> shiftJoin =
-                    addressToEventJoin.join("shifts", JoinType.INNER);
+            Join<Event, Shift> shiftJoin =
+                    root.join("shifts", JoinType.INNER);
 
             predicates.add(
                     criteriaBuilder.greaterThan(
