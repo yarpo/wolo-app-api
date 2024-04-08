@@ -23,7 +23,6 @@ public class DistrictService {
         return districtRepository
             .findAll()
             .stream()
-            .filter(d -> d.isOld() == false)
             .toList();
     }
 
