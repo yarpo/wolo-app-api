@@ -278,6 +278,125 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+  /cities:
+    get:
+      tags:
+        - Cities
+      summary: Show all cities
+      operationId: getAllCities
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CityDto'
+  /cities/{id}:
+    get:
+      tags:
+        - Cities
+      summary: Get city by id
+      description: City must exist
+      operationId: getCityById
+      parameters:
+        - name: id
+          in: path
+          description: City id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CityDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /cities/add:
+    post:
+      tags:
+        - Cities
+      summary: Adding new city
+      description: id = null
+      operationId: addCity
+      parameters:
+        - name: city
+          in: query
+          description: CityDto object to create
+          schema:
+            $ref: '#/components/schemas/CityDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CityDto'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /cities/delete/{id}:
+    delete:
+      tags:
+        - Cities
+      summary: Delete city
+      description: >-
+        City will not be removed from DB, but isOld property will became
+        true
+      operationId: deleteCity
+      parameters:
+        - name: id
+          in: path
+          description: City id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /cities/edit:
+    put:
+      tags:
+        - Cities
+      summary: Edit city
+      description: City must exist
+      operationId: editCity
+      parameters:
+        - name: city
+          in: query
+          description: cityDto object with changes
+          schema:
+            $ref: '#/components/schemas/CityDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CityDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
   /roles/add:
     post:
       tags:
@@ -589,10 +708,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserResponseDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /users/{id}:
     get:
       tags:

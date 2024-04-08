@@ -49,7 +49,19 @@ public class CityService {
         var city = cityRepository.findById(cityDto.getId())
                 .orElseThrow(() ->
                         new IllegalArgumentException("City with ID " + cityDto.getId() + " does not exist"));
-        //TO DO
+        updateCityDistricts(city, cityDto);
+        city.setName(cityDto.getName());
         cityRepository.save(city);
+    }
+
+    private void updateCityDistricts(City city, CityDto cityDto) {
+        city.getDistricts().removeIf(d ->!cityDto.getDistricts()
+                .contains(d.getId()));
+
+        cityDto.getDistricts().stream()
+                .filter(districtDto -> city.getDistricts().stream()
+                        .noneMatch(existingDistrict -> existingDistrict.getId().equals(districtDto)))
+                .map(districtService::getDistrictById)
+                .forEach(city.getDistricts()::add);
     }
 }
