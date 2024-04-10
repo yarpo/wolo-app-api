@@ -42,6 +42,7 @@ public class UserMapper {
         ShiftResponseDto shiftResponseDto = new ShiftResponseDto();
         shiftResponseDto.setShiftId(shiftToUser.getShift().getId());
         shiftResponseDto.setEventId(shiftToUser.getShift().getEvent().getId());
+        shiftResponseDto.setEventName(shiftToUser.getShift().getEvent().getName());
         shiftResponseDto.setStartTime(shiftToUser.getShift().getStartTime());
         shiftResponseDto.setEndTime(shiftToUser.getShift().getEndTime());
         shiftResponseDto.setDate(shiftToUser.getShift().getDate());
