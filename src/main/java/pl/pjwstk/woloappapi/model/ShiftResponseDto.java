@@ -21,6 +21,8 @@ public class ShiftResponseDto {
     @Schema(name = "Event ID", example = "1")
     private Long eventId;
 
+    private String eventName;
+
     private LocalTime startTime;
 
     private LocalTime endTime;
