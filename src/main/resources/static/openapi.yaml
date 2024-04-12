@@ -997,6 +997,31 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+  /events/users:
+    get:
+      tags:
+        - Event
+      summary: Get short information about users by shift id
+      description: shift must exist
+      operationId: getUsersByShift
+      parameters:
+        - name: shift
+          in: query
+          description: shift id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserShortResponse'
   /events/search:
     get:
       tags:

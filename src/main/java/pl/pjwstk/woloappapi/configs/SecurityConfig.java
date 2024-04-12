@@ -50,11 +50,11 @@ public class SecurityConfig {
                     auth.requestMatchers(GET, "/events/**").permitAll();
                     auth.requestMatchers(OPTIONS,"/events/join").permitAll();
                     auth.requestMatchers( "/events/join").hasAuthority("JOIN_EVENT");
-                    auth.requestMatchers("events/refuse").hasAuthority("JOIN_EVENT");
-                    auth.requestMatchers("events/add").hasAuthority("CREATE_EVENT");
-                    auth.requestMatchers(PUT, "events/**").hasAuthority("EDIT_EVENT");
+                    auth.requestMatchers("/events/refuse").hasAuthority("JOIN_EVENT");
+                    auth.requestMatchers("/events/add").hasAuthority("CREATE_EVENT");
+                    auth.requestMatchers(PUT, "/events/**").hasAuthority("EDIT_EVENT");
                     auth.requestMatchers(DELETE, "/events/**").hasAuthority("DELETE_EVENT");
-                    auth.requestMatchers(GET, "/events/users").hasAuthority("READ_USERS_BY_SHIFT");
+                    auth.requestMatchers("/events/users**").hasAuthority("READ_USERS_BY_SHIFT");
                     auth.requestMatchers( "/reports/one/**").permitAll();
                     auth.requestMatchers("/reports/all").hasAuthority("READ_REPORTS");
                     auth.requestMatchers(POST, "/reports/**").hasAuthority("CREATE_REPORT");
