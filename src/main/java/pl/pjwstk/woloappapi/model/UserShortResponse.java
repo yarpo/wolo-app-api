@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 public class UserShortResponse {
 
-    @Schema(name = "firstname", example = "Jhon")
+    @Schema(name = "firstname", example = "John")
     private String firstName;
 
     @Schema(name = "lastname", example = "Doe")
