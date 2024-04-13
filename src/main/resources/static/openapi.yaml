@@ -1022,6 +1022,41 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserShortResponse'
+
+  /events/users/pdf:
+    get:
+      tags:
+        - Event
+      summary: Get PDF report with list of users signed up to shifts on this event
+      description: |
+        Retrieves a PDF report containing short information about users assigned to a specific shift.
+        The PDF report will contain details such as user names, phone numbers, and emails for the specified shift.
+      operationId: getListOfUsersAsPDF
+      parameters:
+        - name: id
+          in: query
+          description: ID of the event for which to generate the PDF report
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: PDF report generated successfully
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+              example: <binary PDF data>
+        '400':
+          description: Bad request
+        '404':
+          description: Event not found
+        '500':
+          description: Internal server error
+
   /events/search:
     get:
       tags:
