@@ -4,20 +4,29 @@ package pl.pjwstk.woloappapi.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.EventRequestDto;
+import pl.pjwstk.woloappapi.model.EventResponseDetailsDto;
+import pl.pjwstk.woloappapi.model.EventResponseDto;
+import pl.pjwstk.woloappapi.model.UserShortResponse;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.service.EventService;
+import pl.pjwstk.woloappapi.service.PDFGenerationService;
 import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.MediaType.APPLICATION_PDF;
 
 @RestController
 @AllArgsConstructor
@@ -28,6 +37,8 @@ public class EventController {
     private final EventMapper eventMapper;
     private final UserService userService;
     private final UserMapper userMapper;
+
+    private final PDFGenerationService pdfGenerationService;
 
 
     @GetMapping("")
@@ -140,5 +151,22 @@ public class EventController {
                 .map(eventMapper::toEventResponseDto)
                 .toList();
         return new ResponseEntity<>(respons, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/pdf")
+    public ResponseEntity<ByteArrayResource> getListOfUsersAsPDF(
+            @RequestParam(value = "id") Long eventId) throws IOException {
+        var shifts = eventService.getEventById(eventId).getShifts();
+        var pdfBytes = pdfGenerationService.generatePDFForAllShifts(shifts);
+
+        var headers = new HttpHeaders();
+        headers.setContentType(APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "users_on_shifts.pdf");
+
+        ByteArrayResource resource = new ByteArrayResource(pdfBytes);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(resource);
     }
 }
