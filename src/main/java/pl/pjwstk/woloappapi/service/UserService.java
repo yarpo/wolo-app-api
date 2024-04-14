@@ -133,11 +133,7 @@ public class UserService {
     public void refuse(Long userId, Long shiftId) {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.out.println("user: " + user.getId());
         var shift = shiftService.getShiftById(shiftId);
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.out.println("shift: " + shift.getId());
         if (shift.getDate().isAfter(LocalDate.now())) {
             var shiftToUser = shift.getShiftToUsers()
                     .stream()
@@ -145,8 +141,6 @@ public class UserService {
                     .findFirst();
             System.out.println("shiftToUser: " + shiftToUser.get().getId() + " " + shiftToUser.get().getUser().getId() + " " + shiftToUser.get().getShift().getId());
             if(shiftToUser.isPresent()){
-                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                System.out.println("if present");
                 shift.getShiftToUsers().remove(shiftToUser.get());
 
                 shiftToUserRepository.delete(shiftToUser.get());
