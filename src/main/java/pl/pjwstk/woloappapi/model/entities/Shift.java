@@ -23,7 +23,7 @@ public class Shift {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
@@ -51,7 +51,7 @@ public class Shift {
     @Column(name = "registered")
     private int registeredUsers;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 

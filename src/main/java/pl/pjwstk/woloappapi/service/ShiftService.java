@@ -35,6 +35,7 @@ public class ShiftService {
         }
     }
 
+    @Transactional
     public void editShift(Shift shift) {
         shiftRepository.save(shift);
     }

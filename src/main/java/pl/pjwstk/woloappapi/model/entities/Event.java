@@ -31,7 +31,7 @@ public class Event {
     @JoinColumn(name = "organisation_id", nullable = false)
     private Organisation organisation;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "event", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<CategoryToEvent> categories;
 
     @Column(name = "is_pesel_ver_req", nullable = false)
