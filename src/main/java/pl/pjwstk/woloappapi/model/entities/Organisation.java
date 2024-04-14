@@ -46,6 +46,6 @@ public class Organisation {
     @Column(name = "logo_url")
     private String logoUrl;
 
-    @OneToMany(mappedBy = "organisation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "organisation", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Event> events;
 }

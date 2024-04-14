@@ -74,13 +74,25 @@ public class OrganisationService {
                 .orElseThrow(() -> new NotFoundException("Organizer id not found!"));
     }
 
+    @Transactional
     public void approve(Long organisationId) {
         var organisation = organisationRepository.findById(organisationId);
-        organisation.ifPresent(o -> o.setApproved(true));
+        if(organisation.isPresent()) {
+            organisation.get().setApproved(true);
+            organisationRepository.save(organisation.get());
+        }else{
+            throw new IllegalArgumentException("Organisation id does not exist");
+        }
     }
 
+    @Transactional
     public void disapprove(Long organisationId) {
         var organisation = organisationRepository.findById(organisationId);
-        organisation.ifPresent(o -> o.setApproved(false));
+        if(organisation.isPresent()) {
+            organisation.get().setApproved(false);
+            organisationRepository.save(organisation.get());
+        }else{
+            throw new IllegalArgumentException("Organisation id does not exist");
+        }
     }
 }

@@ -135,21 +135,22 @@ public class UserService {
     }
 
     public void refuse(Long userId, Long shiftId) {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         var shift = shiftService.getShiftById(shiftId);
         if (shift.getDate().isAfter(LocalDate.now())) {
-            var shiftToUser = shift.getShiftToUsers()
-                    .stream()
-                    .filter(stu -> stu.getUser().getId().equals(user.getId()))
-                    .findFirst();
-            System.out.println("shiftToUser: " + shiftToUser.get().getId() + " " + shiftToUser.get().getUser().getId() + " " + shiftToUser.get().getShift().getId());
-            if(shiftToUser.isPresent()){
-                shift.getShiftToUsers().remove(shiftToUser.get());
+            var userAssignedToShift = shift.getShiftToUsers().stream()
+                    .anyMatch(stu -> stu.getUser().getId().equals(userId));
+            if (userAssignedToShift) {
+                var shiftToUser = shift.getShiftToUsers().stream()
+                        .filter(stu -> stu.getUser().getId().equals(userId))
+                        .findFirst()
+                        .orElseThrow();
 
-                shiftToUserRepository.delete(shiftToUser.get());
+                shift.getShiftToUsers().remove(shiftToUser);
                 shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
                 shiftService.editShift(shift);
+                shiftToUserRepository.delete(shiftToUser);
+            }else {
+                throw new IllegalArgumentException("This user is not assigned to shift with id " + shiftId);
             }
         }else{
             throw new IllegalArgumentException("Can't refuse take part in event that has already taken place");
