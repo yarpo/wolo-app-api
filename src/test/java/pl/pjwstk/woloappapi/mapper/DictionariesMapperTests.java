@@ -32,7 +32,7 @@ public class DictionariesMapperTests {
 
         assertEquals(1L, districtDto.getId());
         assertEquals("Sample District", districtDto.getName());
-        assertEquals(1L, districtDto.getCityId());
+        assertEquals("Sample City", districtDto.getCityName());
     }
 
     @Test

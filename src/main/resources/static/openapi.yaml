@@ -1,6 +1,7 @@
 openapi: 3.0.1
 info:
   title: WoloApp
+  version: "1.0.0"
   description: >-
     The WoloApp API facilitates the management of events and user participation
     through Create, Read, Update, and Delete operations. It allows users to
@@ -692,7 +693,7 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-          
+
   /users:
     get:
       tags:
@@ -1378,7 +1379,7 @@ components:
           schema:
             type: string
             enum:
-              - 201 CREATED          
+              - 201 CREATED
     NoContentResponse:
       description: No content
       content:
@@ -1402,7 +1403,7 @@ components:
       content:
         application/hal+json:
           schema:
-            type: string           
+            type: string
   schemas:
     UserRequestDto:
       required:
@@ -1687,6 +1688,26 @@ components:
           minLength: 0
           type: string
           example: Health
+    CityDto:
+      required:
+        - City name
+      type: object
+      properties:
+        Category ID:
+          type: integer
+          format: int64
+          example: 1
+        Category title:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Health
+        districts:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/DistrictDto'
     AuthenticationRespons:
       type: object
       properties:

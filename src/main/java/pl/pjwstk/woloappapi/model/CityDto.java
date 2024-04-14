@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CityDto {
-    @Schema(name = "District ID", example = "1")
+    @Schema(name = "City ID", example = "1")
     private Long id;
 
     @NotNull

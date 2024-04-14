@@ -34,9 +34,9 @@ public class DistrictService {
 
     @Transactional
     public void createDistrict(DistrictDto districtDto) {
-        var city = cityRepository.findById(districtDto.getCityId())
+        var city = cityRepository.findByName(districtDto.getCityName())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("City with ID " + districtDto.getCityId() + " does not exist"));
+                        new IllegalArgumentException("City " + districtDto.getCityName() + " does not exist"));
         var district = dictionariesMapper.toDistrict(districtDto)
                 .city(city)
                 .build();
@@ -56,9 +56,9 @@ public class DistrictService {
 
     @Transactional
     public void updateDistrict(DistrictDto districtDto) {
-        var city = cityRepository.findById(districtDto.getCityId())
+        var city = cityRepository.findByName(districtDto.getCityName())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("City with ID " + districtDto.getCityId() + " does not exist"));
+                        new IllegalArgumentException("City " + districtDto.getCityName() + " does not exist"));
         var district = districtRepository
                 .findById(districtDto.getId())
                 .orElseThrow(() ->
