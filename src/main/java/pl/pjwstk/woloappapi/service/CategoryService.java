@@ -7,6 +7,7 @@ import pl.pjwstk.woloappapi.model.entities.Category;
 import pl.pjwstk.woloappapi.model.CategoryDto;
 import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;

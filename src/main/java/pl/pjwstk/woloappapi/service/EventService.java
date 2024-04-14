@@ -10,6 +10,7 @@ import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.utils.EventMapper;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.repository.ShiftRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 
 import java.time.LocalDate;
 

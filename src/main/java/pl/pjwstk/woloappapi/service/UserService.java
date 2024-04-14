@@ -12,6 +12,7 @@ import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 
 import java.time.LocalDate;
 import java.util.List;
