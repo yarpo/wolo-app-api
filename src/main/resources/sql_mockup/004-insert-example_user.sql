@@ -10,6 +10,7 @@ INSERT INTO user_to_role (role_id, user_id) VALUES
                                                 (1, 2),
                                                 (3, 3),
                                                 (2, 3),
+                                                (2, 4),
                                                 (3, 4);
 
 INSERT INTO shift_to_user ( user_id, shift_id, is_on_reserve_list, is_leader) VALUES
