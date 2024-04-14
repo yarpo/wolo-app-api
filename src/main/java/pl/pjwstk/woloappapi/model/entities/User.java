@@ -101,7 +101,7 @@ public class User implements UserDetails {
     @Override
     public String toString() {
         var organisationString =(organisation != null) ? String.valueOf(organisation.getId()) : "null";
-        String roleNames = roles.stream()
+        var roleNames = roles.stream()
                 .map(Role::getName)
                 .collect(Collectors.joining(", "));
 

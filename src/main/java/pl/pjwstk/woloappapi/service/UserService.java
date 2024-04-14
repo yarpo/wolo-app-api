@@ -4,9 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.UserRequestDto;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
-import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
@@ -132,17 +131,28 @@ public class UserService {
     }
 
     public void refuse(Long userId, Long shiftId) {
-        User user = userRepository.findById(userId)
+        var user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
-        Shift shift = shiftService.getShiftById(shiftId);
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println("user: " + user.getId());
+        var shift = shiftService.getShiftById(shiftId);
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println("shift: " + shift.getId());
         if (shift.getDate().isAfter(LocalDate.now())) {
             var shiftToUser = shift.getShiftToUsers()
                     .stream()
-                    .filter(stu -> stu.getUser().equals(user))
+                    .filter(stu -> stu.getUser().getId().equals(user.getId()))
                     .findFirst();
-            shiftToUser.ifPresent(shiftToUserRepository::delete);
-            shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
-            shiftService.editShift(shift);
+            System.out.println("shiftToUser: " + shiftToUser.get().getId() + " " + shiftToUser.get().getUser().getId() + " " + shiftToUser.get().getShift().getId());
+            if(shiftToUser.isPresent()){
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                System.out.println("if present");
+                shift.getShiftToUsers().remove(shiftToUser.get());
+
+                shiftToUserRepository.delete(shiftToUser.get());
+                shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
+                shiftService.editShift(shift);
+            }
         }else{
             throw new IllegalArgumentException("Can't refuse take part in event that has already taken place");
         }
