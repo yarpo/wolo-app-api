@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.service.RoleService;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import java.io.IOException;

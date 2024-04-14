@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/").permitAll();
+                    auth.requestMatchers("/error**").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers("/openapi.yaml").permitAll();
                     auth.requestMatchers("/api-docs/**").permitAll();

@@ -7,6 +7,7 @@ import pl.pjwstk.woloappapi.model.entities.Role;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 
 import java.util.List;
 

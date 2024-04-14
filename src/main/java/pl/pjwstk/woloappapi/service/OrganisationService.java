@@ -9,6 +9,7 @@ import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.repository.AddressRepository;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
 

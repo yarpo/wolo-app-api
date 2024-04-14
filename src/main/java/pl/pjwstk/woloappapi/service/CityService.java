@@ -7,6 +7,7 @@ import pl.pjwstk.woloappapi.model.CityDto;
 import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.repository.CityRepository;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
