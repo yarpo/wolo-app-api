@@ -59,6 +59,7 @@ public class SecurityConfig {
                     auth.requestMatchers(PUT, "/events/**").hasAuthority("EDIT_EVENT");
                     auth.requestMatchers(DELETE, "/events/**").hasAuthority("DELETE_EVENT");
                     auth.requestMatchers("/events/users**").hasAuthority("READ_USERS_BY_SHIFT");
+                    auth.requestMatchers(OPTIONS, "/events/users/pdf").permitAll();
                     auth.requestMatchers("/events/users/pdf").hasAuthority("USERS_LIST_PDF");
 
                     auth.requestMatchers( "/reports/one/**").permitAll();
