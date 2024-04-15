@@ -1,6 +1,10 @@
 package pl.pjwstk.woloappapi.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +17,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventResponseDetailsDto {
+
+    @Schema(name = "Event ID", example = "1")
+    private Long id;
 
     @Schema(name = "Event title", example = "Animal shelter assistance")
     private String name;

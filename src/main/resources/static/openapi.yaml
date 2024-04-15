@@ -1003,7 +1003,7 @@ paths:
       tags:
         - Event
       summary: Get short information about users by shift id
-      description: shift must exist
+      description: Shift must exist
       operationId: getUsersByShift
       parameters:
         - name: shift
@@ -1447,6 +1447,31 @@ components:
           type: boolean
         adult:
           type: boolean
+    UserShortResponse:
+      required:
+        - firstname
+        - lastname
+        - email
+        - phoneNumber
+      type: object
+      properties:
+        firstname:
+          maxLength: 50
+          minLength: 0
+          type: string
+        lastname:
+          maxLength: 50
+          minLength: 0
+          type: string
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
     RoleDto:
       required:
         - name
@@ -1764,6 +1789,7 @@ components:
           type: boolean
     EventResponseDto:
       required:
+        - Event Id
         - City name
         - Organisation
         - Organisation ID
@@ -1774,11 +1800,11 @@ components:
         - street
       type: object
       properties:
-        Organisation ID:
+        event:
           type: integer
           format: int64
           example: 1
-        Organisation:
+        name:
           type: string
           example: 'Compassion Paws: Animal Shelter Support Initiative'
         organisation:
@@ -1875,6 +1901,7 @@ components:
           type: string
     EventResponseDetailsDto:
       required:
+        - Event ID
         - Event description
         - Event title
         - Organisation
@@ -1886,6 +1913,10 @@ components:
         - street
       type: object
       properties:
+        Event ID:
+          type: integer
+          format: int64
+          example: 1
         Event title:
           maxLength: 250
           minLength: 0

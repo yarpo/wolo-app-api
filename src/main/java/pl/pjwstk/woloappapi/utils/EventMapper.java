@@ -91,6 +91,7 @@ public class EventMapper {
 
     public EventResponseDetailsDto toEventResponseDetailsDto(Event event) {
         EventResponseDetailsDto eventResponseDto = new EventResponseDetailsDto();
+        eventResponseDto.setId(event.getId());
         eventResponseDto.setName(event.getName());
         eventResponseDto.setOrganisationId(event.getOrganisation().getId());
         eventResponseDto.setOrganisationName(event.getOrganisation().getName());
