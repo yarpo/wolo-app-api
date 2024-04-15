@@ -14,6 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 public class EventResponseDetailsDto {
 
+    @Schema(name = "Event ID", example = "1")
+    private Long id;
+
     @Schema(name = "Event title", example = "Animal shelter assistance")
     private String name;
 
