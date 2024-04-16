@@ -32,11 +32,10 @@ public class PDFGenerationService {
 
                 users.forEach(user -> {
                     try {
-                        contentStream.showText(
-                                "Name: " + user.getFirstName() +
-                                ", Phone number: " + user.getPhoneNumber() +
-                                ", Email: " + user.getEmail());
-                        contentStream.newLine();
+                        String userInfo = String.format("Name: %s, Phone number: %s, Email: %s",
+                                user.getFirstName(), user.getPhoneNumber(), user.getEmail());
+                        contentStream.showText(userInfo);
+                        contentStream.newLineAtOffset(0, -15);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
