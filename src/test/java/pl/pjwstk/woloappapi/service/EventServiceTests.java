@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 
@@ -105,7 +106,7 @@ public class EventServiceTests {
         nearestEvents.add(new Event());
         nearestEvents.add(new Event());
         nearestEvents.add(new Event());
-        when(eventRepository.findNearestEventsSortedByDate(any(PageRequest.class)))
+        when(eventRepository.findNearestEventsSortedByDate(any(Pageable.class)))
                 .thenReturn(nearestEvents);
 
         List<Event> result = eventService.getTheyNeedYouList();
