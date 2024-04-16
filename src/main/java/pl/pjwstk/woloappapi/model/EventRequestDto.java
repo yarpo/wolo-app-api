@@ -62,4 +62,6 @@ public class EventRequestDto {
     @Valid
     private List<ShiftRequestDto> shifts;
 
+    private Long cityId;
+
 }

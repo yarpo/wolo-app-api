@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.service.CityService;
 import pl.pjwstk.woloappapi.service.DistrictService;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventMapper {
     private final DistrictService districtService;
+    private final CityService cityService;
     public Shift.ShiftBuilder toShift (ShiftRequestDto shiftDto){
         var address = toAddress(shiftDto)
                 .district(districtService.getDistrictById(shiftDto.getDistrictId()))
@@ -112,7 +114,8 @@ public class EventMapper {
                 .description(dtoEvent.getDescription())
                 .isPeselVerificationRequired(dtoEvent.isPeselVerificationRequired())
                 .isAgreementNeeded(dtoEvent.isAgreementNeeded())
-                .imageUrl(dtoEvent.getImageUrl());
+                .imageUrl(dtoEvent.getImageUrl())
+                .city(cityService.getCityById(dtoEvent.getCityId()));
     }
 
     public Report.ReportBuilder toReport(ReportDto reportDto) {
