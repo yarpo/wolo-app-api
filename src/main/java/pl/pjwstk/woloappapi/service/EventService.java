@@ -10,7 +10,6 @@ import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.utils.EventMapper;
-import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
@@ -25,7 +24,6 @@ public class EventService {
     private final DistrictService districtService;
     private final OrganisationService organisationService;
     private final CategoryService categoryService;
-    private final ShiftService shiftService;
     private final CategoryToEventService categoryToEventService;
 
     public List<Event> getAllEvents() {
@@ -46,12 +44,8 @@ public class EventService {
         var shifts = new ArrayList<Shift>();
         eventDto.getShifts().forEach(s -> {
                     var shift = eventMapper.toShift(s)
-                            .address(eventMapper.toAddress(s)
-                                    .district(districtService.getDistrictById(s.getDistrictId()))
-                                    .build())
                             .event(eventBuilder.build())
                             .build();
-                    shiftService.createShift(shift);
                     shifts.add(shift);
                 });
         var event = eventBuilder.shifts(shifts).build();
