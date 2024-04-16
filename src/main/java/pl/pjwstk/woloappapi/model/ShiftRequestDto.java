@@ -9,8 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import pl.pjwstk.woloappapi.annotations.TimeOrder;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -23,11 +21,9 @@ public class ShiftRequestDto {
     private Long id;
 
     @NotNull
-    @TimeOrder
     private LocalTime startTime;
 
     @NotNull
-    @TimeOrder
     private LocalTime endTime;
 
     @NotNull

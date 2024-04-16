@@ -38,24 +38,25 @@ public class EventService {
 
     @Transactional
     public void createEvent(EventRequestDto eventDto) {
-        var eventBuilder = eventMapper.toEvent(eventDto)
-                .organisation(organisationService.getOrganisationById(eventDto.getOrganisationId()));
+        var event = eventMapper.toEvent(eventDto)
+                .organisation(organisationService.getOrganisationById(eventDto.getOrganisationId()))
+                .build();
 
         var shifts = new ArrayList<Shift>();
         eventDto.getShifts().forEach(s -> {
                     var shift = eventMapper.toShift(s)
-                            .event(eventBuilder.build())
+                            .event(event)
                             .build();
                     shifts.add(shift);
                 });
-        var event = eventBuilder.shifts(shifts).build();
-        eventRepository.save(event);
+        event.setShifts(shifts);
+        var savedEvent = eventRepository.save(event);
 
         eventDto.getCategories()
                 .forEach(categoryId -> {
                             var categoryToEvent = new CategoryToEvent();
                             categoryToEvent.setCategory(categoryService.getCategoryById(categoryId));
-                            categoryToEvent.setEvent(event);
+                            categoryToEvent.setEvent(savedEvent);
                             categoryToEventService.createCategoryToEvent(categoryToEvent);
                 });
     }
