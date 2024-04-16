@@ -23,11 +23,9 @@ public class ShiftRequestDto {
     private Long id;
 
     @NotNull
-    @TimeOrder
     private LocalTime startTime;
 
     @NotNull
-    @TimeOrder
     private LocalTime endTime;
 
     @NotNull
