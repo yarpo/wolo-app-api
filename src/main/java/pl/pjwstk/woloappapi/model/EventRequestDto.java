@@ -61,4 +61,5 @@ public class EventRequestDto {
     @Size(min = 1, message = "At least one shift is required")
     @Valid
     private List<ShiftRequestDto> shifts;
+
 }
