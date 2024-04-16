@@ -51,7 +51,7 @@ public class EventResponseDetailsDto {
 
     private String imageUrl;
 
-    private List<ShiftRequestDto> shifts;
+    private List<ShiftResponseDto> shifts;
 
     @Schema(name = "City name", example = "New York City")
     private String city;

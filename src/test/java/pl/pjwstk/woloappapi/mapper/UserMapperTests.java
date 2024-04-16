@@ -1,16 +1,14 @@
 package pl.pjwstk.woloappapi.mapper;
 
-import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.pjwstk.woloappapi.model.ShiftInfoRespons;
 import pl.pjwstk.woloappapi.model.ShiftResponseDto;
 import pl.pjwstk.woloappapi.model.UserResponseDto;
 import pl.pjwstk.woloappapi.model.UserShortResponse;
 import pl.pjwstk.woloappapi.model.entities.*;
 import pl.pjwstk.woloappapi.security.RegistrationRequest;
+import pl.pjwstk.woloappapi.service.CityService;
 import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.UserMapper;
@@ -22,18 +20,17 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserMapperTests {
 
     private DistrictService districtService;
-
+    private CityService cityService;
     private EventMapper eventMapper;
 
     @Test
     public void testToUserResponseDto(){
-        EventMapper eventMapper = new EventMapper(districtService);
+        EventMapper eventMapper = new EventMapper(districtService, cityService);
         UserMapper userMapper = new UserMapper(eventMapper);
         User user = new User();
         user.setId(1L);
@@ -93,7 +90,7 @@ public class UserMapperTests {
 
     @Test
     public void testToShiftResponseDto(){
-        EventMapper eventMapper = new EventMapper(districtService);
+        EventMapper eventMapper = new EventMapper(districtService, cityService);
         UserMapper userMapper = new UserMapper(eventMapper);
         Event event = new Event();
         event.setName("Test Event");
