@@ -10,6 +10,9 @@ import pl.pjwstk.woloappapi.model.entities.District;
 import pl.pjwstk.woloappapi.model.entities.Role;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +37,41 @@ public class DictionariesMapperTests {
         assertEquals("Sample District", districtDto.getName());
         assertEquals("Sample City", districtDto.getCityName());
     }
+
+    @Test
+    public void testToCityDto() {
+        City city = new City();
+        city.setId(1L);
+        city.setName("Sample City");
+
+        District district = new District();
+        district.setId(1L);
+        district.setName("Sample District");
+
+        List<District> districts = new ArrayList<>();
+        districts.add(district);
+        city.setDistricts(districts);
+
+
+        CityDto cityDto = dictionariesMapper.toCityDto(city);
+
+        assertEquals(1L, cityDto.getId());
+        assertEquals("Sample City", cityDto.getName());
+        assertEquals(1, cityDto.getDistricts().size());
+    }
+
+    @Test
+    public void testToCity(){
+        CityDto cityDto = new CityDto();
+        cityDto.setId(1L);
+        cityDto.setName("Sample City");
+
+        City city = dictionariesMapper.toCity(cityDto).build();
+
+        assertEquals(1L, city.getId());
+        assertEquals("Sample City", city.getName());
+    }
+
 
     @Test
     public void testToCategoryDto() {

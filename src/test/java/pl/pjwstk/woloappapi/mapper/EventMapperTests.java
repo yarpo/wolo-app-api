@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.service.CityService;
 import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 
@@ -19,14 +20,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class EventMapperTests {
 
-    /*
+
     private DistrictService districtService;
+
+    private CityService cityService;
 
     private EventMapper eventMapper;
 
+    /*
     @Test
     public void testToShift() {
-        EventMapper eventMapper = new EventMapper(districtService);
+        EventMapper eventMapper = new EventMapper(districtService, cityService);
         ShiftRequestDto shiftDto = new ShiftRequestDto();
         shiftDto.setStartTime(LocalTime.of(9, 0));
         shiftDto.setEndTime(LocalTime.of(17, 0));
@@ -34,6 +38,11 @@ public class EventMapperTests {
         shiftDto.setIsLeaderRequired(true);
         shiftDto.setCapacity(10);
         shiftDto.setRequiredMinAge(18);
+        shiftDto.setDistrictId(1L);
+
+        Address address = eventMapper.toAddress(shiftDto)
+                .district(districtService.getDistrictById(shiftDto.getDistrictId()))
+                .build();
 
         Shift shift = eventMapper.toShift(shiftDto).build();
 
@@ -44,9 +53,11 @@ public class EventMapperTests {
         assertEquals(10, shift.getCapacity());
         assertEquals(18, shift.getRequiredMinAge());
     }
+    */
 
     @Test
     public void testToAddress() {
+        EventMapper eventMapper = new EventMapper(districtService, cityService);
         ShiftRequestDto shiftRequestDto = new ShiftRequestDto();
         shiftRequestDto.setStreet("Test Street");
         shiftRequestDto.setHomeNum("123");
@@ -56,13 +67,26 @@ public class EventMapperTests {
         assertEquals("Test Street", address.getStreet());
         assertEquals("123", address.getHomeNum());
     }
-
     @Test
     public void testToEventResponseDto() {
+        EventMapper eventMapper = new EventMapper(districtService, cityService);
         Event event = new Event();
         event.setId(1L);
         event.setName("Test Name");
         event.setPeselVerificationRequired(true);
+
+        City city = new City();
+        city.setId(1L);
+        city.setName("City Name");
+        event.setCity(city);
+
+        District district = new District();
+        district.setId(1L);
+        district.setName("District Name");
+
+        Address address = new Address();
+        address.setId(1L);
+        address.setDistrict(district);
 
         Organisation organisation = new Organisation();
         organisation.setName("Org Name");
@@ -92,12 +116,18 @@ public class EventMapperTests {
         Shift shift1 = new Shift();
         shift1.setStartTime(LocalTime.of(18, 0));
         shift1.setEndTime(LocalTime.of(23, 0));
+        shift1.setEvent(event);
+        shift1.setAddress(address);
         shifts.add(shift1);
 
         Shift shift2 = new Shift();
         shift2.setStartTime(LocalTime.of(9, 0));
         shift2.setEndTime(LocalTime.of(17, 0));
+        shift2.setEvent(event);
+        shift2.setAddress(address);
         shifts.add(shift2);
+
+        event.setShifts(shifts);
 
         event.setImageUrl("http://example.com/image.jpg");
 
@@ -107,14 +137,16 @@ public class EventMapperTests {
         assertEquals("Test Name", eventResponseDto.getName());
         assertEquals("Org Name", eventResponseDto.getOrganisation());
         assertTrue(eventResponseDto.isPeselVerificationRequired());
-        assertEquals("Test City", eventResponseDto.getCity());
+        assertEquals("City Name", eventResponseDto.getCity());
         assertEquals("http://example.com/image.jpg", eventResponseDto.getImageUrl());
-        assertEquals(4, eventResponseDto.getShifts().size());
+        assertEquals(2, eventResponseDto.getShifts().size());
         assertEquals(2, eventResponseDto.getCategories().size());
     }
 
+    /* ;-;
     @Test
     public void testMapShiftListToShiftDtoList() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        EventMapper eventMapper = new EventMapper(districtService, cityService);
         List<Shift> shiftList = new ArrayList<>();
         Method method = EventMapper.class.getDeclaredMethod("mapShiftListToShiftDtoList", List.class);
         method.setAccessible(true);
@@ -141,32 +173,32 @@ public class EventMapperTests {
 
         shiftList.add(shift2);
 
-        //List<ShiftDto> shiftDtoList = eventMapper.mapShiftListToShiftDtoList(shiftList);
+        //List<Shift> shiftDtoList = eventMapper.mapShiftListToShiftDtoList(shiftList).stream().toList();
 
         @SuppressWarnings("unchecked")
-        List<ShiftRequestDto> shiftDtoList = (List<ShiftRequestDto>) method.invoke(eventMapper, shiftList);
+        List<ShiftResponseDto> shiftDtoList = (List<ShiftResponseDto>) method.invoke(eventMapper, shiftList);
 
         assertEquals(2, shiftDtoList.size());
 
-        ShiftRequestDto shiftDto1 = shiftDtoList.get(0);
+        ShiftResponseDto shiftDto1 = shiftDtoList.get(0);
         assertEquals(LocalTime.of(9, 0), shiftDto1.getStartTime());
         assertEquals(LocalTime.of(17, 0), shiftDto1.getEndTime());
         assertEquals(LocalDate.now(), shiftDto1.getDate());
         assertEquals(10, shiftDto1.getCapacity());
-        assertTrue(shiftDto1.getIsLeaderRequired());
         assertEquals(18, shiftDto1.getRequiredMinAge());
 
-        ShiftRequestDto shiftDto2 = shiftDtoList.get(1);
+        ShiftResponseDto shiftDto2 = shiftDtoList.get(1);
         assertEquals(LocalTime.of(10, 0), shiftDto2.getStartTime());
         assertEquals(LocalTime.of(18, 0), shiftDto2.getEndTime());
         assertEquals(LocalDate.now(), shiftDto2.getDate());
         assertEquals(12, shiftDto2.getCapacity());
-        assertFalse(shiftDto2.getIsLeaderRequired());
         assertEquals(20, shiftDto2.getRequiredMinAge());
     }
+    */
 
     @Test
     public void testMapShiftToShiftDto() {
+        EventMapper eventMapper = new EventMapper(districtService, cityService);
         Shift shift = new Shift();
         shift.setStartTime(LocalTime.of(9, 0));
         shift.setEndTime(LocalTime.of(17, 0));
@@ -175,17 +207,34 @@ public class EventMapperTests {
         shift.setCapacity(10);
         shift.setLeaderRequired(true);
         shift.setRequiredMinAge(18);
+        shift.setShiftDirections("Shift Direction");
 
-        ShiftRequestDto shiftDto = eventMapper.mapShiftToShiftDto(shift);
+        Event event = new Event();
+        event.setId(1L);
+        event.setName("Event Name");
+        shift.setEvent(event);
 
+        District district = new District();
+        district.setId(1L);
+        district.setName("District Name");
+
+        Address address = new Address();
+        address.setDistrict(district);
+        address.setStreet("Street Name");
+        address.setHomeNum("HomeNum Name");
+        shift.setAddress(address);
+
+        ShiftResponseDto shiftDto = eventMapper.mapShiftToShiftDto(shift);
+
+        assertEquals(1L, shift.getId());
         assertEquals(LocalTime.of(9, 0), shiftDto.getStartTime());
         assertEquals(LocalTime.of(17, 0), shiftDto.getEndTime());
         assertEquals(LocalDate.now(), shiftDto.getDate());
         assertEquals(10, shiftDto.getCapacity());
-        assertTrue(shiftDto.getIsLeaderRequired());
         assertEquals(18, shiftDto.getRequiredMinAge());
     }
 
+    /*
     @Test
     public void testToEventDetailsResponseDto() {
         Event event = new Event();
