@@ -14,19 +14,20 @@ import java.util.List;
 @NoArgsConstructor
 public class EventResponseDto {
 
-    @Schema(name = "Organisation ID", example = "1")
+    @Schema(example = "1")
     private Long id;
 
-    @Schema(name = "Organisation", example = "Compassion Paws: Animal Shelter Support Initiative")
+    @Schema(example = "Animal shelter assistance")
     private String name;
 
+    @Schema(example = "Compassion Paws: Animal Shelter Support Initiative")
     private String organisation;
 
     private boolean isPeselVerificationRequired;
 
     private List<String> categories;
 
-    @Schema(name = "City name", example = "New York City")
+    @Schema(example = "New York City")
     private String city;
 
     private String imageUrl;

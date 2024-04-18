@@ -15,10 +15,10 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ShiftResponseDto {
 
-    @Schema(name = "Shift ID", example = "1")
+    @Schema(example = "1")
     private Long shiftId;
 
-    @Schema(name = "Event ID", example = "1")
+    @Schema(example = "1")
     private Long eventId;
 
     private String eventName;

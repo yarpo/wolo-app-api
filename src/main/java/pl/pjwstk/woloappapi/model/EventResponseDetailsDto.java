@@ -14,23 +14,23 @@ import java.util.List;
 @NoArgsConstructor
 public class EventResponseDetailsDto {
 
-    @Schema(name = "Event ID", example = "1")
+    @Schema(example = "1")
     private Long id;
 
-    @Schema(name = "Event title", example = "Animal shelter assistance")
+    @Schema(example = "Animal shelter assistance")
     private String name;
 
-    @Schema(name = "Organisation ID", example = "1")
+    @Schema(example = "1")
     private Long organisationId;
 
-    @Schema(name = "Organisation", example = "Compassion Paws: Animal Shelter Support Initiative")
+    @Schema(example = "Compassion Paws: Animal Shelter Support Initiative")
     private String organisationName;
 
     private boolean isPeselVerificationRequired;
 
     private boolean isAgreementNeeded;
 
-    @Schema(name = "Event description", example = """
+    @Schema(example = """
             Are you passionate about making a positive impact on the lives of animals in need? Join us in our mission\040
             to provide compassionate care and support for animals at our local animal shelter.\040
             As an Animal Shelter Assistant, you play a crucial role in ensuring the well-being\040
@@ -53,7 +53,7 @@ public class EventResponseDetailsDto {
 
     private List<ShiftRequestDto> shifts;
 
-    @Schema(name = "City name", example = "New York City")
+    @Schema(example = "New York City")
     private String city;
 
 }

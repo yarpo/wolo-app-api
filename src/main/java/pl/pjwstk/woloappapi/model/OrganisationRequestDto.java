@@ -20,11 +20,11 @@ public class OrganisationRequestDto {
     @NotNull
     @NotBlank(message = "Name is required")
     @Size(max = 250, message = "Name cannot exceed 200 characters")
-    @Schema(name = "Organisation Name", example = "Animal Helpers")
+    @Schema(example = "Animal Helpers")
     private String name;
 
     @NotBlank(message = "Description is required")
-    @Schema(name = "Organization Description", example = """
+    @Schema(example = """
             Are you passionate about making a positive impact on the lives of animals in need? Animal Helpers is 
             dedicated to providing compassionate care and support for animals at our local animal shelter. 
             As part of our organization, you'll have the opportunity to play a vital role in ensuring the well-being 
@@ -65,15 +65,15 @@ public class OrganisationRequestDto {
     private String homeNum;
 
     @NotNull(message = "District must be chosen")
-    @Schema(name = "District ID", example = "1")
+    @Schema(example = "1")
     private Long districtId;
 
     @NotNull(message = "City must be chosen")
-    @Schema(name = "City ID", example = "1")
+    @Schema(example = "1")
     private Long cityId;
 
     @NotNull(message = "Moderator must be chosen")
-    @Schema(name = "Moderator ID", example = "1")
+    @Schema(example = "1")
     private Long moderatorId;
 
     @Size(max = 255, message = "Logo Url cannot exceed 255 characters")
