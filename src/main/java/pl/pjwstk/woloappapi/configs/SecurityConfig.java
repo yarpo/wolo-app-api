@@ -44,6 +44,11 @@ public class SecurityConfig {
                     auth.requestMatchers(PUT,"/categories/**").hasAuthority("EDIT_CATEGORY");
                     auth.requestMatchers(DELETE,"/categories/**").hasAuthority("DELETE_CATEGORY");
 
+                    auth.requestMatchers(GET, "/cities**").permitAll();
+                    auth.requestMatchers(POST,"/cities/**").hasAuthority("CREATE_CITY");
+                    auth.requestMatchers(PUT,"/cities/**").hasAuthority("EDIT_CITY");
+                    auth.requestMatchers(DELETE,"/cities/**").hasAuthority("DELETE_CITY");
+
                     auth.requestMatchers(GET, "/districts").permitAll();
                     auth.requestMatchers(POST, "/districts/**").hasAuthority("CREATE_DISTRICT");
                     auth.requestMatchers(PUT, "/districts/**").hasAuthority("EDIT_DISTRICT");
