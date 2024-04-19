@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class EventResponseDetailsDto {
 
-    @Schema(example = "1")
     private Long id;
 
     private String name;
