@@ -1589,7 +1589,7 @@ components:
           minItems: 1
           type: array
           items:
-            $ref: '#/components/schemas/ShiftResponseDto'
+            $ref: '#/components/schemas/ShiftRequestDto'
     EventResponseDetailsDto:
       type: object
       properties:
@@ -1650,7 +1650,7 @@ components:
           minItems: 1
           type: array
           items:
-            $ref: '#/components/schemas/ShiftResponseDto'
+            $ref: '#/components/schemas/ShiftRequestDto'
         city:
           type: string
           example: New York City
@@ -2119,7 +2119,7 @@ components:
           minItems: 1
           type: array
           items:
-            $ref: '#/components/schemas/ShiftResponseDto'
+            $ref: '#/components/schemas/ShiftInfoRespons'
     UserShortResponse:
       type: object
       properties:
