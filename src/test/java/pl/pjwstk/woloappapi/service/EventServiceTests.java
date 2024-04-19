@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.repository.EventRepository;
+import pl.pjwstk.woloappapi.utils.EventMapper;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,6 +23,21 @@ import static org.mockito.Mockito.*;
 public class EventServiceTests {
     @Mock
     private EventRepository eventRepository;
+
+    @Mock
+    private EventMapper eventMapper;
+
+    @Mock
+    private CategoryService categoryService;
+
+    @Mock
+    private OrganisationService organisationService;
+
+    @Mock
+    private CategoryToEventService categoryToEventService;
+
+    @Mock
+    private ShiftService shiftService;
 
     @InjectMocks
     private EventService eventService;
