@@ -14,11 +14,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CategoryDto {
 
-    @Schema(example = "1")
     private Long id;
 
     @NotNull
-    @Schema(example = "Health")
     @Size(max = 50, message = "Name cannot exceed 50 characters")
     private String name;
 

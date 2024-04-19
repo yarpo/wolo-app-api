@@ -15,10 +15,8 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ShiftResponseDto {
 
-    @Schema(example = "1")
     private Long shiftId;
 
-    @Schema(example = "1")
     private Long eventId;
 
     private String eventName;

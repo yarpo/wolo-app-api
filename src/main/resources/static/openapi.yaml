@@ -2060,4 +2060,4 @@ components:
           format: int32
         nano:
           type: integer
-          format: int32      
+          format: int32

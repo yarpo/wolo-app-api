@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ShiftInfoRespons {
-    @Schema(name = "Shift ID", example = "1")
+
     private Long id;
 
     private LocalTime startTime;

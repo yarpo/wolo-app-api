@@ -21,30 +21,13 @@ public class EventRequestDto {
     @NotNull
     @NotBlank(message = "Name is required")
     @Size(max = 250, message = "Name cannot exceed 250 characters")
-    @Schema(example = "Animal shelter assistance")
     private String name;
 
     @NotBlank(message = "Description is required")
     @NotNull
-    @Schema(example = """
-            Are you passionate about making a positive impact on the lives of animals in need? Join us in our mission\040
-            to provide compassionate care and support for animals at our local animal shelter.\040
-            As an Animal Shelter Assistant, you play a crucial role in ensuring the well-being\040
-            and happiness of animals awaiting their forever homes.
-
-            Responsibilities:
-
-                Animal Care:
-                    Feed, groom, and provide basic care for shelter animals.
-                    Ensure clean and sanitary living conditions for all animals.
-
-                Assistance with Adoptions:
-                    Interact with potential adopters and provide information about available animals.
-                    Assist in the adoption process, ensuring a smooth transition for both the animal and the new owner.""")
     private String description;
 
     @NotNull(message = "Organisation ID is required")
-    @Schema(example = "Compassion Paws: Animal Shelter Support Initiative")
     private Long organisationId;
 
     @NotNull(message = "Category ID is required")
@@ -55,7 +38,6 @@ public class EventRequestDto {
     private boolean isAgreementNeeded;
 
     @Size(max = 255, message = "Image Url cannot exceed 255 characters")
-    @Schema(example = "https://example.com/image.jpg")
     private String imageUrl;
 
     @NotNull(message = "Shifts are required")

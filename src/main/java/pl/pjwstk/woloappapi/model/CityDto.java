@@ -17,11 +17,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CityDto {
 
-    @Schema(example = "1")
     private Long id;
 
     @NotNull
-    @Schema(example = "New York City")
     @NotBlank(message = "City is required")
     @Size(max = 50, message = "City cannot exceed 50 characters")
     private String name;
