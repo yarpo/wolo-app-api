@@ -46,15 +46,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponseDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /auth/authenticate:
     post:
       tags:
         - Authentication
-      operationId: login
+      summary: Log to your account
+      description: User must exist
       requestBody:
         content:
           application/json:
@@ -68,36 +65,28 @@ paths:
             application/hal+json:
               schema:
                 $ref: '#/components/schemas/AuthenticationRespons'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /auth/logout:
     post:
       tags:
         - Authentication
-      operationId: logout
+      summary: Log out from your account
+      description: User must be logged
       responses:
         '200':
-          description: OK
-          content:
-            application/hal+json:
-              schema:
-                $ref: '#/components/schemas/AuthenticationRespons'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+          $ref: '#/components/responses/OK'
   /auth/register:
     post:
       tags:
         - Authentication
-      operationId: register
+      summary: Register new account
+      description: User doesn't exist
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRequestDto'
+              $ref: '#/components/schemas/RegistrationRequest'
         required: true
       responses:
         '200':
@@ -108,8 +97,6 @@ paths:
                 $ref: '#/components/schemas/AuthenticationRespons'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /categories:
     get:
       tags:
@@ -277,10 +264,6 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/Created'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /cities/edit:
     put:
       tags:
@@ -305,8 +288,6 @@ paths:
           $ref: '#/components/responses/NoContentResponse'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /cities/delete/{id}:
     delete:
       tags:
@@ -328,10 +309,6 @@ paths:
       responses:
         '204':
           $ref: '#/components/responses/NoContentResponse'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /districts:
     get:
       tags:
@@ -362,7 +339,7 @@ paths:
           schema:
             type: integer
             format: int64
-          example: 1
+            example: 1
       responses:
         '200':
           description: Success
@@ -370,8 +347,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DistrictDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /districts/add:
@@ -396,10 +371,6 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/Created'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /districts/edit:
     put:
       tags:
@@ -447,10 +418,6 @@ paths:
       responses:
         '204':
           $ref: '#/components/responses/NoContentResponse'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /events:
     get:
       tags:
@@ -489,8 +456,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EventResponseDetailsDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /events/need:
@@ -581,12 +546,11 @@ paths:
                 format: binary
               example: <binary PDF data>
         '400':
-          description: Bad request
+          $ref: '#/components/responses/BadRequestResponse'
         '404':
-          description: Event not found
+          $ref: '#/components/responses/NotFoundResponse'
         '500':
-
-          description: Internal server error
+          $ref: '#/components/responses/InternalServerError'
   /events/search:
     get:
       tags:
@@ -633,7 +597,9 @@ paths:
           description: Id of the organization organizing the event
           required: false
           schema:
-            type: long
+            type: integer
+            format: int64
+            example: 1
         - name: ageRestriction
           in: query
           description: From what age are participants allowed
@@ -703,10 +669,6 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/Created'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /events/join:
     post:
       tags:
@@ -765,8 +727,6 @@ paths:
           $ref: '#/components/responses/OK'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /events/{id}/edit:
     put:
       tags:
@@ -820,10 +780,6 @@ paths:
       responses:
         '204':
           $ref: '#/components/responses/NoContentResponse'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /organisations:
     get:
       tags:
@@ -839,10 +795,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/OrganisationResponseDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /organisations/{id}:
     get:
       tags:
@@ -866,8 +818,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrganisationResponseDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /organisations/{id}/events:
@@ -892,8 +842,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EventResponseDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /organisations/add:
@@ -918,10 +866,6 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/Created'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /organisations/approve:
     post:
       tags:
@@ -943,8 +887,6 @@ paths:
           $ref: '#/components/responses/OK'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /organisations/disapprove:
     post:
       tags:
@@ -964,8 +906,6 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/OK'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /organisations/{id}/edit:
@@ -1015,10 +955,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/RoleDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /roles/{id}:
     get:
       tags:
@@ -1042,8 +978,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoleDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /roles/add:
@@ -1068,10 +1002,6 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/Created'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
   /roles/edit:
     put:
       tags:
@@ -1109,6 +1039,125 @@ paths:
         - name: id
           in: path
           description: Role id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/all:
+    get:
+      tags:
+        - Reports
+      summary: Get all reports from one event
+      operationId: getReports
+      parameters:
+        - name: eventId
+          in: path
+          description: Event Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportDto'
+  /reports/one/{id}:
+    get:
+      tags:
+        - Reports
+      summary: Get report by id
+      description: Report must exist
+      operationId: getReportById
+      parameters:
+        - name: id
+          in: path
+          description: Report id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportDto'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/add:
+    post:
+      tags:
+        - Reports
+      summary: Adding report
+      description: id = null
+      operationId: addReport
+      parameters:
+        - name: report
+          in: query
+          description: Report object to create
+          schema:
+            $ref: '#/components/schemas/ReportDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportDto'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+  /reports/edit:
+    put:
+      tags:
+        - Reports
+      summary: Edit report
+      description: Report must exist
+      operationId: editRole
+      parameters:
+        - name: report
+          in: query
+          description: Report object with changes
+          schema:
+            $ref: '#/components/schemas/ReportDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/delete/{id}:
+    delete:
+      tags:
+        - Reports
+      summary: Delete report
+      operationId: deleteReport
+      parameters:
+        - name: id
+          in: path
+          description: Report id
           required: true
           schema:
             type: integer
@@ -1159,8 +1208,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponseDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /users/{id}/shifts:
@@ -1168,6 +1215,7 @@ paths:
       tags:
         - Users
       summary: Get all user shifts
+      description: User must exist
       operationId: getUserShifts
       parameters:
         - name: id
@@ -1186,9 +1234,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EventResponseDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
+                  $ref: '#/components/schemas/ShiftResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /users/events/{id}:
@@ -1215,8 +1261,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EventResponseDto'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /users/assign:
@@ -1246,8 +1290,6 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/OK'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /users/changerole:
@@ -1265,15 +1307,19 @@ paths:
           schema:
             type: integer
             format: int64
-          example: 1
+            example: 1
         - name: roles
           in: query
           description: New Roles Ids
           required: true
           schema:
+            maxItems: 2147483647
+            minItems: 1
             type: array
             items:
-              type: long
+              type: integer
+              format: int64
+              example: 1
       responses:
         '200':
           $ref: '#/components/responses/OK'
@@ -1300,8 +1346,6 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/OK'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /users/{id}/edit:
@@ -1334,8 +1378,6 @@ paths:
       responses:
         '204':
           $ref: '#/components/responses/NoContentResponse'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /users/delete/{id}:
@@ -1369,6 +1411,7 @@ components:
         application/hal+json:
           schema:
             type: string
+            example: Ok
             enum:
               - 200 OK
     Created:
@@ -1377,6 +1420,7 @@ components:
         application/hal+json:
           schema:
             type: string
+            example: Created
             enum:
               - 201 CREATED
     NoContentResponse:
@@ -1385,6 +1429,7 @@ components:
         application/hal+json:
           schema:
             type: string
+            example: No Content
             enum:
               - 204 NO_CONTENT
     BadRequestResponse:
@@ -1392,17 +1437,28 @@ components:
       content:
         application/hal+json:
           schema:
-            oneOf:
-              - type: object
-                additionalProperties:
-                  type: string
-              - type: string
+            type: string
+            example: Bad Request
+            enum:
+              - 400 BAD_REQUEST
     NotFoundResponse:
       description: Not Found
       content:
         application/hal+json:
           schema:
             type: string
+            example: Not Found
+            enum:
+              - 404 NOT_FOUND
+    InternalServerError:
+      description: 	Internal Server Error
+      content:
+        application/hal+json:
+          schema:
+            type: string
+            example: Internal Server Error
+            enum:
+              - 500 INTERNAL_SERVER_ERROR
   schemas:
     AuthenticationRequest:
       type: object
@@ -1533,7 +1589,7 @@ components:
           minItems: 1
           type: array
           items:
-            $ref: '#/components/schemas/ShiftDto'
+            $ref: '#/components/schemas/ShiftResponseDto'
     EventResponseDetailsDto:
       type: object
       properties:
@@ -1588,12 +1644,13 @@ components:
           maxLength: 255
           minLength: 0
           type: string
+          example: https://example.com/image.jpg
         shifts:
           maxItems: 2147483647
           minItems: 1
           type: array
           items:
-            $ref: '#/components/schemas/ShiftDto'
+            $ref: '#/components/schemas/ShiftResponseDto'
         city:
           type: string
           example: New York City
@@ -1606,7 +1663,7 @@ components:
           example: 1
         name:
           type: string
-          example:
+          example: Animal shelter assistance
         organisation:
           type: string
           example: 'Compassion Paws: Animal Shelter Support Initiative'
@@ -1624,12 +1681,13 @@ components:
           maxLength: 255
           minLength: 0
           type: string
+          example: https://example.com/image.jpg
         shifts:
           maxItems: 2147483647
           minItems: 1
           type: array
           items:
-            $ref: '#/components/schemas/ShiftDto'
+            $ref: '#/components/schemas/ShiftResponseDto'
     OrganisationRequestDto:
       required:
         - name
@@ -1707,6 +1765,7 @@ components:
           maxLength: 255
           minLength: 0
           type: string
+          example: https://example.com/image.jpg
     OrganisationResponseDto:
       type: object
       properties:
@@ -1742,7 +1801,10 @@ components:
 
             Join us today and make a difference in the lives of animals in need!
         email:
+          maxLength: 50
+          minLength: 0
           type: string
+          example: example@mail.com
         phoneNumber:
           maxLength: 9
           minLength: 9
@@ -1751,14 +1813,17 @@ components:
           maxLength: 50
           minLength: 0
           type: string
+          example: Broadway
         homeNum:
           maxLength: 10
           minLength: 0
           type: string
+          example: 123
         logoUrl:
           maxLength: 255
           minLength: 0
           type: string
+          example: https://example.com/image.jpg
     ReportDto:
       required:
         - report
@@ -1788,14 +1853,17 @@ components:
           maxLength: 50
           minLength: 0
           type: string
+          example: John
         lastName:
           maxLength: 50
           minLength: 0
           type: string
+          example: Doe
         email:
           maxLength: 50
           minLength: 0
           type: string
+          example: example@mail.com
         phoneNumber:
           maxLength: 9
           minLength: 9
@@ -1807,6 +1875,7 @@ components:
           maxLength: 255
           minLength: 0
           type: string
+          example: password
     RoleDto:
       required:
         - name
@@ -1820,6 +1889,7 @@ components:
           maxLength: 20
           minLength: 0
           type: string
+          example: User
     ShiftInfoRespons:
       type: object
       properties:
@@ -1836,14 +1906,17 @@ components:
           format: date
         shiftDirections:
           type: string
+          example: Left Side of Building
         eventId:
           type: integer
           format: int64
           example: 1
         eventName:
           type: string
+          example: Animal Helpers
         address:
           type: string
+          example: Brodway 123
     ShiftRequestDto:
       required:
         - startTime
@@ -1876,14 +1949,17 @@ components:
           format: int32
         shiftDirections:
           type: string
+          example: Left Side of Building
         street:
           maxLength: 50
           minLength: 0
           type: string
+          example: Broadway
         homeNum:
           maxLength: 10
           minLength: 0
           type: string
+          example: 123
         districtId:
           type: integer
           format: int64
@@ -1900,7 +1976,10 @@ components:
           format: int64
           example: 1
         eventName:
+          maxLength: 250
+          minLength: 0
           type: string
+          example: Animal Helpers
         startTime:
           $ref: '#/components/schemas/LocalTime'
         endTime:
@@ -1923,16 +2002,20 @@ components:
           maxLength: 50
           minLength: 0
           type: string
+          example: DownTown
         street:
           maxLength: 50
           minLength: 0
           type: string
+          example: Broadway
         homeNum:
           maxLength: 10
           minLength: 0
           type: string
+          example: 123
         shiftDirections:
           type: string
+          example: Left Side of Building
     UserRequestDto:
       required:
         - firstName
@@ -1947,24 +2030,30 @@ components:
           maxLength: 50
           minLength: 0
           type: string
+          example: John
         lastName:
           maxLength: 50
           minLength: 0
           type: string
+          example: Doe
         email:
           maxLength: 50
           minLength: 0
           type: string
+          example: example@mail.com
         phoneNumber:
           maxLength: 9
           minLength: 9
           pattern: '[0-9]{9}'
           type: string
         roles:
+          maxItems: 2147483647
+          minItems: 1
           type: array
           items:
             type: integer
             format: int64
+            example: 1
         isPeselVerified:
           type: boolean
         isAgreementSigned:
@@ -1975,6 +2064,7 @@ components:
           maxLength: 255
           minLength: 0
           type: string
+          example: password
     UserResponseDto:
       type: object
       properties:
@@ -1986,14 +2076,17 @@ components:
           maxLength: 50
           minLength: 0
           type: string
+          example: John
         lastName:
           maxLength: 50
           minLength: 0
           type: string
+          example: Doe
         email:
           maxLength: 50
           minLength: 0
           type: string
+          example: example@mail.com
         phoneNumber:
           maxLength: 9
           minLength: 9
@@ -2011,6 +2104,7 @@ components:
           type: array
           items:
             type: string
+            example: User
         organisationId:
           type: integer
           format: int64
@@ -2033,14 +2127,17 @@ components:
           maxLength: 50
           minLength: 0
           type: string
+          example: John
         lastName:
           maxLength: 50
           minLength: 0
           type: string
+          example: Doe
         email:
           maxLength: 50
           minLength: 0
           type: string
+          example: example@mail.com
         phoneNumber:
           maxLength: 9
           minLength: 9
@@ -2060,4 +2157,4 @@ components:
           format: int32
         nano:
           type: integer
-          format: int32
+          format: int32      
