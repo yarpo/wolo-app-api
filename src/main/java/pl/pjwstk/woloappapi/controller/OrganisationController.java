@@ -19,7 +19,7 @@ import pl.pjwstk.woloappapi.service.OrganisationService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
 
-import java.time.LocalDate;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,7 +63,7 @@ public class OrganisationController {
         List<EventResponseDto> eventDtos =
                 events.stream()
                         .map(eventMapper::toEventResponseDto)
-                        .collect(Collectors.toList());
+                        .toList();
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
@@ -73,7 +73,7 @@ public class OrganisationController {
         List<EventResponseDto> eventDtos =
                 events.stream()
                         .map(eventMapper::toEventResponseDto)
-                        .collect(Collectors.toList());
+                        .toList();
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
@@ -83,7 +83,7 @@ public class OrganisationController {
         List<EventResponseDto> eventDtos =
                 events.stream()
                         .map(eventMapper::toEventResponseDto)
-                        .collect(Collectors.toList());
+                        .toList();
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
