@@ -172,6 +172,21 @@ public class EventService {
         return eventRepository.findEventsByUserId(id);
     }
 
+    public List<Event> getPastEventsByUser(Long id) {
+        return eventRepository.findEventsByUserId(id)
+                .stream()
+                .filter(event -> event.getShifts()
+                        .stream().anyMatch(shift -> shift.getDate().isBefore(LocalDate.now())))
+                .toList();
+    }
+
+    public List<Event> getFutureAndNowEventsByUser(Long id) {
+        return eventRepository.findEventsByUserId(id)
+                .stream()
+                .filter(event -> event.getShifts()
+                        .stream().anyMatch(shift -> !shift.getDate().isBefore(LocalDate.now())))
+                .toList();
+    }
     public List<Event> getUpcomingEvents() {
         return eventRepository.findAllNotBeforeNow();
     }

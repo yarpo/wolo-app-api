@@ -19,7 +19,9 @@ import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -53,6 +55,22 @@ public class UserController {
     @GetMapping("/events/{id}")
     public ResponseEntity<List<EventResponseDto>>getUserEvents(@PathVariable Long id){
         List<Event> events = eventService.getEventsByUser(id);
+        List<EventResponseDto> requests = events.stream()
+                .map(eventMapper::toEventResponseDto).toList();
+        return new ResponseEntity<>(requests, HttpStatus.OK);
+    }
+
+    @GetMapping("/pastEvents/{id}")
+    public ResponseEntity<List<EventResponseDto>> getUserPastEvents(@PathVariable Long id) {
+        List<Event> events = eventService.getPastEventsByUser(id);
+        List<EventResponseDto> requests = events.stream()
+                .map(eventMapper::toEventResponseDto).toList();
+        return new ResponseEntity<>(requests, HttpStatus.OK);
+    }
+
+    @GetMapping("/futureAndNowEvents/{id}")
+    public ResponseEntity<List<EventResponseDto>> getUserFutureAndFutureEvents(@PathVariable Long id) {
+        List<Event> events = eventService.getFutureAndNowEventsByUser(id);
         List<EventResponseDto> requests = events.stream()
                 .map(eventMapper::toEventResponseDto).toList();
         return new ResponseEntity<>(requests, HttpStatus.OK);
