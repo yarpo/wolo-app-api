@@ -10,6 +10,8 @@ import lombok.*;
 @Builder
 public class UserShortResponse {
 
+    private Long id;
+
     @Schema(name = "firstname", example = "John")
     private String firstName;
 
