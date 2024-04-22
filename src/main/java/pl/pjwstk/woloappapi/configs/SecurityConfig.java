@@ -91,10 +91,10 @@ public class SecurityConfig {
 
                     auth.requestMatchers(OPTIONS,"/users/**").permitAll();
                     auth.requestMatchers(GET, "/users/*/shifts").hasAuthority("READ_USERS_SHIFTS");
-                    auth.requestMatchers(GET, "/users").hasAuthority("READ_USERS");
-                    auth.requestMatchers(GET, "/users/**").hasAuthority("READ_USERS");
                     auth.requestMatchers(GET, "/users/currentEvents/**").hasAuthority("READ_USERS_EVENTS");
                     auth.requestMatchers(GET, "/users/pastEvents/**").hasAuthority("READ_USERS_EVENTS");
+                    auth.requestMatchers(GET, "/users").hasAuthority("READ_USERS");
+                    auth.requestMatchers(GET, "/users/**").hasAuthority("READ_USERS");
                     auth.requestMatchers(PUT, "/users/**").hasAuthority("EDIT_USER");
                     auth.requestMatchers(DELETE, "/users/**").hasAuthority("DELETE_USERS");
                     auth.requestMatchers(DELETE, "/users/assign").hasAuthority("ASSIGN_ORGANISATION_TO_USER");
