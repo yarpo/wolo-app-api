@@ -157,6 +157,7 @@ public class UserMapperTests {
     public void testToUserShortRespons(){
         UserMapper userMapper = new UserMapper(eventMapper);
         User userFull = new User();
+        userFull.setId(1L);
         userFull.setFirstName("Test Firstname");
         userFull.setLastName("Test Lastname");
         userFull.setPhoneNumber("123456789");
@@ -164,6 +165,7 @@ public class UserMapperTests {
 
         UserShortResponse user = userMapper.toUserShortRespons(userFull);
 
+        assertEquals(1L, user.getId());
         assertEquals("Test Firstname", user.getFirstName());
         assertEquals("Test Lastname", user.getLastName());
         assertEquals("test@example.com", user.getEmail());
