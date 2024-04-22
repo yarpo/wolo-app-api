@@ -14,10 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class EventResponseDto {
 
-    @Schema(name = "Organisation ID", example = "1")
     private Long id;
 
-    @Schema(name = "Organisation", example = "Compassion Paws: Animal Shelter Support Initiative")
     private String name;
 
     private String organisation;
@@ -26,7 +24,6 @@ public class EventResponseDto {
 
     private List<String> categories;
 
-    @Schema(name = "City name", example = "New York City")
     private String city;
 
     private String imageUrl;

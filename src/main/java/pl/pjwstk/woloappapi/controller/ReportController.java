@@ -26,28 +26,6 @@ public class ReportController {
     private final ReportService reportService;
     private final EventMapper eventMapper;
 
-    @Operation(
-            summary = "Get report by id",
-            description = "report must exist",
-            responses = {
-                    @ApiResponse(
-                            description = "Success",
-                            responseCode = "200" ,
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            schema = @Schema(implementation = ReportDto.class)
-                                    )
-                            }
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "id",
-                            description = "Report id",
-                            example = "1"
-                    )
-            }
-    )
     @GetMapping("/one/{id}")
     public ResponseEntity<ReportDto> getReportById(@PathVariable Long id) {
         var report = eventMapper.toReportDto(reportService.getReportById(id));
@@ -63,22 +41,6 @@ public class ReportController {
         return new ResponseEntity<>(reports, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Adding report",
-            description = "id = null",
-            responses = {
-                    @ApiResponse(
-                            description = "Created",
-                            responseCode = "201"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "report",
-                            description = "Report object to create",
-                            schema = @Schema(implementation = ReportDto.class)
-                    )
-            }
-    )
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addReport(@RequestBody ReportDto reportDto) {
         reportService.createReport(reportDto);
@@ -106,22 +68,6 @@ public class ReportController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(
-            summary = "Edit report",
-            description = "Report must exist",
-            responses = {
-                    @ApiResponse(
-                            description = "No content",
-                            responseCode = "204"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "report",
-                            description = "Report object with changes",
-                            schema = @Schema(implementation = ReportDto.class)
-                    )
-            }
-    )
     @PutMapping("/edit")
     public ResponseEntity<HttpStatus> editReport(
             @Valid @RequestBody ReportDto reportDto) {

@@ -11,14 +11,14 @@ import lombok.*;
 public class UserShortResponse {
 
     private Long id;
-
-    @Schema(name = "firstname", example = "John")
+  
+    @Schema(example = "John")
     private String firstName;
 
-    @Schema(name = "lastname", example = "Doe")
+    @Schema(example = "Doe")
     private String lastName;
 
-    @Schema(name = "email", example = "example@mail.com")
+    @Schema(example = "example@mail.com")
     private String email;
 
     private String phoneNumber;
