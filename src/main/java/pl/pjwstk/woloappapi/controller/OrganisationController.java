@@ -77,8 +77,8 @@ public class OrganisationController {
         return new ResponseEntity<>(eventDtos, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/futureAndNowEvents")
-    public ResponseEntity<List<EventResponseDto>> getFutureAndNowEventsByOrganisation(@PathVariable Long id) {
+    @GetMapping("/{id}/currentEvents")
+    public ResponseEntity<List<EventResponseDto>> getCurrentEventsByOrganisation(@PathVariable Long id) {
         List<Event> events = organisationService.getFutureAndNowEventsByOrganisation(id);
         List<EventResponseDto> eventDtos =
                 events.stream()

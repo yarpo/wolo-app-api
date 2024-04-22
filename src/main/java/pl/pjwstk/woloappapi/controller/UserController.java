@@ -66,8 +66,8 @@ public class UserController {
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
-    @GetMapping("/futureAndNowEvents/{id}")
-    public ResponseEntity<List<EventResponseDto>> getUserFutureAndFutureEvents(@PathVariable Long id) {
+    @GetMapping("/currentEvents/{id}")
+    public ResponseEntity<List<EventResponseDto>> getUserCurrentEvents(@PathVariable Long id) {
         List<Event> events = eventService.getFutureAndNowEventsByUser(id);
         List<EventResponseDto> requests = events.stream()
                 .map(eventMapper::toEventResponseDto).toList();

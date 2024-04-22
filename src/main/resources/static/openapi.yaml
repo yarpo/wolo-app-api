@@ -844,12 +844,12 @@ paths:
                   $ref: '#/components/schemas/EventResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /organisations/{id}/futureAndNowEvents:
+  /organisations/{id}/currentEvents:
     get:
       tags:
         - Organisations
-      summary: Get all today or future events from the selected organisation
-      operationId: getFutureAndNowEventsByOrganisation
+      summary: Get all current events from the selected organisation
+      operationId: getCurrenEventsByOrganisation
       parameters:
         - name: id
           in: path
@@ -1311,12 +1311,12 @@ paths:
                   $ref: '#/components/schemas/EventResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /users/futureAndNowEvents/{id}:
+  /users/currentEvents/{id}:
     get:
       tags:
         - Users
-      summary: Get all user today or future events
-      operationId: getUserFutureAndNowEvents
+      summary: Get all current events
+      operationId: getUserCurrentEvents
       parameters:
         - name: id
           in: path
