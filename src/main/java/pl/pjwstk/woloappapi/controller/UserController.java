@@ -6,10 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.EventResponseDto;
-import pl.pjwstk.woloappapi.model.ShiftResponseDto;
-import pl.pjwstk.woloappapi.model.UserRequestDto;
-import pl.pjwstk.woloappapi.model.UserResponseDto;
+import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.model.entities.User;
@@ -43,6 +40,15 @@ public class UserController {
                 .toList();
         return new ResponseEntity<>(userResponseDtos, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/volunteers")
+    public ResponseEntity<List<UserShortResponse>> getUserShorts() {
+        List<User> users = userService.getUsersOnlyWithUserRole();
+        List<UserShortResponse> userShortResponses = users.stream()
+                .map(userMapper::toUserShortRespons)
+                .toList();
+        return new ResponseEntity<>(userShortResponses, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

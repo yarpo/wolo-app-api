@@ -49,6 +49,5 @@ public class ShiftRequestDto {
     private String homeNum;
 
     @NotNull(message = "District must be chosen")
-    @Schema(name = "District id", example = "1")
     private Long districtId;
 }
