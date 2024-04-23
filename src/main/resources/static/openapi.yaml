@@ -1334,7 +1334,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EventResponseDto'
+                  $ref: '#/components/schemas/ShiftResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /users/pastEvents/{id}:
@@ -1360,7 +1360,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EventResponseDto'
+                  $ref: '#/components/schemas/ShiftResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /users/volunteers:

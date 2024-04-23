@@ -15,6 +15,7 @@ import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.service.EventService;
+import pl.pjwstk.woloappapi.service.ShiftService;
 import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.UserMapper;
@@ -29,6 +30,7 @@ public class UserController {
 
     private final UserService userService;
     private final EventService eventService;
+    private final ShiftService shiftService;
     private final UserMapper userMapper;
     private final EventMapper eventMapper;
     private final ShiftToUserRepository shiftToUserRepository;
@@ -59,19 +61,21 @@ public class UserController {
     }
 
     @GetMapping("/pastEvents/{id}")
-    public ResponseEntity<List<EventResponseDto>> getUserPastEvents(@PathVariable Long id) {
-        List<Event> events = eventService.getPastEventsByUser(id);
-        List<EventResponseDto> requests = events.stream()
-                .map(eventMapper::toEventResponseDto).toList();
-        return new ResponseEntity<>(requests, HttpStatus.OK);
+    public ResponseEntity<List<ShiftResponseDto>> getUserPastEvents(@PathVariable Long id) {
+        List<ShiftToUser> shiftToUsers = shiftService.getPastEventsByUser(id);
+        List<ShiftResponseDto> shifts = shiftToUsers.stream()
+                .map(userMapper::toShiftResponseDto)
+                .toList();
+        return new ResponseEntity<>(shifts, HttpStatus.OK);
     }
 
     @GetMapping("/currentEvents/{id}")
-    public ResponseEntity<List<EventResponseDto>> getUserCurrentEvents(@PathVariable Long id) {
-        List<Event> events = eventService.getFutureAndNowEventsByUser(id);
-        List<EventResponseDto> requests = events.stream()
-                .map(eventMapper::toEventResponseDto).toList();
-        return new ResponseEntity<>(requests, HttpStatus.OK);
+    public ResponseEntity<List<ShiftResponseDto>> getUserCurrentEvents(@PathVariable Long id) {
+        List<ShiftToUser> shiftToUsers = shiftService.getCurrentEventsByUser(id);
+        List<ShiftResponseDto> shifts = shiftToUsers.stream()
+                .map(userMapper::toShiftResponseDto)
+                .toList();
+        return new ResponseEntity<>(shifts, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/shifts")
