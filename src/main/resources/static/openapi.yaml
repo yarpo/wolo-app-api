@@ -844,6 +844,54 @@ paths:
                   $ref: '#/components/schemas/EventResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+  /organisations/{id}/currentEvents:
+    get:
+      tags:
+        - Organisations
+      summary: Get all current events from the selected organisation
+      operationId: getCurrenEventsByOrganisation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventResponseDto'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /organisations/{id}/pastEvents:
+    get:
+      tags:
+        - Organisations
+      summary: Get all past events from the selected organisation
+      operationId: getPastEventsByOrganisation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventResponseDto'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
   /organisations/add:
     post:
       tags:
@@ -1261,6 +1309,58 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EventResponseDto'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/currentEvents/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get all current events
+      operationId: getUserCurrentEvents
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShiftResponseDto'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/pastEvents/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get all user past events
+      operationId: getUserPastEvents
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShiftResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /users/volunteers:

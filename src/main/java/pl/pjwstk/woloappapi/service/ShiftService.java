@@ -3,17 +3,22 @@ package pl.pjwstk.woloappapi.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Shift;
+import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.repository.ShiftRepository;
+import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class ShiftService {
     private final ShiftRepository shiftRepository;
+    private final ShiftToUserRepository shiftToUserRepository;
 
     public Shift getShiftById(long id){
         return shiftRepository.findById(id).orElseThrow(() -> new NotFoundException("Event id not found!"));
@@ -33,6 +38,20 @@ public class ShiftService {
         } else {
             throw new IllegalArgumentException("Can't delete shift: it has a past or today's date");
         }
+    }
+
+    public List<ShiftToUser> getPastEventsByUser(Long id) {
+        return shiftToUserRepository.findShiftToUsersByUserId(id)
+                .stream()
+                .filter(shiftToUser -> shiftToUser.getShift().getDate().isBefore(LocalDate.now()))
+                .toList();
+    }
+
+    public List<ShiftToUser> getCurrentEventsByUser(Long id) {
+        return shiftToUserRepository.findShiftToUsersByUserId(id)
+                .stream()
+                .filter(shiftToUser -> !shiftToUser.getShift().getDate().isBefore(LocalDate.now()))
+                .toList();
     }
 
     @Transactional

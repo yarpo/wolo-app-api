@@ -77,6 +77,8 @@ public class SecurityConfig {
 
                     auth.requestMatchers(GET, "/organisations").permitAll();
                     auth.requestMatchers(GET, "/organisations/**").permitAll();
+                    auth.requestMatchers(OPTIONS, "/organisations/*/currentEvents").permitAll();
+                    auth.requestMatchers(OPTIONS, "/organisations/*/pastEvents").permitAll();
                     auth.requestMatchers(OPTIONS,  "/organisations/add").permitAll();
                     auth.requestMatchers( "/organisations/add").hasAuthority("CREATE_ORGANISATION");
                     auth.requestMatchers( "/organisations/approve").hasAuthority("APPROVE_ORGANISATION");
@@ -91,6 +93,10 @@ public class SecurityConfig {
 
                     auth.requestMatchers(OPTIONS,"/users/**").permitAll();
                     auth.requestMatchers(GET, "/users/*/shifts").hasAuthority("READ_USERS_SHIFTS");
+                    auth.requestMatchers(OPTIONS, "/users/currentEvents/**").permitAll();
+                    auth.requestMatchers(OPTIONS, "/users/pastEvents/**").permitAll();
+                    auth.requestMatchers(GET, "/users/currentEvents/**").hasAuthority("READ_USERS_EVENTS");
+                    auth.requestMatchers(GET, "/users/pastEvents/**").hasAuthority("READ_USERS_EVENTS");
                     auth.requestMatchers(GET, "/users").hasAuthority("READ_USERS");
                     auth.requestMatchers(GET, "/users/**").hasAuthority("READ_USERS");
                     auth.requestMatchers(PUT, "/users/**").hasAuthority("EDIT_USER");
