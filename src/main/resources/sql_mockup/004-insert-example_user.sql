@@ -9,7 +9,6 @@ INSERT INTO "user" ( firstname, lastname, email, phone_number, is_pesel_verified
 INSERT INTO user_to_role (role_id, user_id) VALUES
                                                 (1, 2),
                                                 (3, 3),
-                                                (2, 3),
                                                 (2, 4),
                                                 (3, 4);
 

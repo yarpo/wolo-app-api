@@ -87,13 +87,19 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
     </changeSet>
 
     <changeSet author="woloapp" id="011">
-        <sqlFile path="sql_inserts/010-insert-city-privileges.sql"
+        <sqlFile path="sql_inserts/011-insert-city-privileges.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
     </changeSet>
 
     <changeSet author="woloapp" id="012">
-        <sqlFile path="sql_inserts/011-insert-usersEvents-privilege.sql"
+        <sqlFile path="sql_inserts/012-insert-usersEvents-privilege.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="woloapp" id="013">
+        <sqlFile path="sql_mockup/013-insert-users-with-user-role-only.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
     </changeSet>
