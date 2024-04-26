@@ -104,4 +104,16 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
+    <changeSet author="woloapp" id="014">
+        <sqlFile path="sql_scripts/014-update-event.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_scripts/014-update-shift.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/014-insert-to-updated-event.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+    </changeSet>
+
 </databaseChangeLog >
