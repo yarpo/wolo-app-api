@@ -36,14 +36,12 @@ public class UserMapper {
     }
 
     public User.UserBuilder toUser(RegistrationRequest request) {
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.out.println("mapper: "+ request.isAdult());
         return User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
-                .isAdult(request.isAdult())
+                .isAdult(request.getIsAdult())
                 .isPeselVerified(false)
                 .isAgreementSigned(false);
     }

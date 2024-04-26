@@ -70,7 +70,7 @@ public class UserController {
     public ResponseEntity<List<ShiftResponseDto>> getUserPastEvents(@PathVariable Long id) {
         List<ShiftToUser> shiftToUsers = shiftService.getPastEventsByUser(id);
         List<ShiftResponseDto> shifts = shiftToUsers.stream()
-                .map(userMapper::toShiftResponseDto)
+                .map(stu -> eventMapper.toShiftResponseDto(stu.getShift()))
                 .toList();
         return new ResponseEntity<>(shifts, HttpStatus.OK);
     }
@@ -79,7 +79,7 @@ public class UserController {
     public ResponseEntity<List<ShiftResponseDto>> getUserCurrentEvents(@PathVariable Long id) {
         List<ShiftToUser> shiftToUsers = shiftService.getCurrentEventsByUser(id);
         List<ShiftResponseDto> shifts = shiftToUsers.stream()
-                .map(userMapper::toShiftResponseDto)
+                .map(stu -> eventMapper.toShiftResponseDto(stu.getShift()))
                 .toList();
         return new ResponseEntity<>(shifts, HttpStatus.OK);
     }
@@ -88,7 +88,7 @@ public class UserController {
     public ResponseEntity<List<ShiftResponseDto>> getUserShifts(@PathVariable Long id){
         List<ShiftToUser> shiftToUsers = shiftToUserRepository.findShiftToUsersByUserId(id);
         List<ShiftResponseDto> shifts = shiftToUsers.stream()
-                .map(userMapper::toShiftResponseDto)
+                .map(stu -> eventMapper.toShiftResponseDto(stu.getShift()))
                 .toList();
         return new ResponseEntity<>(shifts, HttpStatus.OK);
     }

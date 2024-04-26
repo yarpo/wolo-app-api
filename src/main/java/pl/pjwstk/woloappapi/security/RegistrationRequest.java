@@ -30,7 +30,7 @@ public class RegistrationRequest {
     @Size(min = 9, max = 9, message = "Phone number must be 9 digits")
     private String phoneNumber;
 
-    private boolean isAdult;
+    private Boolean isAdult;
 
     @NotNull
     @NotBlank(message = "Password is required")

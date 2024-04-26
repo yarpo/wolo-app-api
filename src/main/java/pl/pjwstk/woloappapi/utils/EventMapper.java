@@ -109,6 +109,25 @@ public class EventMapper {
         return eventResponseDto;
     }
 
+    public ShiftResponseDto toShiftResponseDto(Shift shift) {
+        return ShiftResponseDto.builder()
+                .shiftId(shift.getId())
+                .eventId(shift.getEvent().getId())
+                .eventName(shift.getEvent().getName())
+                .startTime(shift.getStartTime())
+                .endTime(shift.getEndTime())
+                .date(shift.getDate())
+                .capacity(shift.getCapacity())
+                .isLeaderRequired(shift.isLeaderRequired())
+                .requiredMinAge(shift.getRequiredMinAge())
+                .registeredUsers(shift.getRegisteredUsers())
+                .district(shift.getAddress().getDistrict().getName())
+                .street(shift.getAddress().getStreet())
+                .homeNum(shift.getAddress().getHomeNum())
+                .shiftDirections(shift.getShiftDirections() != null ? shift.getShiftDirections() : "")
+                .build();
+    }
+
     public Event.EventBuilder toEvent(EventRequestDto dtoEvent){
         return Event.builder()
                 .name(dtoEvent.getName())
