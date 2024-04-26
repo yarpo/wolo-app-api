@@ -35,6 +35,14 @@ public class UserService {
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("User id not found!"));
     }
+
+    public List<User> getUsersOnlyWithUserRole() {
+        List<User> users = userRepository.findUsersByRole("USER");
+        return users.stream()
+                .filter(user -> user.getRoles().size() == 1)
+                .toList();
+
+    }
     @Transactional
         public void deleteUser(Long userId) {
             Optional<User> userOptional = userRepository.findById(userId);

@@ -92,4 +92,16 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
+    <changeSet author="woloapp" id="012">
+        <sqlFile path="sql_inserts/012-insert-usersEvents-privilege.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="woloapp" id="013">
+        <sqlFile path="sql_mockup/013-insert-users-with-user-role-only.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+    </changeSet>
+
 </databaseChangeLog >

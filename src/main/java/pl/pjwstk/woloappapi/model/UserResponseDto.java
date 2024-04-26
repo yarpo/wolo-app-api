@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class UserResponseDto {
 
-    @Schema(name = "User ID", example = "1")
     private Long id;
 
     private String firstName;

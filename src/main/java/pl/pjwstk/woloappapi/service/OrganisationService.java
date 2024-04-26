@@ -13,6 +13,7 @@ import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -73,6 +74,28 @@ public class OrganisationService {
                 .findById(id)
                 .map(Organisation::getEvents)
                 .orElseThrow(() -> new NotFoundException("Organizer id not found!"));
+    }
+
+    public List<Event> getPastEventsByOrganisation(Long id) {
+        return organisationRepository
+                .findById(id)
+                .map(Organisation::getEvents)
+                .orElseThrow(() -> new NotFoundException("Organizer id not found!"))
+                .stream()
+                .filter(event -> event.getShifts()
+                        .stream().anyMatch(shift -> shift.getDate().isBefore(LocalDate.now())))
+                .toList();
+    }
+
+    public List<Event> getFutureAndNowEventsByOrganisation(Long id) {
+        return organisationRepository
+                .findById(id)
+                .map(Organisation::getEvents)
+                .orElseThrow(() -> new NotFoundException("Organizer id not found!"))
+                .stream()
+                .filter(event -> event.getShifts()
+                        .stream().anyMatch(shift -> !shift.getDate().isBefore(LocalDate.now())))
+                .toList();
     }
 
     @Transactional

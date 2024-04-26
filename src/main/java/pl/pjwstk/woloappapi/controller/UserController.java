@@ -6,15 +6,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.EventResponseDto;
-import pl.pjwstk.woloappapi.model.ShiftResponseDto;
-import pl.pjwstk.woloappapi.model.UserRequestDto;
-import pl.pjwstk.woloappapi.model.UserResponseDto;
+import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.service.EventService;
+import pl.pjwstk.woloappapi.service.ShiftService;
 import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.UserMapper;
@@ -29,6 +27,7 @@ public class UserController {
 
     private final UserService userService;
     private final EventService eventService;
+    private final ShiftService shiftService;
     private final UserMapper userMapper;
     private final EventMapper eventMapper;
     private final ShiftToUserRepository shiftToUserRepository;
@@ -41,6 +40,15 @@ public class UserController {
                 .toList();
         return new ResponseEntity<>(userResponseDtos, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/volunteers")
+    public ResponseEntity<List<UserShortResponse>> getUserShorts() {
+        List<User> users = userService.getUsersOnlyWithUserRole();
+        List<UserShortResponse> userShortResponses = users.stream()
+                .map(userMapper::toUserShortRespons)
+                .toList();
+        return new ResponseEntity<>(userShortResponses, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -56,6 +64,24 @@ public class UserController {
         List<EventResponseDto> requests = events.stream()
                 .map(eventMapper::toEventResponseDto).toList();
         return new ResponseEntity<>(requests, HttpStatus.OK);
+    }
+
+    @GetMapping("/pastEvents/{id}")
+    public ResponseEntity<List<ShiftResponseDto>> getUserPastEvents(@PathVariable Long id) {
+        List<ShiftToUser> shiftToUsers = shiftService.getPastEventsByUser(id);
+        List<ShiftResponseDto> shifts = shiftToUsers.stream()
+                .map(userMapper::toShiftResponseDto)
+                .toList();
+        return new ResponseEntity<>(shifts, HttpStatus.OK);
+    }
+
+    @GetMapping("/currentEvents/{id}")
+    public ResponseEntity<List<ShiftResponseDto>> getUserCurrentEvents(@PathVariable Long id) {
+        List<ShiftToUser> shiftToUsers = shiftService.getCurrentEventsByUser(id);
+        List<ShiftResponseDto> shifts = shiftToUsers.stream()
+                .map(userMapper::toShiftResponseDto)
+                .toList();
+        return new ResponseEntity<>(shifts, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/shifts")

@@ -50,6 +50,7 @@ public class UserMapper {
 
     public UserShortResponse toUserShortRespons(User user) {
         return UserShortResponse.builder()
+                .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())

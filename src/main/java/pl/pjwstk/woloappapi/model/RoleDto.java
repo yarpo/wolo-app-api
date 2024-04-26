@@ -14,7 +14,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RoleDto {
 
-    @Schema(name = "Role ID", example = "1")
     private Long id;
 
     @NotNull
