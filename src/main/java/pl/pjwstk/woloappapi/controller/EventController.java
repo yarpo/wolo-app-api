@@ -8,6 +8,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.EventRequestDto;
 import pl.pjwstk.woloappapi.model.EventResponseDetailsDto;
@@ -24,6 +25,7 @@ import pl.pjwstk.woloappapi.utils.UserMapper;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_PDF;
@@ -60,17 +62,17 @@ public class EventController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<HttpStatus> joinEvent(
-            @RequestParam(value = "user") Long userId,
-            @RequestParam(value = "shift") Long shiftId){
+    public ResponseEntity<HttpStatus> joinEvent(@RequestParam(value = "shift") Long shiftId){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userId = userService.getCurrentUser(authentication).getId();
         userService.joinEvent(userId, shiftId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/refuse")
-    public ResponseEntity<HttpStatus> refuseParticipateInEvent(
-            @RequestParam(value = "user") Long userId,
-            @RequestParam(value = "shift") Long shiftId){
+    public ResponseEntity<HttpStatus> refuseParticipateInEvent(@RequestParam(value = "shift") Long shiftId){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userId = userService.getCurrentUser(authentication).getId();
         userService.refuse(userId, shiftId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -126,21 +128,60 @@ public class EventController {
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var organisationId = userService.getCurrentUser(authentication).getOrganisation().getId();
+        if(Objects.equals(organisationId, dtoEvent.getOrganisationId())) {
             eventService.createEvent(dtoEvent);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }else{
+            throw new IllegalArgumentException("You can create events only for your organisation");
+        }
+    }
+
+    @PostMapping("/admin/add")
+    public ResponseEntity<HttpStatus> addEventByAdmin(@Valid @RequestBody EventRequestDto dtoEvent) {
+        eventService.createEvent(dtoEvent);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteEvent(@PathVariable Long id) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var organisationId = userService.getCurrentUser(authentication).getOrganisation().getId();
+        var event = eventService.getEventById(id);
+        if(Objects.equals(organisationId, event.getOrganisation().getId())) {
+            eventService.deleteEvent(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else{
+            throw new IllegalArgumentException("You can delete events only for your organisation");
+        }
+    }
+
+    @DeleteMapping("/admin/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteEventByAdmin(@PathVariable Long id) {
         eventService.deleteEvent(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{id}/edit")
-    public ResponseEntity<HttpStatus> editEvent(
+    @PutMapping("/admin/edit/{id}")
+    public ResponseEntity<HttpStatus> editEventByAdmin(
             @Valid @RequestBody EventRequestDto eventRequestDto, @PathVariable Long id) {
         eventService.updateEvent(eventRequestDto, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<HttpStatus> editEvent(
+            @Valid @RequestBody EventRequestDto eventRequestDto, @PathVariable Long id) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var organisationId = userService.getCurrentUser(authentication).getOrganisation().getId();
+        var event = eventService.getEventById(id);
+        if(Objects.equals(organisationId, event.getOrganisation().getId())) {
+            eventService.updateEvent(eventRequestDto, id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else{
+            throw new IllegalArgumentException("You can edit events only for your organisation");
+        }
     }
 
     @GetMapping("/upcoming")
@@ -156,17 +197,25 @@ public class EventController {
     @GetMapping("/users/pdf")
     public ResponseEntity<ByteArrayResource> getListOfUsersAsPDF(
             @RequestParam(value = "id") Long eventId) throws IOException {
-        var shifts = eventService.getEventById(eventId).getShifts();
-        var pdfBytes = pdfGenerationService.generatePDFForAllShifts(shifts);
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var organisationId = userService.getCurrentUser(authentication).getOrganisation().getId();
+        var event = eventService.getEventById(eventId);
+        if(Objects.equals(organisationId, event.getOrganisation().getId())) {
+            var shifts = event.getShifts();
+            var pdfBytes = pdfGenerationService.generatePDFForAllShifts(shifts);
 
-        var headers = new HttpHeaders();
-        headers.setContentType(APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "users_on_shifts.pdf");
+            var headers = new HttpHeaders();
+            headers.setContentType(APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "users_on_shifts.pdf");
 
-        ByteArrayResource resource = new ByteArrayResource(pdfBytes);
+            ByteArrayResource resource = new ByteArrayResource(pdfBytes);
 
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(resource);
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(resource);
+        }else {
+            throw new IllegalArgumentException("You can get list of volunteers sign in for event only for your organisation");
+        }
+
     }
 }

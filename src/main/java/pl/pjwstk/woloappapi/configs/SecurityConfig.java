@@ -68,6 +68,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/events/users**").hasAuthority("READ_USERS_BY_SHIFT");
                     auth.requestMatchers(OPTIONS, "/events/users/pdf").permitAll();
                     auth.requestMatchers("/events/users/pdf").hasAuthority("USERS_LIST_PDF");
+                    auth.requestMatchers("events/admin**").permitAll();
 
                     auth.requestMatchers( "/reports/one/**").permitAll();
                     auth.requestMatchers("/reports/all").hasAuthority("READ_REPORTS");
@@ -95,8 +96,7 @@ public class SecurityConfig {
                     auth.requestMatchers(GET, "/users/*/shifts").hasAuthority("READ_USERS_SHIFTS");
                     auth.requestMatchers(OPTIONS, "/users/currentEvents/**").permitAll();
                     auth.requestMatchers(OPTIONS, "/users/pastEvents/**").permitAll();
-                    auth.requestMatchers(GET, "/users/currentEvents/**").hasAuthority("READ_USERS_EVENTS");
-                    auth.requestMatchers(GET, "/users/pastEvents/**").hasAuthority("READ_USERS_EVENTS");
+                    auth.requestMatchers(GET, "/users/shifts/**").hasAuthority("READ_USERS_EVENTS");
                     auth.requestMatchers(GET, "/users").hasAuthority("READ_USERS");
                     auth.requestMatchers(GET, "/users/**").hasAuthority("READ_USERS");
                     auth.requestMatchers(PUT, "/users/**").hasAuthority("EDIT_USER");

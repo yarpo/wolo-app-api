@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.Event;
@@ -66,18 +67,22 @@ public class UserController {
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
-    @GetMapping("/pastEvents/{id}")
-    public ResponseEntity<List<ShiftResponseDto>> getUserPastEvents(@PathVariable Long id) {
-        List<ShiftToUser> shiftToUsers = shiftService.getPastEventsByUser(id);
+    @GetMapping("/shifts/past")
+    public ResponseEntity<List<ShiftResponseDto>> getUserPastSifts() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userId = userService.getCurrentUser(authentication).getId();
+        List<ShiftToUser> shiftToUsers = shiftService.getPastEventsByUser(userId);
         List<ShiftResponseDto> shifts = shiftToUsers.stream()
                 .map(stu -> eventMapper.toShiftResponseDto(stu.getShift()))
                 .toList();
         return new ResponseEntity<>(shifts, HttpStatus.OK);
     }
 
-    @GetMapping("/currentEvents/{id}")
-    public ResponseEntity<List<ShiftResponseDto>> getUserCurrentEvents(@PathVariable Long id) {
-        List<ShiftToUser> shiftToUsers = shiftService.getCurrentEventsByUser(id);
+    @GetMapping("/shifts/current")
+    public ResponseEntity<List<ShiftResponseDto>> getUserCurrentShifts() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userId = userService.getCurrentUser(authentication).getId();
+        List<ShiftToUser> shiftToUsers = shiftService.getCurrentEventsByUser(userId);
         List<ShiftResponseDto> shifts = shiftToUsers.stream()
                 .map(stu -> eventMapper.toShiftResponseDto(stu.getShift()))
                 .toList();
