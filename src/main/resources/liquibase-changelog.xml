@@ -114,6 +114,9 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
         <sqlFile path="sql_mockup/014-insert-to-updated-event.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
+        <sqlFile path="sql_mockup/014-insert-to-updated-shift.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
     </changeSet>
 
 </databaseChangeLog >
