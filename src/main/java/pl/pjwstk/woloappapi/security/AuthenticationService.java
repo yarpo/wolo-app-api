@@ -40,6 +40,9 @@ public class AuthenticationService {
                 .roles(Collections.singletonList(roleService.getRoleByName("USER")))
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println("request.isAdult: " + request.isAdult());
+        System.out.println("user.isAdult: " + user.isAdult());
         userRepository.save(user);
         return AuthenticationResponse.builder()
                 .accessToken(jwtService.generateToken(user))

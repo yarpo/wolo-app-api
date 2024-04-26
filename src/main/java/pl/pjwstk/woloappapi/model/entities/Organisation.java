@@ -40,7 +40,7 @@ public class Organisation {
     @Column(name = "is_approved", nullable = false)
     private boolean isApproved;
 
-    @OneToOne(mappedBy = "organisation")
+    @OneToOne(mappedBy = "organisation", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private User moderator;
 
     @Column(name = "logo_url")
