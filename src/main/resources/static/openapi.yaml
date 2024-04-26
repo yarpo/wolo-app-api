@@ -648,11 +648,12 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+
   /events/add:
     post:
       tags:
         - Event
-      summary: Adding new event
+      summary: Adding new event by organisation
       operationId: addEvent
       parameters:
         - name: event
@@ -669,6 +670,29 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/Created'
+
+  /events/admin/add:
+    post:
+      tags:
+        - Event
+      summary: Adding new event by admin
+      operationId: addEventByAdmin
+      parameters:
+        - name: event
+          in: query
+          description: Event object to create
+          schema:
+            $ref: '#/components/schemas/EventRequestDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequestDto'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+
   /events/join:
     post:
       tags:
@@ -676,14 +700,6 @@ paths:
       summary: The user join shift of the event
       operationId: joinEvent
       parameters:
-        - name: user
-          in: query
-          description: Id of the user who wants to join the event
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 1
         - name: shift
           in: query
           description: Id of the shift user wants to join
@@ -699,6 +715,7 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+
   /events/refuse:
     post:
       tags:
@@ -706,14 +723,6 @@ paths:
       summary: The user refuses to participate in the event
       operationId: refuseParticipateInEvent
       parameters:
-        - name: user
-          in: query
-          description: Id of the user who wants to refuse to participate in the event
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 1
         - name: shift
           in: query
           description: Id of the shift from which the user wants to unsubscribe
@@ -727,11 +736,47 @@ paths:
           $ref: '#/components/responses/OK'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
-  /events/{id}/edit:
+
+  /events/admin/edit/{id}:
     put:
       tags:
         - Event
-      summary: Edit event
+      summary: Edit event by admin
+      description: Only upcomming events can be changed
+      operationId: editEventByAdmin
+      parameters:
+        - name: event
+          in: query
+          description: event object with changes
+          schema:
+            $ref: '#/components/schemas/EventRequestDto'
+        - name: id
+          in: path
+          description: event id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequestDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
+  /events/edit/{id}:
+    put:
+      tags:
+        - Event
+      summary: Edit event by organisation
       description: Only upcomming events can be changed
       operationId: editEvent
       parameters:
@@ -761,11 +806,12 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+
   /events/delete/{id}:
     delete:
       tags:
         - Event
-      summary: Delete event
+      summary: Delete event by organisation
       description: Only upcoming events can be deleted
       operationId: deleteEvent
       parameters:
@@ -780,6 +826,27 @@ paths:
       responses:
         '204':
           $ref: '#/components/responses/NoContentResponse'
+
+  /events/admin/delete/{id}:
+    delete:
+      tags:
+        - Event
+      summary: Delete event by admin
+      description: Only upcoming events can be deleted
+      operationId: deleteEventByAdmin
+      parameters:
+        - name: id
+          in: path
+          description: Event id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+
   /organisations:
     get:
       tags:
@@ -844,7 +911,7 @@ paths:
                   $ref: '#/components/schemas/EventResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /organisations/{id}/currentEvents:
+  /organisations//events/current/{id}:
     get:
       tags:
         - Organisations
@@ -868,7 +935,7 @@ paths:
                   $ref: '#/components/schemas/EventResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /organisations/{id}/pastEvents:
+  /organisations/events/past/{id}:
     get:
       tags:
         - Organisations
@@ -1311,21 +1378,13 @@ paths:
                   $ref: '#/components/schemas/EventResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /users/currentEvents/{id}:
+
+  /users/shifts/current:
     get:
       tags:
         - Users
       summary: Get all current events
-      operationId: getUserCurrentEvents
-      parameters:
-        - name: id
-          in: path
-          description: User id
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 1
+      operationId: getUserCurrentShifts
       responses:
         '200':
           description: OK
@@ -1337,21 +1396,13 @@ paths:
                   $ref: '#/components/schemas/ShiftResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /users/pastEvents/{id}:
+
+  /users/shifts/past:
     get:
       tags:
         - Users
       summary: Get all user past events
-      operationId: getUserPastEvents
-      parameters:
-        - name: id
-          in: path
-          description: User id
-          required: true
-          schema:
-            type: integer
-            format: int64
-          example: 1
+      operationId: getUserPastSifts
       responses:
         '200':
           description: OK
@@ -1363,6 +1414,7 @@ paths:
                   $ref: '#/components/schemas/ShiftResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+
   /users/volunteers:
     get:
       tags:
@@ -1991,6 +2043,7 @@ components:
           minLength: 0
           type: string
           example: password
+
     RoleDto:
       required:
         - name
@@ -2004,7 +2057,8 @@ components:
           maxLength: 20
           minLength: 0
           type: string
-          example: User
+          example: USER
+
     ShiftInfoRespons:
       type: object
       properties:
@@ -2032,6 +2086,7 @@ components:
         address:
           type: string
           example: Brodway 123
+
     ShiftRequestDto:
       required:
         - startTime
@@ -2079,6 +2134,7 @@ components:
           type: integer
           format: int64
           example: 1
+
     ShiftResponseDto:
       type: object
       properties:
@@ -2091,8 +2147,6 @@ components:
           format: int64
           example: 1
         eventName:
-          maxLength: 250
-          minLength: 0
           type: string
           example: Animal Helpers
         startTime:
@@ -2105,27 +2159,24 @@ components:
         capacity:
           type: integer
           format: int32
+          example: 5
         isLeaderRequired:
           type: boolean
         requiredMinAge:
           type: integer
           format: int32
+          example: 12
         registeredUsers:
           type: integer
           format: int32
+          example: 0
         district:
-          maxLength: 50
-          minLength: 0
           type: string
           example: DownTown
         street:
-          maxLength: 50
-          minLength: 0
           type: string
           example: Broadway
         homeNum:
-          maxLength: 10
-          minLength: 0
           type: string
           example: 123
         shiftDirections:
@@ -2188,25 +2239,17 @@ components:
           format: int64
           example: 1
         firstName:
-          maxLength: 50
-          minLength: 0
           type: string
           example: John
         lastName:
-          maxLength: 50
-          minLength: 0
           type: string
           example: Doe
         email:
-          maxLength: 50
-          minLength: 0
           type: string
           example: example@mail.com
         phoneNumber:
-          maxLength: 9
-          minLength: 9
-          pattern: '[0-9]{9}'
           type: string
+          example: 000000000
         isPeselVerified:
           type: boolean
         isAgreementSigned:
@@ -2219,7 +2262,7 @@ components:
           type: array
           items:
             type: string
-            example: User
+            example: USER
         organisationId:
           type: integer
           format: int64
@@ -2228,10 +2271,8 @@ components:
           maxLength: 50
           minLength: 0
           type: string
-          example: Health
+          example: Wolontariat Gdanska
         shifts:
-          maxItems: 2147483647
-          minItems: 1
           type: array
           items:
             $ref: '#/components/schemas/ShiftResponseDto'

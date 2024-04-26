@@ -8,6 +8,7 @@ import pl.pjwstk.woloappapi.model.UserRequestDto;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.model.entities.User;
+import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
@@ -24,6 +25,7 @@ public class UserService {
     private final ShiftToUserRepository shiftToUserRepository;
     private final RoleService roleService;
     private final OrganisationService organisationService;
+    private final OrganisationRepository organisationRepository;
     private final ShiftService shiftService;
 
     public List<User> getAllUsers() {
@@ -138,9 +140,13 @@ public class UserService {
     public void revokeOrganisation(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User not found with id: " + userId));
+        var organisation = user.getOrganisation();
+        organisation.setApproved(false);
+        organisationRepository.save(organisation);
         user.setOrganisation(null);
         user.getRoles().removeIf(r -> r.getName().equals("MODERATOR"));
         userRepository.save(user);
+
     }
 
     public void refuse(Long userId, Long shiftId) {
