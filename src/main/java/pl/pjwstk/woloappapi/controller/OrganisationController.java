@@ -48,8 +48,6 @@ public class OrganisationController {
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addOrganisation(
             @Valid @RequestBody OrganisationRequestDto organisationDto) {
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.out.println("controler: " + organisationDto.getModeratorId());
         organisationService.createOrganisation(organisationDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

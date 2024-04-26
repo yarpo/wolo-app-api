@@ -78,7 +78,7 @@ public class SecurityConfig {
 
                     auth.requestMatchers(GET, "/organisations").permitAll();
                     auth.requestMatchers(GET, "/organisations/**").permitAll();
-                    auth.requestMatchers(OPTIONS, "/organisations**").permitAll();
+                    auth.requestMatchers(OPTIONS, "/organisations/**").permitAll();
                     auth.requestMatchers( "/organisations/add").hasAuthority("CREATE_ORGANISATION");
                     auth.requestMatchers( "/organisations/approve").hasAuthority("APPROVE_ORGANISATION");
                     auth.requestMatchers( "/organisations/disapprove").hasAuthority("APPROVE_ORGANISATION");
