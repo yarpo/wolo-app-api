@@ -1,19 +1,14 @@
 package pl.pjwstk.woloappapi.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.pjwstk.woloappapi.model.DistrictResponseDto;
 import pl.pjwstk.woloappapi.model.entities.District;
-import pl.pjwstk.woloappapi.model.DistrictDto;
+import pl.pjwstk.woloappapi.model.DistrictRequestDto;
 import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
 
@@ -29,22 +24,22 @@ public class DistrictController {
     private final DictionariesMapper dictionariesMapper;
 
     @GetMapping()
-    public ResponseEntity<List<DistrictDto>> getDistricts() {
+    public ResponseEntity<List<DistrictResponseDto>> getDistricts() {
         List<District> districts = districtService.getAllDistricts();
-        List<DistrictDto> districtDtos =
+        List<DistrictResponseDto> districtDtos =
                 districts.stream().map(dictionariesMapper::toDistrictDto).toList();
         return new ResponseEntity<>(districtDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DistrictDto> getDistrictById(@PathVariable Long id) {
-        DistrictDto districtDto = dictionariesMapper
+    public ResponseEntity<DistrictResponseDto> getDistrictById(@PathVariable Long id) {
+        DistrictResponseDto districtDto = dictionariesMapper
                 .toDistrictDto(districtService.getDistrictById(id));
         return new ResponseEntity<>(districtDto, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addDistrict(@Valid @RequestBody DistrictDto district) {
+    public ResponseEntity<HttpStatus> addDistrict(@Valid @RequestBody DistrictRequestDto district) {
         districtService.createDistrict(district);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -57,7 +52,7 @@ public class DistrictController {
 
     @PutMapping("/edit")
     public ResponseEntity<HttpStatus> editDistrict(
-            @Valid @RequestBody DistrictDto district) {
+            @Valid @RequestBody DistrictRequestDto district) {
         districtService.updateDistrict(district);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
