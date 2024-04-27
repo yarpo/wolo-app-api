@@ -3,7 +3,7 @@ package pl.pjwstk.woloappapi.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pjwstk.woloappapi.model.DistrictDto;
+import pl.pjwstk.woloappapi.model.DistrictRequestDto;
 import pl.pjwstk.woloappapi.model.entities.District;
 import pl.pjwstk.woloappapi.repository.CityRepository;
 import pl.pjwstk.woloappapi.repository.DistrictRepository;
@@ -40,11 +40,11 @@ public class DistrictService {
     }
 
     @Transactional
-    public void createDistrict(DistrictDto districtDto) {
-        var city = cityRepository.findByName(districtDto.getCityName())
+    public void createDistrict(DistrictRequestDto districtRequestDto) {
+        var city = cityRepository.findById(districtRequestDto.getCityId())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("City " + districtDto.getCityName() + " does not exist"));
-        var district = dictionariesMapper.toDistrict(districtDto)
+                        new IllegalArgumentException("City with ID " + districtRequestDto.getCityId() + " does not exist"));
+        var district = dictionariesMapper.toDistrict(districtRequestDto)
                 .city(city)
                 .build();
         city.getDistricts().add(district);
@@ -62,15 +62,15 @@ public class DistrictService {
     }
 
     @Transactional
-    public void updateDistrict(DistrictDto districtDto) {
-        var city = cityRepository.findByName(districtDto.getCityName())
+    public void updateDistrict(DistrictRequestDto districtRequestDto) {
+        var city = cityRepository.findById(districtRequestDto.getCityId())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("City " + districtDto.getCityName() + " does not exist"));
+                        new IllegalArgumentException("City with ID " + districtRequestDto.getCityId() + " does not exist"));
         var district = districtRepository
-                .findById(districtDto.getId())
+                .findById(districtRequestDto.getId())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("District with ID " + districtDto.getId() + " does not exist"));
-        district.setName(districtDto.getName());
+                        new IllegalArgumentException("District with ID " + districtRequestDto.getCityId() + " does not exist"));
+        district.setName(districtRequestDto.getName());
         district.setCity(city);
         districtRepository.save(district);
     }

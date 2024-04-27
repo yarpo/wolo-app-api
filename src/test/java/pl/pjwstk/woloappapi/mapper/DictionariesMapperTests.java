@@ -28,7 +28,7 @@ public class DictionariesMapperTests {
         city.setName("Sample City");
         district.setCity(city);
 
-        DistrictDto districtDto = dictionariesMapper.toDistrictDto(district);
+        DistrictResponseDto districtDto = dictionariesMapper.toDistrictDto(district);
 
         assertEquals(1L, districtDto.getId());
         assertEquals("Sample District", districtDto.getName());
@@ -61,7 +61,7 @@ public class DictionariesMapperTests {
 
     @Test
     public void testToDisctrict(){
-        DistrictDto districtDto = new DistrictDto();
+        DistrictRequestDto districtDto = new DistrictRequestDto();
         districtDto.setId(1L);
         districtDto.setName("Sample District");
 
