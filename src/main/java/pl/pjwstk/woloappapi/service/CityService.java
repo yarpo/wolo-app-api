@@ -30,7 +30,7 @@ public class CityService {
 
     @Transactional
     public void createCity(CityDto cityDto) {
-        var districts = cityDto.getDistricts().stream().map(districtService::getDistrictById).toList();
+        var districts = cityDto.getDistricts().stream().map(districtService::getDistrictByName).toList();
         var city = dictionariesMapper.toCity(cityDto).districts(districts).build();
         cityRepository.save(city);
     }
@@ -56,12 +56,12 @@ public class CityService {
 
     private void updateCityDistricts(City city, CityDto cityDto) {
         city.getDistricts().removeIf(d ->!cityDto.getDistricts()
-                .contains(d.getId()));
+                .contains(d.getName()));
 
         cityDto.getDistricts().stream()
                 .filter(districtDto -> city.getDistricts().stream()
-                        .noneMatch(existingDistrict -> existingDistrict.getId().equals(districtDto)))
-                .map(districtService::getDistrictById)
+                        .noneMatch(existingDistrict -> existingDistrict.getName().equals(districtDto)))
+                .map(districtService::getDistrictByName)
                 .forEach(city.getDistricts()::add);
     }
 }

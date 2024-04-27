@@ -22,11 +22,12 @@ public class DictionariesMapper {
         return districtDto;
     }
 
+
     public CityDto toCityDto(City city){
         CityDto cityDto = new CityDto();
         cityDto.setId(city.getId());
         cityDto.setName(city.getName());
-        cityDto.setDistricts(city.getDistricts().stream().map(District::getId).toList());
+        cityDto.setDistricts(city.getDistricts().stream().map(District::getName).toList());
         return cityDto;
     }
 
