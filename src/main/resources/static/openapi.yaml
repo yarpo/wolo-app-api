@@ -247,7 +247,7 @@ paths:
       tags:
         - Cities
       summary: Adding new city
-      description: id = null
+      description: id = null, district = null
       operationId: addCity
       parameters:
         - name: city
