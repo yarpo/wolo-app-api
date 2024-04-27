@@ -1171,10 +1171,10 @@ paths:
       tags:
         - Reports
       summary: Get all reports from one event
-      operationId: getReports
+      operationId: getAllReportsByEventId
       parameters:
-        - name: id
-          in: path
+        - name: eventId
+          in: query
           description: Event Id
           required: true
           schema:
@@ -1190,13 +1190,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ReportDto'
-  /reports/one/{id}:
+
+  /reports/public/{id}:
     get:
       tags:
         - Reports
-      summary: Get report by id
-      description: Report must exist
-      operationId: getReportById
+      summary: Get public report by event id
+      description: Report and event must exist
+      operationId: getPublicReportByEventId
       parameters:
         - name: id
           in: path
@@ -1215,6 +1216,7 @@ paths:
                 $ref: '#/components/schemas/ReportDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+
   /reports/add:
     post:
       tags:
