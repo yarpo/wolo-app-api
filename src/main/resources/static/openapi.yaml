@@ -1680,7 +1680,7 @@ components:
             minLength: 0
             type: string
             example: Brodway 123
-    DistrictRequiredDto:
+    DistrictRequestDto:
       type: object
       properties:
         id:
