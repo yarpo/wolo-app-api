@@ -19,10 +19,12 @@ public class ReportService {
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
 
-    public Report getReportById(Long id) {
-        var report = reportRepository
-                .findById(id).orElseThrow(() -> new NotFoundException("Report id not found!"));
-        return report;
+    public Report getPublicReportByEventId(Long id){
+        return reportRepository.findAllByEventId(id)
+                .stream()
+                .filter(Report::isPublished)
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Report not found"));
     }
 
     @Transactional
