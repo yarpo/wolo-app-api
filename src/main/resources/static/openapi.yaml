@@ -1681,23 +1681,6 @@ components:
             type: string
             example: Brodway 123
     DistrictRequestDto:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 1
-        name:
-          maxLength: 50
-          minLength: 0
-          type: string
-          example: DownTown
-        cityName:
-          maxLength: 50
-          minLength: 0
-          type: string
-          example: New York City
-    DistrictResponseDto:
       required:
         - name
         - cityId
@@ -1716,6 +1699,23 @@ components:
           type: integer
           format: int64
           example: 1
+    DistrictResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: DownTown
+        cityName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: New York City
     EventRequestDto:
       required:
         - name
