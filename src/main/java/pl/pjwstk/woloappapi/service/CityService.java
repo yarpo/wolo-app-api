@@ -29,10 +29,8 @@ public class CityService {
     }
 
     @Transactional
-    public void createCity(CityDto cityDto) {
-        var districts = cityDto.getDistricts().stream().map(districtService::getDistrictByName).toList();
-        var city = dictionariesMapper.toCity(cityDto).districts(districts).build();
-        cityRepository.save(city);
+    public void createCity(CityDto city) {
+        cityRepository.save(dictionariesMapper.toCity(city).build());
     }
 
     @Transactional
