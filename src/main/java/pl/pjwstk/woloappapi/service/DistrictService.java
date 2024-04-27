@@ -33,6 +33,12 @@ public class DistrictService {
                 .orElseThrow(() -> new NotFoundException("District id not found!"));
     }
 
+    public District getDistrictByName(String name){
+        return districtRepository
+                .findByName(name)
+                .orElseThrow(() -> new NotFoundException("District name not found!"));
+    }
+
     @Transactional
     public void createDistrict(DistrictDto districtDto) {
         var city = cityRepository.findByName(districtDto.getCityName())

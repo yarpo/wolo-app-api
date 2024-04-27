@@ -247,7 +247,7 @@ paths:
       tags:
         - Cities
       summary: Adding new city
-      description: id = null
+      description: id = null, district = null
       operationId: addCity
       parameters:
         - name: city
@@ -1245,7 +1245,7 @@ paths:
         - Reports
       summary: Edit report
       description: Report must exist
-      operationId: editRole
+      operationId: editReport
       parameters:
         - name: report
           in: query
@@ -1422,7 +1422,7 @@ paths:
       tags:
         - Users
       summary: Get all users with only user role
-      operationId: getUsers
+      operationId: getUsersWithRole
       responses:
         '200':
           description: Success
@@ -1670,13 +1670,16 @@ components:
           maxLength: 50
           minLength: 0
           type: string
-          example: Health
+          example: New York City
         districts:
           maxItems: 2147483647
           minItems: 1
           type: array
           items:
-            $ref: '#/components/schemas/DistrictDto'
+            maxLength: 50
+            minLength: 0
+            type: string
+            example: Brodway 123
     DistrictDto:
       required:
         - name
@@ -2045,7 +2048,6 @@ components:
           minLength: 0
           type: string
           example: password
-
     RoleDto:
       required:
         - name
@@ -2060,7 +2062,6 @@ components:
           minLength: 0
           type: string
           example: USER
-
     ShiftInfoRespons:
       type: object
       properties:
@@ -2088,7 +2089,6 @@ components:
         address:
           type: string
           example: Brodway 123
-
     ShiftRequestDto:
       required:
         - startTime
