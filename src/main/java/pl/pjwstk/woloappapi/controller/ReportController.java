@@ -2,8 +2,6 @@ package pl.pjwstk.woloappapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -26,9 +24,9 @@ public class ReportController {
     private final ReportService reportService;
     private final EventMapper eventMapper;
 
-    @GetMapping("/one/{id}")
-    public ResponseEntity<ReportDto> getReportById(@PathVariable Long id) {
-        var report = eventMapper.toReportDto(reportService.getReportById(id));
+    @GetMapping("/public/{id}")
+    public ResponseEntity<ReportDto> getPublicReportByEventId(@PathVariable Long id) {
+        var report = eventMapper.toReportDto(reportService.getPublicReportByEventId(id));
         return new ResponseEntity<>(report, HttpStatus.OK);
     }
 

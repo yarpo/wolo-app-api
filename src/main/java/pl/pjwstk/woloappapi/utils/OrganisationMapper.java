@@ -9,17 +9,17 @@ import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
 @Component
 public class OrganisationMapper {
     public OrganisationResponseDto toOrganisationResponseDto(Organisation organisation) {
-        OrganisationResponseDto organisationResponseDto = new OrganisationResponseDto();
-        organisationResponseDto.setName(organisation.getName());
-        organisationResponseDto.setDescription(organisation.getDescription());
-        organisationResponseDto.setEmail(organisation.getEmail());
-        organisationResponseDto.setPhoneNumber(organisation.getPhoneNumber());
-        Address address = organisation.getAddress();
-        organisationResponseDto.setStreet(address.getStreet());
-        organisationResponseDto.setHomeNum(address.getHomeNum());
-        organisationResponseDto.setLogoUrl(organisation.getLogoUrl());
-        return organisationResponseDto;
+        return OrganisationResponseDto.builder()
+                .name(organisation.getName())
+                .description(organisation.getDescription())
+                .email(organisation.getEmail())
+                .phoneNumber(organisation.getPhoneNumber())
+                .street(organisation.getAddress().getStreet())
+                .homeNum(organisation.getAddress().getHomeNum())
+                .logoUrl(organisation.getLogoUrl())
+                .build();
     }
+
     public Organisation.OrganisationBuilder toOrganisation(OrganisationRequestDto organisationRequestDto){
         return Organisation.builder()
                 .name(organisationRequestDto.getName())

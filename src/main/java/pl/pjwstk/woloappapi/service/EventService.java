@@ -38,6 +38,7 @@ public class EventService {
 
     @Transactional
     public void createEvent(EventRequestDto eventDto) {
+
         var event = eventMapper.toEvent(eventDto)
                 .organisation(organisationService.getOrganisationById(eventDto.getOrganisationId()))
                 .build();

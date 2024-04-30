@@ -25,6 +25,8 @@ public class OrganisationService {
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
 
+    private final RoleService roleService;
+
     public List<Organisation> getAllOrganisations() {
         return organisationRepository.findAll();
     }
@@ -45,7 +47,10 @@ public class OrganisationService {
                 .moderator(user)
                 .address(address)
                 .build();
-        organisationRepository.save(organisation);
+        var saved = organisationRepository.save(organisation);
+        user.setOrganisation(saved);
+        user.getRoles().add(roleService.getRoleByName("MODERATOR"));
+        userRepository.save(user);
     }
 
     @Transactional

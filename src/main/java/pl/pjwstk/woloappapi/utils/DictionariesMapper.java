@@ -2,10 +2,7 @@ package pl.pjwstk.woloappapi.utils;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.pjwstk.woloappapi.model.CategoryDto;
-import pl.pjwstk.woloappapi.model.CityDto;
-import pl.pjwstk.woloappapi.model.DistrictDto;
-import pl.pjwstk.woloappapi.model.RoleDto;
+import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.Category;
 import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.model.entities.District;
@@ -14,19 +11,19 @@ import pl.pjwstk.woloappapi.model.entities.Role;
 @Component
 @RequiredArgsConstructor
 public class DictionariesMapper {
-    public DistrictDto toDistrictDto(District district){
-        DistrictDto districtDto = new DistrictDto();
-        districtDto.setId(district.getId());
-        districtDto.setName(district.getName());
-        districtDto.setCityName(district.getCity().getName());
-        return districtDto;
+    public DistrictResponseDto toDistrictDto(District district){
+        return DistrictResponseDto.builder()
+                .id(district.getId())
+                .name(district.getName())
+                .cityName(district.getCity().getName())
+                .build();
     }
 
     public CityDto toCityDto(City city){
         CityDto cityDto = new CityDto();
         cityDto.setId(city.getId());
         cityDto.setName(city.getName());
-        cityDto.setDistricts(city.getDistricts().stream().map(District::getId).toList());
+        cityDto.setDistricts(city.getDistricts().stream().map(District::getName).toList());
         return cityDto;
     }
 
@@ -51,10 +48,10 @@ public class DictionariesMapper {
     }
 
 
-    public District.DistrictBuilder toDistrict(DistrictDto districtDto){
+    public District.DistrictBuilder toDistrict(DistrictRequestDto districtRequestDto){
         return District.builder()
-                .id(districtDto.getId())
-                .name(districtDto.getName())
+                .id(districtRequestDto.getId())
+                .name(districtRequestDto.getName())
                 .isOld(false);
     }
 

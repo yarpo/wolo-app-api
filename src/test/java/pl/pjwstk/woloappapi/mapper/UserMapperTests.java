@@ -91,7 +91,6 @@ public class UserMapperTests {
     @Test
     public void testToShiftResponseDto(){
         EventMapper eventMapper = new EventMapper(districtService, cityService);
-        UserMapper userMapper = new UserMapper(eventMapper);
         Event event = new Event();
         event.setName("Test Event");
         event.setId(1L);
@@ -123,7 +122,7 @@ public class UserMapperTests {
         shiftToUser.setId(1L);
         shiftToUser.setUser(user);
         shiftToUser.setShift(shift);
-        ShiftResponseDto shiftResponseDto = userMapper.toShiftResponseDto(shiftToUser);
+        ShiftResponseDto shiftResponseDto = eventMapper.toShiftResponseDto(shiftToUser.getShift());
 
         assertEquals(1L, shiftResponseDto.getShiftId());
         assertEquals(1L, shiftResponseDto.getEventId());
@@ -140,7 +139,7 @@ public class UserMapperTests {
         registrationRequest.setLastName("Test Lastname");
         registrationRequest.setEmail("test@example.com");
         registrationRequest.setPhoneNumber("123456789");
-        registrationRequest.setAdult(true);
+        registrationRequest.setIsAdult(true);
 
         User user = userMapper.toUser(registrationRequest).build();
 
