@@ -1,6 +1,5 @@
 package pl.pjwstk.woloappapi.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -21,11 +20,23 @@ public class ShiftInfoRespons {
 
     private LocalDate date;
 
-    private String shiftDirections;
+    private String shiftDirectionsPL;
+
+    private String shiftDirectionsEN;
+
+    private String shiftDirectionsUA;
+
+    private String shiftDirectionsRU;
 
     private Long eventId;
 
-    private String eventName;
+    private String eventNamePL;
+
+    private String eventNameEN;
+
+    private String eventNameUA;
+
+    private String eventNameRU;
 
     private String address;
 }

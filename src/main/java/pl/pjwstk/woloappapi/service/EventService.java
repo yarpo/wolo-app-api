@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.EventRequestDto;
+import pl.pjwstk.woloappapi.model.EventTranslationResponse;
 import pl.pjwstk.woloappapi.model.entities.CategoryToEvent;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Shift;
@@ -37,15 +38,14 @@ public class EventService {
     }
 
     @Transactional
-    public void createEvent(EventRequestDto eventDto) {
-
-        var event = eventMapper.toEvent(eventDto)
+    public void createEvent(EventTranslationResponse translation, EventRequestDto eventDto) {
+        var event = eventMapper.toEvent(eventDto, translation)
                 .organisation(organisationService.getOrganisationById(eventDto.getOrganisationId()))
                 .build();
 
         var shifts = new ArrayList<Shift>();
         eventDto.getShifts().forEach(s -> {
-                    var shift = eventMapper.toShift(s)
+                    var shift = eventMapper.toShift(s, translation)
                             .event(event)
                             .build();
                     shifts.add(shift);
@@ -63,20 +63,28 @@ public class EventService {
     }
 
     @Transactional
-    public void updateEvent(EventRequestDto eventDto, Long id) {
+    public void updateEvent(EventRequestDto eventDto, Long id,  EventTranslationResponse translate) {
         var city = districtService.getDistrictById(eventDto.getShifts().get(0).getDistrictId()).getCity();
         Event event = eventRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Event id not found!"));
-        event.setName(eventDto.getName());
-        event.setDescription(eventDto.getDescription());
+        event.setNamePL(translate.getNamePL());
+        event.setNameEN(translate.getNameEN());
+        event.setNameUA(translate.getNameUA());
+        event.setNameRU(translate.getNameRU());
+        event.setDescriptionPL(translate.getDescriptionPL());
+        event.setDescriptionEN(translate.getDescriptionEN());
+        event.setDescriptionUA(translate.getDescriptionUA());
+        event.setDescriptionRU(translate.getDescriptionRU());
+        event.setDate(eventDto.getDate());
         event.setPeselVerificationRequired(eventDto.isPeselVerificationRequired());
         event.setAgreementNeeded(eventDto.isAgreementNeeded());
         event.setImageUrl(eventDto.getImageUrl());
+        event.setAlt(translate.getAlt());
         event.setCity(city);
 
         updateEventCategories(event, eventDto);
-        updateEventShifts(event, eventDto);
+        updateEventShifts(event, eventDto, translate);
 
         eventRepository.save(event);
     }
@@ -110,9 +118,9 @@ public class EventService {
         address.setHomeNum(newAddress.getHomeNum());
     }
 
-    private void updateEventShifts(Event event, EventRequestDto eventDto) {
+    private void updateEventShifts(Event event, EventRequestDto eventDto, EventTranslationResponse translate) {
         var newShifts = eventDto.getShifts().stream()
-                .map(s -> eventMapper.toShift(s)
+                .map(s -> eventMapper.toShift(s, translate)
                         .event(event)
                         .build())
                 .toList();
@@ -130,18 +138,17 @@ public class EventService {
                                 .findFirst()
                                 .ifPresent(
                                         existingShift ->
-                                                updateShiftFields(existingShift, ns));
+                                                updateShiftFields(existingShift, ns, translate));
                     }
                 });
     }
-    private void updateShiftFields(Shift shift, Shift newShift) {
+    private void updateShiftFields(Shift shift, Shift newShift, EventTranslationResponse translate) {
         shift.setStartTime(newShift.getStartTime());
         shift.setEndTime(newShift.getEndTime());
-        shift.setDate(newShift.getDate());
         shift.setLeaderRequired(newShift.isLeaderRequired());
         shift.setCapacity(newShift.getCapacity());
         shift.setRequiredMinAge(newShift.getRequiredMinAge());
-        shift.setShiftDirections(newShift.getShiftDirections());
+
         updateShiftAddress(shift, newShift);
     }
     @Transactional

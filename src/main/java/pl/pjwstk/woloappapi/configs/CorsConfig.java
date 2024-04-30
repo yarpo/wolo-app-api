@@ -11,7 +11,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // Mapowanie do wszystkich zasobów
-                .allowedOrigins("http://localhost:3000") // Ustal dozwolone źródła (adresy URL)
+                .allowedOrigins("http://localhost:3000", "http://localhost:5000") // Ustal dozwolone źródła (adresy URL)
                 .allowedMethods("GET", "POST", "PUT", "DELETE") // Dozwolone metody HTTP
                 .allowedHeaders("Content-Type", "Authorization") // Dozwolone nagłówki
                 .allowCredentials(false); // Czy zezwalać na przesyłanie ciasteczek

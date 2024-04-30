@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -21,11 +22,32 @@ public class Event {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "name_pl", nullable = false)
+    private String namePL;
 
-    @Column(name = "description", nullable = false)
-    private String description;
+    @Column(name = "name_en", nullable = false)
+    private String nameEN;
+
+    @Column(name = "name_ua", nullable = false)
+    private String nameUA;
+
+    @Column(name = "name_ru", nullable = false)
+    private String nameRU;
+
+    @Column(name = "description_pl", nullable = false)
+    private String descriptionPL;
+
+    @Column(name = "description_en", nullable = false)
+    private String descriptionEN;
+
+    @Column(name = "description_ua", nullable = false)
+    private String descriptionUA;
+
+    @Column(name = "description_ru", nullable = false)
+    private String descriptionRU;
+
+    @Column(name = "date")
+    private LocalDate date;
 
     @ManyToOne
     @JoinColumn(name = "organisation_id", nullable = false)
@@ -45,6 +67,9 @@ public class Event {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "image_alt")
+    private String alt;
 
     @Column(name = "is_approved", nullable = false)
     private boolean approved;

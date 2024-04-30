@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -36,9 +35,6 @@ public class Shift {
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
-    @Column(name = "date", nullable = false)
-    private LocalDate date;
-
     @Column(name = "capacity", nullable = false)
     private int capacity;
 
@@ -55,24 +51,32 @@ public class Shift {
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
-    @Column(name = "directions")
-    private String shiftDirections;
+    @Column(name = "directions_pl")
+    private String shiftDirectionsPL;
+
+    @Column(name = "directions_en")
+    private String shiftDirectionsEN;
+
+    @Column(name = "directions_ua")
+    private String shiftDirectionsUA;
+
+    @Column(name = "directions_ru")
+    private String shiftDirectionsRU;
 
     @Override
     public String toString() {
         return "Shift{" +
                 "id=" + id +
-                ", event=" + event.getName() +
+                ", event=" + event.getNamePL() +
                 ", shiftToUsers=" + shiftToUsers +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
-                ", date=" + date +
                 ", capacity=" + capacity +
                 ", isLeaderRequired=" + isLeaderRequired +
                 ", requiredMinAge=" + requiredMinAge +
                 ", registeredUsers=" + registeredUsers +
                 ", address=" + address +
-                ", shiftDirections='" + shiftDirections + '\'' +
+                ", shiftDirections='" + shiftDirectionsPL + '\'' +
                 '}';
     }
 }
