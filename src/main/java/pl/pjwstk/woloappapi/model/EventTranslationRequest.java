@@ -17,5 +17,7 @@ public class EventTranslationRequest {
 
     private List<String> shiftDirections;
 
+    private String imageUrl;
+
     private String language;
 }

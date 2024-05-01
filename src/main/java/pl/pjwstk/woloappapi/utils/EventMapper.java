@@ -16,7 +16,10 @@ public class EventMapper {
     private final DistrictService districtService;
     private final CityService cityService;
 
-    public Shift.ShiftBuilder toShift (ShiftRequestDto shiftDto, EventTranslationResponse translate){
+    public Shift.ShiftBuilder toShift (ShiftRequestDto shiftDto,
+                                       EventRequestDto eventDto,
+                                       EventTranslationResponse translate){
+        var translation = translate.getShiftTranslations().get(eventDto.getShifts().indexOf(shiftDto));
         var address = toAddress(shiftDto)
                 .district(districtService.getDistrictById(shiftDto.getDistrictId()))
                 .build();
@@ -27,10 +30,10 @@ public class EventMapper {
                 .isLeaderRequired(shiftDto.getIsLeaderRequired())
                 .capacity(shiftDto.getCapacity())
                 .requiredMinAge(shiftDto.getRequiredMinAge())
-                .shiftDirectionsPL(translate.getDescriptionPL())
-                .shiftDirectionsEN(translate.getDescriptionEN())
-                .shiftDirectionsUA(translate.getDescriptionUA())
-                .shiftDirectionsRU(translate.getDescriptionRU());
+                .shiftDirectionsPL(translation.getAddressDescriptionPl())
+                .shiftDirectionsEN(translation.getAddressDescriptionEN())
+                .shiftDirectionsUA(translation.getAddressDescriptionUA())
+                .shiftDirectionsRU(translation.getAddressDescriptionRU());
     }
     public Address.AddressBuilder toAddress(ShiftRequestDto shiftDto) {
         return Address.builder()
@@ -172,6 +175,7 @@ public class EventMapper {
                 .language(language)
                 .description(dtoEvent.getDescription())
                 .shiftDirections(directions)
+                .imageUrl(dtoEvent.getImageUrl())
                 .build();
 
     }

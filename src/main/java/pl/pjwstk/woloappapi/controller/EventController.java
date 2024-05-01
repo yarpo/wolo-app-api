@@ -133,7 +133,7 @@ public class EventController {
             var translationDto = eventMapper.toEventTranslationDto(dtoEvent, language);
             var localClient = WebClient.create("http://localhost:5000");
             localClient.post()
-                    .uri("/translate")
+                    .uri("/event-create")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(translationDto)
                     .retrieve()
@@ -151,7 +151,7 @@ public class EventController {
         var translationDto = eventMapper.toEventTranslationDto(dtoEvent, language);
         var localClient = WebClient.create("http://localhost:5000");
         localClient.post()
-                .uri("/translate")
+                .uri("/event-create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(translationDto)
                 .retrieve()
@@ -240,7 +240,7 @@ public class EventController {
         var translationDto = eventMapper.toEventTranslationDto(eventRequestDto, language);
         var localClient = WebClient.create("http://localhost:5000");
         localClient.post()
-                .uri("/translate")
+                .uri("/create-event")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(translationDto)
                 .retrieve()
