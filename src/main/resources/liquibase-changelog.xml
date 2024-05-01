@@ -104,4 +104,14 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
+    <changeSet author="woloapp" id="015">
+        <sqlFile path="sql_scripts/015-update-report-table.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+
+        <sqlFile path="sql_mockup/015-insert-example-reports.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+    </changeSet>
+
 </databaseChangeLog >

@@ -2,7 +2,7 @@
 
 --changeset woloapp:015
 
-INSERT INTO report (report_pl, report_en, report_ua, report_ru, published, event_id) VALUES
+INSERT INTO report (report, report_en, report_ua, report_ru, published, event_id) VALUES
                                                                                          ('Jak dotąd, dzięki zaangażowaniu ponad 30 osób, udało nam się pomóc ponad 1000 potrzebującym.
                                                                                           W przyszłości planujemy zorganizować więcej zmian dla większej liczby wolontariuszy. Dziękujemy za pomoc w tworzeniu lepszego świata!',
                                                                                           'So far with over 30 people, we managed to help over 1000 people in need.
@@ -20,7 +20,7 @@ INSERT INTO report (report_pl, report_en, report_ua, report_ru, published, event
                                                                                          Дякуємо за підтримку нашої ініціативи!',
                                                                                           'На прошлой неделе мы привлекли более 25 волонтеров, что позволило нам совместно организовать 5 благотворительных мероприятий.
                                                                                          Спасибо за поддержку нашей инициативы!',
-                                                                                          FALSE, 16),
+                                                                                          FALSE, 26),
                                                                                          ('W minionym miesiącu udało nam się zebrać potrzebną kwotę na wsparcie osób niepełnosprawnych.
                                                                                           Dziękujemy za wsparcie i dołączenie do naszej akcji!',
                                                                                           'Last month, we managed to raise the necessary funds to support people with disabilities.
@@ -29,4 +29,4 @@ INSERT INTO report (report_pl, report_en, report_ua, report_ru, published, event
                                                                                          Дякуємо за підтримку та приєднання до нашої акції!',
                                                                                           'В прошлом месяце нам удалось собрать необходимую сумму на поддержку людей с ограниченными возможностями.
                                                                                          Спасибо за поддержку и присоединение к нашей кампании!',
-                                                                                          TRUE, 17);
+                                                                                          TRUE, 27);
