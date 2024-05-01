@@ -240,7 +240,7 @@ public class EventController {
         var translationDto = eventMapper.toEventTranslationDto(eventRequestDto, language);
         var localClient = WebClient.create("http://localhost:5000");
         localClient.post()
-                .uri("/create-event")
+                .uri("/event-create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(translationDto)
                 .retrieve()
