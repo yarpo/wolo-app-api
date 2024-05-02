@@ -6,17 +6,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.pjwstk.woloappapi.model.*;
-import pl.pjwstk.woloappapi.model.entities.Organisation;
-import pl.pjwstk.woloappapi.model.entities.Role;
-import pl.pjwstk.woloappapi.model.entities.Shift;
-import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
-import pl.pjwstk.woloappapi.model.entities.User;
+import pl.pjwstk.woloappapi.model.UserRequestDto;
+import pl.pjwstk.woloappapi.model.entities.*;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 
-import javax.swing.text.html.Option;
-import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -304,7 +298,6 @@ public class UserServiceTests {
 
         Shift shift = new Shift();
         shift.setId(1L);
-        shift.setDate(LocalDate.now().plusDays(1));
 
         ShiftToUser shiftToUser1 = new ShiftToUser(user1, shift);
         shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser1)));
@@ -326,7 +319,6 @@ public class UserServiceTests {
 
         Shift shift = new Shift();
         shift.setId(1L);
-        shift.setDate(LocalDate.now().minusDays(1));
 
         ShiftToUser shiftToUser1 = new ShiftToUser(user, shift);
         shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser1)));
