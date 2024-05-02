@@ -149,7 +149,6 @@ public class EventController {
     public ResponseEntity<HttpStatus> addEventByAdmin(@Valid @RequestBody EventRequestDto dtoEvent,
                                                       @RequestParam String language) {
         var translationDto = eventMapper.toEventTranslationDto(dtoEvent, language);
-        System.out.println(translationDto);
         var localClient = WebClient.create("http://host.docker.internal:5000/");
         localClient.post()
                 .uri("/event-create")

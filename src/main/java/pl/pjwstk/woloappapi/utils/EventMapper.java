@@ -55,6 +55,7 @@ public class EventMapper {
                 .date(event.getDate())
                 .isPeselVerificationRequired(event.isPeselVerificationRequired())
                 .city(event.getCity().getName())
+                .alt(event.getAlt())
                 .imageUrl(event.getImageUrl())
                 .shifts(shifts)
                 .categories(categories)
