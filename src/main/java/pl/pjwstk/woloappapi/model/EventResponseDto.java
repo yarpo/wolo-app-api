@@ -1,22 +1,26 @@
 package pl.pjwstk.woloappapi.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class EventResponseDto {
 
     private Long id;
 
-    private String name;
+    private String namePl;
+
+    private String nameEN;
+
+    private String nameUA;
+
+    private String nameRU;
 
     private String organisation;
 
@@ -26,7 +30,11 @@ public class EventResponseDto {
 
     private String city;
 
+    private LocalDate date;
+
     private String imageUrl;
+
+    private String alt;
 
     private List<ShiftResponseDto> shifts;
 }

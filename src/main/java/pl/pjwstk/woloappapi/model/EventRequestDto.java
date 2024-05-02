@@ -1,6 +1,5 @@
 package pl.pjwstk.woloappapi.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -36,6 +36,9 @@ public class EventRequestDto {
     private boolean isPeselVerificationRequired;
 
     private boolean isAgreementNeeded;
+
+    @NotNull
+    private LocalDate date;
 
     @Size(max = 255, message = "Image Url cannot exceed 255 characters")
     private String imageUrl;
