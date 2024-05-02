@@ -103,7 +103,7 @@ public class UserService {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         var shift = shiftService.getShiftById(shiftId);
-        if (shift.getDate().isAfter(LocalDate.now())) {
+        if (shift.getEvent().getDate().isAfter(LocalDate.now())) {
             if (shift.getCapacity() > shift.getRegisteredUsers()) {
                 var shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift));
                 shift.getShiftToUsers().add(shiftToUser);
@@ -151,7 +151,7 @@ public class UserService {
 
     public void refuse(Long userId, Long shiftId) {
         var shift = shiftService.getShiftById(shiftId);
-        if (shift.getDate().isAfter(LocalDate.now())) {
+        if (shift.getEvent().getDate().isAfter(LocalDate.now())) {
             var userAssignedToShift = shift.getShiftToUsers().stream()
                     .anyMatch(stu -> stu.getUser().getId().equals(userId));
             if (userAssignedToShift) {

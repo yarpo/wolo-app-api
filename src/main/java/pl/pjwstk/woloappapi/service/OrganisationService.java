@@ -88,7 +88,7 @@ public class OrganisationService {
                 .orElseThrow(() -> new NotFoundException("Organizer id not found!"))
                 .stream()
                 .filter(event -> event.getShifts()
-                        .stream().anyMatch(shift -> shift.getDate().isBefore(LocalDate.now())))
+                        .stream().anyMatch(shift -> shift.getEvent().getDate().isBefore(LocalDate.now())))
                 .toList();
     }
 
@@ -99,7 +99,7 @@ public class OrganisationService {
                 .orElseThrow(() -> new NotFoundException("Organizer id not found!"))
                 .stream()
                 .filter(event -> event.getShifts()
-                        .stream().anyMatch(shift -> !shift.getDate().isBefore(LocalDate.now())))
+                        .stream().anyMatch(shift -> !shift.getEvent().getDate().isBefore(LocalDate.now())))
                 .toList();
     }
 

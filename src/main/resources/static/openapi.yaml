@@ -656,6 +656,13 @@ paths:
       summary: Adding new event by organisation
       operationId: addEvent
       parameters:
+        - name: language
+          in: query
+          description: Language of eventDto
+          required: true
+          schema:
+            type: string
+          example: EN
         - name: event
           in: query
           description: Event object to create
@@ -678,6 +685,13 @@ paths:
       summary: Adding new event by admin
       operationId: addEventByAdmin
       parameters:
+        - name: language
+          in: query
+          description: Language of eventDto
+          required: true
+          schema:
+            type: string
+          example: EN
         - name: event
           in: query
           description: Event object to create
@@ -758,6 +772,13 @@ paths:
             type: integer
             format: int64
           example: 1
+        - name: language
+          in: query
+          description: language of eventDto
+          required: true
+          schema:
+            type: string
+            example: EN
       requestBody:
         content:
           application/json:
@@ -793,6 +814,13 @@ paths:
             type: integer
             format: int64
           example: 1
+        - name: language
+          in: query
+          description: language of eventDto
+          required: true
+          schema:
+            type: string
+            example: EN
       requestBody:
         content:
           application/json:
@@ -1723,6 +1751,7 @@ components:
         - organisationId
         - categories
         - shifts
+        - date
       type: object
       properties:
         name:
@@ -1764,20 +1793,28 @@ components:
             type: integer
             format: int64
             example: 1
-        peselVerificationRequired:
+        isPeselVerificationRequired:
           type: boolean
-        agreementNeeded:
+        isAgreementNeeded:
           type: boolean
         imageUrl:
           maxLength: 255
           minLength: 0
           type: string
+        date:
+          type: string
+          format: date
         shifts:
           maxItems: 2147483647
           minItems: 1
           type: array
           items:
             $ref: '#/components/schemas/ShiftRequestDto'
+        cityId:
+          type: integer
+          format: int64
+          example: 1
+
     EventResponseDetailsDto:
       type: object
       properties:
@@ -1785,9 +1822,18 @@ components:
           type: integer
           format: int64
           example: 1
-        name:
+        namePL:
           type: string
-          example: Animal shelter assistance
+          example: Pomoc w schronisku dla zwierząt
+        nameEN:
+          type: string
+          example: Pomoc w schronisku dla zwierząt
+        nameUA:
+          type: string
+          example: Допомога притулку для тварин
+        nameRU:
+          type: string
+          example: Помощь приюту для животных
         organisationId:
           type: integer
           format: int64
@@ -1795,11 +1841,14 @@ components:
         organisationName:
           type: string
           example: 'Compassion Paws: Animal Shelter Support Initiative'
-        peselVerificationRequired:
+        date:
+          type: string
+          format: date
+        isPeselVerificationRequired:
           type: boolean
-        agreementNeeded:
+        isAgreementNeeded:
           type: boolean
-        description:
+        descriptionEN:
           type: string
           example: >-
             Are you passionate about making a positive impact on the lives of
@@ -1823,16 +1872,57 @@ components:
                 Assistance with Adoptions:
                     Interact with potential adopters and provide information about available animals.
                     Assist in the adoption process, ensuring a smooth transition for both the animal and the new owner.
+        descriptionPL:
+          type: string
+          example: >-
+            Czy pasjonujesz się wywieraniem pozytywnego wpływu na życie ludzi
+            zwierzęta w potrzebie? Dołącz do nas w naszej misji aby zapewnić współczującą opiekę i wsparcie zwierzętom w naszej okolicy
+            Schronisko dla zwierząt.
+
+            Jako asystent schroniska dla zwierząt odgrywasz kluczową rolę w zapewnianiu dobre samopoczucie 
+            i szczęście zwierząt oczekujących na swoje stałe domy.
+
+            Obowiązki:
+            Opieka nad zwierzętami:karmić, pielęgnować i zapewniać podstawową opiekę zwierzętom ze schroniska.
+            Zapewnij wszystkim zwierzętom czyste i higieniczne warunki życia.
+
+            Pomoc przy adopcjach: wejdź w interakcję z potencjalnymi adopcjami i przekaż informacje o dostępnych zwierzętach.
+            Pomagaj w procesie adopcji, zapewniając płynną zmianę zarówno zwierzęciu, jak i nowemu właścicielowi.
+        descriptionUA:
+          type: string
+          example: >-
+            Ви прагнете позитивно вплинути на життя тварини в потребі? Приєднуйтесь до нашої місії
+            надавати співчутливу турботу та підтримку тваринам у нашому закладі притулок для тварин.
+            Як помічник у притулку для тварин, ви відіграєте вирішальну роль у забезпеченні благополуччя
+            і щастя тварин, які чекають своїх вічних домівок.
+            Обов'язки: догляд за тваринами:
+            Годуйте, доглядайте та забезпечуйте основний догляд за тваринами з притулку.
+            Забезпечити чисті та санітарні умови проживання для всіх тварин.
+            Допомога з усиновленням:
+            Спілкуйтеся з потенційними усиновлювачами та надайте інформацію про доступних тварин.
+            Допомога в процесі усиновлення, забезпечуючи плавний перехід як для тварини, так і для нового власника.
+        descriptionRU:
+          type: string
+          example: >-
+            Уход за животными:
+
+                Кормление, уход и обеспечение основных потребностей животных в приюте.
+                Обеспечение чистых и санитарных условий проживания для всех подопечных.
+
+            Помощь в усыновлении:
+
+                Общение с потенциальными усыновителями и предоставление информации о доступных животных.
+                Помощь в процессе усыновления, обеспечивая плавный переход как для животного, так и для нового владельца.
         categories:
           type: array
           items:
             type: string
             example: Health
         imageUrl:
-          maxLength: 255
-          minLength: 0
           type: string
           example: https://example.com/image.jpg
+        alt:
+          type: string
         shifts:
           maxItems: 2147483647
           minItems: 1
@@ -1842,6 +1932,7 @@ components:
         city:
           type: string
           example: New York City
+
     EventResponseDto:
       type: object
       properties:
@@ -1849,13 +1940,19 @@ components:
           type: integer
           format: int64
           example: 1
-        name:
+        nameEN:
           type: string
           example: Animal shelter assistance
+        namePL:
+          type: string
+        nameUA:
+          type: string
+        nameRU:
+          type: string
         organisation:
           type: string
           example: 'Compassion Paws: Animal Shelter Support Initiative'
-        peselVerificationRequired:
+        isPeselVerificationRequired:
           type: boolean
         categories:
           type: array
@@ -1865,17 +1962,21 @@ components:
         city:
           type: string
           example: New York City
+        date:
+          type: string
+          format: date
         imageUrl:
-          maxLength: 255
-          minLength: 0
           type: string
           example: https://example.com/image.jpg
+        alt:
+          type: string
         shifts:
           maxItems: 2147483647
           minItems: 1
           type: array
           items:
             $ref: '#/components/schemas/ShiftResponseDto'
+
     OrganisationRequestDto:
       required:
         - name
@@ -2124,9 +2225,6 @@ components:
           $ref: '#/components/schemas/LocalTime'
         endTime:
           $ref: '#/components/schemas/LocalTime'
-        date:
-          type: string
-          format: date
         capacity:
           type: integer
           format: int32
@@ -2164,16 +2262,22 @@ components:
           type: integer
           format: int64
           example: 1
-        eventName:
+        eventNamePL:
+          type: string
+          example: Pomocnicy zwierząt
+        eventNameEN:
           type: string
           example: Animal Helpers
+        eventNameUA:
+          type: string
+          example: Помічники тварин
+        eventNameRU:
+          type: string
+          example: Помощники для животных
         startTime:
           $ref: '#/components/schemas/LocalTime'
         endTime:
           $ref: '#/components/schemas/LocalTime'
-        date:
-          type: string
-          format: date
         capacity:
           type: integer
           format: int32
@@ -2197,9 +2301,19 @@ components:
         homeNum:
           type: string
           example: 123
-        shiftDirections:
+        shiftDirectionsPL:
+          type: string
+          example: Z lewej strony budynku
+        shiftDirectionsEN:
           type: string
           example: Left Side of Building
+        shiftDirectionsUA:
+          type: string
+          example: Ліва сторона будівлі
+        shiftDirectionsRU:
+          type: string
+          example: Левая сторона здания
+
     UserRequestDto:
       required:
         - firstName

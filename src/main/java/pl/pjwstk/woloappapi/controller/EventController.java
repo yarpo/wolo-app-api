@@ -7,13 +7,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.EventRequestDto;
-import pl.pjwstk.woloappapi.model.EventResponseDetailsDto;
-import pl.pjwstk.woloappapi.model.EventResponseDto;
-import pl.pjwstk.woloappapi.model.UserShortResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.service.EventService;
@@ -39,7 +38,6 @@ public class EventController {
     private final EventMapper eventMapper;
     private final UserService userService;
     private final UserMapper userMapper;
-
     private final PDFGenerationService pdfGenerationService;
 
 
@@ -127,11 +125,20 @@ public class EventController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent) {
+    public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent,
+                                               @RequestParam String language) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var organisationId = userService.getCurrentUser(authentication).getOrganisation().getId();
         if(Objects.equals(organisationId, dtoEvent.getOrganisationId())) {
-            eventService.createEvent(dtoEvent);
+            var translationDto = eventMapper.toEventTranslationDto(dtoEvent, language);
+            var localClient = WebClient.create("http://host.docker.internal:5000/");
+            localClient.post()
+                    .uri("/event-create")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(translationDto)
+                    .retrieve()
+                    .bodyToMono(EventTranslationResponse.class)
+                    .subscribe(translated -> eventService.createEvent(translated, dtoEvent));
             return new ResponseEntity<>(HttpStatus.CREATED);
         }else{
             throw new IllegalArgumentException("You can create events only for your organisation");
@@ -139,9 +146,18 @@ public class EventController {
     }
 
     @PostMapping("/admin/add")
-    public ResponseEntity<HttpStatus> addEventByAdmin(@Valid @RequestBody EventRequestDto dtoEvent) {
-        eventService.createEvent(dtoEvent);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<HttpStatus> addEventByAdmin(@Valid @RequestBody EventRequestDto dtoEvent,
+                                                      @RequestParam String language) {
+        var translationDto = eventMapper.toEventTranslationDto(dtoEvent, language);
+        var localClient = WebClient.create("http://host.docker.internal:5000/");
+        localClient.post()
+                .uri("/event-create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(translationDto)
+                .retrieve()
+                .bodyToMono(EventTranslationResponse.class)
+                .subscribe(translated -> eventService.createEvent(translated, dtoEvent));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -165,20 +181,22 @@ public class EventController {
 
     @PutMapping("/admin/edit/{id}")
     public ResponseEntity<HttpStatus> editEventByAdmin(
-            @Valid @RequestBody EventRequestDto eventRequestDto, @PathVariable Long id) {
-        eventService.updateEvent(eventRequestDto, id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            @Valid @RequestBody EventRequestDto eventRequestDto,
+            @PathVariable Long id,
+            @RequestParam String language) {
+        return sendRequestToTranslator(eventRequestDto, id, language);
     }
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<HttpStatus> editEvent(
-            @Valid @RequestBody EventRequestDto eventRequestDto, @PathVariable Long id) {
+            @Valid @RequestBody EventRequestDto eventRequestDto,
+            @PathVariable Long id,
+            @RequestParam String language) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var organisationId = userService.getCurrentUser(authentication).getOrganisation().getId();
         var event = eventService.getEventById(id);
         if(Objects.equals(organisationId, event.getOrganisation().getId())) {
-            eventService.updateEvent(eventRequestDto, id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return sendRequestToTranslator(eventRequestDto, id, language);
         }else{
             throw new IllegalArgumentException("You can edit events only for your organisation");
         }
@@ -216,6 +234,18 @@ public class EventController {
         }else {
             throw new IllegalArgumentException("You can get list of volunteers sign in for event only for your organisation");
         }
+    }
 
+    private ResponseEntity<HttpStatus> sendRequestToTranslator(@RequestBody @Valid EventRequestDto eventRequestDto, @PathVariable Long id, @RequestParam String language) {
+        var translationDto = eventMapper.toEventTranslationDto(eventRequestDto, language);
+        var localClient = WebClient.create("http://host.docker.internal:5000/");
+        localClient.post()
+                .uri("/event-create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(translationDto)
+                .retrieve()
+                .bodyToMono(EventTranslationResponse.class)
+                .subscribe(translated -> eventService.updateEvent(eventRequestDto, id, translated));
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

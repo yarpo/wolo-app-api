@@ -13,7 +13,6 @@ import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,7 +91,7 @@ public class UserMapperTests {
     public void testToShiftResponseDto(){
         EventMapper eventMapper = new EventMapper(districtService, cityService);
         Event event = new Event();
-        event.setName("Test Event");
+        event.setNameEN("Test Event");
         event.setId(1L);
 
         User user = new User();
@@ -103,11 +102,11 @@ public class UserMapperTests {
         shift.setEvent(event);
         shift.setStartTime(LocalTime.of(9, 0));
         shift.setEndTime(LocalTime.of(17, 0));
-        shift.setDate(LocalDate.now());
+
         shift.setLeaderRequired(true);
         shift.setRequiredMinAge(18);
         shift.setRegisteredUsers(1);
-        shift.setShiftDirections("Test Directions");
+        shift.setShiftDirectionsEN("Test Directions");
 
         District district = new District();
         district.setName("Test Name");
@@ -128,7 +127,6 @@ public class UserMapperTests {
         assertEquals(1L, shiftResponseDto.getEventId());
         assertEquals(LocalTime.of(9, 0), shiftResponseDto.getStartTime());
         assertEquals(LocalTime.of(17, 0), shiftResponseDto.getEndTime());
-        assertEquals(LocalDate.now(), shiftResponseDto.getDate());
     }
 
     @Test
