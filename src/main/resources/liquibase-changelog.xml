@@ -119,4 +119,16 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
+    <changeSet id="16" author="woloapp">
+        <sqlFile path="sql_inserts/016-insert-district.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/016-update-city-id-in-event.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/016-update-is-old-field-in-district-and-city.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+    </changeSet>
+
 </databaseChangeLog >
