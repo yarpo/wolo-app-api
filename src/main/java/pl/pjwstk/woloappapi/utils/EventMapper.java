@@ -172,13 +172,14 @@ public class EventMapper {
                 .stream()
                 .map(ShiftRequestDto::getShiftDirections)
                 .toList();
-        return EventTranslationRequest.builder()
-                .name(dtoEvent.getName())
-                .language(language)
-                .description(dtoEvent.getDescription())
-                .shiftDirections(directions)
-                .imageUrl(dtoEvent.getImageUrl())
-                .build();
+        var translation = new EventTranslationRequest();
+        translation.setName(dtoEvent.getName());
+        translation.setDescription(dtoEvent.getDescription());
+        translation.setImageUrl(dtoEvent.getImageUrl());
+        translation.setShiftDirections(directions);
+        translation.setLanguage(language);
+
+        return translation;
 
     }
 }

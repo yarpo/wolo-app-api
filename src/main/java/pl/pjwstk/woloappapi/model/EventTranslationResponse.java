@@ -1,14 +1,7 @@
 package pl.pjwstk.woloappapi.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
 public class EventTranslationResponse {
     private String namePL;
     private String nameEN;
@@ -23,4 +16,87 @@ public class EventTranslationResponse {
     private List<ShiftTranslation> shiftTranslations;
 
     private String alt;
+
+    public EventTranslationResponse() {
+    }
+
+    public String getNamePL() {
+        return namePL;
+    }
+
+    public void setNamePL(String namePL) {
+        this.namePL = namePL;
+    }
+
+    public String getNameEN() {
+        return nameEN;
+    }
+
+    public void setNameEN(String nameEN) {
+        this.nameEN = nameEN;
+    }
+
+    public String getNameUA() {
+        return nameUA;
+    }
+
+    public void setNameUA(String nameUA) {
+        this.nameUA = nameUA;
+    }
+
+    public String getNameRU() {
+        return nameRU;
+    }
+
+    public void setNameRU(String nameRU) {
+        this.nameRU = nameRU;
+    }
+
+    public String getDescriptionPL() {
+        return descriptionPL;
+    }
+
+    public void setDescriptionPL(String descriptionPL) {
+        this.descriptionPL = descriptionPL;
+    }
+
+    public String getDescriptionEN() {
+        return descriptionEN;
+    }
+
+    public void setDescriptionEN(String descriptionEN) {
+        this.descriptionEN = descriptionEN;
+    }
+
+    public String getDescriptionUA() {
+        return descriptionUA;
+    }
+
+    public void setDescriptionUA(String descriptionUA) {
+        this.descriptionUA = descriptionUA;
+    }
+
+    public String getDescriptionRU() {
+        return descriptionRU;
+    }
+
+    public void setDescriptionRU(String descriptionRU) {
+        this.descriptionRU = descriptionRU;
+    }
+
+    public List<ShiftTranslation> getShiftTranslations() {
+        return shiftTranslations;
+    }
+
+    public void setShiftTranslations(List<ShiftTranslation> shiftTranslations) {
+        this.shiftTranslations = shiftTranslations;
+    }
+
+    public String getAlt() {
+        return alt;
+    }
+
+    public void setAlt(String alt) {
+        this.alt = alt;
+    }
 }
