@@ -16,8 +16,10 @@ import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -99,6 +101,26 @@ public class UserService {
                 .forEach(user.getRoles()::add);
     }
 
+    public String checkJoin(Long userId, Long shiftId){
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+        var shift = shiftService.getShiftById(shiftId);
+        List<Long> collidingShifts = user.getShifts().stream()
+                .map(ShiftToUser::getShift)
+                .filter(existingShift -> existingShift.getEvent().getDate().isEqual(shift.getEvent().getDate()))
+                .filter(existingShift -> existingShift.getStartTime().isBefore(shift.getEndTime()) &&
+                        existingShift.getEndTime().isAfter(shift.getStartTime()))
+                .map(Shift::getId)
+                .toList();
+        if(!collidingShifts.isEmpty()) {
+            return "You have colliding shifts: " + collidingShifts.stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", "));
+        } else {
+            return "OK";
+        }
+    }
+
     @Transactional
     public void joinEvent(Long userId, Long shiftId) {
         var user = userRepository.findById(userId)
@@ -116,15 +138,6 @@ public class UserService {
         }else{
             throw new IllegalArgumentException("Can't join  event that has already taken place");
         }
-
-    }
-
-
-    public void checkJoin(Long userId, Long shiftId){
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
-        var shift = shiftService.getShiftById(shiftId);
-        List<ShiftToUser> userShifts = shiftService.getCurrentEventsByUser(userId);
 
     }
 

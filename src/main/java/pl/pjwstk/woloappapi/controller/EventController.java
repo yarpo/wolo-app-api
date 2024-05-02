@@ -71,7 +71,8 @@ public class EventController {
     public ResponseEntity<String> checkJoinEvent(@RequestParam(value = "shift") Long shift){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userId = userService.getCurrentUser(authentication).getId();
-        return new ResponseEntity<>(HttpStatus.OK);
+        String check = userService.checkJoin(userId, shift);
+        return new ResponseEntity<>(check, HttpStatus.OK);
     }
 
     @PostMapping("/refuse")

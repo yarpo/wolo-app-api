@@ -61,6 +61,7 @@ public class SecurityConfig {
                     auth.requestMatchers(GET, "/events").permitAll();
                     auth.requestMatchers(GET, "/events/**").permitAll();
                     auth.requestMatchers( "/events/join").hasAuthority("JOIN_EVENT");
+                    auth.requestMatchers( "/events/join/check").hasAuthority("JOIN_EVENT");
                     auth.requestMatchers("/events/refuse").hasAuthority("JOIN_EVENT");
                     auth.requestMatchers("/events/add").hasAuthority("CREATE_EVENT");
                     auth.requestMatchers(PUT, "/events/**").hasAuthority("EDIT_EVENT");
@@ -93,8 +94,6 @@ public class SecurityConfig {
 
                     auth.requestMatchers(OPTIONS,"/users/**").permitAll();
                     auth.requestMatchers(GET, "/users/*/shifts").hasAuthority("READ_USERS_SHIFTS");
-                    auth.requestMatchers(OPTIONS, "/users/currentEvents/**").permitAll();
-                    auth.requestMatchers(OPTIONS, "/users/pastEvents/**").permitAll();
                     auth.requestMatchers(GET, "/users/shifts/**").hasAuthority("READ_USERS_EVENTS");
                     auth.requestMatchers(GET, "/users").hasAuthority("READ_USERS");
                     auth.requestMatchers(GET, "/users/**").hasAuthority("READ_USERS");
