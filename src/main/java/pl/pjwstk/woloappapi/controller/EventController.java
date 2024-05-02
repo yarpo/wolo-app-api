@@ -69,6 +69,13 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/join/check")
+    public ResponseEntity<String> checkJoinEvent(@RequestParam(value = "shift") Long shift){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userId = userService.getCurrentUser(authentication).getId();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("/refuse")
     public ResponseEntity<HttpStatus> refuseParticipateInEvent(@RequestParam(value = "shift") Long shiftId){
         var authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.UserRequestDto;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
+import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
@@ -115,6 +116,15 @@ public class UserService {
         }else{
             throw new IllegalArgumentException("Can't join  event that has already taken place");
         }
+
+    }
+
+
+    public void checkJoin(Long userId, Long shiftId){
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+        var shift = shiftService.getShiftById(shiftId);
+        List<ShiftToUser> userShifts = shiftService.getCurrentEventsByUser(userId);
 
     }
 
