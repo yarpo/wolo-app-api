@@ -47,12 +47,14 @@ public class SecurityConfig {
 
                     auth.requestMatchers(OPTIONS, "/cities/**").permitAll();
                     auth.requestMatchers(GET, "/cities**").permitAll();
+                    auth.requestMatchers(GET, "/cities/admin/all").hasAuthority("READ_ALL_CITY");
                     auth.requestMatchers(POST,"/cities/**").hasAuthority("CREATE_CITY");
                     auth.requestMatchers(PUT,"/cities/**").hasAuthority("EDIT_CITY");
                     auth.requestMatchers(DELETE,"/cities/**").hasAuthority("DELETE_CITY");
 
                     auth.requestMatchers(OPTIONS, "/districts/**").permitAll();
                     auth.requestMatchers(GET, "/districts").permitAll();
+                    auth.requestMatchers(GET, "/districts/admin/all").hasAuthority("READ_ALL_DISTRICT");
                     auth.requestMatchers(POST, "/districts/**").hasAuthority("CREATE_DISTRICT");
                     auth.requestMatchers(PUT, "/districts/**").hasAuthority("EDIT_DISTRICT");
                     auth.requestMatchers(DELETE, "/districts/**").hasAuthority("DELETE_DISTRICT");
@@ -78,6 +80,7 @@ public class SecurityConfig {
 
                     auth.requestMatchers(GET, "/organisations").permitAll();
                     auth.requestMatchers(GET, "/organisations/**").permitAll();
+                    auth.requestMatchers(GET, "/organisations/admin/all").hasAuthority("READ_ALL_ORGANISATION");
                     auth.requestMatchers(OPTIONS, "/organisations/**").permitAll();
                     auth.requestMatchers( "/organisations/add").hasAuthority("CREATE_ORGANISATION");
                     auth.requestMatchers( "/organisations/approve").hasAuthority("APPROVE_ORGANISATION");
