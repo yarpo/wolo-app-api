@@ -87,7 +87,7 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
     </changeSet>
 
     <changeSet author="woloapp" id="011">
-        <sqlFile path="sql_inserts/010-insert-city-privileges.sql"
+        <sqlFile path="sql_inserts/011-insert-city-privileges.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
     </changeSet>
