@@ -1,3 +1,6 @@
+--liquibase formatted sql
+
+--changeset woloapp:013
 INSERT INTO "user" ( first_name, last_name, email, phone_number, is_pesel_verified, is_agreement_signed, is_adult, organisation_id, "password") VALUES
                                                                                                                                                   ( 'Kevin', 'User', 'kevin.user@example.com', '033333333', true, true, false, null, '$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi'),
                                                                                                                                                   ( 'Renata', 'Użytkownik', 'renata.uzytkownik@example.com', '032222222', true, true, true, null, '$2a$10$mX6Rc53zw6lVn6YBk3hZ6.NTf9P7DpH/ahRRovBwzUqk74YZyhHKi'),

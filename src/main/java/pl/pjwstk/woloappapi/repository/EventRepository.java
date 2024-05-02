@@ -20,23 +20,20 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
     List<Event> findEventsByUserId(@Param("userId") Long userId);
 
     @Query("SELECT e FROM Event e " +
-            "JOIN e.shifts s " +
-            "WHERE s.date > CURRENT_DATE " +
+            "WHERE e.date > CURRENT_DATE " +
             "AND e.approved = true ")
     List<Event> findAllNotBeforeNow();
 
     @Query("SELECT e FROM Event e " +
-            "JOIN e.shifts s " +
-            "WHERE s.date < :thresholdDate " +
-            "AND s.date > CURRENT_DATE " +
+            "WHERE e.date < :thresholdDate " +
+            "AND e.date > CURRENT_DATE " +
             "AND e.approved = true " +
-            "ORDER BY s.date ASC")
+            "ORDER BY e.date ASC")
     List<Event> findEventsForTheyNeedYou(LocalDate thresholdDate);
 
     @Query("SELECT e FROM Event e " +
-            "JOIN e.shifts s " +
-            "WHERE s.date > CURRENT_DATE " +
+            "WHERE e.date > CURRENT_DATE " +
             "AND e.approved = true " +
-            "ORDER BY s.date ASC")
+            "ORDER BY e.date ASC")
     List<Event> findNearestEventsSortedByDate(Pageable pageable);
 }

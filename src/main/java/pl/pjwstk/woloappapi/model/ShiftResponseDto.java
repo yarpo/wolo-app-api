@@ -2,7 +2,6 @@ package pl.pjwstk.woloappapi.model;
 
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
@@ -16,13 +15,17 @@ public class ShiftResponseDto {
 
     private Long eventId;
 
-    private String eventName;
+    private String eventNamePL;
+
+    private String eventNameEN;
+
+    private String eventNameUA;
+
+    private String eventNameRU;
 
     private LocalTime startTime;
 
     private LocalTime endTime;
-
-    private LocalDate date;
 
     private int capacity;
 
@@ -38,5 +41,11 @@ public class ShiftResponseDto {
 
     private String homeNum;
 
-    private String shiftDirections;
+    private String shiftDirectionsPL;
+
+    private String shiftDirectionsEN;
+
+    private String shiftDirectionsUA;
+
+    private String shiftDirectionsRU;
 }
