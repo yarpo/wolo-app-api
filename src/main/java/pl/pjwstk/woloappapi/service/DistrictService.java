@@ -27,6 +27,10 @@ public class DistrictService {
             .toList();
     }
 
+    public List<District> getAllActualDistricts(){
+        return districtRepository.getAllActualDistricts();
+    }
+
     public District getDistrictById(Long id) {
         return districtRepository
                 .findById(id)

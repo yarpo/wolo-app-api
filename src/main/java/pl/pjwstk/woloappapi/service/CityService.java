@@ -24,6 +24,8 @@ public class CityService {
         return cityRepository.findAll();
     }
 
+    public List<City> getActualAllCities() { return cityRepository.getAllActualCities(); }
+
     public City getCityById(Long id) {
         return cityRepository.findById(id).orElseThrow(()-> new NotFoundException("City id not found"));
     }

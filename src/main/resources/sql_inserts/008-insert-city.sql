@@ -3,8 +3,8 @@
 --changeset woloapp:008
 
 INSERT INTO city ("name")VALUES
-                                ('Gdańsk'),
-                                ('Warszawa'),
-                                ('Kraków'),
-                                ('Wrocław'),
-                                ('Poznań');
+                             ('Gdańsk'),
+                             ('Warszawa'),
+                             ('Kraków'),
+                             ('Wrocław'),
+                             ('Poznań');
