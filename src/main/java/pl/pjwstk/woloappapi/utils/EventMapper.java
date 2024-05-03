@@ -120,6 +120,7 @@ public class EventMapper {
                 .eventNameEN(shift.getEvent().getNameEN())
                 .eventNameUA(shift.getEvent().getNameUA())
                 .eventNameRU(shift.getEvent().getNameRU())
+                .date(shift.getEvent().getDate())
                 .startTime(shift.getStartTime())
                 .endTime(shift.getEndTime())
                 .capacity(shift.getCapacity())

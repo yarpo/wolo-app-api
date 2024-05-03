@@ -2274,6 +2274,9 @@ components:
         eventNameRU:
           type: string
           example: Помощники для животных
+        date:
+          type: string
+          format: date
         startTime:
           $ref: '#/components/schemas/LocalTime'
         endTime:
