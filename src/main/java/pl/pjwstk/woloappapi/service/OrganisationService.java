@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
+import pl.pjwstk.woloappapi.model.OrganisationResponseAdminDto;
+import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.repository.AddressRepository;
@@ -30,6 +32,8 @@ public class OrganisationService {
     public List<Organisation> getAllOrganisations() {
         return organisationRepository.findAll();
     }
+
+    public List<Organisation> getApprovedAllOrganisations() { return organisationRepository.getAllApprovedOrganisations(); }
 
     public Organisation getOrganisationById(Long id) {
         return organisationRepository.findById(id)

@@ -6,9 +6,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.EventResponseDto;
-import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
-import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
+import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.service.OrganisationService;
@@ -29,12 +28,20 @@ public class OrganisationController {
 
     @GetMapping()
     public ResponseEntity<List<OrganisationResponseDto>> getOrganisations() {
-        List<Organisation> organisations = organisationService.getAllOrganisations();
+        List<Organisation> organisations = organisationService.getApprovedAllOrganisations();
         List<OrganisationResponseDto> organisationDtos =
                 organisations.stream()
                         .map(organisationMapper::toOrganisationResponseDto)
                         .collect(Collectors.toList());
         return new ResponseEntity<>(organisationDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/all")
+    public ResponseEntity<List<OrganisationResponseAdminDto>> getAllOrganisations() {
+        List<Organisation> organisations = organisationService.getAllOrganisations();
+        List<OrganisationResponseAdminDto> organisationResponseAdminDtos =
+                organisations.stream().map(organisationMapper::organisationResponseAdminDto).toList();
+        return new ResponseEntity<>(organisationResponseAdminDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

@@ -131,4 +131,10 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
+    <changeSet id="17" author="woloapp">
+        <sqlFile path="sql_inserts/017-insert-read-privilege.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+    </changeSet>
+
 </databaseChangeLog >

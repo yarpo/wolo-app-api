@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.CityDto;
+import pl.pjwstk.woloappapi.model.CityResponseAdminDto;
 import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.service.CityService;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
@@ -24,10 +25,18 @@ public class CityController {
 
     @GetMapping()
     public ResponseEntity<List<CityDto>> getCities() {
-        List<City> cities = cityService.getAllCities();
+        List<City> cities = cityService.getActualAllCities();
         List<CityDto> cityDtos =
                 cities.stream().map(dictionariesMapper::toCityDto).toList();
         return new ResponseEntity<>(cityDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/all")
+    public ResponseEntity<List<CityResponseAdminDto>> getAllCities() {
+        List<City> cities = cityService.getAllCities();
+        List<CityResponseAdminDto> cityResponseAdminDtos =
+                cities.stream().map(dictionariesMapper::toCityResponseAdminDto).toList();
+        return new ResponseEntity<>(cityResponseAdminDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
