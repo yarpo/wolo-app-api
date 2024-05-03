@@ -24,7 +24,7 @@ public class Organisation {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description_pl")
     private String description;
 
     @Column(name = "email", nullable = false)
