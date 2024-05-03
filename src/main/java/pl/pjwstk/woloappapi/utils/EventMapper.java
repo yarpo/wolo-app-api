@@ -47,7 +47,7 @@ public class EventMapper {
                 .map(cte -> cte.getCategory().getName()).toList();
         return EventResponseDto.builder()
                 .id(event.getId())
-                .namePl(event.getNamePL())
+                .namePL(event.getNamePL())
                 .nameEN(event.getNameEN())
                 .nameUA(event.getNameUA())
                 .nameRU(event.getNameRU())
