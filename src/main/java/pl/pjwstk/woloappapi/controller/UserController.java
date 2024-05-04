@@ -112,6 +112,15 @@ public class UserController {
 
     }
 
+    @PutMapping("/edit")
+    public ResponseEntity<HttpStatus> editUser(@Valid @RequestBody UserRequestDto userRequestDto) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userId = userService.getCurrentUser(authentication).getId();
+        userService.updateUser(userRequestDto, userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+
     @PostMapping("/assign")
     public ResponseEntity<HttpStatus> assignOrganisation(@RequestParam(value = "user") Long userId,
                                                          @RequestParam(value = "organisation") Long organisationId){

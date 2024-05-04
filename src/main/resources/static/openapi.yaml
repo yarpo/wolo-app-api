@@ -1589,6 +1589,30 @@ paths:
           $ref: '#/components/responses/OK'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+  /users/edit:
+    put:
+      tags:
+        - Users
+      summary: Edit user
+      description: User must be logged
+      operationId: editUser
+      parameters:
+        - name: user
+          in: query
+          description: User object with changes
+          schema:
+            $ref: '#/components/schemas/UserRequestDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequestDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
   /users/{id}/edit:
     put:
       tags:
