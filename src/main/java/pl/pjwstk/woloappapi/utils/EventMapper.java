@@ -47,7 +47,7 @@ public class EventMapper {
                 .map(cte -> cte.getCategory().getName()).toList();
         return EventResponseDto.builder()
                 .id(event.getId())
-                .namePl(event.getNamePL())
+                .namePL(event.getNamePL())
                 .nameEN(event.getNameEN())
                 .nameUA(event.getNameUA())
                 .nameRU(event.getNameRU())
@@ -120,6 +120,7 @@ public class EventMapper {
                 .eventNameEN(shift.getEvent().getNameEN())
                 .eventNameUA(shift.getEvent().getNameUA())
                 .eventNameRU(shift.getEvent().getNameRU())
+                .date(shift.getEvent().getDate())
                 .startTime(shift.getStartTime())
                 .endTime(shift.getEndTime())
                 .capacity(shift.getCapacity())

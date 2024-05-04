@@ -149,6 +149,9 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
         <sqlFile path="sql_mockup/017-update-description-for-organisation.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
+        <sqlFile path="sql_inserts/017-insert-read-privilege.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
     </changeSet>
 
 </databaseChangeLog >
