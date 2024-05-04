@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import pl.pjwstk.woloappapi.model.UserEditRequestAdminDto;
+import pl.pjwstk.woloappapi.model.UserEditRequestDto;
 import pl.pjwstk.woloappapi.model.UserRequestDto;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
@@ -69,8 +71,20 @@ public class UserService {
 
 
     @Transactional
-    public void updateUser(UserRequestDto userDto, Long id) {
+    public void updateUser(UserEditRequestDto userDto, Long id) {
          User user = userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException( "User with ID " + id + " does not exist"));
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setAdult(userDto.isAdult());
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateUserByAdmin(UserEditRequestAdminDto userDto, Long id) {
+        User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException( "User with ID " + id + " does not exist"));
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());

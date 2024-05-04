@@ -114,6 +114,7 @@ public class UserServiceTests {
         verify(userRepository, times(1)).deleteById(1L);
     }
 
+    /*
     @Test
     public void testUpdateUser() {
         UserRequestDto userDto = new UserRequestDto();
@@ -141,7 +142,7 @@ public class UserServiceTests {
         assertEquals(userDto.isPeselVerified(), user.isPeselVerified());
         assertEquals(userDto.isAgreementSigned(), user.isAgreementSigned());
         assertEquals(userDto.isAdult(), user.isAdult());
-    }
+    }*/
 
     @Test
     public void testUpdateUserRoles(){

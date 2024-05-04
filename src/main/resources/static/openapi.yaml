@@ -1601,12 +1601,12 @@ paths:
           in: query
           description: User object with changes
           schema:
-            $ref: '#/components/schemas/UserRequestDto'
+            $ref: '#/components/schemas/UserEditRequestDto'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRequestDto'
+              $ref: '#/components/schemas/UserEditRequestDto'
         required: true
       responses:
         '204':
@@ -1619,13 +1619,13 @@ paths:
         - Users
       summary: Edit user
       description: User must exist
-      operationId: editUser
+      operationId: editUserByAdmin
       parameters:
         - name: user
           in: query
           description: User object with changes
           schema:
-            $ref: '#/components/schemas/UserRequestDto'
+            $ref: '#/components/schemas/UserEditRequestAdminDto'
         - name: id
           in: path
           description: User id
@@ -1638,7 +1638,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRequestDto'
+              $ref: '#/components/schemas/UserEditRequestAdminDto'
         required: true
       responses:
         '204':
@@ -2487,6 +2487,70 @@ components:
         shiftDirectionsRU:
           type: string
           example: Левая сторона здания
+    UserEditRequestDto:
+      required:
+        - firstName
+        - lastName
+        - email
+        - phoneNumber
+      type: object
+      properties:
+        firstName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: John
+        lastName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Doe
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: example@mail.com
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        isAdult:
+          type: boolean
+    UserEditRequestAdminDto:
+      required:
+        - firstName
+        - lastName
+        - email
+        - phoneNumber
+      type: object
+      properties:
+        firstName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: John
+        lastName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Doe
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: example@mail.com
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        isPeselVerified:
+          type: boolean
+        isAgreementSigned:
+          type: boolean
+        isAdult:
+          type: boolean
     UserRequestDto:
       required:
         - firstName
