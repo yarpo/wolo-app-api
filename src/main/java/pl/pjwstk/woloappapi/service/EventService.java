@@ -155,7 +155,12 @@ public class EventService {
     }
     @Transactional
     public void deleteEvent(Long id) {
-        eventRepository.findById(id).ifPresent(e -> eventRepository.deleteById(id));
+        eventRepository.findById(id).ifPresent(e ->{
+            if (e.getDate().isAfter(LocalDate.now())) {
+                e.getCategories().forEach(ctu -> categoryToEventService.deleteCategoryToEvent(ctu.getId()));
+                eventRepository.deleteById(id);
+            }
+        });
     }
 
     public List<Event> filterEvents(
