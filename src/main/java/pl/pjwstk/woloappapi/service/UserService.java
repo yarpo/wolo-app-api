@@ -78,7 +78,6 @@ public class UserService {
                 () -> new IllegalArgumentException( "User with ID " + id + " does not exist"));
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
-        user.setEmail(userDto.getEmail());
         user.setPhoneNumber(userDto.getPhoneNumber());
         user.setAdult(userDto.isAdult());
         userRepository.save(user);
