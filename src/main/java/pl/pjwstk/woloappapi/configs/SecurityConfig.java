@@ -47,12 +47,14 @@ public class SecurityConfig {
 
                     auth.requestMatchers(OPTIONS, "/cities/**").permitAll();
                     auth.requestMatchers(GET, "/cities**").permitAll();
+                    auth.requestMatchers(GET, "/cities/admin/all").hasAuthority("READ_ALL_CITY");
                     auth.requestMatchers(POST,"/cities/**").hasAuthority("CREATE_CITY");
                     auth.requestMatchers(PUT,"/cities/**").hasAuthority("EDIT_CITY");
                     auth.requestMatchers(DELETE,"/cities/**").hasAuthority("DELETE_CITY");
 
                     auth.requestMatchers(OPTIONS, "/districts/**").permitAll();
                     auth.requestMatchers(GET, "/districts").permitAll();
+                    auth.requestMatchers(GET, "/districts/admin/all").hasAuthority("READ_ALL_DISTRICT");
                     auth.requestMatchers(POST, "/districts/**").hasAuthority("CREATE_DISTRICT");
                     auth.requestMatchers(PUT, "/districts/**").hasAuthority("EDIT_DISTRICT");
                     auth.requestMatchers(DELETE, "/districts/**").hasAuthority("DELETE_DISTRICT");
@@ -63,6 +65,7 @@ public class SecurityConfig {
                     auth.requestMatchers( "/events/join").hasAuthority("JOIN_EVENT");
                     auth.requestMatchers( "/events/join/check").hasAuthority("JOIN_EVENT");
                     auth.requestMatchers("/events/refuse").hasAuthority("JOIN_EVENT");
+                    auth.requestMatchers(OPTIONS, "/events/add").hasAuthority("CREATE_EVENT");
                     auth.requestMatchers("/events/add").hasAuthority("CREATE_EVENT");
                     auth.requestMatchers(PUT, "/events/**").hasAuthority("EDIT_EVENT");
                     auth.requestMatchers(DELETE, "/events/**").hasAuthority("DELETE_EVENT");
@@ -79,6 +82,7 @@ public class SecurityConfig {
 
                     auth.requestMatchers(GET, "/organisations").permitAll();
                     auth.requestMatchers(GET, "/organisations/**").permitAll();
+                    auth.requestMatchers(GET, "/organisations/admin/all").hasAuthority("READ_ALL_ORGANISATION");
                     auth.requestMatchers(OPTIONS, "/organisations/**").permitAll();
                     auth.requestMatchers( "/organisations/add").hasAuthority("CREATE_ORGANISATION");
                     auth.requestMatchers( "/organisations/approve").hasAuthority("APPROVE_ORGANISATION");
@@ -97,7 +101,8 @@ public class SecurityConfig {
                     auth.requestMatchers(GET, "/users/shifts/**").hasAuthority("READ_USERS_EVENTS");
                     auth.requestMatchers(GET, "/users").hasAuthority("READ_USERS");
                     auth.requestMatchers(GET, "/users/**").hasAuthority("READ_USERS");
-                    auth.requestMatchers(PUT, "/users/**").hasAuthority("EDIT_USER");
+                    auth.requestMatchers(PUT, "/users/*/edit").hasAuthority("EDIT_USERS");
+                    auth.requestMatchers(PUT, "/users/edit").permitAll();
                     auth.requestMatchers(DELETE, "/users/**").hasAuthority("DELETE_USERS");
                     auth.requestMatchers(DELETE, "/users/assign").hasAuthority("ASSIGN_ORGANISATION_TO_USER");
                     auth.requestMatchers(DELETE, "/users/revoke").hasAuthority("ASSIGN_ORGANISATION_TO_USER");
