@@ -678,7 +678,6 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-
   /events/add:
     post:
       tags:
@@ -707,7 +706,6 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/Created'
-
   /events/admin/add:
     post:
       tags:
@@ -736,7 +734,6 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/Created'
-
   /events/join:
     post:
       tags:
@@ -759,7 +756,28 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-
+  /events/join/check:
+    post:
+      tags:
+        - Event
+      summary: We check whether the user has changes during the shift to which wants to be assigned
+      operationId: checkJoinEvent
+      parameters:
+        - name: shift
+          in: query
+          description: Id of the shift user wants to join
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
   /events/refuse:
     post:
       tags:
@@ -983,7 +1001,7 @@ paths:
                   $ref: '#/components/schemas/EventResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /organisations//events/current/{id}:
+  /organisations/events/current/{id}:
     get:
       tags:
         - Organisations

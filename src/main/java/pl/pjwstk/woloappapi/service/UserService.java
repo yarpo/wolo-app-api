@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.UserEditRequestAdminDto;
 import pl.pjwstk.woloappapi.model.UserEditRequestDto;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
+import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
@@ -16,7 +17,10 @@ import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -114,6 +118,24 @@ public class UserService {
                 .forEach(user.getRoles()::add);
     }
 
+    public String checkJoin(Long userId, Long shiftId){
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+        var shift = shiftService.getShiftById(shiftId);
+        List<Long> collidingShifts = user.getShifts().stream()
+                .map(ShiftToUser::getShift)
+                .filter(existingShift -> checkConflict(existingShift, shift))
+                .map(Shift::getId)
+                .toList();
+        if(!collidingShifts.isEmpty()) {
+            return "You have colliding shifts: " + collidingShifts.stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", "));
+        } else {
+            return "OK";
+        }
+    }
+
     @Transactional
     public void joinEvent(Long userId, Long shiftId) {
         var user = userRepository.findById(userId)
@@ -196,5 +218,19 @@ public class UserService {
         var email = authentication.getName();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found"));
+    }
+
+    private boolean checkConflict(Shift existingShift, Shift newShift) {
+        if (existingShift.getEvent().getDate().isEqual(newShift.getEvent().getDate())) {
+            if (existingShift.getStartTime().isBefore(newShift.getStartTime()) &&
+                    existingShift.getEndTime().isAfter(newShift.getStartTime())) {
+                return true;
+            }
+            else if (existingShift.getStartTime().isAfter(newShift.getStartTime()) &&
+                    existingShift.getStartTime().isBefore(newShift.getEndTime())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
