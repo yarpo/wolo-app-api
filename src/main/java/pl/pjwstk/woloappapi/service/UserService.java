@@ -6,19 +6,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.UserEditRequestAdminDto;
 import pl.pjwstk.woloappapi.model.UserEditRequestDto;
-import pl.pjwstk.woloappapi.model.UserRequestDto;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
-import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,15 +47,14 @@ public class UserService {
     }
     @Transactional
         public void deleteUser(Long userId) {
-            Optional<User> userOptional = userRepository.findById(userId);
-            if (userOptional.isPresent()) {
-                Organisation organisation = userOptional.get().getOrganisation();
+            userRepository.findById(userId).ifPresent(user -> {
+                Organisation organisation = user.getOrganisation();
                 if(organisation != null){
                     throw new IllegalArgumentException("User with ID " + userId
                             + " is moderator of "+ organisation.getName()
                             + "firstly assign new moderator to organisation");
                 }
-                if(userOptional.get().getRoles().stream().anyMatch(r ->
+                if(user.getRoles().stream().anyMatch(r ->
                         r.getName().equals(roleService.getRoleByName("ADMIN").getName()))){
                     List<User> admins = userRepository.findUsersByRole("ADMIN");
                     if(admins.size() == 1){
@@ -65,8 +62,13 @@ public class UserService {
                         + "  is the only administrator of the application, to remove it, first create another administrator");
                     }
                 }
+                user.getShifts().forEach(stu -> {
+                    var shift = stu.getShift();
+                    stu.getShift().setRegisteredUsers(shift.getRegisteredUsers() - 1);
+                    shiftToUserRepository.delete(stu);
+                });
                 userRepository.deleteById(userId);
-            }
+            });
         }
 
 
