@@ -71,6 +71,7 @@ public class EventMapper {
     public ShiftInfoRespons toShiftInfoRespons(Shift shift){
         return ShiftInfoRespons.builder()
                 .id(shift.getId())
+                .date(shift.getEvent().getDate())
                 .startTime(shift.getStartTime())
                 .endTime(shift.getEndTime())
                 .shiftDirectionsPL(shift.getShiftDirectionsPL())
