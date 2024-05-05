@@ -206,8 +206,8 @@ paths:
     get:
       tags:
         - Cities
-      summary: Show all cities
-      operationId: getAllCities
+      summary: Show all actual cities
+      operationId: getAllActualCities
       responses:
         '200':
           description: Success
@@ -217,6 +217,21 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CityDto'
+  /cities/admin/all:
+    get:
+      tags:
+        - Cities
+      summary: Show all actual cities
+      operationId: getAllCities
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CityResponseAdminDto'
   /cities/{id}:
     get:
       tags:
@@ -313,6 +328,21 @@ paths:
     get:
       tags:
         - Districts
+      summary: Get all actual districts
+      operationId: getActualDistricts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DistrictResponseDto'
+  /districts/admin/all:
+    get:
+      tags:
+        - Districts
       summary: Get all districts
       operationId: getDistricts
       responses:
@@ -323,7 +353,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DistrictResponseDto'
+                  $ref: '#/components/schemas/DistrictResponseAdminDto'
   /districts/{id}:
     get:
       tags:
@@ -892,8 +922,22 @@ paths:
       responses:
         '204':
           $ref: '#/components/responses/NoContentResponse'
-
   /organisations:
+    get:
+      tags:
+        - Organisations
+      summary: Get all approved organisations
+      operationId: getApprovedOrganisations
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrganisationResponseDto'
+  /organisations/admin/all:
     get:
       tags:
         - Organisations
@@ -907,7 +951,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OrganisationResponseDto'
+                  $ref: '#/components/schemas/OrganisationResponseAdminDto'
   /organisations/{id}:
     get:
       tags:
@@ -1563,19 +1607,43 @@ paths:
           $ref: '#/components/responses/OK'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /users/{id}/edit:
+  /users/edit:
     put:
       tags:
         - Users
       summary: Edit user
-      description: User must exist
+      description: User must be logged
       operationId: editUser
       parameters:
         - name: user
           in: query
           description: User object with changes
           schema:
-            $ref: '#/components/schemas/UserRequestDto'
+            $ref: '#/components/schemas/UserEditRequestDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserEditRequestDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/{id}/edit:
+    put:
+      tags:
+        - Users
+      summary: Edit user
+      description: User must exist
+      operationId: editUserByAdmin
+      parameters:
+        - name: user
+          in: query
+          description: User object with changes
+          schema:
+            $ref: '#/components/schemas/UserEditRequestAdminDto'
         - name: id
           in: path
           description: User id
@@ -1588,7 +1656,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRequestDto'
+              $ref: '#/components/schemas/UserEditRequestAdminDto'
         required: true
       responses:
         '204':
@@ -1726,6 +1794,29 @@ components:
             minLength: 0
             type: string
             example: Brodway 123
+    CityResponseAdminDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: New York City
+        districts:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          items:
+            maxLength: 50
+            minLength: 0
+            type: string
+            example: Brodway 123
+        old:
+          type: boolean
     DistrictRequestDto:
       required:
         - name
@@ -1762,6 +1853,25 @@ components:
           minLength: 0
           type: string
           example: New York City
+    DistrictResponseAdminDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: DownTown
+        cityName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: New York City
+        old:
+          type: boolean
     EventRequestDto:
       required:
         - name
@@ -1832,7 +1942,6 @@ components:
           type: integer
           format: int64
           example: 1
-
     EventResponseDetailsDto:
       type: object
       properties:
@@ -1950,7 +2059,6 @@ components:
         city:
           type: string
           example: New York City
-
     EventResponseDto:
       type: object
       properties:
@@ -1994,7 +2102,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ShiftResponseDto'
-
     OrganisationRequestDto:
       required:
         - name
@@ -2073,6 +2180,70 @@ components:
           minLength: 0
           type: string
           example: https://example.com/image.jpg
+    OrganisationResponseAdminDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          maxLength: 250
+          minLength: 0
+          type: string
+          example: Animal Helpers
+        description:
+          type: string
+          example: >-
+            Are you passionate about making a positive impact on the lives of
+            animals in need? Animal Helpers is
+
+            dedicated to providing compassionate care and support for animals at
+            our local animal shelter.
+
+            As part of our organization, you'll have the opportunity to play a
+            vital role in ensuring the well-being
+
+            and happiness of animals awaiting their forever homes.
+
+
+            Our Mission:
+                - Provide shelter and care for animals in need.
+                - Facilitate adoptions and find loving homes for our animals.
+                - Educate the community about responsible pet ownership and animal welfare.
+
+            Volunteer Opportunities:
+                - Animal Care: Assist in feeding, grooming, and providing basic care for shelter animals.
+                - Adoption Assistance: Interact with potential adopters and facilitate the adoption process.
+                - Community Outreach: Participate in events and educational programs to promote animal welfare.
+
+            Join us today and make a difference in the lives of animals in need!
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: example@mail.com
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          type: string
+        street:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Broadway
+        homeNum:
+          maxLength: 10
+          minLength: 0
+          type: string
+          example: 123
+        logoUrl:
+          maxLength: 255
+          minLength: 0
+          type: string
+          example: https://example.com/image.jpg
+        approved:
+          type: boolean
     OrganisationResponseDto:
       type: object
       properties:
@@ -2292,6 +2463,9 @@ components:
         eventNameRU:
           type: string
           example: Помощники для животных
+        date:
+          type: string
+          format: date
         startTime:
           $ref: '#/components/schemas/LocalTime'
         endTime:
@@ -2331,7 +2505,70 @@ components:
         shiftDirectionsRU:
           type: string
           example: Левая сторона здания
-
+    UserEditRequestDto:
+      required:
+        - firstName
+        - lastName
+        - email
+        - phoneNumber
+      type: object
+      properties:
+        firstName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: John
+        lastName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Doe
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: example@mail.com
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        isAdult:
+          type: boolean
+    UserEditRequestAdminDto:
+      required:
+        - firstName
+        - lastName
+        - email
+        - phoneNumber
+      type: object
+      properties:
+        firstName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: John
+        lastName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Doe
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: example@mail.com
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        isPeselVerified:
+          type: boolean
+        isAgreementSigned:
+          type: boolean
+        isAdult:
+          type: boolean
     UserRequestDto:
       required:
         - firstName
