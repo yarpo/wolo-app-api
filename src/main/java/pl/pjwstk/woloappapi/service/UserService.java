@@ -107,12 +107,7 @@ public class UserService {
         var shift = shiftService.getShiftById(shiftId);
         List<Long> collidingShifts = user.getShifts().stream()
                 .map(ShiftToUser::getShift)
-                .filter(existingShift -> existingShift.getEvent().getDate().isEqual(shift.getEvent().getDate()))
-                .filter(existingShift -> existingShift.getStartTime().isBefore(shift.getStartTime()) &&
-                        existingShift.getEndTime().isAfter(shift.getStartTime()) ||
-                        existingShift.getStartTime().isAfter(shift.getStartTime()) &&
-                        existingShift.getStartTime().isBefore(shift.getEndTime())
-                        )
+                .filter(existingShift -> checkConflict(existingShift, shift))
                 .map(Shift::getId)
                 .toList();
         if(!collidingShifts.isEmpty()) {
@@ -206,5 +201,19 @@ public class UserService {
         var email = authentication.getName();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found"));
+    }
+
+    private boolean checkConflict(Shift existingShift, Shift newShift) {
+        if (existingShift.getEvent().getDate().isEqual(newShift.getEvent().getDate())) {
+            if (existingShift.getStartTime().isBefore(newShift.getStartTime()) &&
+                    existingShift.getEndTime().isAfter(newShift.getStartTime())) {
+                return true;
+            }
+            else if (existingShift.getStartTime().isAfter(newShift.getStartTime()) &&
+                    existingShift.getStartTime().isBefore(newShift.getEndTime())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
