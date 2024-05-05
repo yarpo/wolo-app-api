@@ -1,7 +1,5 @@
 package pl.pjwstk.woloappapi.model;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
@@ -15,7 +13,13 @@ public class OrganisationResponseAdminDto {
 
     private String name;
 
-    private String description;
+    private String descriptionPL;
+
+    private String descriptionEN;
+
+    private String descriptionUA;
+
+    private String descriptionRU;
 
     private String email;
 

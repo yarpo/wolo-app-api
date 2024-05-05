@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
-import pl.pjwstk.woloappapi.model.OrganisationResponseAdminDto;
-import pl.pjwstk.woloappapi.model.entities.City;
+import pl.pjwstk.woloappapi.model.OrganisationTranslationResponce;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.repository.AddressRepository;
@@ -40,14 +39,15 @@ public class OrganisationService {
                 .orElseThrow(() -> new NotFoundException("Organisation id not found!"));
     }
     @Transactional
-    public void createOrganisation(OrganisationRequestDto organisationDto) {
+    public void createOrganisation(OrganisationTranslationResponce translation,
+                                   OrganisationRequestDto organisationDto) {
         var district = districtService.getDistrictById(organisationDto.getDistrictId());
         var user = userRepository.findById(organisationDto.getModeratorId())
                 .orElseThrow(()-> new NotFoundException("User id not found!"));
         var address = addressRepository.save(organisationMapper.toAddress(organisationDto)
                 .district(district)
                 .build());
-        var organisation = organisationMapper.toOrganisation(organisationDto)
+        var organisation = organisationMapper.toOrganisation(organisationDto, translation)
                 .moderator(user)
                 .address(address)
                 .build();
@@ -58,13 +58,18 @@ public class OrganisationService {
     }
 
     @Transactional
-    public void updateOrganisation(OrganisationRequestDto organisationDto, Long id) {
+    public void updateOrganisation(OrganisationRequestDto organisationDto,
+                                   Long id,
+                                   OrganisationTranslationResponce translation) {
         Organisation organisation =organisationRepository
                         .findById(id)
                         .orElseThrow(() ->
                                 new IllegalArgumentException("Organisation with ID " + id + " does not exist"));
         organisation.setName(organisationDto.getName());
-        organisation.setDescription(organisationDto.getDescription());
+        organisation.setDescriptionPL(translation.getDescriptionPL());
+        organisation.setDescriptionEN(translation.getDescriptionEN());
+        organisation.setDescriptionUA(translation.getDescriptionUA());
+        organisation.setDescriptionRU(translation.getDescriptionRU());
         organisation.setEmail(organisationDto.getEmail());
         organisation.setPhoneNumber(organisationDto.getPhoneNumber());
         organisation.setLogoUrl(organisationDto.getLogoUrl());

@@ -1039,6 +1039,12 @@ paths:
       description: id = null
       operationId: addOrganisation
       parameters:
+        - name: language
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "PL"
         - name: organisationDto
           in: query
           description: Organisation object to create
@@ -1114,6 +1120,12 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: language
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: "PL"
       requestBody:
         content:
           application/json:
@@ -2150,7 +2162,7 @@ components:
           minLength: 0
           type: string
           example: Animal Helpers
-        description:
+        descriptionPL:
           type: string
           example: >-
             Are you passionate about making a positive impact on the lives of
@@ -2176,6 +2188,12 @@ components:
                 - Community Outreach: Participate in events and educational programs to promote animal welfare.
 
             Join us today and make a difference in the lives of animals in need!
+        descriptionEN:
+          type: string
+        descriptionUA:
+          type: string
+        descriptionRU:
+          type: string
         email:
           maxLength: 50
           minLength: 0
@@ -2210,7 +2228,7 @@ components:
           minLength: 0
           type: string
           example: Animal Helpers
-        description:
+        descriptionPL:
           type: string
           example: >-
             Are you passionate about making a positive impact on the lives of
@@ -2236,6 +2254,12 @@ components:
                 - Community Outreach: Participate in events and educational programs to promote animal welfare.
 
             Join us today and make a difference in the lives of animals in need!
+        descriptionEN:
+          type: string
+        descriptionUA:
+          type: string
+        descriptionRU:
+          type: string
         email:
           maxLength: 50
           minLength: 0

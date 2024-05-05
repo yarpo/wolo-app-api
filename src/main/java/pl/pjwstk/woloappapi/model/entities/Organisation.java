@@ -25,7 +25,16 @@ public class Organisation {
     private String name;
 
     @Column(name = "description_pl")
-    private String description;
+    private String descriptionPL;
+
+    @Column(name = "description_en")
+    private String descriptionEN;
+
+    @Column(name = "description_ua")
+    private String descriptionUA;
+
+    @Column(name = "description_ru")
+    private String descriptionRU;
 
     @Column(name = "email", nullable = false)
     private String email;

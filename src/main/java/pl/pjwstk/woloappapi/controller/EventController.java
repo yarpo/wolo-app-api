@@ -146,8 +146,9 @@ public class EventController {
     }
 
     @PostMapping("/admin/add")
-    public ResponseEntity<HttpStatus> addEventByAdmin(@Valid @RequestBody EventRequestDto dtoEvent,
-                                                      @RequestParam String language) {
+    public ResponseEntity<HttpStatus> addEventByAdmin(
+            @Valid @RequestBody EventRequestDto dtoEvent,
+            @RequestParam String language) {
         var translationDto = eventMapper.toEventTranslationDto(dtoEvent, language);
         var localClient = WebClient.create("http://host.docker.internal:5000/");
         localClient.post()
