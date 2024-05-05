@@ -2509,7 +2509,6 @@ components:
       required:
         - firstName
         - lastName
-        - email
         - phoneNumber
       type: object
       properties:
@@ -2523,11 +2522,6 @@ components:
           minLength: 0
           type: string
           example: Doe
-        email:
-          maxLength: 50
-          minLength: 0
-          type: string
-          example: example@mail.com
         phoneNumber:
           maxLength: 9
           minLength: 9
