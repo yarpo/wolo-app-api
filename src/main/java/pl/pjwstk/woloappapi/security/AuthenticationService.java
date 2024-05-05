@@ -1,6 +1,7 @@
 package pl.pjwstk.woloappapi.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +11,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.service.RoleService;
-import pl.pjwstk.woloappapi.utils.NotFoundException;
+import pl.pjwstk.woloappapi.utils.EmailUtil;
 import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import java.io.IOException;
@@ -30,6 +33,8 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+    private final EmailUtil emailUtil;
 
     @Transactional
     public AuthenticationResponse register(RegistrationRequest request) {
@@ -77,8 +82,23 @@ public class AuthenticationService {
         }
     }
 
-//    public void forgotPassword(String email) {
-//        userRepository.findByEmail(email).orElseThrow(()-> new NotFoundException("User email not found!"));
-//        sendResetPasswordEmail(email);
-//    }
+    public void forgotPassword(String email) throws MessagingException {
+        userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User email not found!"));
+        emailUtil.sendResetPasswordEmail(email);
+    }
+
+    public void setPassword(ForgotPasswordRequest request) {
+        var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new NotFoundException("User email not found!"));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        userRepository.save(user);
+    }
+
+
+    public void changePassword(ChangePasswordRequest request, User user) {
+        if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword())){
+            throw new IllegalArgumentException("Wrong password");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
 }

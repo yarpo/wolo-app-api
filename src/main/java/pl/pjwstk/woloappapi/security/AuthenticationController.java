@@ -1,6 +1,7 @@
 package pl.pjwstk.woloappapi.security;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -47,9 +48,27 @@ public class AuthenticationController {
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
-//    @PostMapping("/forgot-password")
-//    public ResponseEntity<HttpStatus> forgotPassword(@RequestParam String email){
-//        authenticationService.forgotPassword(email);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+    @PutMapping("/forgot-password")
+    public ResponseEntity<HttpStatus> forgotPassword(@RequestParam String email){
+        try {
+            authenticationService.forgotPassword(email);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Unable to send reset password email");
+        }
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/set-password")
+    public ResponseEntity<HttpStatus> setPassword(@RequestBody ForgotPasswordRequest request){
+        authenticationService.setPassword(request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<HttpStatus> changePassword(@RequestBody ChangePasswordRequest request){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var user = userService.getCurrentUser(authentication);
+        authenticationService.changePassword(request, user);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 }
