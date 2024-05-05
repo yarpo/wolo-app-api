@@ -45,7 +45,7 @@ public class EventService {
 
         var shifts = new ArrayList<Shift>();
         eventDto.getShifts().forEach(s -> {
-                    var shift = eventMapper.toShift(s, translation)
+                    var shift = eventMapper.toShift(s, eventDto, translation)
                             .event(event)
                             .build();
                     shifts.add(shift);
@@ -120,7 +120,7 @@ public class EventService {
 
     private void updateEventShifts(Event event, EventRequestDto eventDto, EventTranslationResponse translate) {
         var newShifts = eventDto.getShifts().stream()
-                .map(s -> eventMapper.toShift(s, translate)
+                .map(s -> eventMapper.toShift(s, eventDto, translate)
                         .event(event)
                         .build())
                 .toList();
@@ -137,18 +137,20 @@ public class EventService {
                                 .filter(s -> s.getId().equals(ns.getId()))
                                 .findFirst()
                                 .ifPresent(
-                                        existingShift ->
-                                                updateShiftFields(existingShift, ns, translate));
+                                        existingShift -> updateShiftFields(existingShift, ns));
                     }
                 });
     }
-    private void updateShiftFields(Shift shift, Shift newShift, EventTranslationResponse translate) {
+    private void updateShiftFields(Shift shift, Shift newShift) {
         shift.setStartTime(newShift.getStartTime());
         shift.setEndTime(newShift.getEndTime());
         shift.setLeaderRequired(newShift.isLeaderRequired());
         shift.setCapacity(newShift.getCapacity());
         shift.setRequiredMinAge(newShift.getRequiredMinAge());
-
+        shift.setShiftDirectionsPL(newShift.getShiftDirectionsPL());
+        shift.setShiftDirectionsEN(newShift.getShiftDirectionsEN());
+        shift.setShiftDirectionsUA(newShift.getShiftDirectionsUA());
+        shift.setShiftDirectionsRU(newShift.getShiftDirectionsRU());
         updateShiftAddress(shift, newShift);
     }
     @Transactional

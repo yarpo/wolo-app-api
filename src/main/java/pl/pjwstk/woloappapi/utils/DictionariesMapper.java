@@ -19,12 +19,30 @@ public class DictionariesMapper {
                 .build();
     }
 
+    public DistrictResponseAdminDto toDistrictResponseAdminDto(District district){
+        return DistrictResponseAdminDto.builder()
+                .id(district.getId())
+                .name(district.getName())
+                .cityName(district.getCity().getName())
+                .isOld(district.isOld())
+                .build();
+    }
+
     public CityDto toCityDto(City city){
         CityDto cityDto = new CityDto();
         cityDto.setId(city.getId());
         cityDto.setName(city.getName());
         cityDto.setDistricts(city.getDistricts().stream().map(District::getName).toList());
         return cityDto;
+    }
+
+    public CityResponseAdminDto toCityResponseAdminDto(City city){
+        CityResponseAdminDto cityResponseAdminDto = new CityResponseAdminDto();
+        cityResponseAdminDto.setId(city.getId());
+        cityResponseAdminDto.setName(city.getName());
+        cityResponseAdminDto.setDistricts(city.getDistricts().stream().map(District::getName).toList());
+        cityResponseAdminDto.setOld(city.isOld());
+        return cityResponseAdminDto;
     }
 
     public City.CityBuilder toCity(CityDto cityDto){

@@ -1,6 +1,7 @@
 package pl.pjwstk.woloappapi.utils;
 
 import org.springframework.stereotype.Component;
+import pl.pjwstk.woloappapi.model.OrganisationResponseAdminDto;
 import pl.pjwstk.woloappapi.model.entities.Address;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
@@ -17,6 +18,20 @@ public class OrganisationMapper {
                 .street(organisation.getAddress().getStreet())
                 .homeNum(organisation.getAddress().getHomeNum())
                 .logoUrl(organisation.getLogoUrl())
+                .build();
+    }
+
+    public OrganisationResponseAdminDto organisationResponseAdminDto(Organisation organisation) {
+        return OrganisationResponseAdminDto.builder()
+                .id(organisation.getId())
+                .name(organisation.getName())
+                .description(organisation.getDescription())
+                .email(organisation.getEmail())
+                .phoneNumber(organisation.getPhoneNumber())
+                .street(organisation.getAddress().getStreet())
+                .homeNum(organisation.getAddress().getHomeNum())
+                .logoUrl(organisation.getLogoUrl())
+                .isApproved(organisation.isApproved())
                 .build();
     }
 

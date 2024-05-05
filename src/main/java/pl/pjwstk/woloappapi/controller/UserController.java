@@ -105,9 +105,18 @@ public class UserController {
     }
 
     @PutMapping("/{id}/edit")
-    public ResponseEntity<HttpStatus> editUser(@Valid @RequestBody UserRequestDto userRequestDto,
+    public ResponseEntity<HttpStatus> editUser(@Valid @RequestBody UserEditRequestAdminDto userEditRequestAdminDto,
                                            @PathVariable Long id) {
-        userService.updateUser(userRequestDto, id);
+        userService.updateUserByAdmin(userEditRequestAdminDto, id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+
+    @PutMapping("/edit")
+    public ResponseEntity<HttpStatus> editUser(@Valid @RequestBody UserEditRequestDto userEditRequestDto) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userId = userService.getCurrentUser(authentication).getId();
+        userService.updateUser(userEditRequestDto, userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }

@@ -131,9 +131,9 @@ public class EventController {
         var organisationId = userService.getCurrentUser(authentication).getOrganisation().getId();
         if(Objects.equals(organisationId, dtoEvent.getOrganisationId())) {
             var translationDto = eventMapper.toEventTranslationDto(dtoEvent, language);
-            var localClient = WebClient.create("http://localhost:5000");
+            var localClient = WebClient.create("http://host.docker.internal:5000/");
             localClient.post()
-                    .uri("/translate")
+                    .uri("/event-create")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(translationDto)
                     .retrieve()
@@ -149,9 +149,9 @@ public class EventController {
     public ResponseEntity<HttpStatus> addEventByAdmin(@Valid @RequestBody EventRequestDto dtoEvent,
                                                       @RequestParam String language) {
         var translationDto = eventMapper.toEventTranslationDto(dtoEvent, language);
-        var localClient = WebClient.create("http://localhost:5000");
+        var localClient = WebClient.create("http://host.docker.internal:5000/");
         localClient.post()
-                .uri("/translate")
+                .uri("/event-create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(translationDto)
                 .retrieve()
@@ -238,9 +238,9 @@ public class EventController {
 
     private ResponseEntity<HttpStatus> sendRequestToTranslator(@RequestBody @Valid EventRequestDto eventRequestDto, @PathVariable Long id, @RequestParam String language) {
         var translationDto = eventMapper.toEventTranslationDto(eventRequestDto, language);
-        var localClient = WebClient.create("http://localhost:5000");
+        var localClient = WebClient.create("http://host.docker.internal:5000/");
         localClient.post()
-                .uri("/translate")
+                .uri("/event-create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(translationDto)
                 .retrieve()

@@ -11,7 +11,6 @@ import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.repository.ShiftRepository;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class ShiftServiceTests {
@@ -48,12 +46,11 @@ public class ShiftServiceTests {
         shift.setId(1L);
         shift.setStartTime(LocalTime.of(9, 0));
         shift.setEndTime(LocalTime.of(17, 0));
-        shift.setDate(LocalDate.now());
         shift.setRegisteredUsers(1);
         shift.setCapacity(10);
         shift.setLeaderRequired(true);
         shift.setRequiredMinAge(18);
-        shift.setShiftDirections("Test Shift Directions");
+        shift.setShiftDirectionsEN("Test Shift Directions");
 
         Address address = new Address();
         address.setId(1L);
@@ -72,20 +69,17 @@ public class ShiftServiceTests {
         assertEquals(1L, capturedShift.getId());
         assertEquals(LocalTime.of(9, 0), capturedShift.getStartTime());
         assertEquals(LocalTime.of(17, 0), capturedShift.getEndTime());
-        assertEquals(LocalDate.now(), capturedShift.getDate());
         assertEquals(1, capturedShift.getRegisteredUsers());
         assertEquals(10, capturedShift.getCapacity());
         assertTrue(capturedShift.isLeaderRequired());
         assertEquals(18, capturedShift.getRequiredMinAge());
-        assertEquals("Test Shift Directions", capturedShift.getShiftDirections());
+        assertEquals("Test Shift Directions", capturedShift.getShiftDirectionsEN());
         assertEquals(1L, capturedShift.getShiftToUsers().get(0).getId());
     }
 
     @Test
     public void testDelete(){
         Shift shift = new Shift();
-        shift.setId(1L);
-        shift.setDate(LocalDate.now().plusDays(1));
 
         when(shiftRepository.findById(1L)).thenReturn(Optional.of(shift));
 

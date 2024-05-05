@@ -16,7 +16,10 @@ public class EventMapper {
     private final DistrictService districtService;
     private final CityService cityService;
 
-    public Shift.ShiftBuilder toShift (ShiftRequestDto shiftDto, EventTranslationResponse translate){
+    public Shift.ShiftBuilder toShift (ShiftRequestDto shiftDto,
+                                       EventRequestDto eventDto,
+                                       EventTranslationResponse translate){
+        var translation = translate.getShiftTranslations().get(eventDto.getShifts().indexOf(shiftDto));
         var address = toAddress(shiftDto)
                 .district(districtService.getDistrictById(shiftDto.getDistrictId()))
                 .build();
@@ -27,10 +30,10 @@ public class EventMapper {
                 .isLeaderRequired(shiftDto.getIsLeaderRequired())
                 .capacity(shiftDto.getCapacity())
                 .requiredMinAge(shiftDto.getRequiredMinAge())
-                .shiftDirectionsPL(translate.getDescriptionPL())
-                .shiftDirectionsEN(translate.getDescriptionEN())
-                .shiftDirectionsUA(translate.getDescriptionUA())
-                .shiftDirectionsRU(translate.getDescriptionRU());
+                .shiftDirectionsPL(translation.getAddressDescriptionPl())
+                .shiftDirectionsEN(translation.getAddressDescriptionEN())
+                .shiftDirectionsUA(translation.getAddressDescriptionUA())
+                .shiftDirectionsRU(translation.getAddressDescriptionRU());
     }
     public Address.AddressBuilder toAddress(ShiftRequestDto shiftDto) {
         return Address.builder()
@@ -44,13 +47,15 @@ public class EventMapper {
                 .map(cte -> cte.getCategory().getName()).toList();
         return EventResponseDto.builder()
                 .id(event.getId())
-                .namePl(event.getNamePL())
+                .namePL(event.getNamePL())
                 .nameEN(event.getNameEN())
                 .nameUA(event.getNameUA())
                 .nameRU(event.getNameRU())
                 .organisation(event.getOrganisation().getName())
+                .date(event.getDate())
                 .isPeselVerificationRequired(event.isPeselVerificationRequired())
                 .city(event.getCity().getName())
+                .alt(event.getAlt())
                 .imageUrl(event.getImageUrl())
                 .shifts(shifts)
                 .categories(categories)
@@ -66,6 +71,7 @@ public class EventMapper {
     public ShiftInfoRespons toShiftInfoRespons(Shift shift){
         return ShiftInfoRespons.builder()
                 .id(shift.getId())
+                .date(shift.getEvent().getDate())
                 .startTime(shift.getStartTime())
                 .endTime(shift.getEndTime())
                 .shiftDirectionsPL(shift.getShiftDirectionsPL())
@@ -93,6 +99,7 @@ public class EventMapper {
                 .nameRU(event.getNameRU())
                 .organisationId(event.getOrganisation().getId())
                 .organisationName(event.getOrganisation().getName())
+                .date(event.getDate())
                 .isPeselVerificationRequired(event.isPeselVerificationRequired())
                 .descriptionPL(event.getDescriptionPL())
                 .descriptionEN(event.getDescriptionEN())
@@ -114,6 +121,7 @@ public class EventMapper {
                 .eventNameEN(shift.getEvent().getNameEN())
                 .eventNameUA(shift.getEvent().getNameUA())
                 .eventNameRU(shift.getEvent().getNameRU())
+                .date(shift.getEvent().getDate())
                 .startTime(shift.getStartTime())
                 .endTime(shift.getEndTime())
                 .capacity(shift.getCapacity())
@@ -167,12 +175,14 @@ public class EventMapper {
                 .stream()
                 .map(ShiftRequestDto::getShiftDirections)
                 .toList();
-        return EventTranslationRequest.builder()
-                .name(dtoEvent.getName())
-                .language(language)
-                .description(dtoEvent.getDescription())
-                .shiftDirections(directions)
-                .build();
+        var translation = new EventTranslationRequest();
+        translation.setName(dtoEvent.getName());
+        translation.setDescription(dtoEvent.getDescription());
+        translation.setImageUrl(dtoEvent.getImageUrl());
+        translation.setShiftDirections(directions);
+        translation.setLanguage(language);
+
+        return translation;
 
     }
 }

@@ -206,8 +206,8 @@ paths:
     get:
       tags:
         - Cities
-      summary: Show all cities
-      operationId: getAllCities
+      summary: Show all actual cities
+      operationId: getAllActualCities
       responses:
         '200':
           description: Success
@@ -217,6 +217,21 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CityDto'
+  /cities/admin/all:
+    get:
+      tags:
+        - Cities
+      summary: Show all actual cities
+      operationId: getAllCities
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CityResponseAdminDto'
   /cities/{id}:
     get:
       tags:
@@ -313,6 +328,21 @@ paths:
     get:
       tags:
         - Districts
+      summary: Get all actual districts
+      operationId: getActualDistricts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DistrictResponseDto'
+  /districts/admin/all:
+    get:
+      tags:
+        - Districts
       summary: Get all districts
       operationId: getDistricts
       responses:
@@ -323,7 +353,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DistrictResponseDto'
+                  $ref: '#/components/schemas/DistrictResponseAdminDto'
   /districts/{id}:
     get:
       tags:
@@ -656,6 +686,13 @@ paths:
       summary: Adding new event by organisation
       operationId: addEvent
       parameters:
+        - name: language
+          in: query
+          description: Language of eventDto
+          required: true
+          schema:
+            type: string
+          example: EN
         - name: event
           in: query
           description: Event object to create
@@ -678,6 +715,13 @@ paths:
       summary: Adding new event by admin
       operationId: addEventByAdmin
       parameters:
+        - name: language
+          in: query
+          description: Language of eventDto
+          required: true
+          schema:
+            type: string
+          example: EN
         - name: event
           in: query
           description: Event object to create
@@ -758,6 +802,13 @@ paths:
             type: integer
             format: int64
           example: 1
+        - name: language
+          in: query
+          description: language of eventDto
+          required: true
+          schema:
+            type: string
+            example: EN
       requestBody:
         content:
           application/json:
@@ -793,6 +844,13 @@ paths:
             type: integer
             format: int64
           example: 1
+        - name: language
+          in: query
+          description: language of eventDto
+          required: true
+          schema:
+            type: string
+            example: EN
       requestBody:
         content:
           application/json:
@@ -846,8 +904,22 @@ paths:
       responses:
         '204':
           $ref: '#/components/responses/NoContentResponse'
-
   /organisations:
+    get:
+      tags:
+        - Organisations
+      summary: Get all approved organisations
+      operationId: getApprovedOrganisations
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrganisationResponseDto'
+  /organisations/admin/all:
     get:
       tags:
         - Organisations
@@ -861,7 +933,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OrganisationResponseDto'
+                  $ref: '#/components/schemas/OrganisationResponseAdminDto'
   /organisations/{id}:
     get:
       tags:
@@ -1517,19 +1589,43 @@ paths:
           $ref: '#/components/responses/OK'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /users/{id}/edit:
+  /users/edit:
     put:
       tags:
         - Users
       summary: Edit user
-      description: User must exist
+      description: User must be logged
       operationId: editUser
       parameters:
         - name: user
           in: query
           description: User object with changes
           schema:
-            $ref: '#/components/schemas/UserRequestDto'
+            $ref: '#/components/schemas/UserEditRequestDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserEditRequestDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/{id}/edit:
+    put:
+      tags:
+        - Users
+      summary: Edit user
+      description: User must exist
+      operationId: editUserByAdmin
+      parameters:
+        - name: user
+          in: query
+          description: User object with changes
+          schema:
+            $ref: '#/components/schemas/UserEditRequestAdminDto'
         - name: id
           in: path
           description: User id
@@ -1542,7 +1638,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRequestDto'
+              $ref: '#/components/schemas/UserEditRequestAdminDto'
         required: true
       responses:
         '204':
@@ -1680,6 +1776,29 @@ components:
             minLength: 0
             type: string
             example: Brodway 123
+    CityResponseAdminDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: New York City
+        districts:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          items:
+            maxLength: 50
+            minLength: 0
+            type: string
+            example: Brodway 123
+        old:
+          type: boolean
     DistrictRequestDto:
       required:
         - name
@@ -1716,6 +1835,25 @@ components:
           minLength: 0
           type: string
           example: New York City
+    DistrictResponseAdminDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: DownTown
+        cityName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: New York City
+        old:
+          type: boolean
     EventRequestDto:
       required:
         - name
@@ -1723,6 +1861,7 @@ components:
         - organisationId
         - categories
         - shifts
+        - date
       type: object
       properties:
         name:
@@ -1764,20 +1903,27 @@ components:
             type: integer
             format: int64
             example: 1
-        peselVerificationRequired:
+        isPeselVerificationRequired:
           type: boolean
-        agreementNeeded:
+        isAgreementNeeded:
           type: boolean
         imageUrl:
           maxLength: 255
           minLength: 0
           type: string
+        date:
+          type: string
+          format: date
         shifts:
           maxItems: 2147483647
           minItems: 1
           type: array
           items:
             $ref: '#/components/schemas/ShiftRequestDto'
+        cityId:
+          type: integer
+          format: int64
+          example: 1
     EventResponseDetailsDto:
       type: object
       properties:
@@ -1785,9 +1931,18 @@ components:
           type: integer
           format: int64
           example: 1
-        name:
+        namePL:
           type: string
-          example: Animal shelter assistance
+          example: Pomoc w schronisku dla zwierząt
+        nameEN:
+          type: string
+          example: Pomoc w schronisku dla zwierząt
+        nameUA:
+          type: string
+          example: Допомога притулку для тварин
+        nameRU:
+          type: string
+          example: Помощь приюту для животных
         organisationId:
           type: integer
           format: int64
@@ -1795,11 +1950,14 @@ components:
         organisationName:
           type: string
           example: 'Compassion Paws: Animal Shelter Support Initiative'
-        peselVerificationRequired:
+        date:
+          type: string
+          format: date
+        isPeselVerificationRequired:
           type: boolean
-        agreementNeeded:
+        isAgreementNeeded:
           type: boolean
-        description:
+        descriptionEN:
           type: string
           example: >-
             Are you passionate about making a positive impact on the lives of
@@ -1823,16 +1981,57 @@ components:
                 Assistance with Adoptions:
                     Interact with potential adopters and provide information about available animals.
                     Assist in the adoption process, ensuring a smooth transition for both the animal and the new owner.
+        descriptionPL:
+          type: string
+          example: >-
+            Czy pasjonujesz się wywieraniem pozytywnego wpływu na życie ludzi
+            zwierzęta w potrzebie? Dołącz do nas w naszej misji aby zapewnić współczującą opiekę i wsparcie zwierzętom w naszej okolicy
+            Schronisko dla zwierząt.
+
+            Jako asystent schroniska dla zwierząt odgrywasz kluczową rolę w zapewnianiu dobre samopoczucie 
+            i szczęście zwierząt oczekujących na swoje stałe domy.
+
+            Obowiązki:
+            Opieka nad zwierzętami:karmić, pielęgnować i zapewniać podstawową opiekę zwierzętom ze schroniska.
+            Zapewnij wszystkim zwierzętom czyste i higieniczne warunki życia.
+
+            Pomoc przy adopcjach: wejdź w interakcję z potencjalnymi adopcjami i przekaż informacje o dostępnych zwierzętach.
+            Pomagaj w procesie adopcji, zapewniając płynną zmianę zarówno zwierzęciu, jak i nowemu właścicielowi.
+        descriptionUA:
+          type: string
+          example: >-
+            Ви прагнете позитивно вплинути на життя тварини в потребі? Приєднуйтесь до нашої місії
+            надавати співчутливу турботу та підтримку тваринам у нашому закладі притулок для тварин.
+            Як помічник у притулку для тварин, ви відіграєте вирішальну роль у забезпеченні благополуччя
+            і щастя тварин, які чекають своїх вічних домівок.
+            Обов'язки: догляд за тваринами:
+            Годуйте, доглядайте та забезпечуйте основний догляд за тваринами з притулку.
+            Забезпечити чисті та санітарні умови проживання для всіх тварин.
+            Допомога з усиновленням:
+            Спілкуйтеся з потенційними усиновлювачами та надайте інформацію про доступних тварин.
+            Допомога в процесі усиновлення, забезпечуючи плавний перехід як для тварини, так і для нового власника.
+        descriptionRU:
+          type: string
+          example: >-
+            Уход за животными:
+
+                Кормление, уход и обеспечение основных потребностей животных в приюте.
+                Обеспечение чистых и санитарных условий проживания для всех подопечных.
+
+            Помощь в усыновлении:
+
+                Общение с потенциальными усыновителями и предоставление информации о доступных животных.
+                Помощь в процессе усыновления, обеспечивая плавный переход как для животного, так и для нового владельца.
         categories:
           type: array
           items:
             type: string
             example: Health
         imageUrl:
-          maxLength: 255
-          minLength: 0
           type: string
           example: https://example.com/image.jpg
+        alt:
+          type: string
         shifts:
           maxItems: 2147483647
           minItems: 1
@@ -1849,13 +2048,19 @@ components:
           type: integer
           format: int64
           example: 1
-        name:
+        nameEN:
           type: string
           example: Animal shelter assistance
+        namePL:
+          type: string
+        nameUA:
+          type: string
+        nameRU:
+          type: string
         organisation:
           type: string
           example: 'Compassion Paws: Animal Shelter Support Initiative'
-        peselVerificationRequired:
+        isPeselVerificationRequired:
           type: boolean
         categories:
           type: array
@@ -1865,11 +2070,14 @@ components:
         city:
           type: string
           example: New York City
+        date:
+          type: string
+          format: date
         imageUrl:
-          maxLength: 255
-          minLength: 0
           type: string
           example: https://example.com/image.jpg
+        alt:
+          type: string
         shifts:
           maxItems: 2147483647
           minItems: 1
@@ -1954,6 +2162,70 @@ components:
           minLength: 0
           type: string
           example: https://example.com/image.jpg
+    OrganisationResponseAdminDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          maxLength: 250
+          minLength: 0
+          type: string
+          example: Animal Helpers
+        description:
+          type: string
+          example: >-
+            Are you passionate about making a positive impact on the lives of
+            animals in need? Animal Helpers is
+
+            dedicated to providing compassionate care and support for animals at
+            our local animal shelter.
+
+            As part of our organization, you'll have the opportunity to play a
+            vital role in ensuring the well-being
+
+            and happiness of animals awaiting their forever homes.
+
+
+            Our Mission:
+                - Provide shelter and care for animals in need.
+                - Facilitate adoptions and find loving homes for our animals.
+                - Educate the community about responsible pet ownership and animal welfare.
+
+            Volunteer Opportunities:
+                - Animal Care: Assist in feeding, grooming, and providing basic care for shelter animals.
+                - Adoption Assistance: Interact with potential adopters and facilitate the adoption process.
+                - Community Outreach: Participate in events and educational programs to promote animal welfare.
+
+            Join us today and make a difference in the lives of animals in need!
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: example@mail.com
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          type: string
+        street:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Broadway
+        homeNum:
+          maxLength: 10
+          minLength: 0
+          type: string
+          example: 123
+        logoUrl:
+          maxLength: 255
+          minLength: 0
+          type: string
+          example: https://example.com/image.jpg
+        approved:
+          type: boolean
     OrganisationResponseDto:
       type: object
       properties:
@@ -2124,9 +2396,6 @@ components:
           $ref: '#/components/schemas/LocalTime'
         endTime:
           $ref: '#/components/schemas/LocalTime'
-        date:
-          type: string
-          format: date
         capacity:
           type: integer
           format: int32
@@ -2164,16 +2433,25 @@ components:
           type: integer
           format: int64
           example: 1
-        eventName:
+        eventNamePL:
+          type: string
+          example: Pomocnicy zwierząt
+        eventNameEN:
           type: string
           example: Animal Helpers
+        eventNameUA:
+          type: string
+          example: Помічники тварин
+        eventNameRU:
+          type: string
+          example: Помощники для животных
+        date:
+          type: string
+          format: date
         startTime:
           $ref: '#/components/schemas/LocalTime'
         endTime:
           $ref: '#/components/schemas/LocalTime'
-        date:
-          type: string
-          format: date
         capacity:
           type: integer
           format: int32
@@ -2197,9 +2475,82 @@ components:
         homeNum:
           type: string
           example: 123
-        shiftDirections:
+        shiftDirectionsPL:
+          type: string
+          example: Z lewej strony budynku
+        shiftDirectionsEN:
           type: string
           example: Left Side of Building
+        shiftDirectionsUA:
+          type: string
+          example: Ліва сторона будівлі
+        shiftDirectionsRU:
+          type: string
+          example: Левая сторона здания
+    UserEditRequestDto:
+      required:
+        - firstName
+        - lastName
+        - email
+        - phoneNumber
+      type: object
+      properties:
+        firstName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: John
+        lastName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Doe
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: example@mail.com
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        isAdult:
+          type: boolean
+    UserEditRequestAdminDto:
+      required:
+        - firstName
+        - lastName
+        - email
+        - phoneNumber
+      type: object
+      properties:
+        firstName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: John
+        lastName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Doe
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: example@mail.com
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        isPeselVerified:
+          type: boolean
+        isAgreementSigned:
+          type: boolean
+        isAdult:
+          type: boolean
     UserRequestDto:
       required:
         - firstName

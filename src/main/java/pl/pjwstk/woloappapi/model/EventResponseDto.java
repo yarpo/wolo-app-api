@@ -14,7 +14,7 @@ public class EventResponseDto {
 
     private Long id;
 
-    private String namePl;
+    private String namePL;
 
     private String nameEN;
 

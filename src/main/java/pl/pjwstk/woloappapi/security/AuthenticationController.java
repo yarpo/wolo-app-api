@@ -46,4 +46,10 @@ public class AuthenticationController {
         var userResponse = userMapper.toUserResponseDto(user);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
+
+//    @PostMapping("/forgot-password")
+//    public ResponseEntity<HttpStatus> forgotPassword(@RequestParam String email){
+//        authenticationService.forgotPassword(email);
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//    }
 }

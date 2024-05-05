@@ -2,6 +2,7 @@ package pl.pjwstk.woloappapi.model;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -28,6 +29,8 @@ public class EventResponseDetailsDto {
     private boolean isPeselVerificationRequired;
 
     private boolean isAgreementNeeded;
+
+    private LocalDate date;
 
     private String descriptionPL;
 
