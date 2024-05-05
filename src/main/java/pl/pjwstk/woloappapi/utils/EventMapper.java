@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.model.translation.EventTranslationRequest;
+import pl.pjwstk.woloappapi.model.translation.EventTranslationResponse;
+import pl.pjwstk.woloappapi.model.translation.ReportTranslationResponce;
 import pl.pjwstk.woloappapi.service.CityService;
 import pl.pjwstk.woloappapi.service.DistrictService;
 
@@ -155,17 +158,23 @@ public class EventMapper {
                 .city(cityService.getCityById(dtoEvent.getCityId()));
     }
 
-    public Report.ReportBuilder toReport(ReportDto reportDto) {
+    public Report.ReportBuilder toReport(ReportRequestDto reportDto, ReportTranslationResponce translation) {
         return Report.builder()
-                .report(reportDto.getReport())
+                .reportPL(translation.getReportPL())
+                .reportEN(translation.getReportEN())
+                .reportUA(translation.getReportUA())
+                .reportRU(translation.getReportRU())
                 .published(reportDto.isPublished());
     }
 
-    public ReportDto toReportDto(Report report) {
-        return ReportDto.builder()
+    public ReportResponceDto toReportResponceDto(Report report) {
+        return ReportResponceDto.builder()
                 .event(report.getEvent().getId())
                 .published(report.isPublished())
-                .report(report.getReport())
+                .reportPL(report.getReportPL())
+                .reportEN(report.getReportEN())
+                .reportUA(report.getReportUA())
+                .reportRU(report.getReportRU())
                 .build();
     }
 

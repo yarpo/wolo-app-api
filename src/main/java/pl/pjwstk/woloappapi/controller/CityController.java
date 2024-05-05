@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pjwstk.woloappapi.model.CityDto;
-import pl.pjwstk.woloappapi.model.CityResponseAdminDto;
+import pl.pjwstk.woloappapi.model.admin.CityResponseAdminDto;
 import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.service.CityService;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;

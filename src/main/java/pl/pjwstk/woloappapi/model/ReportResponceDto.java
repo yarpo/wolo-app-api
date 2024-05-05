@@ -1,7 +1,5 @@
 package pl.pjwstk.woloappapi.model;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -9,15 +7,19 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReportDto {
+public class ReportResponceDto {
 
     private Long id;
 
-    @NotEmpty
-    private String report;
+    private String reportPL;
+
+    private String reportEN;
+
+    private String reportUA;
+
+    private String reportRU;
 
     private boolean published;
 
-    @NotNull
     private Long event;
 }

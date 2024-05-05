@@ -9,8 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.admin.OrganisationResponseAdminDto;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
+import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationRequest;
+import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationResponce;
 import pl.pjwstk.woloappapi.service.OrganisationService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
@@ -60,7 +63,7 @@ public class OrganisationController {
         var translate = createTranslationDto(organisationDto, language);
         var localClient = WebClient.create("http://host.docker.internal:5000/");
         localClient.post()
-                .uri("/report/translate")
+                .uri("/organisation/translate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(translate)
                 .retrieve()
@@ -107,7 +110,7 @@ public class OrganisationController {
         var translate = createTranslationDto(organisation, language);
         var localClient = WebClient.create("http://host.docker.internal:5000/");
         localClient.post()
-                .uri("/report/translate")
+                .uri("/organisation/translate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(translate)
                 .retrieve()

@@ -2,8 +2,10 @@ package pl.pjwstk.woloappapi.utils;
 
 import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.admin.OrganisationResponseAdminDto;
 import pl.pjwstk.woloappapi.model.entities.Address;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
+import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationResponce;
 
 @Component
 public class OrganisationMapper {

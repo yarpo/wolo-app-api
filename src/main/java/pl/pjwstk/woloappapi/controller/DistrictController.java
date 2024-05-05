@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.DistrictResponseAdminDto;
+import pl.pjwstk.woloappapi.model.admin.DistrictResponseAdminDto;
 import pl.pjwstk.woloappapi.model.DistrictResponseDto;
 import pl.pjwstk.woloappapi.model.entities.District;
 import pl.pjwstk.woloappapi.model.DistrictRequestDto;

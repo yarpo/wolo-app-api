@@ -1,4 +1,4 @@
-package pl.pjwstk.woloappapi.model;
+package pl.pjwstk.woloappapi.model.translation;
 
 import java.util.List;
 

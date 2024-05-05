@@ -1,4 +1,4 @@
-package pl.pjwstk.woloappapi.model;
+package pl.pjwstk.woloappapi.model.translation;
 
 public class OrganisationTranslationRequest {
     private String language;
