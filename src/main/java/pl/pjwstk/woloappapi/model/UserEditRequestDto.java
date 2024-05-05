@@ -21,12 +21,6 @@ public class UserEditRequestDto {
     private String lastName;
 
     @NotNull
-    @NotBlank(message = "Email is required")
-    @Size(max = 50, message = "Email cannot exceed 50 characters")
-    @Email(message = "Invalid email format")
-    private String email;
-
-    @NotNull
     @Pattern(regexp = "[0-9]{9}", message = "Phone number should consist of 9 digits")
     @Size(min = 9, max = 9, message = "Phone number must be 9 digits")
     private String phoneNumber;
