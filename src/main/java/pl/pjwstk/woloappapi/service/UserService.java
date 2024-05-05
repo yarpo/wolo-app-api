@@ -109,7 +109,12 @@ public class UserService {
                 .map(ShiftToUser::getShift)
                 .filter(existingShift -> existingShift.getEvent().getDate().isEqual(shift.getEvent().getDate()))
                 .filter(existingShift -> existingShift.getStartTime().isBefore(shift.getEndTime()) &&
-                        existingShift.getEndTime().isAfter(shift.getStartTime()))
+                        existingShift.getEndTime().isAfter(shift.getStartTime()) ||
+                        existingShift.getStartTime().isBefore(shift.getStartTime()) &&
+                        existingShift.getEndTime().isAfter(shift.getStartTime()) ||
+                        existingShift.getStartTime().isAfter(shift.getStartTime()) &&
+                        existingShift.getStartTime().isBefore(shift.getEndTime())
+                        )
                 .map(Shift::getId)
                 .toList();
         if(!collidingShifts.isEmpty()) {
