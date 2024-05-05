@@ -108,9 +108,7 @@ public class UserService {
         List<Long> collidingShifts = user.getShifts().stream()
                 .map(ShiftToUser::getShift)
                 .filter(existingShift -> existingShift.getEvent().getDate().isEqual(shift.getEvent().getDate()))
-                .filter(existingShift -> existingShift.getStartTime().isBefore(shift.getEndTime()) &&
-                        existingShift.getEndTime().isAfter(shift.getStartTime()) ||
-                        existingShift.getStartTime().isBefore(shift.getStartTime()) &&
+                .filter(existingShift -> existingShift.getStartTime().isBefore(shift.getStartTime()) &&
                         existingShift.getEndTime().isAfter(shift.getStartTime()) ||
                         existingShift.getStartTime().isAfter(shift.getStartTime()) &&
                         existingShift.getStartTime().isBefore(shift.getEndTime())
