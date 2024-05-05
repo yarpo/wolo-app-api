@@ -62,7 +62,7 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
-    <changeSet id="woloapp" author="008">
+    <changeSet author="woloapp" id="008">
         <sqlFile path="sql_scripts/008-create-city-table.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
@@ -104,6 +104,17 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
+
+    <changeSet author="woloapp" id="015">
+        <sqlFile path="sql_scripts/015-update-report-table.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+
+        <sqlFile path="sql_mockup/015-insert-example-reports.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+    </changeSet>
+
     <changeSet author="woloapp" id="014">
         <sqlFile path="sql_scripts/014-update-event.sql"
                  relativeToChangelogFile="true"
@@ -119,7 +130,7 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
-    <changeSet id="16" author="woloapp">
+    <changeSet author="woloapp"  id="016">
         <sqlFile path="sql_inserts/016-insert-district.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
@@ -131,7 +142,13 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
-    <changeSet id="17" author="woloapp">
+    <changeSet author="woloapp" id="017">
+        <sqlFile path="sql_scripts/017-update-organisation-table.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/017-update-description-for-organisation.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
         <sqlFile path="sql_inserts/017-insert-read-privilege.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>

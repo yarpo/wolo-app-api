@@ -1,4 +1,4 @@
-package pl.pjwstk.woloappapi.model;
+package pl.pjwstk.woloappapi.model.admin;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.User;
+import pl.pjwstk.woloappapi.model.translation.EventTranslationResponse;
 import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.service.PDFGenerationService;
 import pl.pjwstk.woloappapi.service.UserService;
@@ -154,8 +155,9 @@ public class EventController {
     }
 
     @PostMapping("/admin/add")
-    public ResponseEntity<HttpStatus> addEventByAdmin(@Valid @RequestBody EventRequestDto dtoEvent,
-                                                      @RequestParam String language) {
+    public ResponseEntity<HttpStatus> addEventByAdmin(
+            @Valid @RequestBody EventRequestDto dtoEvent,
+            @RequestParam String language) {
         var translationDto = eventMapper.toEventTranslationDto(dtoEvent, language);
         var localClient = WebClient.create("http://host.docker.internal:5000/");
         localClient.post()

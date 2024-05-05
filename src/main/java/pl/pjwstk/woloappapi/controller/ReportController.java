@@ -1,15 +1,17 @@
 package pl.pjwstk.woloappapi.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pjwstk.woloappapi.model.ReportDto;
+import org.springframework.web.reactive.function.client.WebClient;
+import pl.pjwstk.woloappapi.model.ReportRequestDto;
+import pl.pjwstk.woloappapi.model.ReportResponceDto;
+import pl.pjwstk.woloappapi.model.translation.ReportTranslationRequest;
+import pl.pjwstk.woloappapi.model.translation.ReportTranslationResponce;
 import pl.pjwstk.woloappapi.service.ReportService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 
@@ -25,41 +27,34 @@ public class ReportController {
     private final EventMapper eventMapper;
 
     @GetMapping("/public/{id}")
-    public ResponseEntity<ReportDto> getPublicReportByEventId(@PathVariable Long id) {
-        var report = eventMapper.toReportDto(reportService.getPublicReportByEventId(id));
+    public ResponseEntity<ReportResponceDto> getPublicReportByEventId(@PathVariable Long id) {
+        var report = eventMapper.toReportResponceDto(reportService.getPublicReportByEventId(id));
         return new ResponseEntity<>(report, HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ReportDto>> getAllReportsByEventId(@RequestParam(value = "eventId") Long eventId){
+    public ResponseEntity<List<ReportResponceDto>> getAllReportsByEventId(@RequestParam(value = "eventId") Long eventId){
         var reports = reportService.getAllReportsByEventId(eventId)
                 .stream()
-                .map(eventMapper::toReportDto)
+                .map(eventMapper::toReportResponceDto)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(reports, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addReport(@RequestBody ReportDto reportDto) {
-        reportService.createReport(reportDto);
+    public ResponseEntity<HttpStatus> addReport(@RequestBody ReportRequestDto reportDto, @RequestParam String language) {
+        var translate = createTranslationDto(reportDto, language);
+        var localClient = WebClient.create("http://host.docker.internal:5000/");
+        localClient.post()
+                .uri("/report/translate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(translate)
+                .retrieve()
+                .bodyToMono(ReportTranslationResponce.class)
+                .subscribe(translated -> reportService.createReport(reportDto, translated));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @Operation(
-            summary = "Delete report",
-            responses = {
-                    @ApiResponse(
-                            description = "No content",
-                            responseCode = "204"
-                    )
-            },
-            parameters = {
-                    @Parameter(name = "id",
-                            description = "Report id",
-                            example = "1"
-                    )
-            }
-    )
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteReport(@PathVariable Long id) {
         reportService.deleteReport(id);
@@ -68,8 +63,24 @@ public class ReportController {
 
     @PutMapping("/edit")
     public ResponseEntity<HttpStatus> editReport(
-            @Valid @RequestBody ReportDto reportDto) {
-        reportService.updateReport(reportDto);
+            @Valid @RequestBody ReportRequestDto reportDto,
+            @RequestParam String language) {
+        var translate = createTranslationDto(reportDto, language);
+        var localClient = WebClient.create("http://host.docker.internal:5000/");
+        localClient.post()
+                .uri("/report/translate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(translate)
+                .retrieve()
+                .bodyToMono(ReportTranslationResponce.class)
+                .subscribe(translated -> reportService.updateReport(reportDto, translated));
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    private ReportTranslationRequest createTranslationDto(ReportRequestDto reportDto, String language) {
+        var translate = new ReportTranslationRequest();
+        translate.setLanguage(language);
+        translate.setReport(reportDto.getReport());
+        return translate;
     }
 }

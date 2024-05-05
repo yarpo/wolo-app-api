@@ -1057,6 +1057,12 @@ paths:
       description: id = null
       operationId: addOrganisation
       parameters:
+        - name: language
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "PL"
         - name: organisationDto
           in: query
           description: Organisation object to create
@@ -1132,6 +1138,12 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: language
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: "PL"
       requestBody:
         content:
           application/json:
@@ -1279,7 +1291,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ReportDto'
+                  $ref: '#/components/schemas/ReportResponceDto'
 
   /reports/public/{id}:
     get:
@@ -1303,7 +1315,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReportDto'
+                $ref: '#/components/schemas/ReportResponceDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
@@ -1315,16 +1327,23 @@ paths:
       description: id = null
       operationId: addReport
       parameters:
+        - name: language
+          in: query
+          description: Language of ReportDto object
+          required: true
+          schema:
+            type: string
+          example: "PL"
         - name: report
           in: query
           description: Report object to create
           schema:
-            $ref: '#/components/schemas/ReportDto'
+            $ref: '#/components/schemas/ReportRequestDto'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReportDto'
+              $ref: '#/components/schemas/ReportRequestDto'
         required: true
       responses:
         '201':
@@ -1337,16 +1356,23 @@ paths:
       description: Report must exist
       operationId: editReport
       parameters:
+        - name: language
+          in: query
+          description: Language of ReportDto object
+          required: true
+          schema:
+            type: string
+          example: "PL"
         - name: report
           in: query
           description: Report object with changes
           schema:
-            $ref: '#/components/schemas/ReportDto'
+            $ref: '#/components/schemas/ReportRequestDto'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReportDto'
+              $ref: '#/components/schemas/ReportRequestDto'
         required: true
       responses:
         '204':
@@ -2192,7 +2218,7 @@ components:
           minLength: 0
           type: string
           example: Animal Helpers
-        description:
+        descriptionPL:
           type: string
           example: >-
             Are you passionate about making a positive impact on the lives of
@@ -2218,6 +2244,12 @@ components:
                 - Community Outreach: Participate in events and educational programs to promote animal welfare.
 
             Join us today and make a difference in the lives of animals in need!
+        descriptionEN:
+          type: string
+        descriptionUA:
+          type: string
+        descriptionRU:
+          type: string
         email:
           maxLength: 50
           minLength: 0
@@ -2252,7 +2284,7 @@ components:
           minLength: 0
           type: string
           example: Animal Helpers
-        description:
+        descriptionPL:
           type: string
           example: >-
             Are you passionate about making a positive impact on the lives of
@@ -2278,6 +2310,12 @@ components:
                 - Community Outreach: Participate in events and educational programs to promote animal welfare.
 
             Join us today and make a difference in the lives of animals in need!
+        descriptionEN:
+          type: string
+        descriptionUA:
+          type: string
+        descriptionRU:
+          type: string
         email:
           maxLength: 50
           minLength: 0
@@ -2302,10 +2340,12 @@ components:
           minLength: 0
           type: string
           example: https://example.com/image.jpg
-    ReportDto:
+
+    ReportRequestDto:
       required:
         - report
         - event
+        - published
       properties:
         id:
           type: integer
@@ -2319,6 +2359,28 @@ components:
           type: integer
           format: int64
           example: 1
+
+    ReportResponceDto:
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        reportPL:
+          type: string
+        reportEN:
+          type: string
+        reportUA:
+          type: string
+        reportRU:
+          type: string
+        published:
+          type: boolean
+        event:
+          type: integer
+          format: int64
+          example: 1
+
     RegistrationRequest:
       required:
         - firstName
@@ -2354,6 +2416,7 @@ components:
           minLength: 0
           type: string
           example: password
+
     RoleDto:
       required:
         - name

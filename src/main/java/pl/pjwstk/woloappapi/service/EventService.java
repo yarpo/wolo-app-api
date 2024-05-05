@@ -5,7 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.EventRequestDto;
-import pl.pjwstk.woloappapi.model.EventTranslationResponse;
+import pl.pjwstk.woloappapi.model.translation.EventTranslationResponse;
 import pl.pjwstk.woloappapi.model.entities.CategoryToEvent;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Shift;

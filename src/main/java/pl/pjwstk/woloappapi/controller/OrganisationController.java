@@ -4,12 +4,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
 import pl.pjwstk.woloappapi.model.*;
-import pl.pjwstk.woloappapi.model.entities.City;
+import pl.pjwstk.woloappapi.model.admin.OrganisationResponseAdminDto;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
+import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationRequest;
+import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationResponce;
 import pl.pjwstk.woloappapi.service.OrganisationService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
@@ -54,8 +58,17 @@ public class OrganisationController {
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addOrganisation(
-            @Valid @RequestBody OrganisationRequestDto organisationDto) {
-        organisationService.createOrganisation(organisationDto);
+            @Valid @RequestBody OrganisationRequestDto organisationDto,
+            @RequestParam String language) {
+        var translate = createTranslationDto(organisationDto, language);
+        var localClient = WebClient.create("http://host.docker.internal:5000/");
+        localClient.post()
+                .uri("/organisation/translate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(translate)
+                .retrieve()
+                .bodyToMono(OrganisationTranslationResponce.class)
+                .subscribe(translated -> organisationService.createOrganisation(translated, organisationDto));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -91,8 +104,18 @@ public class OrganisationController {
 
     @PutMapping("/{id}/edit")
     public ResponseEntity<HttpStatus> editOrganisation(
-            @Valid @RequestBody OrganisationRequestDto organisation, @PathVariable Long id) {
-        organisationService.updateOrganisation(organisation, id);
+            @Valid @RequestBody OrganisationRequestDto organisation,
+            @PathVariable Long id,
+            @RequestParam String language) {
+        var translate = createTranslationDto(organisation, language);
+        var localClient = WebClient.create("http://host.docker.internal:5000/");
+        localClient.post()
+                .uri("/organisation/translate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(translate)
+                .retrieve()
+                .bodyToMono(OrganisationTranslationResponce.class)
+                .subscribe(translated -> organisationService.updateOrganisation(organisation, id, translated));
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -106,5 +129,12 @@ public class OrganisationController {
     public ResponseEntity<HttpStatus> disapproveOrganisation(@RequestParam(value = "id") Long organisationId){
         organisationService.disapprove(organisationId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private OrganisationTranslationRequest createTranslationDto(OrganisationRequestDto organisationDto, String language) {
+        var translate = new OrganisationTranslationRequest();
+        translate.setLanguage(language);
+        translate.setDescription(organisationDto.getDescription());
+        return translate;
     }
 }

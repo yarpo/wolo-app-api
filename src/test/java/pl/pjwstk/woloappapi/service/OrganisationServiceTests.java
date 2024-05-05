@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationResponce;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
@@ -76,14 +77,20 @@ public class OrganisationServiceTests {
         organisationRequestDto.setModeratorId(1L);
         organisationRequestDto.setLogoUrl("http://example.com/logo");
 
+        var translationResponce = new OrganisationTranslationResponce();
+        translationResponce.setDescriptionPL("Test Description pl");
+        translationResponce.setDescriptionEN("Test Description en");
+        translationResponce.setDescriptionUA("Test Description ua");
+        translationResponce.setDescriptionRU("Test Description ru");
+
         when(organisationMapper.toAddress(organisationRequestDto)).thenReturn(Address.builder()
                 .street(organisationRequestDto.getStreet())
                 .homeNum(organisationRequestDto.getHomeNum()));
 
 
-        when(organisationMapper.toOrganisation(organisationRequestDto)).thenReturn(Organisation.builder()
+        when(organisationMapper.toOrganisation(organisationRequestDto, translationResponce)).thenReturn(Organisation.builder()
                 .name(organisationRequestDto.getName())
-                .description(organisationRequestDto.getDescription())
+                .descriptionPL(translationResponce.getDescriptionPL())
                 .email(organisationRequestDto.getEmail())
                 .phoneNumber(organisationRequestDto.getPhoneNumber())
                 .isApproved(true)
@@ -97,13 +104,13 @@ public class OrganisationServiceTests {
         user.setId(1L);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        organisationService.createOrganisation(organisationRequestDto);
+        organisationService.createOrganisation(translationResponce, organisationRequestDto);
 
         ArgumentCaptor<Organisation> organisationCaptor = ArgumentCaptor.forClass(Organisation.class);
         verify(organisationRepository).save(organisationCaptor.capture());
         Organisation capturedOrganisation = organisationCaptor.getValue();
         assertEquals("Test Name", capturedOrganisation.getName());
-        assertEquals("Test Description", capturedOrganisation.getDescription());
+        assertEquals("Test Description pl", capturedOrganisation.getDescriptionPL());
         assertEquals("test@example.com", capturedOrganisation.getEmail());
         assertEquals("123456789", capturedOrganisation.getPhoneNumber());
         assertEquals("Test Street", capturedOrganisation.getAddress().getStreet());
@@ -117,6 +124,12 @@ public class OrganisationServiceTests {
 
     @Test
     public void testUpdateCategory() {
+        var translationResponce = new OrganisationTranslationResponce();
+        translationResponce.setDescriptionPL("Test Description pl");
+        translationResponce.setDescriptionEN("Test Description en");
+        translationResponce.setDescriptionUA("Test Description ua");
+        translationResponce.setDescriptionRU("Test Description ru");
+
         OrganisationRequestDto organisationRequestDto = new OrganisationRequestDto();
         organisationRequestDto.setName("New Organisation Name");
 
@@ -131,7 +144,7 @@ public class OrganisationServiceTests {
 
         when(organisationRepository.findById(1L)).thenReturn(Optional.of(organisation));
 
-        organisationService.updateOrganisation(organisationRequestDto, organisationId);
+        organisationService.updateOrganisation(organisationRequestDto, organisationId, translationResponce);
 
         verify(organisationRepository, times(1)).save(organisation);
         assertEquals("New Organisation Name", organisation.getName());
