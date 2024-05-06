@@ -18,7 +18,10 @@ public class EmailConfig {
         javaMailSender.setPassword(System.getenv("EMAIL_PASSWORD"));
 
         Properties props = javaMailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true");
         return javaMailSender;
     }
 }

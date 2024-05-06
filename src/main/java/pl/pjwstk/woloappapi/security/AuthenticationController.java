@@ -49,9 +49,9 @@ public class AuthenticationController {
     }
 
     @PutMapping("/forgot-password")
-    public ResponseEntity<HttpStatus> forgotPassword(@RequestParam String email){
+    public ResponseEntity<HttpStatus> forgotPassword(@RequestBody ForgePasswordMailRequest request){
         try {
-            authenticationService.forgotPassword(email);
+            authenticationService.forgotPassword(request.getMail());
         } catch (MessagingException e) {
             throw new RuntimeException("Unable to send reset password email");
         }

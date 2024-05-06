@@ -102,13 +102,12 @@ paths:
       tags:
         - Authentication
       summary: Send mail to set new password
-      parameters:
-        - in: query
-          name: email
-          schema:
-            type: string
-          required: true
-          description: Email of the user requesting password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgePasswordMailRequest'
       responses:
         '202':
           $ref: '#/components/responses/AcceptedResponse'
@@ -2732,6 +2731,14 @@ components:
       required:
         - email
         - password
+    ForgePasswordMailRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email of the user
+      required:
+        - email
     ChangePasswordRequest:
       type: object
       properties:
