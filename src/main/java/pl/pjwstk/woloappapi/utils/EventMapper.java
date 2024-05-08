@@ -138,6 +138,7 @@ public class EventMapper {
                 .shiftDirectionsEN(shift.getShiftDirectionsEN())
                 .shiftDirectionsUA(shift.getShiftDirectionsUA())
                 .shiftDirectionsRU(shift.getShiftDirectionsRU())
+                .city(shift.getEvent().getCity().getName())
                 .build();
     }
 

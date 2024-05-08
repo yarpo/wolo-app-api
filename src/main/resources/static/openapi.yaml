@@ -2525,7 +2525,7 @@ components:
           example: Помічники тварин
         eventNameRU:
           type: string
-          example: Помощники для животных
+          example: Помощники для животны
         date:
           type: string
           format: date
@@ -2568,6 +2568,9 @@ components:
         shiftDirectionsRU:
           type: string
           example: Левая сторона здания
+        city:
+          type: string
+          example: New York
     UserEditRequestDto:
       required:
         - firstName
