@@ -5,7 +5,7 @@ services:
     image: bytemark/smtp
     restart: always
     ports:
-      - "25:578"
+      - "25:587"
   backend:
     container_name: wolo-app-api
     build:
