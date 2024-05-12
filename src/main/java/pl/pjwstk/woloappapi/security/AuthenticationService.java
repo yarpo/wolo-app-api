@@ -83,8 +83,7 @@ public class AuthenticationService {
     }
 
     public void forgotPassword(String email) throws MessagingException {
- //       userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User email not found!"));
-        emailUtil.sendResetPasswordEmail(email);
+         emailUtil.sendResetPasswordEmail(email);
     }
 
     public void setPassword(ForgotPasswordRequest request) {
