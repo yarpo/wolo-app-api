@@ -97,6 +97,44 @@ paths:
                 $ref: '#/components/schemas/AuthenticationRespons'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
+  /auth/forgot-password:
+    put:
+      tags:
+        - Authentication
+      summary: Send mail to set new password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgePasswordMailRequest'
+      responses:
+        '202':
+          $ref: '#/components/responses/AcceptedResponse'
+  /auth/set-password:
+    put:
+      summary: Set a new password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+  /change-password:
+    put:
+      summary: Change user password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        '202':
+          $ref: '#/components/responses/AcceptedResponse'
   /categories:
     get:
       tags:
@@ -1732,6 +1770,15 @@ components:
             example: Created
             enum:
               - 201 CREATED
+    AcceptedResponse:
+      description: Accepted
+      content:
+        application/hal+json:
+          schema:
+            type: string
+            example: Accepted
+            enum:
+              - 202 ACCEPTED
     NoContentResponse:
       description: No content
       content:
@@ -2747,6 +2794,38 @@ components:
           minLength: 9
           pattern: '[0-9]{9}'
           type: string
+    ForgotPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email of the user
+        password:
+          type: string
+          description: New password for the user
+      required:
+        - email
+        - password
+    ForgePasswordMailRequest:
+      type: object
+      properties:
+        mail:
+          type: string
+          description: Email of the user
+      required:
+        - mail
+    ChangePasswordRequest:
+      type: object
+      properties:
+        oldPassword:
+          type: string
+          description: current password
+        newPassword:
+          type: string
+          description: New password of the user
+      required:
+        - oldPassword
+        - newPassword
     LocalTime:
       type: object
       properties:
