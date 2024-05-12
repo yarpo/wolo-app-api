@@ -132,8 +132,19 @@ public class EventService {
                 .toList();
         var newShiftIds = newShifts.stream().map(Shift::getId).toList();
 
-        event.getShifts().retainAll(event.getShifts()
-                .stream().filter(s -> newShiftIds.contains(s.getId())).toList());
+        event.getShifts().stream()
+                .filter(existingShift -> !newShiftIds.contains(existingShift.getId()))
+                .flatMap(existingShift -> existingShift.getShiftToUsers().stream())
+                .forEach(shiftToUser -> {
+                    try {
+                        emailUtil.sendDeleteEventMessage(shiftToUser.getUser().getEmail(), event.getId());
+                    } catch (MessagingException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    shiftToUserRepository.delete(shiftToUser);
+                });
+
+        event.getShifts().removeIf(existingShift -> !newShiftIds.contains(existingShift.getId()));
 
         newShifts.forEach(ns -> {
                     if (ns.getId() == null) {
@@ -142,10 +153,19 @@ public class EventService {
                         event.getShifts().stream()
                                 .filter(s -> s.getId().equals(ns.getId()))
                                 .findFirst()
-                                .ifPresent(
-                                        existingShift -> updateShiftFields(existingShift, ns));
+                                .ifPresent(existingShift -> {
+                                    updateShiftFields(existingShift, ns);
+                                    existingShift.getShiftToUsers().forEach(uts -> {
+                                        try {
+                                            emailUtil.sendEditShiftMail(uts.getUser().getEmail(), event.getId());
+                                        } catch (MessagingException ex) {
+                                            throw new RuntimeException(ex);
+                                        }
+                                    });
+                                });
                     }
                 });
+
     }
     private void updateShiftFields(Shift shift, Shift newShift) {
         shift.setStartTime(newShift.getStartTime());

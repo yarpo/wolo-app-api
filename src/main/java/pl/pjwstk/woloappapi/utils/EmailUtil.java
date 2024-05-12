@@ -40,4 +40,15 @@ public class EmailUtil {
                 .orElse("Еhe event you signed up for ")));
         javaMailSender.send(mimeMessage);
     }
+
+    public void sendEditShiftMail(String email, Long id) throws MessagingException{
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        mimeMessageHelper.setTo(email);
+        mimeMessageHelper.setSubject("Еhe event you signed up for has been changed");
+        mimeMessageHelper.setText("%s has been changed".formatted(eventRepository
+                .findById(id).map(Event::getNameEN)
+                .orElse("Еhe event you signed up for ")));
+        javaMailSender.send(mimeMessage);
+    }
 }
