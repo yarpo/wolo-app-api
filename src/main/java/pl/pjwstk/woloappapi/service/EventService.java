@@ -1,15 +1,18 @@
 package pl.pjwstk.woloappapi.service;
 
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.EventRequestDto;
-import pl.pjwstk.woloappapi.model.translation.EventTranslationResponse;
 import pl.pjwstk.woloappapi.model.entities.CategoryToEvent;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Shift;
+import pl.pjwstk.woloappapi.model.translation.EventTranslationResponse;
 import pl.pjwstk.woloappapi.repository.EventRepository;
+import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
+import pl.pjwstk.woloappapi.utils.EmailUtil;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
@@ -26,6 +29,9 @@ public class EventService {
     private final OrganisationService organisationService;
     private final CategoryService categoryService;
     private final CategoryToEventService categoryToEventService;
+
+    private final ShiftToUserRepository shiftToUserRepository;
+    private final EmailUtil emailUtil;
 
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
@@ -158,6 +164,15 @@ public class EventService {
         eventRepository.findById(id).ifPresent(e ->{
             if (e.getDate().isAfter(LocalDate.now())) {
                 e.getCategories().forEach(ctu -> categoryToEventService.deleteCategoryToEvent(ctu.getId()));
+                e.getShifts().forEach(s -> s.getShiftToUsers()
+                                            .forEach(stu -> {
+                                                try {
+                                                    emailUtil.sendDeleteEventMessage(stu.getUser().getEmail(), id);
+                                                } catch (MessagingException ex) {
+                                                    throw new RuntimeException(ex);
+                                                }
+                                                shiftToUserRepository.delete(stu);
+                                            }));
                 eventRepository.deleteById(id);
             }
         });
