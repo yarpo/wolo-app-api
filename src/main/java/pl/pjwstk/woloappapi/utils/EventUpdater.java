@@ -219,8 +219,7 @@ public class EventUpdater {
         shift.setEndTime(newShift.getEndTime());
         shift.setLeaderRequired(newShift.isLeaderRequired());
         updateCapacity(shift, newShift.getCapacity());
-        shift.setCapacity(newShift.getCapacity());
-        shift.setRequiredMinAge(newShift.getRequiredMinAge());
+        updateMinAge(shift, newShift.getRequiredMinAge());
         shift.setShiftDirectionsPL(newShift.getShiftDirectionsPL());
         shift.setShiftDirectionsEN(newShift.getShiftDirectionsEN());
         shift.setShiftDirectionsUA(newShift.getShiftDirectionsUA());
@@ -228,9 +227,9 @@ public class EventUpdater {
         updateShiftAddress(shift, newShift);
 
         if (areShiftFieldsChanged(shift, newShift)) {
-            shift.getShiftToUsers().forEach(uts -> {
+            shift.getShiftToUsers().forEach(stu -> {
                 try {
-                    emailUtil.sendEditEventMail(uts.getUser().getEmail(), shift.getEvent().getId());
+                    emailUtil.sendEditEventMail(stu.getUser().getEmail(), shift.getEvent().getId());
                 } catch (MessagingException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -238,23 +237,43 @@ public class EventUpdater {
         }
     }
 
-    private void updateCapacity(Shift shift, int capacity) {
-        if(shift.getCapacity() <= capacity) {
-            shift.setCapacity(capacity);
-        }
-        var quantity= shift.getCapacity() - capacity;
-        var shiftToUsersToRemove = shift.getShiftToUsers()
-                .subList(shift.getShiftToUsers().size() - quantity, shift.getShiftToUsers().size());
-        shiftToUsersToRemove.forEach(stu ->{
-            try {
-                emailUtil.sendUpdateCapacityEmail(stu.getUser().getEmail() , stu.getShift().getEvent().getId());
-            } catch (MessagingException ex) {
-                throw new RuntimeException(ex);
-            }
-            shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
-        });
+    private void updateMinAge(Shift shift, int requiredMinAge) {
+        if(shift.getRequiredMinAge() < requiredMinAge && requiredMinAge >= 18) {
+            var usersToRemove = shift.getShiftToUsers().stream()
+                    .filter(stu -> !stu.getUser().isAdult())
+                    .toList();
 
-        shift.getShiftToUsers().removeAll(shiftToUsersToRemove);
+            usersToRemove.forEach(stu -> {
+                try {
+                    emailUtil.sendMinAgeMail(stu.getUser().getEmail(), shift.getEvent().getId());
+                } catch (MessagingException ex) {
+                    throw new RuntimeException(ex);
+                }
+                shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
+            });
+
+            shift.getShiftToUsers().removeAll(usersToRemove);
+        }
+        shift.setRequiredMinAge(requiredMinAge);
+    }
+
+    private void updateCapacity(Shift shift, int capacity) {
+        if(shift.getCapacity() > capacity) {
+            var quantity = shift.getCapacity() - capacity;
+            var shiftToUsersToRemove = shift.getShiftToUsers()
+                    .subList(shift.getShiftToUsers().size() - quantity, shift.getShiftToUsers().size());
+            shiftToUsersToRemove.forEach(stu -> {
+                try {
+                    emailUtil.sendUpdateCapacityEmail(stu.getUser().getEmail(), stu.getShift().getEvent().getId());
+                } catch (MessagingException ex) {
+                    throw new RuntimeException(ex);
+                }
+                shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
+            });
+
+            shift.getShiftToUsers().removeAll(shiftToUsersToRemove);
+        }
+        shift.setCapacity(capacity);
     }
 
     private void updateShiftAddress(Shift shift, Shift newShift) {

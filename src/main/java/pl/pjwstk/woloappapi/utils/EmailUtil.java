@@ -89,4 +89,18 @@ public class EmailUtil {
                         .orElse("event ")));
         javaMailSender.send(mimeMessage);
     }
+
+    public void sendMinAgeMail(String email, Long id) throws MessagingException{
+        var mimeMessage = javaMailSender.createMimeMessage();
+        var mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        mimeMessageHelper.setTo(email);
+        mimeMessageHelper.setSubject("Important event update");
+        mimeMessageHelper.setText(("Unfortunately, the minimum age required for %s has been changed. " +
+                "You can no longer take part in it. Sorry for the inconvenience. " +
+                "We invite you to our application where you can find others interesting events for you")
+                .formatted(eventRepository
+                        .findById(id).map(Event::getNameEN)
+                        .orElse("event ")));
+        javaMailSender.send(mimeMessage);
+    }
 }

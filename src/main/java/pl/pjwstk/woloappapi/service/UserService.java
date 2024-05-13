@@ -17,9 +17,7 @@ import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -130,7 +128,14 @@ public class UserService {
             return "You have colliding shifts: " + collidingShifts.stream()
                     .map(Object::toString)
                     .collect(Collectors.joining(", "));
-        } else {
+        } else if(shift.getRequiredMinAge()>=18 && !user.isAdult()){
+            return "You can't join this shift because minimal required age is "
+                    + shift.getRequiredMinAge() + " and you are not adult";
+        }else if(shift.getEvent().isPeselVerificationRequired() && !user.isPeselVerified()){
+            return "You can't join this shift because PESEL verification is required";
+        }else if(shift.getEvent().isAgreementNeeded() && !user.isAgreementSigned()){
+            return "You can't join this shift because volunteers agreement is required";
+        }else{
             return "OK";
         }
     }
