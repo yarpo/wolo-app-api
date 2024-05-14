@@ -39,7 +39,8 @@ public class EmailUtil {
 
     public void sendAgreementNeededEmail(String email, Long id) throws MessagingException{
         mailSender(email, id, "The event requirements you signed up for has been changed",
-                "If you want to participate in %s, you must sign a volunteer agreement and re-register for this event");
+                "If you want to participate in %s, you must sign a volunteer agreement " +
+                        "and re-register for this event");
     }
 
     public void sendUpdateCapacityEmail(String email, Long id) throws MessagingException{
