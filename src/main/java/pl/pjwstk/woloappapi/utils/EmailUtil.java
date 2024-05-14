@@ -16,55 +16,74 @@ public class EmailUtil {
 
 
     public void sendResetPasswordEmail(String email) throws MessagingException {
-        mailSender(email, null, "Set Password", """
+        String message = String.format("""
         <div>
           <a href="http://localhost:8080/reset-password?email=%s" target="_blank">click link to set password</a>
         </div>
-        """);
+        """, email);
+        mailSender(email, "Set Password", message, true);
     }
 
     public void sendDeleteEventMessage(String email, Long id) throws MessagingException{
-        mailSender(email, id, "The event you signed up for has been cancelled",
-                "%s has been cancelled");
+        String message = String.format("%s has been cancelled",
+                eventRepository
+                .findById(id).map(Event::getNameEN)
+                .orElse("The event you signed up for "));
+        mailSender(email, "The event you signed up for has been cancelled", message, false);
     }
 
     public void sendEditEventMail(String email, Long id) throws MessagingException{
-        mailSender(email, id, "The event you signed up for has been changed", "%s has been changed");
+        String message = String.format("%s has been changed",
+                eventRepository
+                        .findById(id).map(Event::getNameEN)
+                        .orElse("The event you signed up for "));
+        mailSender(email, "The event you signed up for has been changed", message, false);
     }
 
     public void sendPeselVerificationEmail(String email, Long id) throws MessagingException {
-        mailSender(email, id, "The event requirements you signed up for has been changed",
-                "If you want to participate in %s, you must verify your PESEL and re-register for this event");
+        String message = String.format("If you want to participate in %s, you must verify your PESEL " +
+                "and re-register for this event",
+                eventRepository
+                        .findById(id).map(Event::getNameEN)
+                        .orElse("event "));
+        mailSender(email, "The event requirements you signed up for has been changed", message, false);
     }
 
     public void sendAgreementNeededEmail(String email, Long id) throws MessagingException{
-        mailSender(email, id, "The event requirements you signed up for has been changed",
-                "If you want to participate in %s, you must sign a volunteer agreement " +
-                        "and re-register for this event");
+        String message = String.format("If you want to participate in %s, "+
+                "you must sign a volunteer agreement and re-register for this event",
+                eventRepository
+                        .findById(id).map(Event::getNameEN)
+                        .orElse("event "));
+        mailSender(email, "The event requirements you signed up for has been changed", message, false);
     }
 
     public void sendUpdateCapacityEmail(String email, Long id) throws MessagingException{
-        mailSender(email, id, "Important event update",
-                "Unfortunately, the number of participants in %s has been reduced. " +
-                "You can no longer take part in it. Sorry for the inconvenience. " +
-                "We invite you to our application where you can find others interesting events for you");
+        String message = String.format("Unfortunately, the number of participants in %s has been reduced. " +
+                        "You can no longer take part in it. Sorry for the inconvenience. " +
+                        "We invite you to our application where you can find others interesting events for you",
+                eventRepository
+                        .findById(id).map(Event::getNameEN)
+                        .orElse("event "));
+        mailSender(email, "Important event update", message, false);
     }
 
     public void sendMinAgeMail(String email, Long id) throws MessagingException{
-        mailSender(email, id, "Important event update",
-                "Unfortunately, the minimum age required for %s has been changed. " +
-                "You can no longer take part in it. Sorry for the inconvenience. " +
-                "We invite you to our application where you can find others interesting events for you");
+        String message = String.format("Unfortunately, the minimum age required for %s has been changed. " +
+                        "You can no longer take part in it. Sorry for the inconvenience. " +
+                        "We invite you to our application where you can find others interesting events for you",
+                eventRepository
+                        .findById(id).map(Event::getNameEN)
+                        .orElse("event "));
+        mailSender(email, "Important event update", message, false);
     }
 
-    public void mailSender(String email, Long id, String subject, String message) throws MessagingException{
+    public void mailSender(String email, String subject, String message, boolean isHtml) throws MessagingException{
         var mimeMessage = javaMailSender.createMimeMessage();
         var mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         mimeMessageHelper.setTo(email);
         mimeMessageHelper.setSubject(subject);
-        String eventName = (id != null) ?
-                eventRepository.findById(id).map(Event::getNameEN).orElse("event") : email;
-        mimeMessageHelper.setText(message.formatted(eventName));
+        mimeMessageHelper.setText(message, isHtml);
         javaMailSender.send(mimeMessage);
     }
 }
