@@ -4,9 +4,8 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pjwstk.woloappapi.model.EventRequestDto;
+import pl.pjwstk.woloappapi.model.EventEditRequestDto;
 import pl.pjwstk.woloappapi.model.entities.*;
-import pl.pjwstk.woloappapi.model.translation.EventTranslationResponse;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.service.CategoryService;
@@ -26,24 +25,23 @@ public class EventUpdater {
     private final ShiftToUserRepository shiftToUserRepository;
 
     @Transactional
-    public void update(EventRequestDto eventDto, Long id, EventTranslationResponse translate) {
+    public void update(EventEditRequestDto eventDto, Long id, Boolean sendMail) {
         var city = districtService.getDistrictById(eventDto.getShifts().get(0).getDistrictId()).getCity();
         Event event = eventRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Event id not found!"));
-        event.setNamePL(translate.getNamePL());
-        event.setNameEN(translate.getNameEN());
-        event.setNameUA(translate.getNameUA());
-        event.setNameRU(translate.getNameRU());
-        event.setDescriptionPL(translate.getDescriptionPL());
-        event.setDescriptionEN(translate.getDescriptionEN());
-        event.setDescriptionUA(translate.getDescriptionUA());
-        event.setDescriptionRU(translate.getDescriptionRU());
+        event.setNamePL(eventDto.getNamePL());
+        event.setNameEN(eventDto.getNameEN());
+        event.setNameUA(eventDto.getNameUA());
+        event.setNameRU(eventDto.getNameRU());
+        event.setDescriptionPL(eventDto.getDescriptionPL());
+        event.setDescriptionEN(eventDto.getDescriptionEN());
+        event.setDescriptionUA(eventDto.getDescriptionUA());
+        event.setDescriptionRU(eventDto.getDescriptionRU());
         event.setDate(eventDto.getDate());
         event.setPeselVerificationRequired(eventDto.isPeselVerificationRequired());
         event.setAgreementNeeded(eventDto.isAgreementNeeded());
         event.setImageUrl(eventDto.getImageUrl());
-        event.setAlt(translate.getAlt());
         event.setCity(city);
 
         if (event.isPeselVerificationRequired() != eventDto.isPeselVerificationRequired() &&
@@ -58,7 +56,7 @@ public class EventUpdater {
             deleteShiftToUsersForAgreementNeeded(event);
         }
 
-        if (areEventFieldsChanged(event, eventDto, translate)) {
+        if (areEventFieldsChanged(event, eventDto) && sendMail) {
             event.getShifts().stream()
                     .flatMap(shift -> shift.getShiftToUsers().stream())
                     .map(ShiftToUser::getUser)
@@ -74,7 +72,7 @@ public class EventUpdater {
         }
 
         updateEventCategories(event, eventDto);
-        updateEventShifts(event, eventDto, translate);
+        updateEventShifts(event, eventDto, sendMail);
 
         eventRepository.save(event);
     }
@@ -139,19 +137,19 @@ public class EventUpdater {
         });
     }
 
-    private boolean areEventFieldsChanged(Event persistedEvent, EventRequestDto eventDto, EventTranslationResponse translate) {
-        return !Objects.equals(persistedEvent.getNamePL(), translate.getNamePL()) ||
-                !Objects.equals(persistedEvent.getNameEN(), translate.getNameEN()) ||
-                !Objects.equals(persistedEvent.getNameUA(), translate.getNameUA()) ||
-                !Objects.equals(persistedEvent.getNameRU(), translate.getNameRU()) ||
-                !Objects.equals(persistedEvent.getDescriptionPL(), translate.getDescriptionPL()) ||
-                !Objects.equals(persistedEvent.getDescriptionEN(), translate.getDescriptionEN()) ||
-                !Objects.equals(persistedEvent.getDescriptionUA(), translate.getDescriptionUA()) ||
-                !Objects.equals(persistedEvent.getDescriptionRU(), translate.getDescriptionRU()) ||
+    private boolean areEventFieldsChanged(Event persistedEvent, EventEditRequestDto eventDto) {
+        return !Objects.equals(persistedEvent.getNamePL(), eventDto.getNamePL()) ||
+                !Objects.equals(persistedEvent.getNameEN(), eventDto.getNameEN()) ||
+                !Objects.equals(persistedEvent.getNameUA(), eventDto.getNameUA()) ||
+                !Objects.equals(persistedEvent.getNameRU(), eventDto.getNameRU()) ||
+                !Objects.equals(persistedEvent.getDescriptionPL(), eventDto.getDescriptionPL()) ||
+                !Objects.equals(persistedEvent.getDescriptionEN(), eventDto.getDescriptionEN()) ||
+                !Objects.equals(persistedEvent.getDescriptionUA(), eventDto.getDescriptionUA()) ||
+                !Objects.equals(persistedEvent.getDescriptionRU(), eventDto.getDescriptionRU()) ||
                 !Objects.equals(persistedEvent.getDate(), eventDto.getDate());
     }
 
-    private void updateEventCategories(Event event, EventRequestDto eventDto) {
+    private void updateEventCategories(Event event, EventEditRequestDto eventDto) {
         event.getCategories().removeIf(cte ->!eventDto.getCategories()
                 .contains(cte.getCategory().getId()));
 
@@ -172,9 +170,9 @@ public class EventUpdater {
                 .forEach(event.getCategories()::add);
     }
 
-    private void updateEventShifts(Event event, EventRequestDto eventDto, EventTranslationResponse translate) {
+    private void updateEventShifts(Event event, EventEditRequestDto eventDto, Boolean sendMail) {
         List<Shift> newShifts = eventDto.getShifts().stream()
-                .map(s -> eventMapper.toShift(s, eventDto, translate)
+                .map(s -> eventMapper.toShift(s)
                         .event(event)
                         .build())
                 .toList();
@@ -182,7 +180,7 @@ public class EventUpdater {
         List<Long> newShiftIds = newShifts.stream().map(Shift::getId).toList();
 
         removeObsoleteShifts(event, newShiftIds);
-        updateExistingShifts(event, newShifts);
+        updateExistingShifts(event, newShifts, sendMail);
         addNewShifts(event, newShifts);
     }
 
@@ -202,18 +200,18 @@ public class EventUpdater {
         event.getShifts().removeIf(existingShift -> !newShiftIds.contains(existingShift.getId()));
     }
 
-    private void updateExistingShifts(Event event, List<Shift> newShifts) {
+    private void updateExistingShifts(Event event, List<Shift> newShifts, Boolean sendMail) {
         newShifts.forEach(ns -> {
             if (ns.getId() == null) return;
 
             event.getShifts().stream()
                     .filter(s -> s.getId().equals(ns.getId()))
                     .findFirst()
-                    .ifPresent(existingShift -> updateShiftFields(existingShift, ns));
+                    .ifPresent(existingShift -> updateShiftFields(existingShift, ns, sendMail));
         });
     }
 
-    private void updateShiftFields(Shift shift, Shift newShift) {
+    private void updateShiftFields(Shift shift, Shift newShift, Boolean sendMail) {
 
         shift.setStartTime(newShift.getStartTime());
         shift.setEndTime(newShift.getEndTime());
@@ -226,7 +224,7 @@ public class EventUpdater {
         shift.setShiftDirectionsRU(newShift.getShiftDirectionsRU());
         updateShiftAddress(shift, newShift);
 
-        if (areShiftFieldsChanged(shift, newShift)) {
+        if (areShiftFieldsChanged(shift, newShift) && sendMail) {
             shift.getShiftToUsers().forEach(stu -> {
                 try {
                     emailUtil.sendEditEventMail(stu.getUser().getEmail(), shift.getEvent().getId());
