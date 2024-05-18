@@ -73,6 +73,13 @@ public class SecurityConfig {
                     auth.requestMatchers("/events/users/pdf").hasAuthority("USERS_LIST_PDF");
                     auth.requestMatchers("events/admin**").permitAll();
 
+                    auth.requestMatchers(OPTIONS, "/faq/**").permitAll();
+                    auth.requestMatchers(GET, "/faq").permitAll();
+                    auth.requestMatchers(GET, "/faq/**").permitAll();
+                    auth.requestMatchers(POST, "/faq/**").hasAuthority("CREATE_FAQ");
+                    auth.requestMatchers(PUT, "/faq/**").hasAuthority("EDIT_FAQ");
+                    auth.requestMatchers(DELETE, "/faq/**").hasAuthority("DELETE_FAQ");
+
                     auth.requestMatchers(OPTIONS, "/reports/**").permitAll();
                     auth.requestMatchers(GET, "/reports/public/**").permitAll();
                     auth.requestMatchers("/reports/event/**").hasAuthority("READ_REPORTS");

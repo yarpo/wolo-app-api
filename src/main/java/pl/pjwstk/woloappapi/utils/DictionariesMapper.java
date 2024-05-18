@@ -5,10 +5,7 @@ import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.admin.CityResponseAdminDto;
 import pl.pjwstk.woloappapi.model.admin.DistrictResponseAdminDto;
-import pl.pjwstk.woloappapi.model.entities.Category;
-import pl.pjwstk.woloappapi.model.entities.City;
-import pl.pjwstk.woloappapi.model.entities.District;
-import pl.pjwstk.woloappapi.model.entities.Role;
+import pl.pjwstk.woloappapi.model.entities.*;
 
 @Component
 @RequiredArgsConstructor
@@ -86,5 +83,20 @@ public class DictionariesMapper {
         return Role.builder()
                 .id(roleDto.getId())
                 .name(roleDto.getName());
+    }
+
+    public FAQDto toFAQDto(FAQ faq){
+        FAQDto faqDto = new FAQDto();
+        faqDto.setId(faq.getId());
+        faqDto.setQuestion(faq.getQuestion());
+        faqDto.setAnswer(faq.getAnswer());
+        return faqDto;
+    }
+
+    public FAQ.FAQBuilder toFAQ(FAQDto faqDto){
+        return FAQ.builder()
+                .id(faqDto.getId())
+                .question(faqDto.getQuestion())
+                .answer(faqDto.getAnswer());
     }
 }
