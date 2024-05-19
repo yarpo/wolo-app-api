@@ -3,6 +3,7 @@ package pl.pjwstk.woloappapi.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.pjwstk.woloappapi.model.OrganisationEditRequestDto;
 import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
 import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationResponce;
 import pl.pjwstk.woloappapi.model.entities.Event;
@@ -58,18 +59,17 @@ public class OrganisationService {
     }
 
     @Transactional
-    public void updateOrganisation(OrganisationRequestDto organisationDto,
-                                   Long id,
-                                   OrganisationTranslationResponce translation) {
+    public void updateOrganisation(OrganisationEditRequestDto organisationDto,
+                                   Long id) {
         Organisation organisation =organisationRepository
                         .findById(id)
                         .orElseThrow(() ->
                                 new IllegalArgumentException("Organisation with ID " + id + " does not exist"));
         organisation.setName(organisationDto.getName());
-        organisation.setDescriptionPL(translation.getDescriptionPL());
-        organisation.setDescriptionEN(translation.getDescriptionEN());
-        organisation.setDescriptionUA(translation.getDescriptionUA());
-        organisation.setDescriptionRU(translation.getDescriptionRU());
+        organisation.setDescriptionPL(organisationDto.getDescriptionPL());
+        organisation.setDescriptionEN(organisationDto.getDescriptionEN());
+        organisation.setDescriptionUA(organisationDto.getDescriptionUA());
+        organisation.setDescriptionRU(organisationDto.getDescriptionRU());
         organisation.setEmail(organisationDto.getEmail());
         organisation.setPhoneNumber(organisationDto.getPhoneNumber());
         organisation.setLogoUrl(organisationDto.getLogoUrl());

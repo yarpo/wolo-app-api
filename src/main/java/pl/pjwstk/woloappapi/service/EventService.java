@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.pjwstk.woloappapi.model.EventEditRequestDto;
 import pl.pjwstk.woloappapi.model.EventRequestDto;
 import pl.pjwstk.woloappapi.model.entities.CategoryToEvent;
 import pl.pjwstk.woloappapi.model.entities.Event;
@@ -69,8 +70,8 @@ public class EventService {
     }
 
     @Transactional
-    public void updateEvent(EventRequestDto eventDto, Long id,  EventTranslationResponse translate) {
-        eventUpdater.update(eventDto, id, translate);
+    public void updateEvent(EventEditRequestDto eventDto, Long id, Boolean sendMail) {
+        eventUpdater.update(eventDto, id, sendMail);
     }
 
     @Transactional
