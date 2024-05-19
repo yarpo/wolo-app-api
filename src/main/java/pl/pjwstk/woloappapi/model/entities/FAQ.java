@@ -19,10 +19,28 @@ public class FAQ {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "question", nullable = false)
-    private String question;
+    @Column(name = "question_pl", nullable = false)
+    private String questionPL;
 
-    @Column(name = "answer", nullable = false)
-    private String answer;
+    @Column(name = "answer_pl", nullable = false)
+    private String answerPL;
+
+    @Column(name = "question_en", nullable = false)
+    private String questionEN;
+
+    @Column(name = "answer_en", nullable = false)
+    private String answerEN;
+
+    @Column(name = "question_ua", nullable = false)
+    private String questionUA;
+
+    @Column(name = "answer_ua", nullable = false)
+    private String answerUA;
+
+    @Column(name = "question_ru", nullable = false)
+    private String questionRU;
+
+    @Column(name = "answer_ru", nullable = false)
+    private String answerRU;
 
 }

@@ -6,6 +6,7 @@ import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.admin.CityResponseAdminDto;
 import pl.pjwstk.woloappapi.model.admin.DistrictResponseAdminDto;
 import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.model.translation.FAQTranslationResponse;
 
 @Component
 @RequiredArgsConstructor
@@ -85,18 +86,30 @@ public class DictionariesMapper {
                 .name(roleDto.getName());
     }
 
-    public FAQDto toFAQDto(FAQ faq){
-        FAQDto faqDto = new FAQDto();
-        faqDto.setId(faq.getId());
-        faqDto.setQuestion(faq.getQuestion());
-        faqDto.setAnswer(faq.getAnswer());
-        return faqDto;
+    public FAQResponseDto toFAQDto(FAQ faq){
+        FAQResponseDto faqResponseDto = new FAQResponseDto();
+        faqResponseDto.setId(faq.getId());
+        faqResponseDto.setQuestionPL(faq.getQuestionPL());
+        faqResponseDto.setAnswerPL(faq.getAnswerPL());
+        faqResponseDto.setQuestionEN(faq.getQuestionEN());
+        faqResponseDto.setAnswerEN(faq.getAnswerEN());
+        faqResponseDto.setQuestionUA(faq.getQuestionUA());
+        faqResponseDto.setAnswerUA(faq.getAnswerUA());
+        faqResponseDto.setQuestionRU(faq.getQuestionRU());
+        faqResponseDto.setAnswerRU(faq.getAnswerRU());
+        return faqResponseDto;
     }
 
-    public FAQ.FAQBuilder toFAQ(FAQDto faqDto){
+    public FAQ.FAQBuilder toFAQ(FAQDto faqDto, FAQTranslationResponse translation){
         return FAQ.builder()
                 .id(faqDto.getId())
-                .question(faqDto.getQuestion())
-                .answer(faqDto.getAnswer());
+                .questionPL(translation.getQuestionPL())
+                .answerPL(translation.getAnswerPL())
+                .questionEN(translation.getQuestionEN())
+                .answerEN(translation.getAnswerEN())
+                .questionUA(translation.getQuestionUA())
+                .answerUA(translation.getAnswerUA())
+                .questionRU(translation.getQuestionRU())
+                .answerRU(translation.getAnswerRU());
     }
 }

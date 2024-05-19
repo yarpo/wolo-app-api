@@ -2,8 +2,8 @@
 
 --changeset woloapp:020
 
-INSERT INTO faq (question, answer) VALUES
-                                   ('Jak mogę sprawdzić wydarzenia z większym zapotrzebowaniem w danym momencie?', 'Aby sprawdzić wydarzenia z większym wymaganiem, trzeba wejść w zakładkę "Potrzebują Ciebie", gdzie wyświetlą się wydarzenia z krótkim odstępem czasowym do ich rozpoczęcia');
+-- INSERT INTO faq (question, answer) VALUES
+--                                    ('Jak mogę sprawdzić wydarzenia z większym zapotrzebowaniem w danym momencie?', 'Aby sprawdzić wydarzenia z większym wymaganiem, trzeba wejść w zakładkę "Potrzebują Ciebie", gdzie wyświetlą się wydarzenia z krótkim odstępem czasowym do ich rozpoczęcia');
 
 INSERT INTO privilege ("name")VALUES
                             ('CREATE_FAQ'),
