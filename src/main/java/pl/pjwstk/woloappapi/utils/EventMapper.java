@@ -170,6 +170,7 @@ public class EventMapper {
 
     public ReportResponceDto toReportResponceDto(Report report) {
         return ReportResponceDto.builder()
+                .id(report.getId())
                 .event(report.getEvent().getId())
                 .published(report.isPublished())
                 .reportPL(report.getReportPL())
