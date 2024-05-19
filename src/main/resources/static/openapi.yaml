@@ -849,7 +849,7 @@ paths:
           in: query
           description: event object with changes
           schema:
-            $ref: '#/components/schemas/EventRequestDto'
+            $ref: '#/components/schemas/EventEditRequestDto'
         - name: id
           in: path
           description: event id
@@ -858,13 +858,12 @@ paths:
             type: integer
             format: int64
           example: 1
-        - name: language
+        - name: mailSend
           in: query
-          description: language of eventDto
+          description: do you want to send mails with information about event changes to users
           required: true
           schema:
-            type: string
-            example: EN
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -891,7 +890,7 @@ paths:
           in: query
           description: event object with changes
           schema:
-            $ref: '#/components/schemas/EventRequestDto'
+            $ref: '#/components/schemas/EventEditRequestDto'
         - name: id
           in: path
           description: event id
@@ -900,18 +899,17 @@ paths:
             type: integer
             format: int64
           example: 1
-        - name: language
+        - name: mailSend
           in: query
-          description: language of eventDto
+          description: do you want to send mails with information about event changes to users
           required: true
           schema:
-            type: string
-            example: EN
+            type: boolean
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EventRequestDto'
+              $ref: '#/components/schemas/EventEditRequestDto'
         required: true
       responses:
         '204':
@@ -1260,7 +1258,7 @@ paths:
           $ref: '#/components/responses/OK'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /organisations/{id}/edit:
+  /organisations/edit:
     put:
       tags:
         - Organisations
@@ -1272,24 +1270,44 @@ paths:
           in: query
           description: Organisation object with changes
           schema:
-            $ref: '#/components/schemas/OrganisationRequestDto'
+            $ref: '#/components/schemas/OrganisationEditRequestDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganisationEditRequestDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /organisations/admin/{id}/edit:
+    put:
+      tags:
+        - Organisations
+      summary: Edit organisation
+      description: Organisation must exist
+      operationId: editOrganisation
+      parameters:
+        - name: organisation
+          in: query
+          description: Organisation object with changes
+          schema:
+            $ref: '#/components/schemas/OrganisationEditRequestDto'
         - name: id
           in: path
           required: true
           schema:
             type: integer
             format: int64
-        - name: language
-          in: query
-          required: true
-          schema:
-            type: integer
-          example: "PL"
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrganisationRequestDto'
+              $ref: '#/components/schemas/OrganisationEditRequestDto'
         required: true
       responses:
         '204':
@@ -1497,23 +1515,42 @@ paths:
       description: Report must exist
       operationId: editReport
       parameters:
-        - name: language
-          in: query
-          description: Language of ReportDto object
-          required: true
-          schema:
-            type: string
-          example: "PL"
         - name: report
           in: query
           description: Report object with changes
           schema:
-            $ref: '#/components/schemas/ReportRequestDto'
+            $ref: '#/components/schemas/ReportEditRequestDto'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReportRequestDto'
+              $ref: '#/components/schemas/ReportEditRequestDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/admin/edit:
+    put:
+      tags:
+        - Reports
+      summary: Edit report
+      description: Report must exist
+      operationId: editReportByAdmin
+      parameters:
+        - name: report
+          in: query
+          description: Report object with changes
+          schema:
+            $ref: '#/components/schemas/ReportEditRequestDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportEditRequestDto'
         required: true
       responses:
         '204':
@@ -1540,6 +1577,94 @@ paths:
       responses:
         '204':
           $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/publish/{id}:
+    post:
+      tags:
+        - Reports
+      summary: Publish report
+      operationId: publishReport
+      parameters:
+        - name: id
+          in: path
+          description: Report id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/admin/publish/{id}:
+    post:
+      tags:
+        - Reports
+      summary: Publish report for admin
+      operationId: publishReportByAdmin
+      parameters:
+        - name: id
+          in: path
+          description: Report id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/unpublish/{id}:
+    post:
+      tags:
+        - Reports
+      summary: Unpublish report
+      operationId: unpublishReport
+      parameters:
+        - name: id
+          in: path
+          description: Report id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/admin/unpublish/{id}:
+    post:
+      tags:
+        - Reports
+      summary: Unpublish report for admin
+      operationId: unpublishReportByAdmin
+      parameters:
+        - name: id
+          in: path
+          description: Report id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '404':
@@ -2118,6 +2243,77 @@ components:
           type: integer
           format: int64
           example: 1
+    EventEditRequestDto:
+      required:
+        - namePL
+        - nameEN
+        - nameUA
+        - nameRU
+        - descriptionPL
+        - descriptionEN
+        - descriptionUA
+        - descriptionRU
+        - organisationId
+        - categories
+        - shifts
+        - date
+      type: object
+      properties:
+        namePL:
+          maxLength: 250
+          minLength: 0
+          type: string
+        nameEN:
+          maxLength: 250
+          minLength: 0
+          type: string
+        nameUA:
+          maxLength: 250
+          minLength: 0
+          type: string
+        nameRU:
+          maxLength: 250
+          minLength: 0
+          type: string
+        descriptionPL:
+          type: string
+        descriptionEN:
+            type: string
+        descriptionUA:
+          type: string
+        descriptionRU:
+          type: string
+        organisationId:
+          type: integer
+          format: int64
+          example: 1
+        categories:
+          type: array
+          items:
+            type: integer
+            format: int64
+            example: 1
+        isPeselVerificationRequired:
+          type: boolean
+        isAgreementNeeded:
+          type: boolean
+        imageUrl:
+          maxLength: 255
+          minLength: 0
+          type: string
+        date:
+          type: string
+          format: date
+        shifts:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftEditRequestDto'
+        cityId:
+          type: integer
+          format: int64
+          example: 1
     EventResponseDetailsDto:
       type: object
       properties:
@@ -2339,6 +2535,69 @@ components:
                 - Community Outreach: Participate in events and educational programs to promote animal welfare.
 
             Join us today and make a difference in the lives of animals in need!
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        street:
+          maxLength: 50
+          minLength: 0
+          type: string
+        homeNum:
+          maxLength: 10
+          minLength: 0
+          type: string
+        districtId:
+          type: integer
+          format: int64
+          example: 1
+        cityId:
+          type: integer
+          format: int64
+          example: 1
+        moderatorId:
+          type: integer
+          format: int64
+          example: 1
+        logoUrl:
+          maxLength: 255
+          minLength: 0
+          type: string
+          example: https://example.com/image.jpg
+    OrganisationEditRequestDto:
+      required:
+        - name
+        - descriptionPL
+        - descriptionEN
+        - descriptionUA
+        - descriptionRU
+        - email
+        - phoneNumber
+        - street
+        - homeNum
+        - districtId
+        - cityId
+        - moderatorId
+      type: object
+      properties:
+        name:
+          maxLength: 250
+          minLength: 0
+          type: string
+          example: Animal Helpers
+        descriptionPL:
+          type: string
+        descriptionEN:
+          type: string
+        descriptionUA:
+          type: string
+        descriptionRU:
+          type: string
         email:
           maxLength: 50
           minLength: 0
@@ -2669,7 +2928,55 @@ components:
           type: integer
           format: int64
           example: 1
-
+    ShiftEditRequestDto:
+      required:
+        - startTime
+        - endTime
+        - date
+        - capacity
+        - street
+        - homeNum
+        - districtId
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        startTime:
+          $ref: '#/components/schemas/LocalTime'
+        endTime:
+          $ref: '#/components/schemas/LocalTime'
+        capacity:
+          type: integer
+          format: int32
+        isLeaderRequired:
+          type: boolean
+        requiredMinAge:
+          type: integer
+          format: int32
+        shiftDirectionsPL:
+          type: string
+        shiftDirectionsEN:
+            type: string
+        shiftDirectionsUA:
+          type: string
+        shiftDirectionsRU:
+          type: string
+        street:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Broadway
+        homeNum:
+          maxLength: 10
+          minLength: 0
+          type: string
+          example: 123
+        districtId:
+          type: integer
+          format: int64
+          example: 1
     ShiftResponseDto:
       type: object
       properties:
@@ -2692,7 +2999,7 @@ components:
           example: Помічники тварин
         eventNameRU:
           type: string
-          example: Помощники для животных
+          example: Помощники для животны
         date:
           type: string
           format: date
@@ -2735,6 +3042,9 @@ components:
         shiftDirectionsRU:
           type: string
           example: Левая сторона здания
+        city:
+          type: string
+          example: New York
     UserEditRequestDto:
       required:
         - firstName

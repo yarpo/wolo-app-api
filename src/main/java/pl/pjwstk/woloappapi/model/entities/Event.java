@@ -68,9 +68,6 @@ public class Event {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "image_alt")
-    private String alt;
-
     @Column(name = "is_approved", nullable = false)
     private boolean approved;
 

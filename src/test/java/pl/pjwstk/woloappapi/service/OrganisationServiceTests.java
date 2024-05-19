@@ -124,13 +124,7 @@ public class OrganisationServiceTests {
 
     @Test
     public void testUpdateCategory() {
-        var translationResponce = new OrganisationTranslationResponce();
-        translationResponce.setDescriptionPL("Test Description pl");
-        translationResponce.setDescriptionEN("Test Description en");
-        translationResponce.setDescriptionUA("Test Description ua");
-        translationResponce.setDescriptionRU("Test Description ru");
-
-        OrganisationRequestDto organisationRequestDto = new OrganisationRequestDto();
+        OrganisationEditRequestDto organisationRequestDto = new OrganisationEditRequestDto();
         organisationRequestDto.setName("New Organisation Name");
 
         Long organisationId = 1L;
@@ -144,7 +138,7 @@ public class OrganisationServiceTests {
 
         when(organisationRepository.findById(1L)).thenReturn(Optional.of(organisation));
 
-        organisationService.updateOrganisation(organisationRequestDto, organisationId, translationResponce);
+        organisationService.updateOrganisation(organisationRequestDto, organisationId);
 
         verify(organisationRepository, times(1)).save(organisation);
         assertEquals("New Organisation Name", organisation.getName());

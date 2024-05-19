@@ -38,7 +38,30 @@ public class EventMapper {
                 .shiftDirectionsUA(translation.getAddressDescriptionUA())
                 .shiftDirectionsRU(translation.getAddressDescriptionRU());
     }
+
+    public Shift.ShiftBuilder toShift (ShiftEditRequestDto shiftDto){
+        var address = toAddress(shiftDto)
+                .district(districtService.getDistrictById(shiftDto.getDistrictId()))
+                .build();
+        return Shift.builder()
+                .startTime(shiftDto.getStartTime())
+                .endTime(shiftDto.getEndTime())
+                .address(address)
+                .isLeaderRequired(shiftDto.getIsLeaderRequired())
+                .capacity(shiftDto.getCapacity())
+                .requiredMinAge(shiftDto.getRequiredMinAge())
+                .shiftDirectionsPL(shiftDto.getShiftDirectionsPL())
+                .shiftDirectionsEN(shiftDto.getShiftDirectionsEN())
+                .shiftDirectionsUA(shiftDto.getShiftDirectionsUA())
+                .shiftDirectionsRU(shiftDto.getShiftDirectionsRU());
+    }
     public Address.AddressBuilder toAddress(ShiftRequestDto shiftDto) {
+        return Address.builder()
+                .street(shiftDto.getStreet())
+                .homeNum(shiftDto.getHomeNum());
+    }
+
+    public Address.AddressBuilder toAddress(ShiftEditRequestDto shiftDto) {
         return Address.builder()
                 .street(shiftDto.getStreet())
                 .homeNum(shiftDto.getHomeNum());
@@ -58,7 +81,6 @@ public class EventMapper {
                 .date(event.getDate())
                 .isPeselVerificationRequired(event.isPeselVerificationRequired())
                 .city(event.getCity().getName())
-                .alt(event.getAlt())
                 .imageUrl(event.getImageUrl())
                 .shifts(shifts)
                 .categories(categories)
@@ -138,6 +160,7 @@ public class EventMapper {
                 .shiftDirectionsEN(shift.getShiftDirectionsEN())
                 .shiftDirectionsUA(shift.getShiftDirectionsUA())
                 .shiftDirectionsRU(shift.getShiftDirectionsRU())
+                .city(shift.getEvent().getCity().getName())
                 .build();
     }
 
@@ -155,7 +178,6 @@ public class EventMapper {
                 .isPeselVerificationRequired(dtoEvent.isPeselVerificationRequired())
                 .isAgreementNeeded(dtoEvent.isAgreementNeeded())
                 .imageUrl(dtoEvent.getImageUrl())
-                .alt(translation.getAlt())
                 .city(cityService.getCityById(dtoEvent.getCityId()));
     }
 
@@ -170,6 +192,7 @@ public class EventMapper {
 
     public ReportResponceDto toReportResponceDto(Report report) {
         return ReportResponceDto.builder()
+                .id(report.getId())
                 .event(report.getEvent().getId())
                 .published(report.isPublished())
                 .reportPL(report.getReportPL())

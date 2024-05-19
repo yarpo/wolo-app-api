@@ -3,6 +3,7 @@ package pl.pjwstk.woloappapi.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.pjwstk.woloappapi.model.ReportEditRequestDto;
 import pl.pjwstk.woloappapi.model.ReportRequestDto;
 import pl.pjwstk.woloappapi.model.entities.Report;
 import pl.pjwstk.woloappapi.model.translation.ReportTranslationResponce;
@@ -19,6 +20,10 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
+
+    public Report getReportById(Long id){
+        return reportRepository.findById(id).orElseThrow(() -> new NotFoundException("Report not found"));
+    }
 
     public Report getPublicReportByEventId(Long id){
         return reportRepository.findAllByEventId(id)
@@ -37,13 +42,13 @@ public class ReportService {
     }
 
     @Transactional
-    public void updateReport(ReportRequestDto reportDto, ReportTranslationResponce translation) {
+    public void updateReport(ReportEditRequestDto reportDto) {
         var report = reportRepository.findById(reportDto.getId())
                 .orElseThrow(() -> new NotFoundException("Report id not found!"));
-        report.setReportPL(translation.getReportPL());
-        report.setReportEN(translation.getReportEN());
-        report.setReportUA(translation.getReportUA());
-        report.setReportRU(translation.getReportRU());
+        report.setReportPL(reportDto.getReportPL());
+        report.setReportEN(reportDto.getReportEN());
+        report.setReportUA(reportDto.getReportUA());
+        report.setReportRU(reportDto.getReportRU());
         report.setPublished(report.isPublished());
         reportRepository.save(report);
     }
@@ -58,5 +63,19 @@ public class ReportService {
     public List<Report> getAllReportsByEventId(Long eventId) {
         return reportRepository
                 .findAllByEventId(eventId);
+    }
+
+    public void publishReport(Long id) {
+        Report report = reportRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Report id not found!"));
+        report.setPublished(true);
+        reportRepository.save(report);
+    }
+
+    public void unpublishReport(Long id) {
+        Report report = reportRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Report id not found!"));
+        report.setPublished(false);
+        reportRepository.save(report);
     }
 }

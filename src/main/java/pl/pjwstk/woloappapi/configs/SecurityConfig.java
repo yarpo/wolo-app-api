@@ -81,6 +81,8 @@ public class SecurityConfig {
                     auth.requestMatchers(DELETE, "/faq/**").hasAuthority("DELETE_FAQ");
 
                     auth.requestMatchers(OPTIONS, "/reports/**").permitAll();
+                    auth.requestMatchers(OPTIONS, "/reports/publish/**").permitAll();
+                    auth.requestMatchers(OPTIONS, "/reports/unpublish/**").permitAll();
                     auth.requestMatchers(GET, "/reports/public/**").permitAll();
                     auth.requestMatchers("/reports/event/**").hasAuthority("READ_REPORTS");
                     auth.requestMatchers(POST, "/reports/**").hasAuthority("CREATE_REPORT");

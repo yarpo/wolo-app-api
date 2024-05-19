@@ -44,8 +44,6 @@ public class EventResponseDetailsDto {
 
     private String imageUrl;
 
-    private String alt;
-
     private List<ShiftResponseDto> shifts;
 
     private String city;
