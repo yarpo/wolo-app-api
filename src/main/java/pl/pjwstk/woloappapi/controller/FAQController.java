@@ -6,13 +6,16 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import pl.pjwstk.woloappapi.model.FAQDto;
+import pl.pjwstk.woloappapi.model.FAQEditRequestDto;
+import pl.pjwstk.woloappapi.model.FAQRequestDto;
 import pl.pjwstk.woloappapi.model.FAQResponseDto;
 import pl.pjwstk.woloappapi.model.translation.FAQTranslationRequest;
 import pl.pjwstk.woloappapi.model.translation.FAQTranslationResponse;
 import pl.pjwstk.woloappapi.service.FAQService;
+import pl.pjwstk.woloappapi.service.UserService;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
 
 import java.util.List;
@@ -25,6 +28,7 @@ import java.util.stream.Collectors;
 public class FAQController {
 
     private final FAQService faqService;
+    private final UserService userService;
     private final DictionariesMapper dictionariesMapper;
 
     @GetMapping()
@@ -43,10 +47,10 @@ public class FAQController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addFAQ(@RequestBody FAQDto faqDto,
+    public ResponseEntity<HttpStatus> addFAQ(@RequestBody FAQRequestDto faqRequestDto,
                                              @RequestParam String language){
 
-        var translate = createTranslationDto(faqDto, language);
+        var translate = createTranslationDto(faqRequestDto, language);
         var localClient = WebClient.create("http://host.docker.internal:5000/");
         localClient.post()
                 .uri("/faq/translate")
@@ -54,14 +58,14 @@ public class FAQController {
                 .bodyValue(translate)
                 .retrieve()
                 .bodyToMono(FAQTranslationResponse.class)
-                .subscribe(translated -> faqService.createFAQ(faqDto, translated));
+                .subscribe(faqService::createFAQ);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/edit")
     public ResponseEntity<HttpStatus> editFAQ(
-            @Valid @RequestBody FAQDto faqDto) {
-        //faqService.updateFAQ(dictionariesMapper.toFAQ(faqDto).build());
+            @Valid @RequestBody FAQEditRequestDto faqEditRequestDto) {
+        faqService.updateFAQ(dictionariesMapper.toFAQ(faqEditRequestDto).build());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -71,11 +75,11 @@ public class FAQController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    private FAQTranslationRequest createTranslationDto(FAQDto faqDto, String language){
+    private FAQTranslationRequest createTranslationDto(FAQRequestDto faqRequestDto, String language){
         var translate = new FAQTranslationRequest();
         translate.setLanguage(language);
-        translate.setQuestion(faqDto.getQuestion());
-        translate.setAnswer(faqDto.getAnswer());
+        translate.setQuestion(faqRequestDto.getQuestion());
+        translate.setAnswer(faqRequestDto.getAnswer());
         return translate;
     }
 }

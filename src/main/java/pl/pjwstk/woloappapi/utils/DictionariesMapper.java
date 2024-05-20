@@ -100,9 +100,21 @@ public class DictionariesMapper {
         return faqResponseDto;
     }
 
-    public FAQ.FAQBuilder toFAQ(FAQDto faqDto, FAQTranslationResponse translation){
+    public FAQ.FAQBuilder toFAQ(FAQEditRequestDto faqRequestDto){
         return FAQ.builder()
-                .id(faqDto.getId())
+                .id(faqRequestDto.getId())
+                .questionPL(faqRequestDto.getQuestionPL())
+                .answerPL(faqRequestDto.getAnswerPL())
+                .questionEN(faqRequestDto.getQuestionEN())
+                .answerEN(faqRequestDto.getAnswerEN())
+                .questionUA(faqRequestDto.getQuestionUA())
+                .answerUA(faqRequestDto.getAnswerUA())
+                .questionRU(faqRequestDto.getQuestionRU())
+                .answerRU(faqRequestDto.getAnswerRU());
+    }
+
+    public FAQ.FAQBuilder toFAQTranslation(FAQTranslationResponse translation){
+        return FAQ.builder()
                 .questionPL(translation.getQuestionPL())
                 .answerPL(translation.getAnswerPL())
                 .questionEN(translation.getQuestionEN())

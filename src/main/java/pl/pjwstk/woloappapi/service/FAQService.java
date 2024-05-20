@@ -3,7 +3,6 @@ package pl.pjwstk.woloappapi.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.pjwstk.woloappapi.model.FAQDto;
 import pl.pjwstk.woloappapi.model.entities.FAQ;
 import pl.pjwstk.woloappapi.model.translation.FAQTranslationResponse;
 import pl.pjwstk.woloappapi.repository.FAQRepository;
@@ -28,8 +27,8 @@ public class FAQService {
     }
 
     @Transactional
-    public void createFAQ(FAQDto faq, FAQTranslationResponse translation) {
-        faqRepository.save(dictionariesMapper.toFAQ(faq, translation).build()); }
+    public void createFAQ(FAQTranslationResponse translation) {
+        faqRepository.save(dictionariesMapper.toFAQTranslation(translation).build()); }
 
     @Transactional
     public void updateFAQ(FAQ faq){

@@ -972,7 +972,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/FAQDto'
+                  $ref: '#/components/schemas/FAQResponseDto'
   /faq/{id}:
     get:
       tags:
@@ -995,7 +995,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FAQDto'
+                $ref: '#/components/schemas/FAQResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
   /faq/add:
@@ -1005,19 +1005,27 @@ paths:
       summary: Add new FAQ
       description: Adds a new FAQ
       operationId: addFAQ
+      parameters:
+        - name: language
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "EN"
+        - name: faqDto
+          in: query
+          description: FAQ object to create
+          schema:
+            $ref: '#/components/schemas/FAQRequestDto'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FAQDto'
+              $ref: '#/components/schemas/FAQRequestDto'
         required: true
       responses:
         '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FAQDto'
+          $ref: '#/components/responses/Created'
   /faq/edit:
     put:
       tags:
@@ -1029,7 +1037,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FAQDto'
+              $ref: '#/components/schemas/FAQEditRequestDto'
         required: true
       responses:
         '204':
@@ -2474,12 +2482,89 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ShiftResponseDto'
-    FAQDto:
+    FAQEditRequestDto:
+      required:
+        - questionPL
+        - answerPL
+        - questionEN
+        - answerEN
+        - questionUA
+        - answerUA
+        - questionRU
+        - answerRU
       type: object
       properties:
         id:
           type: integer
           format: int64
+        questionPL:
+          type: string
+          example: "Jaka jest stolica Francji?"
+          nullable: false
+        answerPL:
+          type: string
+          example: "Stolicą Francji jest Paryż."
+          nullable: false
+        questionEN:
+          type: string
+          example: "What is the capital of France?"
+          nullable: false
+        answerEN:
+          type: string
+          example: "The capital of France is Paris."
+          nullable: false
+        questionUA:
+          type: string
+          example: "Яка столиця Франції?"
+          nullable: false
+        answerUA:
+          type: string
+          example: "Столиця Франції - Париж."
+          nullable: false
+        questionRU:
+          type: string
+          example: "Какая столица Франции?"
+          nullable: false
+        answerRU:
+          type: string
+          example: "Столица Франции - Париж."
+          nullable: false
+    FAQResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        questionPL:
+          type: string
+          example: "Jaka jest stolica Francji?"
+        answerPL:
+          type: string
+          example: "Stolicą Francji jest Paryż."
+        questionEN:
+          type: string
+          example: "What is the capital of France?"
+        answerEN:
+          type: string
+          example: "The capital of France is Paris."
+        questionUA:
+          type: string
+          example: "Яка столиця Франції?"
+        answerUA:
+          type: string
+          example: "Столиця Франції - Париж."
+        questionRU:
+          type: string
+          example: "Какая столица Франции?"
+        answerRU:
+          type: string
+          example: "Столица Франции - Париж."
+    FAQRequestDto:
+      required:
+        - question
+        - answer
+      type: object
+      properties:
         question:
           type: string
           example: "What is the capital of France?"
@@ -2487,10 +2572,51 @@ components:
         answer:
           type: string
           example: "The capital of France is Paris."
-          nullable: false
+          nullable: false   
+    FAQTranslationResponse:
+      type: object
+      properties:
+        questionPL:
+          type: string
+          example: "Jaka jest stolica Francji?"
+        answerPL:
+          type: string
+          example: "Stolicą Francji jest Paryż."
+        questionEN:
+          type: string
+          example: "What is the capital of France?"
+        answerEN:
+          type: string
+          example: "The capital of France is Paris."
+        questionUA:
+          type: string
+          example: "Яка столиця Франції?"
+        answerUA:
+          type: string
+          example: "Столиця Франції - Париж."
+        questionRU:
+          type: string
+          example: "Какая столица Франции?"
+        answerRU:
+          type: string
+          example: "Столица Франции - Париж." 
+    FAQTranslationRequest:
       required:
         - question
         - answer
+      type: object
+      properties:
+        language:
+          type: string
+          example: "EN"
+        question:
+          type: string
+          example: "What is the capital of France?"
+          nullable: false
+        answer:
+          type: string
+          example: "The capital of France is Paris."
+          nullable: false      
     OrganisationRequestDto:
       required:
         - name
