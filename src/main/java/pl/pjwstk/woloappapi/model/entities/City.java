@@ -31,4 +31,14 @@ public class City {
 
     @OneToMany(mappedBy = "city",cascade = CascadeType.ALL)
     private List<Event> events;
+
+    @Override
+    public String toString() {
+        return "City{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", isOld=" + isOld +
+                ", districtCount=" + (districts != null ? districts.size() : 0) +
+                '}';
+    }
 }

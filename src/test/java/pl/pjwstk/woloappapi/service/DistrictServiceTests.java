@@ -1,97 +1,198 @@
 package pl.pjwstk.woloappapi.service;
 
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pl.pjwstk.woloappapi.model.DistrictRequestDto;
+import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.model.entities.District;
+import pl.pjwstk.woloappapi.repository.CityRepository;
 import pl.pjwstk.woloappapi.repository.DistrictRepository;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DistrictServiceTests {
 
     @Mock
+    private DistrictRepository districtRepository;
+
+    @Mock
     private DictionariesMapper dictionariesMapper;
 
     @Mock
-    private DistrictRepository districtRepository;
+    private CityRepository cityRepository;
 
     @InjectMocks
     private DistrictService districtService;
 
-    @Test
-    public void testGetAllDisctricts(){
-        District district1 = new District();
-        District district2 = new District();
+    private City city;
+    private District district;
+    private DistrictRequestDto districtRequestDto;
+    private District.DistrictBuilder districtBuilder;
 
-        when(districtRepository.findAll()).thenReturn(Arrays.asList(district1, district2));
+    @BeforeEach
+    public void setUp() {
+        city = new City();
+        city.setId(1L);
+        city.setName("Test City");
+        city.setOld(false);
+        city.setDistricts(new ArrayList<>());
 
-        List<District> actualDistricts = districtService.getAllDistricts();
+        district = new District();
+        district.setId(1L);
+        district.setName("Test District");
+        district.setCity(city);
 
-        assertEquals(2, actualDistricts.size());
+        districtRequestDto = new DistrictRequestDto();
+        districtRequestDto.setId(1L);
+        districtRequestDto.setName("Test District DTO");
+        districtRequestDto.setCityId(1L);
+
+        districtBuilder = District.builder()
+                .id(districtRequestDto.getId())
+                .name(districtRequestDto.getName());
     }
 
+    @Test
+    public void testGetAllDistricts() {
+        when(districtRepository.findAll()).thenReturn(List.of(district));
+
+        List<District> result = districtService.getAllDistricts();
+
+        assertEquals(1, result.size());
+        assertEquals(district, result.get(0));
+        verify(districtRepository, times(1)).findAll();
+    }
 
     @Test
-    public void testGetByDistrictId(){
-        District district = new District();
-        district.setId(1L);
+    public void testGetAllActualDistricts() {
+        when(districtRepository.getAllActualDistricts()).thenReturn(List.of(district));
+
+        List<District> result = districtService.getAllActualDistricts();
+
+        assertEquals(1, result.size());
+        assertEquals(district, result.get(0));
+        verify(districtRepository, times(1)).getAllActualDistricts();
+    }
+
+    @Test
+    public void testGetDistrictById_DistrictExists() {
         when(districtRepository.findById(1L)).thenReturn(Optional.of(district));
 
-        District retrievedDistrict = districtService.getDistrictById(1L);
+        District result = districtService.getDistrictById(1L);
 
-        assertEquals(district.getId(), retrievedDistrict.getId());
+        assertEquals(district, result);
+        verify(districtRepository, times(1)).findById(1L);
     }
 
-    /*
     @Test
-    public void testCreateDistrict(){
-        DistrictDto districtDto = new DistrictDto();
-        districtDto.setId(1L);
-        districtDto.setName("Test Name");
-        districtDto.setCity("Test City");
+    public void testGetDistrictById_DistrictNotExists() {
+        when(districtRepository.findById(1L)).thenReturn(Optional.empty());
 
-        when(dictionariesMapper.toDistrict(districtDto)).thenReturn(District.builder()
-                .id(districtDto.getId())
-                .name(districtDto.getName())
-                .city(districtDto.getCity()));
+        assertThrows(NotFoundException.class, () -> {
+            districtService.getDistrictById(1L);
+        });
 
-        districtService.createDistrict(districtDto);
-
-        ArgumentCaptor<District> districtCaptor = ArgumentCaptor.forClass(District.class);
-        verify(districtRepository).save(districtCaptor.capture());
-        District capturedDistrict = districtCaptor.getValue();
-        assertEquals(1L, capturedDistrict.getId());
-        assertEquals("Test Name", capturedDistrict.getName());
-        assertEquals("Test City", capturedDistrict.getCity());
+        verify(districtRepository, times(1)).findById(1L);
     }
-    */
 
     @Test
-    public void testDeleteDistrict() {
-        District district = new District();
-        district.setId(1L);
+    public void testGetDistrictByName_DistrictExists() {
+        when(districtRepository.findByName("Test District")).thenReturn(Optional.of(district));
 
+        District result = districtService.getDistrictByName("Test District");
+
+        assertEquals(district, result);
+        verify(districtRepository, times(1)).findByName("Test District");
+    }
+
+    @Test
+    public void testGetDistrictByName_DistrictNotExists() {
+        when(districtRepository.findByName("Test District")).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> {
+            districtService.getDistrictByName("Test District");
+        });
+
+        verify(districtRepository, times(1)).findByName("Test District");
+    }
+
+    @Test
+    public void testCreateDistrict() {
+        when(cityRepository.findById(1L)).thenReturn(Optional.of(city));
+        when(dictionariesMapper.toDistrict(districtRequestDto)).thenReturn(districtBuilder);
+
+        districtService.createDistrict(districtRequestDto);
+
+        verify(cityRepository, times(1)).findById(1L);
+        verify(districtRepository, times(1)).save(districtBuilder.city(city).build());
+    }
+
+    @Test
+    public void testCreateDistrict_CityNotExists() {
+        when(cityRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            districtService.createDistrict(districtRequestDto);
+        });
+
+        verify(cityRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testDeleteDistrict_DistrictExists() {
         when(districtRepository.findById(1L)).thenReturn(Optional.of(district));
 
         districtService.deleteDistrict(1L);
 
-        ArgumentCaptor<District> districtCaptor = ArgumentCaptor.forClass(District.class);
-        verify(districtRepository).save(districtCaptor.capture());
-        District capturedDistrict = districtCaptor.getValue();
-        assertEquals(1L, capturedDistrict.getId());
-        assertTrue(capturedDistrict.isOld());
+        assertTrue(district.isOld());
+        verify(districtRepository, times(1)).save(district);
+    }
+
+    @Test
+    public void testDeleteDistrict_DistrictNotExists() {
+        when(districtRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> {
+            districtService.deleteDistrict(1L);
+        });
+
+        verify(districtRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testUpdateDistrict_DistrictExists() {
+        when(cityRepository.findById(1L)).thenReturn(Optional.of(city));
+        when(districtRepository.findById(1L)).thenReturn(Optional.of(district));
+
+        districtService.updateDistrict(districtRequestDto);
+
+        assertEquals(districtRequestDto.getName(), district.getName());
+        assertEquals(city, district.getCity());
+        verify(districtRepository, times(1)).save(district);
+    }
+
+    @Test
+    public void testUpdateDistrict_CityNotExists() {
+        when(cityRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            districtService.updateDistrict(districtRequestDto);
+        });
+
+        verify(cityRepository, times(1)).findById(1L);
     }
 }

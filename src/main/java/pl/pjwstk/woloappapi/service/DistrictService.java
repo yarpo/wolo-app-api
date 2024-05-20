@@ -53,6 +53,7 @@ public class DistrictService {
                 .build();
         city.getDistricts().add(district);
         cityRepository.save(city);
+        districtRepository.save(district);
     }
 
 
