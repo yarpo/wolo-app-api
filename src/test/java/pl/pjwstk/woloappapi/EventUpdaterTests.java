@@ -11,8 +11,6 @@ import pl.pjwstk.woloappapi.model.EventEditRequestDto;
 import pl.pjwstk.woloappapi.model.ShiftEditRequestDto;
 import pl.pjwstk.woloappapi.model.entities.*;
 import pl.pjwstk.woloappapi.repository.EventRepository;
-import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
-import pl.pjwstk.woloappapi.service.CategoryService;
 import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.EmailUtil;
 import pl.pjwstk.woloappapi.utils.EventMapper;
@@ -39,13 +37,7 @@ public class EventUpdaterTests {
     private EmailUtil emailUtil;
 
     @Mock
-    private CategoryService categoryService;
-
-    @Mock
     private EventMapper eventMapper;
-
-    @Mock
-    private ShiftToUserRepository shiftToUserRepository;
 
     @InjectMocks
     private EventUpdater eventUpdater;
@@ -53,6 +45,8 @@ public class EventUpdaterTests {
     private Event event;
     private EventEditRequestDto eventEditRequestDto;
     private City city;
+
+    private Shift shift;
 
     @BeforeEach
     public void setUp() {
@@ -68,9 +62,14 @@ public class EventUpdaterTests {
         var user = User.builder().email("email@gmail.com").build();
         var stu = new ShiftToUser();
         stu.setUser(user);
-        var shift = Shift.builder()
-                .id(123L)
-                .shiftToUsers(List.of(stu))
+        var userList= new ArrayList<ShiftToUser>();
+        userList.add(stu);
+        var district= District.builder().id(1L).build();
+        var address = Address.builder().district(district).build();
+        shift = Shift.builder()
+                .id(1L)
+                .shiftToUsers(userList)
+                .address(address)
                 .build();
         var shiftList = new ArrayList<Shift>();
         shiftList.add(shift);
@@ -79,6 +78,7 @@ public class EventUpdaterTests {
                 .namePL("Test Event")
                 .categories(list)
                 .shifts(shiftList)
+                .isPeselVerificationRequired(false)
                 .build();
 
         eventEditRequestDto = new EventEditRequestDto();
@@ -97,29 +97,33 @@ public class EventUpdaterTests {
         eventEditRequestDto.setDate(LocalDate.now());
         eventEditRequestDto.setImageUrl("http://example.com/image.jpg");
 
-        ShiftEditRequestDto shiftDto = new ShiftEditRequestDto();
-        shiftDto.setId(123L);
+        var newDistrict = District.builder().id(1L).build();
+        newDistrict.setCity(city);
+        when(districtService.getDistrictById(1L)).thenReturn(newDistrict);
+
+        var shiftDto = new ShiftEditRequestDto();
+        shiftDto.setId(1L);
         shiftDto.setDistrictId(1L);
         eventEditRequestDto.setShifts(List.of(shiftDto));
 
-        var district = new District();
-        district.setCity(city);
-        when(districtService.getDistrictById(1L)).thenReturn(district);
+
     }
 
     @Test
     public void testUpdateEvent() throws MessagingException {
+
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
-        when(eventMapper.toShift(any(ShiftEditRequestDto.class))).thenReturn(Shift.builder().id(1L));
+        when(eventMapper.toShift(any(ShiftEditRequestDto.class))).thenReturn(shift.builder());
 
         eventUpdater.update(eventEditRequestDto, 1L, true);
 
+        verify(emailUtil, times(1)).sendEditEventMail(anyString(), anyLong());
         verify(eventRepository, times(1)).findById(1L);
         verify(eventRepository, times(1)).save(event);
     }
 
     @Test
-    public void testUpdateEventWithNonExistentId() {
+    public void testUpdateEventWithNonExistentId() throws MessagingException {
         when(eventRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> {
@@ -128,6 +132,7 @@ public class EventUpdaterTests {
 
         verify(eventRepository, times(1)).findById(1L);
         verify(eventRepository, never()).save(any(Event.class));
+        verify(emailUtil, never()).sendEditEventMail(anyString(), anyLong());
     }
 
 
@@ -149,26 +154,16 @@ public class EventUpdaterTests {
     public void testUpdateEventWithAgreementNeeded() throws MessagingException {
         eventEditRequestDto.setAgreementNeeded(true);
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
-
+        when(eventMapper.toShift(any())).thenReturn(shift.builder());
         eventUpdater.update(eventEditRequestDto, 1L, true);
 
         verify(eventRepository, times(1)).findById(1L);
         verify(eventRepository, times(1)).save(event);
         verify(emailUtil, times(1)).sendAgreementNeededEmail(anyString(), eq(event.getId()));
-        verify(emailUtil, times(1)).sendEditEventMail(anyString(), eq(event.getId()));
     }
 
     @Test
     public void testUpdateEventWithShiftUpdates() throws MessagingException {
-        var shift = new Shift();
-        shift.setId(1L);
-        var district = new District();
-        district.setCity(city);
-        var address = new Address();
-        address.setDistrict(district);
-        shift.setAddress(address);
-        event.setShifts(List.of(shift));
-
         ShiftEditRequestDto shiftDto = new ShiftEditRequestDto();
         shiftDto.setDistrictId(1L);
         eventEditRequestDto.setShifts(List.of(shiftDto));
