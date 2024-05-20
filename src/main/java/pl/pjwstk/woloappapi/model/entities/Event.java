@@ -77,4 +77,24 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", namePL='" + namePL + '\'' +
+                ", nameEN='" + nameEN + '\'' +
+                ", nameUA='" + nameUA + '\'' +
+                ", nameRU='" + nameRU + '\'' +
+                ", descriptionPL='" + descriptionPL + '\'' +
+                ", descriptionEN='" + descriptionEN + '\'' +
+                ", descriptionUA='" + descriptionUA + '\'' +
+                ", descriptionRU='" + descriptionRU + '\'' +
+                ", date=" + date +
+                ", isPeselVerificationRequired=" + isPeselVerificationRequired +
+                ", isAgreementNeeded=" + isAgreementNeeded +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", approved=" + approved +
+                '}';
+    }
 }
