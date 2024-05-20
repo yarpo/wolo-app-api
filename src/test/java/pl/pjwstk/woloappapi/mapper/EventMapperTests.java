@@ -1,10 +1,16 @@
 package pl.pjwstk.woloappapi.mapper;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.model.translation.EventTranslationRequest;
+import pl.pjwstk.woloappapi.model.translation.EventTranslationResponse;
+import pl.pjwstk.woloappapi.model.translation.ReportTranslationResponce;
+import pl.pjwstk.woloappapi.service.CityService;
 import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 
@@ -13,46 +19,92 @@ import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(MockitoExtension.class)
 public class EventMapperTests {
 
-    /*
-    private DistrictService districtService;
-
     private EventMapper eventMapper;
 
+    @BeforeEach
+    public void setup() {
+        DistrictService districtService = Mockito.mock(DistrictService.class);
+        CityService cityService = Mockito.mock(CityService.class);
+        eventMapper = new EventMapper(districtService, cityService);
+    }
+
     @Test
-    public void testToShift() {
-        EventMapper eventMapper = new EventMapper(districtService);
+    public void testToShiftByShiftRequestDto() {
+        // Given
         ShiftRequestDto shiftDto = new ShiftRequestDto();
         shiftDto.setStartTime(LocalTime.of(9, 0));
         shiftDto.setEndTime(LocalTime.of(17, 0));
-        shiftDto.setDate(LocalDate.now());
         shiftDto.setIsLeaderRequired(true);
         shiftDto.setCapacity(10);
         shiftDto.setRequiredMinAge(18);
+        shiftDto.setDistrictId(1L);
 
-        Shift shift = eventMapper.toShift(shiftDto).build();
+        EventRequestDto eventDto = new EventRequestDto();
+        eventDto.setShifts(List.of(shiftDto));
 
+        EventTranslationResponse translate = new EventTranslationResponse();
+        translate.setShiftTranslations(List.of(new ShiftTranslation()));
+
+        Shift.ShiftBuilder shiftBuilder = eventMapper.toShift(shiftDto, eventDto, translate);
+
+        Shift shift = shiftBuilder.build();
         assertEquals(LocalTime.of(9, 0), shift.getStartTime());
         assertEquals(LocalTime.of(17, 0), shift.getEndTime());
-        assertEquals(LocalDate.now(), shift.getDate());
         assertTrue(shift.isLeaderRequired());
         assertEquals(10, shift.getCapacity());
         assertEquals(18, shift.getRequiredMinAge());
     }
 
     @Test
-    public void testToAddress() {
-        ShiftRequestDto shiftRequestDto = new ShiftRequestDto();
-        shiftRequestDto.setStreet("Test Street");
-        shiftRequestDto.setHomeNum("123");
+    public void testToShiftByShiftEditRequestDto() {
+        ShiftEditRequestDto shiftDto = new ShiftEditRequestDto();
+        shiftDto.setStartTime(LocalTime.of(9, 0));
+        shiftDto.setEndTime(LocalTime.of(17, 0));
+        shiftDto.setIsLeaderRequired(true);
+        shiftDto.setCapacity(10);
+        shiftDto.setRequiredMinAge(18);
+        shiftDto.setDistrictId(1L);
 
-        Address address = eventMapper.toAddress(shiftRequestDto).build();
+        Shift.ShiftBuilder shiftBuilder = eventMapper.toShift(shiftDto);
 
+        Shift shift = shiftBuilder.build();
+        assertEquals(LocalTime.of(9, 0), shift.getStartTime());
+        assertEquals(LocalTime.of(17, 0), shift.getEndTime());
+        assertTrue(shift.isLeaderRequired());
+        assertEquals(10, shift.getCapacity());
+        assertEquals(18, shift.getRequiredMinAge());
+    }
+
+    @Test
+    public void testTotoAddressByShiftRequestDto() {
+        ShiftRequestDto shiftDto = new ShiftRequestDto();
+        shiftDto.setStreet("Test Street");
+        shiftDto.setHomeNum("123");
+
+        Address.AddressBuilder addressBuilder = eventMapper.toAddress(shiftDto);
+
+        Address address = addressBuilder.build();
+        assertEquals("Test Street", address.getStreet());
+        assertEquals("123", address.getHomeNum());
+    }
+
+    @Test
+    public void testTotoAddressByShiftEditRequestDto() {
+        ShiftEditRequestDto shiftDto = new ShiftEditRequestDto();
+        shiftDto.setStreet("Test Street");
+        shiftDto.setHomeNum("123");
+
+        Address.AddressBuilder addressBuilder = eventMapper.toAddress(shiftDto);
+
+        Address address = addressBuilder.build();
         assertEquals("Test Street", address.getStreet());
         assertEquals("123", address.getHomeNum());
     }
@@ -61,203 +113,346 @@ public class EventMapperTests {
     public void testToEventResponseDto() {
         Event event = new Event();
         event.setId(1L);
-        event.setName("Test Name");
+        event.setNamePL("Test Name PL");
+        event.setNameEN("Test Name EN");
+        event.setNameUA("Test Name UA");
+        event.setNameRU("Test Name RU");
         event.setPeselVerificationRequired(true);
 
         Organisation organisation = new Organisation();
-        organisation.setName("Org Name");
+        organisation.setName("Test Organisation");
         event.setOrganisation(organisation);
 
-        List<CategoryToEvent> categories = new ArrayList<>();
-        Category category1 = new Category();
-        category1.setId(1L);
-        category1.setName("Category 1");
+        event.setDate(java.time.LocalDate.now());
 
-        Category category2 = new Category();
-        category2.setId(2L);
-        category2.setName("Category 2");
+        City city = new City();
+        city.setName("Test City");
+        event.setCity(city);
 
-        CategoryToEvent categoryToEvent1 = new CategoryToEvent();
-        categoryToEvent1.setCategory(category1);
-
-        CategoryToEvent categoryToEvent2 = new CategoryToEvent();
-        categoryToEvent2.setCategory(category2);
-
-        categories.add(categoryToEvent1);
-        categories.add(categoryToEvent2);
-        event.setCategories(categories);
+        event.setImageUrl("https://example.com/image.jpg");
 
         List<Shift> shifts = new ArrayList<>();
+        event.setShifts(shifts);
 
-        Shift shift1 = new Shift();
-        shift1.setStartTime(LocalTime.of(18, 0));
-        shift1.setEndTime(LocalTime.of(23, 0));
-        shifts.add(shift1);
-
-        Shift shift2 = new Shift();
-        shift2.setStartTime(LocalTime.of(9, 0));
-        shift2.setEndTime(LocalTime.of(17, 0));
-        shifts.add(shift2);
-
-        event.setImageUrl("http://example.com/image.jpg");
+        List<CategoryToEvent> categories = new ArrayList<>();
+        event.setCategories(categories);
 
         EventResponseDto eventResponseDto = eventMapper.toEventResponseDto(event);
 
-        assertEquals(Long.valueOf(1L), eventResponseDto.getId());
-        assertEquals("Test Name", eventResponseDto.getName());
-        assertEquals("Org Name", eventResponseDto.getOrganisation());
+        assertEquals(1L, eventResponseDto.getId());
+        assertEquals("Test Name PL", eventResponseDto.getNamePL());
+        assertEquals("Test Name EN", eventResponseDto.getNameEN());
+        assertEquals("Test Name UA", eventResponseDto.getNameUA());
+        assertEquals("Test Name RU", eventResponseDto.getNameRU());
+        assertEquals("Test Organisation", eventResponseDto.getOrganisation());
+        assertEquals(java.time.LocalDate.now(), eventResponseDto.getDate());
         assertTrue(eventResponseDto.isPeselVerificationRequired());
         assertEquals("Test City", eventResponseDto.getCity());
-        assertEquals("http://example.com/image.jpg", eventResponseDto.getImageUrl());
-        assertEquals(4, eventResponseDto.getShifts().size());
-        assertEquals(2, eventResponseDto.getCategories().size());
+        assertEquals("https://example.com/image.jpg", eventResponseDto.getImageUrl());
+        assertEquals(shifts.size(), eventResponseDto.getShifts().size());
+        assertEquals(categories.size(), eventResponseDto.getCategories().size());
     }
 
     @Test
     public void testMapShiftListToShiftDtoList() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        List<Shift> shiftList = new ArrayList<>();
+        List<Shift> shifts = new ArrayList<>();
         Method method = EventMapper.class.getDeclaredMethod("mapShiftListToShiftDtoList", List.class);
         method.setAccessible(true);
 
+        City city = new City();
+        city.setId(1L);
+
+        Event event = new Event();
+        event.setId(1L);
+        event.setCity(city);
+
+        District district = new District();
+        district.setId(1L);
+
+        Address address = new Address();
+        address.setId(1L);
+        address.setDistrict(district);
+
         Shift shift1 = new Shift();
-        shift1.setStartTime(LocalTime.of(9, 0));
-        shift1.setEndTime(LocalTime.of(17, 0));
-        shift1.setDate(LocalDate.now());
-        shift1.setRegisteredUsers(1);
-        shift1.setCapacity(10);
-        shift1.setLeaderRequired(true);
-        shift1.setRequiredMinAge(18);
-
-        shiftList.add(shift1);
-
+        shift1.setEvent(event);
+        shift1.setAddress(address);
         Shift shift2 = new Shift();
-        shift2.setStartTime(LocalTime.of(10, 0));
-        shift2.setEndTime(LocalTime.of(18, 0));
-        shift2.setDate(LocalDate.now());
-        shift2.setRegisteredUsers(1);
-        shift2.setCapacity(12);
-        shift2.setLeaderRequired(false);
-        shift2.setRequiredMinAge(20);
-
-        shiftList.add(shift2);
-
-        //List<ShiftDto> shiftDtoList = eventMapper.mapShiftListToShiftDtoList(shiftList);
+        shift2.setEvent(event);
+        shift2.setAddress(address);
+        shifts.add(shift1);
+        shifts.add(shift2);
 
         @SuppressWarnings("unchecked")
-        List<ShiftRequestDto> shiftDtoList = (List<ShiftRequestDto>) method.invoke(eventMapper, shiftList);
+        List<ShiftRequestDto> shiftResponseDtos = (List<ShiftRequestDto>) method.invoke(eventMapper, shifts);
 
-        assertEquals(2, shiftDtoList.size());
-
-        ShiftRequestDto shiftDto1 = shiftDtoList.get(0);
-        assertEquals(LocalTime.of(9, 0), shiftDto1.getStartTime());
-        assertEquals(LocalTime.of(17, 0), shiftDto1.getEndTime());
-        assertEquals(LocalDate.now(), shiftDto1.getDate());
-        assertEquals(10, shiftDto1.getCapacity());
-        assertTrue(shiftDto1.getIsLeaderRequired());
-        assertEquals(18, shiftDto1.getRequiredMinAge());
-
-        ShiftRequestDto shiftDto2 = shiftDtoList.get(1);
-        assertEquals(LocalTime.of(10, 0), shiftDto2.getStartTime());
-        assertEquals(LocalTime.of(18, 0), shiftDto2.getEndTime());
-        assertEquals(LocalDate.now(), shiftDto2.getDate());
-        assertEquals(12, shiftDto2.getCapacity());
-        assertFalse(shiftDto2.getIsLeaderRequired());
-        assertEquals(20, shiftDto2.getRequiredMinAge());
+        assertEquals(shifts.size(), shiftResponseDtos.size());
     }
 
     @Test
-    public void testMapShiftToShiftDto() {
+    public void testToShiftInfoRespons() {
         Shift shift = new Shift();
+        shift.setId(1L);
         shift.setStartTime(LocalTime.of(9, 0));
         shift.setEndTime(LocalTime.of(17, 0));
-        shift.setDate(LocalDate.now());
-        shift.setRegisteredUsers(1);
-        shift.setCapacity(10);
-        shift.setLeaderRequired(true);
-        shift.setRequiredMinAge(18);
+        shift.setShiftDirectionsPL("Directions PL");
+        shift.setShiftDirectionsEN("Directions EN");
+        shift.setShiftDirectionsUA("Directions UA");
+        shift.setShiftDirectionsRU("Directions RU");
 
-        ShiftRequestDto shiftDto = eventMapper.mapShiftToShiftDto(shift);
+        Event event = new Event();
+        event.setId(2L);
+        event.setNamePL("Event Name PL");
+        event.setNameEN("Event Name EN");
+        event.setNameUA("Event Name UA");
+        event.setNameRU("Event Name RU");
+        event.setDate(LocalDate.now());
+        shift.setEvent(event);
 
-        assertEquals(LocalTime.of(9, 0), shiftDto.getStartTime());
-        assertEquals(LocalTime.of(17, 0), shiftDto.getEndTime());
-        assertEquals(LocalDate.now(), shiftDto.getDate());
-        assertEquals(10, shiftDto.getCapacity());
-        assertTrue(shiftDto.getIsLeaderRequired());
-        assertEquals(18, shiftDto.getRequiredMinAge());
+        Address address = new Address();
+        address.setStreet("Test Street");
+        address.setHomeNum("123");
+        shift.setAddress(address);
+
+        ShiftInfoRespons shiftInfoRespons = eventMapper.toShiftInfoRespons(shift);
+
+        assertEquals(shift.getId(), shiftInfoRespons.getId());
+        assertEquals(shift.getEvent().getDate(), shiftInfoRespons.getDate());
+        assertEquals(shift.getStartTime(), shiftInfoRespons.getStartTime());
+        assertEquals(shift.getEndTime(), shiftInfoRespons.getEndTime());
+        assertEquals(shift.getShiftDirectionsPL(), shiftInfoRespons.getShiftDirectionsPL());
+        assertEquals(shift.getShiftDirectionsEN(), shiftInfoRespons.getShiftDirectionsEN());
+        assertEquals(shift.getShiftDirectionsUA(), shiftInfoRespons.getShiftDirectionsUA());
+        assertEquals(shift.getShiftDirectionsRU(), shiftInfoRespons.getShiftDirectionsRU());
+        assertEquals(shift.getEvent().getId(), shiftInfoRespons.getEventId());
+        assertEquals(shift.getEvent().getNamePL(), shiftInfoRespons.getEventNamePL());
+        assertEquals(shift.getEvent().getNameEN(), shiftInfoRespons.getEventNameEN());
+        assertEquals(shift.getEvent().getNameUA(), shiftInfoRespons.getEventNameUA());
+        assertEquals(shift.getEvent().getNameRU(), shiftInfoRespons.getEventNameRU());
+        assertEquals(shift.getAddress().getStreet() + " " + shift.getAddress().getHomeNum(), shiftInfoRespons.getAddress());
     }
 
     @Test
-    public void testToEventDetailsResponseDto() {
+    public void testToEventResponseDetailsDto() {
+        // Given
         Event event = new Event();
-        event.setName("Test Name");
-        event.setDescription("Test Description");
+        event.setId(1L);
+        event.setNamePL("Test Name PL");
+        event.setNameEN("Test Name EN");
+        event.setNameUA("Test Name UA");
+        event.setNameRU("Test Name RU");
+        event.setDescriptionPL("Test Description PL");
+        event.setDescriptionEN("Test Description EN");
+        event.setDescriptionUA("Test Description UA");
+        event.setDescriptionRU("Test Description RU");
         event.setPeselVerificationRequired(true);
 
         Organisation organisation = new Organisation();
         organisation.setId(1L);
-        organisation.setName("Org Name");
+        organisation.setName("Test Organisation");
         event.setOrganisation(organisation);
 
-        List<CategoryToEvent> categories = new ArrayList<>();
-        Category category1 = new Category();
-        category1.setId(1L);
-        category1.setName("Category 1");
+        event.setDate(java.time.LocalDate.now());
 
-        Category category2 = new Category();
-        category2.setId(2L);
-        category2.setName("Category 2");
+        City city = new City();
+        city.setName("Test City");
+        event.setCity(city);
 
-        CategoryToEvent categoryToEvent1 = new CategoryToEvent();
-        categoryToEvent1.setCategory(category1);
-
-        CategoryToEvent categoryToEvent2 = new CategoryToEvent();
-        categoryToEvent2.setCategory(category2);
-
-        categories.add(categoryToEvent1);
-        categories.add(categoryToEvent2);
-        event.setCategories(categories);
+        event.setImageUrl("https://example.com/image.jpg");
 
         List<Shift> shifts = new ArrayList<>();
+        event.setShifts(shifts);
 
-        Shift shift1 = new Shift();
-        shift1.setStartTime(LocalTime.of(18, 0));
-        shift1.setEndTime(LocalTime.of(23, 0));
-        shifts.add(shift1);
+        List<CategoryToEvent> categories = new ArrayList<>();
+        event.setCategories(categories);
 
-        Shift shift2 = new Shift();
-        shift2.setStartTime(LocalTime.of(9, 0));
-        shift2.setEndTime(LocalTime.of(17, 0));
-        shifts.add(shift2);
-
-        event.setImageUrl("http://example.com/image.jpg");
-
+        // When
         EventResponseDetailsDto eventResponseDetailsDto = eventMapper.toEventResponseDetailsDto(event);
 
-        assertEquals("Test Name", eventResponseDetailsDto.getName());
+        // Then
+        assertEquals(1L, eventResponseDetailsDto.getId());
+        assertEquals("Test Name PL", eventResponseDetailsDto.getNamePL());
+        assertEquals("Test Name EN", eventResponseDetailsDto.getNameEN());
+        assertEquals("Test Name UA", eventResponseDetailsDto.getNameUA());
+        assertEquals("Test Name RU", eventResponseDetailsDto.getNameRU());
+        assertEquals("Test Description PL", eventResponseDetailsDto.getDescriptionPL());
+        assertEquals("Test Description EN", eventResponseDetailsDto.getDescriptionEN());
+        assertEquals("Test Description UA", eventResponseDetailsDto.getDescriptionUA());
+        assertEquals("Test Description RU", eventResponseDetailsDto.getDescriptionRU());
         assertEquals(1L, eventResponseDetailsDto.getOrganisationId());
-        assertEquals("Org Name", eventResponseDetailsDto.getOrganisationName());
+        assertEquals("Test Organisation", eventResponseDetailsDto.getOrganisationName());
+        assertEquals(java.time.LocalDate.now(), eventResponseDetailsDto.getDate());
         assertTrue(eventResponseDetailsDto.isPeselVerificationRequired());
-        assertEquals("http://example.com/image.jpg", eventResponseDetailsDto.getImageUrl());
-        assertEquals(4, eventResponseDetailsDto.getShifts().size());
-        assertEquals(2, eventResponseDetailsDto.getCategories().size());
+        assertEquals("https://example.com/image.jpg", eventResponseDetailsDto.getImageUrl());
+        assertEquals(shifts.size(), eventResponseDetailsDto.getShifts().size());
+        assertEquals(categories.size(), eventResponseDetailsDto.getCategories().size());
+        assertEquals("Test City", eventResponseDetailsDto.getCity());
     }
 
     @Test
-    public void testToEvent(){
-        EventRequestDto dtoEvent = new EventRequestDto();
-        dtoEvent.setName("Test Name");
-        dtoEvent.setDescription("Test Description");
-        dtoEvent.setPeselVerificationRequired(true);
-        dtoEvent.setAgreementNeeded(true);
-        dtoEvent.setImageUrl("http://example.com/image.jpg");
+    public void testToShiftResponseDto() {
+        // Given
+        Shift shift = new Shift();
+        shift.setId(1L);
+        shift.setStartTime(LocalTime.of(9, 0));
+        shift.setEndTime(LocalTime.of(17, 0));
+        shift.setCapacity(10);
+        shift.setLeaderRequired(true);
+        shift.setRequiredMinAge(18);
+        shift.setRegisteredUsers(5);
 
-        Event event = eventMapper.toEvent(dtoEvent).build();
-        assertEquals("Test Name", event.getName());
-        assertEquals("Test Description", event.getDescription());
-        assertTrue(event.isPeselVerificationRequired());
-        assertTrue(event.isAgreementNeeded());
-        assertEquals("http://example.com/image.jpg", event.getImageUrl());
+        Event event = new Event();
+        event.setId(2L);
+        event.setNamePL("Event Name PL");
+        event.setNameEN("Event Name EN");
+        event.setNameUA("Event Name UA");
+        event.setNameRU("Event Name RU");
+        event.setDate(LocalDate.now());
+        shift.setEvent(event);
+
+        District district = new District();
+        district.setName("Test District");
+
+        Address address = new Address();
+        address.setStreet("Test Street");
+        address.setHomeNum("123");
+        address.setDistrict(district);
+        shift.setAddress(address);
+
+        shift.setShiftDirectionsPL("Directions PL");
+        shift.setShiftDirectionsEN("Directions EN");
+        shift.setShiftDirectionsUA("Directions UA");
+        shift.setShiftDirectionsRU("Directions RU");
+
+        City city = new City();
+        city.setName("Test City");
+        event.setCity(city);
+
+        ShiftResponseDto shiftResponseDto = eventMapper.toShiftResponseDto(shift);
+
+        assertEquals(shift.getId(), shiftResponseDto.getShiftId());
+        assertEquals(shift.getEvent().getId(), shiftResponseDto.getEventId());
+        assertEquals(shift.getEvent().getNamePL(), shiftResponseDto.getEventNamePL());
+        assertEquals(shift.getEvent().getNameEN(), shiftResponseDto.getEventNameEN());
+        assertEquals(shift.getEvent().getNameUA(), shiftResponseDto.getEventNameUA());
+        assertEquals(shift.getEvent().getNameRU(), shiftResponseDto.getEventNameRU());
+        assertEquals(shift.getEvent().getDate(), shiftResponseDto.getDate());
+        assertEquals(shift.getStartTime(), shiftResponseDto.getStartTime());
+        assertEquals(shift.getEndTime(), shiftResponseDto.getEndTime());
+        assertEquals(shift.getCapacity(), shiftResponseDto.getCapacity());
+        assertEquals(shift.isLeaderRequired(), shiftResponseDto.isLeaderRequired());
+        assertEquals(shift.getRequiredMinAge(), shiftResponseDto.getRequiredMinAge());
+        assertEquals(shift.getRegisteredUsers(), shiftResponseDto.getRegisteredUsers());
+        assertEquals(shift.getAddress().getDistrict().getName(), shiftResponseDto.getDistrict());
+        assertEquals(shift.getAddress().getStreet(), shiftResponseDto.getStreet());
+        assertEquals(shift.getAddress().getHomeNum(), shiftResponseDto.getHomeNum());
+        assertEquals(shift.getShiftDirectionsPL(), shiftResponseDto.getShiftDirectionsPL());
+        assertEquals(shift.getShiftDirectionsEN(), shiftResponseDto.getShiftDirectionsEN());
+        assertEquals(shift.getShiftDirectionsUA(), shiftResponseDto.getShiftDirectionsUA());
+        assertEquals(shift.getShiftDirectionsRU(), shiftResponseDto.getShiftDirectionsRU());
+        assertEquals(shift.getEvent().getCity().getName(), shiftResponseDto.getCity());
     }
 
-     */
+    @Test
+    public void testToEvent() {
+        EventRequestDto dtoEvent = new EventRequestDto();
+        dtoEvent.setDate(LocalDate.now());
+        dtoEvent.setPeselVerificationRequired(true);
+        dtoEvent.setAgreementNeeded(true);
+        dtoEvent.setImageUrl("https://example.com/image.jpg");
+        dtoEvent.setCityId(1L);
+
+        EventTranslationResponse translation = new EventTranslationResponse();
+        translation.setNamePL("Name PL");
+        translation.setNameEN("Name EN");
+        translation.setNameUA("Name UA");
+        translation.setNameRU("Name RU");
+        translation.setDescriptionPL("Description PL");
+        translation.setDescriptionEN("Description EN");
+        translation.setDescriptionUA("Description UA");
+        translation.setDescriptionRU("Description RU");
+
+        Event.EventBuilder eventBuilder = eventMapper.toEvent(dtoEvent, translation);
+
+        Event event = eventBuilder.build();
+        assertEquals(LocalDate.now(), event.getDate());
+        assertTrue(event.isPeselVerificationRequired());
+        assertTrue(event.isAgreementNeeded());
+        assertEquals("https://example.com/image.jpg", event.getImageUrl());
+        assertEquals("Name PL", event.getNamePL());
+        assertEquals("Name EN", event.getNameEN());
+        assertEquals("Name UA", event.getNameUA());
+        assertEquals("Name RU", event.getNameRU());
+        assertEquals("Description PL", event.getDescriptionPL());
+        assertEquals("Description EN", event.getDescriptionEN());
+        assertEquals("Description UA", event.getDescriptionUA());
+        assertEquals("Description RU", event.getDescriptionRU());
+    }
+
+    @Test
+    public void testToReport() {
+        ReportRequestDto reportDto = new ReportRequestDto();
+        reportDto.setPublished(true);
+
+        ReportTranslationResponce translation = new ReportTranslationResponce();
+        translation.setReportPL("Report PL");
+        translation.setReportEN("Report EN");
+        translation.setReportUA("Report UA");
+        translation.setReportRU("Report RU");
+
+        Report.ReportBuilder reportBuilder = eventMapper.toReport(reportDto, translation);
+
+        Report report = reportBuilder.build();
+        assertEquals("Report PL", report.getReportPL());
+        assertEquals("Report EN", report.getReportEN());
+        assertEquals("Report UA", report.getReportUA());
+        assertEquals("Report RU", report.getReportRU());
+        assertTrue(report.isPublished());
+    }
+
+    @Test
+    public void testToReportResponceDto() {
+        Report report = new Report();
+        report.setId(1L);
+        report.setPublished(true);
+        report.setReportPL("Report PL");
+        report.setReportEN("Report EN");
+        report.setReportUA("Report UA");
+        report.setReportRU("Report RU");
+
+        Event event = new Event();
+        event.setId(2L);
+        report.setEvent(event);
+
+        ReportResponceDto reportResponceDto = eventMapper.toReportResponceDto(report);
+
+        assertEquals(report.getId(), reportResponceDto.getId());
+        assertEquals(report.getEvent().getId(), reportResponceDto.getEvent());
+        assertEquals(report.isPublished(), reportResponceDto.isPublished());
+        assertEquals(report.getReportPL(), reportResponceDto.getReportPL());
+        assertEquals(report.getReportEN(), reportResponceDto.getReportEN());
+        assertEquals(report.getReportUA(), reportResponceDto.getReportUA());
+        assertEquals(report.getReportRU(), reportResponceDto.getReportRU());
+    }
+
+    @Test
+    public void testToEventTranslationDto() {
+        ShiftRequestDto shiftDto = new ShiftRequestDto();
+        shiftDto.setShiftDirections("Shift Directions");
+
+        EventRequestDto dtoEvent = new EventRequestDto();
+        dtoEvent.setName("Event Name");
+        dtoEvent.setDescription("Event Description");
+        dtoEvent.setImageUrl("https://example.com/image.jpg");
+        dtoEvent.setShifts(Collections.singletonList(shiftDto));
+
+        String language = "EN";
+
+        EventTranslationRequest translation = eventMapper.toEventTranslationDto(dtoEvent, language);
+
+        assertEquals(dtoEvent.getName(), translation.getName());
+        assertEquals(dtoEvent.getDescription(), translation.getDescription());
+        assertEquals(dtoEvent.getImageUrl(), translation.getImageUrl());
+        assertEquals(shiftDto.getShiftDirections(), translation.getShiftDirections().get(0));
+        assertEquals(language, translation.getLanguage());
+    }
 }
