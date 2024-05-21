@@ -41,12 +41,6 @@ public class EventServiceTests {
     private EventUpdater eventUpdater;
 
     @Mock
-    private OrganisationService organisationService;
-
-    @Mock
-    private CategoryService categoryService;
-
-    @Mock
     private CategoryToEventService categoryToEventService;
 
     @Mock

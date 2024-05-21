@@ -12,10 +12,15 @@ import pl.pjwstk.woloappapi.model.entities.Privilege;
 import pl.pjwstk.woloappapi.model.entities.Role;
 import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,20 +28,18 @@ public class RoleServiceTests {
 
     @Mock
     private RoleRepository roleRepository;
-
     @InjectMocks
     private RoleService roleService;
-
     @Test
     public void testGetAllRoles(){
-        Role role1 = new Role();
-        Role role2 = new Role();
+        List<Role> roles = List.of(new Role(), new Role());
+        when(roleRepository.findAll()).thenReturn(roles);
 
-        when(roleRepository.findAll()).thenReturn(Arrays.asList(role1, role2));
+        List<Role> result = roleService.getAllRoles();
 
-        List<Role> actualRoles = roleService.getAllRoles();
-
-        assertEquals(2, actualRoles.size());
+        assertEquals(roles.size(), result.size());
+        assertEquals(roles, result);
+        verify(roleRepository, times(1)).findAll();
     }
 
     @Test
@@ -48,6 +51,20 @@ public class RoleServiceTests {
         Role retrievedRole = roleService.getRoleById(1L);
 
         assertEquals(role.getId(), retrievedRole.getId());
+        verify(roleRepository, times(1)).findById(role.getId());
+    }
+
+    @Test
+    void testGetRoleById_NotFound() {
+        Long roleId = 1L;
+        when(roleRepository.findById(roleId)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(NotFoundException.class, () -> {
+            roleService.getRoleById(roleId);
+        });
+
+        assertEquals("Role id not found!", exception.getMessage());
+        verify(roleRepository, times(1)).findById(roleId);
     }
 
     @Test
@@ -58,6 +75,7 @@ public class RoleServiceTests {
 
         Role retrievedRole = roleService.getRoleByName("Test Role");
         assertEquals(role.getName(), retrievedRole.getName());
+        verify(roleRepository, times(1)).findByName(role.getName());
     }
 
     @Test
@@ -96,7 +114,7 @@ public class RoleServiceTests {
     }
 
     @Test
-    public void testUpdateCategory() {
+    public void testUpdateRole() {
         Role oldRole = new Role();
         oldRole.setId(1L);
         oldRole.setName("Old Role Name");
@@ -114,6 +132,7 @@ public class RoleServiceTests {
         Role capturedRole = roleCaptor.getValue();
         assertEquals(1L, capturedRole.getId());
         assertEquals("New Role Name", capturedRole.getName());
+        verify(roleRepository, times(1)).findById(oldRole.getId());
     }
 
     @Test
@@ -128,5 +147,35 @@ public class RoleServiceTests {
 
         verify(roleRepository, times(1)).findById(1L);
         verify(roleRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteRole_UserRole() {
+        var roleId = 1L;
+        var role = Role.builder()
+                .id(roleId)
+                .name("USER")
+                .build();
+
+        when(roleRepository.findById(roleId)).thenReturn(Optional.of(role));
+
+        var exception = assertThrows(IllegalArgumentException.class, () -> {
+            roleService.deleteRole(roleId);
+        });
+
+        assertEquals("Can't delete role User", exception.getMessage());
+        verify(roleRepository, times(1)).findById(roleId);
+        verify(roleRepository, times(0)).deleteById(roleId);
+    }
+
+    @Test
+    void testDeleteRole_NotFound() {
+        Long roleId = 1L;
+        when(roleRepository.findById(roleId)).thenReturn(Optional.empty());
+
+        roleService.deleteRole(roleId);
+
+        verify(roleRepository, times(1)).findById(roleId);
+        verify(roleRepository, times(0)).deleteById(roleId);
     }
 }

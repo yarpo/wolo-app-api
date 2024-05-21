@@ -6,13 +6,16 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.OrganisationEditRequestDto;
+import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
 import pl.pjwstk.woloappapi.model.entities.*;
 import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationResponce;
+import pl.pjwstk.woloappapi.repository.AddressRepository;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.OrganisationMapper;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,16 +29,19 @@ import static org.mockito.Mockito.*;
 public class OrganisationServiceTests {
 
     @Mock
-    private DistrictService districtService;
+    private OrganisationRepository organisationRepository;
 
     @Mock
     private OrganisationMapper organisationMapper;
 
     @Mock
+    private DistrictService districtService;
+
+    @Mock
     private UserRepository userRepository;
 
     @Mock
-    private OrganisationRepository organisationRepository;
+    private AddressRepository addressRepository;
 
     @InjectMocks
     private OrganisationService organisationService;
@@ -65,7 +71,7 @@ public class OrganisationServiceTests {
     }
 
     @Test
-    public void testCreateOrganisation(){
+    public void testCreateOrganisation() {
         OrganisationRequestDto organisationRequestDto = new OrganisationRequestDto();
         organisationRequestDto.setName("Test Name");
         organisationRequestDto.setDescription("Test Description");
@@ -83,25 +89,29 @@ public class OrganisationServiceTests {
         translationResponce.setDescriptionUA("Test Description ua");
         translationResponce.setDescriptionRU("Test Description ru");
 
-        when(organisationMapper.toAddress(organisationRequestDto)).thenReturn(Address.builder()
+        District district = new District();
+        district.setId(1L);
+        when(districtService.getDistrictById(1L)).thenReturn(district);
+
+        var address = Address.builder()
                 .street(organisationRequestDto.getStreet())
-                .homeNum(organisationRequestDto.getHomeNum()));
+                .homeNum(organisationRequestDto.getHomeNum())
+                .build();
+        when(addressRepository.save(any())).thenReturn(address);
 
-
+        when(organisationMapper.toAddress(organisationRequestDto)).thenReturn(address.builder());
         when(organisationMapper.toOrganisation(organisationRequestDto, translationResponce)).thenReturn(Organisation.builder()
                 .name(organisationRequestDto.getName())
                 .descriptionPL(translationResponce.getDescriptionPL())
                 .email(organisationRequestDto.getEmail())
                 .phoneNumber(organisationRequestDto.getPhoneNumber())
+                .address(address)
                 .isApproved(true)
                 .logoUrl(organisationRequestDto.getLogoUrl()));
 
-        District district = new District();
-        district.setId(1L);
-        when(districtService.getDistrictById(1L)).thenReturn(district);
-
         User user = new User();
         user.setId(1L);
+        user.setRoles(new ArrayList<>());
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         organisationService.createOrganisation(translationResponce, organisationRequestDto);
@@ -120,6 +130,7 @@ public class OrganisationServiceTests {
         assertTrue(capturedOrganisation.isApproved());
         assertEquals("http://example.com/logo", capturedOrganisation.getLogoUrl());
 
+        verify(userRepository).save(user);
     }
 
     @Test
@@ -145,26 +156,83 @@ public class OrganisationServiceTests {
     }
 
     @Test
-    public void testGetEventsByOrganisation() {
+    void testGetEventsByOrganisation() {
+        Long organisationId = 1L;
         Organisation organisation = new Organisation();
-        organisation.setId(1L);
-
-        List<Event> events = new ArrayList<>();
-        Event event1 = new Event();
-        event1.setId(1L);
-        Event event2 = new Event();
-        event2.setId(2L);
+        List<Event> events = List.of(new Event(), new Event());
         organisation.setEvents(events);
 
-        when(organisationRepository.findById(1L)).thenReturn(Optional.of(organisation));
+        when(organisationRepository.findById(organisationId)).thenReturn(Optional.of(organisation));
 
-        List<Event> eventsByOrganisation = organisationService.getEventsByOrganisation(1L);
+        List<Event> result = organisationService.getEventsByOrganisation(organisationId);
 
-        verify(organisationRepository, times(1)).findById(1L);
-
-        assertEquals(events, eventsByOrganisation);
+        assertEquals(events.size(), result.size());
+        assertEquals(events, result);
+        verify(organisationRepository, times(1)).findById(organisationId);
     }
 
+    @Test
+    void testGetPastEventsByOrganisation() {
+        Long organisationId = 1L;
+        Organisation organisation = new Organisation();
+
+        Event pastEvent = new Event();
+        pastEvent.setDate(LocalDate.now().minusDays(1));
+        Shift pastShift = new Shift();
+        pastShift.setEvent(pastEvent);
+        pastEvent.setShifts(List.of(pastShift));
+
+        Event futureEvent = new Event();
+        futureEvent.setDate(LocalDate.now().plusDays(1));
+        Shift futureShift = new Shift();
+        futureShift.setEvent(futureEvent);
+        futureEvent.setShifts(List.of(futureShift));
+
+        organisation.setEvents(List.of(pastEvent, futureEvent));
+
+        when(organisationRepository.findById(organisationId)).thenReturn(Optional.of(organisation));
+
+        List<Event> result = organisationService.getPastEventsByOrganisation(organisationId);
+
+        assertEquals(1, result.size());
+        assertEquals(pastEvent, result.get(0));
+        verify(organisationRepository, times(1)).findById(organisationId);
+    }
+
+    @Test
+    void testGetFutureAndNowEventsByOrganisation() {
+        Long organisationId = 1L;
+        Organisation organisation = new Organisation();
+
+        Event pastEvent = new Event();
+        pastEvent.setDate(LocalDate.now().minusDays(1));
+        Shift pastShift = new Shift();
+        pastShift.setEvent(pastEvent);
+        pastEvent.setShifts(List.of(pastShift));
+
+        Event futureEvent = new Event();
+        futureEvent.setDate(LocalDate.now().plusDays(1));
+        Shift futureShift = new Shift();
+        futureShift.setEvent(futureEvent);
+        futureEvent.setShifts(List.of(futureShift));
+
+        Event nowEvent = new Event();
+        nowEvent.setDate(LocalDate.now());
+        Shift nowShift = new Shift();
+        nowShift.setEvent(nowEvent);
+        nowEvent.setShifts(List.of(nowShift));
+
+        organisation.setEvents(List.of(pastEvent, futureEvent, nowEvent));
+
+        when(organisationRepository.findById(organisationId)).thenReturn(Optional.of(organisation));
+
+        List<Event> result = organisationService.getFutureAndNowEventsByOrganisation(organisationId);
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(futureEvent));
+        assertTrue(result.contains(nowEvent));
+        verify(organisationRepository, times(1)).findById(organisationId);
+    }
     @Test
     public void testApprove() {
         Organisation organisation = new Organisation();

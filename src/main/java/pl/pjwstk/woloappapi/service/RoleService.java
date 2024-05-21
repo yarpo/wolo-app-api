@@ -5,9 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.entities.Role;
 import pl.pjwstk.woloappapi.repository.RoleRepository;
-import pl.pjwstk.woloappapi.repository.UserRepository;
-import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.List;
 
@@ -15,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleService {
     private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
 
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
