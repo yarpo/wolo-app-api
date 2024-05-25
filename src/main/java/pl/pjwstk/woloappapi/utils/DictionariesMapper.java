@@ -5,10 +5,8 @@ import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.admin.CityResponseAdminDto;
 import pl.pjwstk.woloappapi.model.admin.DistrictResponseAdminDto;
-import pl.pjwstk.woloappapi.model.entities.Category;
-import pl.pjwstk.woloappapi.model.entities.City;
-import pl.pjwstk.woloappapi.model.entities.District;
-import pl.pjwstk.woloappapi.model.entities.Role;
+import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.model.translation.FAQTranslationResponse;
 
 @Component
 @RequiredArgsConstructor
@@ -86,5 +84,44 @@ public class DictionariesMapper {
         return Role.builder()
                 .id(roleDto.getId())
                 .name(roleDto.getName());
+    }
+
+    public FAQResponseDto toFAQDto(FAQ faq){
+        FAQResponseDto faqResponseDto = new FAQResponseDto();
+        faqResponseDto.setId(faq.getId());
+        faqResponseDto.setQuestionPL(faq.getQuestionPL());
+        faqResponseDto.setAnswerPL(faq.getAnswerPL());
+        faqResponseDto.setQuestionEN(faq.getQuestionEN());
+        faqResponseDto.setAnswerEN(faq.getAnswerEN());
+        faqResponseDto.setQuestionUA(faq.getQuestionUA());
+        faqResponseDto.setAnswerUA(faq.getAnswerUA());
+        faqResponseDto.setQuestionRU(faq.getQuestionRU());
+        faqResponseDto.setAnswerRU(faq.getAnswerRU());
+        return faqResponseDto;
+    }
+
+    public FAQ.FAQBuilder toFAQ(FAQEditRequestDto faqRequestDto){
+        return FAQ.builder()
+                .id(faqRequestDto.getId())
+                .questionPL(faqRequestDto.getQuestionPL())
+                .answerPL(faqRequestDto.getAnswerPL())
+                .questionEN(faqRequestDto.getQuestionEN())
+                .answerEN(faqRequestDto.getAnswerEN())
+                .questionUA(faqRequestDto.getQuestionUA())
+                .answerUA(faqRequestDto.getAnswerUA())
+                .questionRU(faqRequestDto.getQuestionRU())
+                .answerRU(faqRequestDto.getAnswerRU());
+    }
+
+    public FAQ.FAQBuilder toFAQTranslation(FAQTranslationResponse translation){
+        return FAQ.builder()
+                .questionPL(translation.getQuestionPL())
+                .answerPL(translation.getAnswerPL())
+                .questionEN(translation.getQuestionEN())
+                .answerEN(translation.getAnswerEN())
+                .questionUA(translation.getQuestionUA())
+                .answerUA(translation.getAnswerUA())
+                .questionRU(translation.getQuestionRU())
+                .answerRU(translation.getAnswerRU());
     }
 }
