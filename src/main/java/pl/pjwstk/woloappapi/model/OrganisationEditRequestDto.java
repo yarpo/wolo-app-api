@@ -56,9 +56,6 @@ public class OrganisationEditRequestDto {
     @NotNull(message = "City must be chosen")
     private Long cityId;
 
-    @NotNull(message = "Moderator must be chosen")
-    private Long moderatorId;
-
     @Size(max = 255, message = "Logo Url cannot exceed 255 characters")
     private String logoUrl;
 }
