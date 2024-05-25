@@ -190,7 +190,7 @@ public class UserServiceTests {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(shiftService.getShiftById(1L)).thenReturn(shift);
 
-        userService.joinEvent(1L, 1L);
+        userService.joinEvent(1L, 1L, false);
 
         assertEquals(6, shift.getRegisteredUsers());
         assertEquals(1, shift.getShiftToUsers().size());
@@ -211,7 +211,7 @@ public class UserServiceTests {
         when(shiftService.getShiftById(1L)).thenReturn(shift);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.joinEvent(1L, 1L);
+            userService.joinEvent(1L, 1L, false);
         });
 
         assertEquals("The event is fully booked", exception.getMessage());
@@ -299,7 +299,7 @@ public class UserServiceTests {
         Shift shift = new Shift();
         shift.setId(1L);
 
-        ShiftToUser shiftToUser1 = new ShiftToUser(user1, shift);
+        ShiftToUser shiftToUser1 = new ShiftToUser(user1, shift, false);
         shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser1)));
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
@@ -320,7 +320,7 @@ public class UserServiceTests {
         Shift shift = new Shift();
         shift.setId(1L);
 
-        ShiftToUser shiftToUser1 = new ShiftToUser(user, shift);
+        ShiftToUser shiftToUser1 = new ShiftToUser(user, shift, false);
         shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser1)));
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));

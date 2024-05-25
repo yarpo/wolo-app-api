@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.UserRequestDto;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
+import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
@@ -99,13 +100,13 @@ public class UserService {
     }
 
     @Transactional
-    public void joinEvent(Long userId, Long shiftId) {
+    public void joinEvent(Long userId, Long shiftId, Boolean isReserve) {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         var shift = shiftService.getShiftById(shiftId);
         if (shift.getEvent().getDate().isAfter(LocalDate.now())) {
             if (shift.getCapacity() > shift.getRegisteredUsers()) {
-                var shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift));
+                var shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift, isReserve));
                 shift.getShiftToUsers().add(shiftToUser);
                 shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
                 shiftService.editShift(shift);
@@ -159,17 +160,33 @@ public class UserService {
                         .filter(stu -> stu.getUser().getId().equals(userId))
                         .findFirst()
                         .orElseThrow();
-
+                if(!shiftToUser.isOnReserveList()) {
+                    var assigned = assignFromReserve(shift);
+                    if(!assigned) {
+                        shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
+                    }
+                }
                 shift.getShiftToUsers().remove(shiftToUser);
-                shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
                 shiftService.editShift(shift);
                 shiftToUserRepository.delete(shiftToUser);
+
             }else {
                 throw new IllegalArgumentException("This user is not assigned to shift with id " + shiftId);
             }
         }else{
             throw new IllegalArgumentException("Can't refuse take part in event that has already taken place");
         }
+    }
+
+    private boolean assignFromReserve(Shift shift) {
+        var reserveShiftToUser = shift.getShiftToUsers().stream()
+                .filter(ShiftToUser::isOnReserveList)
+                .findFirst();
+        reserveShiftToUser.ifPresent(stu -> {
+            stu.setOnReserveList(false);
+            shiftToUserRepository.save(stu);
+        });
+        return false;
     }
 
     public List<User> getUsersByShift(Long shift) {

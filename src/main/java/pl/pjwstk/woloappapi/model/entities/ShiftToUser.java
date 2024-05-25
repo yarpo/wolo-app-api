@@ -40,8 +40,9 @@ public class ShiftToUser {
                 '}';
     }
 
-    public ShiftToUser(User user, Shift shift) {
+    public ShiftToUser(User user, Shift shift, Boolean isReserve) {
         this.shift =shift;
         this.user = user;
+        this.isOnReserveList = isReserve;
     }
 }

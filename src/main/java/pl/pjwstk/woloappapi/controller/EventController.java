@@ -60,10 +60,11 @@ public class EventController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<HttpStatus> joinEvent(@RequestParam(value = "shift") Long shiftId){
+    public ResponseEntity<HttpStatus> joinEvent(@RequestParam(value = "shift") Long shiftId,
+                                                @RequestParam(value = "reserve") Boolean isReserve){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userId = userService.getCurrentUser(authentication).getId();
-        userService.joinEvent(userId, shiftId);
+        userService.joinEvent(userId, shiftId, isReserve);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
