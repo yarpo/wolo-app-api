@@ -1,5 +1,6 @@
 package pl.pjwstk.woloappapi.service;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

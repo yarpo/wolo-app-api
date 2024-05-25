@@ -320,7 +320,6 @@ public class UserServiceTests {
         ShiftToUser shiftToUser1 = new ShiftToUser(user, shift, false);
         shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser1)));
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(shiftService.getShiftById(1L)).thenReturn(shift);
         doNothing().when(shiftToUserRepository).delete(any());
 
@@ -342,13 +341,12 @@ public class UserServiceTests {
                 .id(1L)
                 .event(event)
                 .build();
-        var shiftToUser = new ShiftToUser(user, shift);
+        var shiftToUser = new ShiftToUser(user, shift, false);
         shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser)));
 
         ShiftToUser shiftToUser1 = new ShiftToUser(user, shift, false);
         shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser1)));
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(shiftService.getShiftById(1L)).thenReturn(shift);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
@@ -426,7 +424,7 @@ public class UserServiceTests {
                 .shifts(new ArrayList<>())
                 .build();
 
-        var shiftToUser = new ShiftToUser(user, existingShift);
+        var shiftToUser = new ShiftToUser(user, existingShift, false);
 
         user.getShifts().add(shiftToUser);
 

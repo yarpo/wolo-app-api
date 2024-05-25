@@ -29,7 +29,7 @@ public class PDFGenerationServiceTest {
         when(mockUser.getLastName()).thenReturn("Doe");
         when(mockUser.getEmail()).thenReturn("john.doe@example.com");
         when(mockUser.getPhoneNumber()).thenReturn("123456789");
-        when(mockShift.getShiftToUsers()).thenReturn(List.of(new ShiftToUser(mockUser, null)));
+        when(mockShift.getShiftToUsers()).thenReturn(List.of(new ShiftToUser(mockUser, null, false)));
 
         PDFGenerationService pdfGenerationService = new PDFGenerationService();
 
