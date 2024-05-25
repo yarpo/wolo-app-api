@@ -1,9 +1,10 @@
 package pl.pjwstk.woloappapi.mapper;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.pjwstk.woloappapi.model.ShiftResponseDto;
 import pl.pjwstk.woloappapi.model.UserResponseDto;
 import pl.pjwstk.woloappapi.model.UserShortResponse;
 import pl.pjwstk.woloappapi.model.entities.*;
@@ -13,7 +14,7 @@ import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,15 +23,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserMapperTests {
-
-    private DistrictService districtService;
-    private CityService cityService;
     private EventMapper eventMapper;
+    private UserMapper userMapper;
+
+    @BeforeEach
+    public void setup() {
+        DistrictService districtService = Mockito.mock(DistrictService.class);
+        CityService cityService = Mockito.mock(CityService.class);
+        eventMapper = new EventMapper(districtService, cityService);
+        userMapper = new UserMapper(eventMapper);
+    }
 
     @Test
-    public void testToUserResponseDto(){
-        EventMapper eventMapper = new EventMapper(districtService, cityService);
-        UserMapper userMapper = new UserMapper(eventMapper);
+    public void testToUserResponseDto() {
         User user = new User();
         user.setId(1L);
         user.setFirstName("Test Firstname");
@@ -54,13 +59,14 @@ public class UserMapperTests {
 
         user.setOrganisation(organisation);
 
-        Event event = new Event();
-        Address address = new Address();
-
         Shift shift = new Shift();
         shift.setId(1L);
-        shift.setEvent(event);
+        Address address = new Address();
+        address.setStreet("Test Street");
         shift.setAddress(address);
+        Event event = new Event();
+        event.setDate(LocalDate.now());
+        shift.setEvent(event);
 
         ShiftToUser shiftToUser = new ShiftToUser();
         shiftToUser.setId(1L);
@@ -86,51 +92,6 @@ public class UserMapperTests {
         assertEquals("Organisation Name", userResponseDto.getOrganisationName());
         assertEquals(1, userResponseDto.getShifts().size());
     }
-	/*
-
-    @Test
-    public void testToShiftResponseDto(){
-        EventMapper eventMapper = new EventMapper(districtService, cityService);
-        Event event = new Event();
-        event.setNameEN("Test Event");
-        event.setId(1L);
-
-        User user = new User();
-        user.setId(1L);
-
-        Shift shift = new Shift();
-        shift.setId(1L);
-        shift.setEvent(event);
-        shift.setStartTime(LocalTime.of(9, 0));
-        shift.setEndTime(LocalTime.of(17, 0));
-
-        shift.setLeaderRequired(true);
-        shift.setRequiredMinAge(18);
-        shift.setRegisteredUsers(1);
-        shift.setShiftDirectionsEN("Test Directions");
-
-        District district = new District();
-        district.setName("Test Name");
-
-        Address address = new Address();
-        address.setStreet("Test Street");
-        address.setHomeNum("123");
-        address.setDistrict(district);
-        shift.setAddress(address);
-
-        ShiftToUser shiftToUser = new ShiftToUser();
-        shiftToUser.setId(1L);
-        shiftToUser.setUser(user);
-        shiftToUser.setShift(shift);
-        ShiftResponseDto shiftResponseDto = eventMapper.toShiftResponseDto(shiftToUser.getShift());
-
-        assertEquals(1L, shiftResponseDto.getShiftId());
-        assertEquals(1L, shiftResponseDto.getEventId());
-        assertEquals(LocalTime.of(9, 0), shiftResponseDto.getStartTime());
-        assertEquals(LocalTime.of(17, 0), shiftResponseDto.getEndTime());
-    }
-	*/
-
     @Test
     public void testToUser(){
         UserMapper userMapper = new UserMapper(eventMapper);

@@ -1,64 +1,86 @@
 package pl.pjwstk.woloappapi.service;
 
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import pl.pjwstk.woloappapi.model.entities.Event;
+import pl.pjwstk.woloappapi.model.EventEditRequestDto;
+import pl.pjwstk.woloappapi.model.EventRequestDto;
+import pl.pjwstk.woloappapi.model.ShiftRequestDto;
+import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.model.translation.EventTranslationResponse;
 import pl.pjwstk.woloappapi.repository.EventRepository;
+import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
+import pl.pjwstk.woloappapi.utils.EmailUtil;
 import pl.pjwstk.woloappapi.utils.EventMapper;
+import pl.pjwstk.woloappapi.utils.EventUpdater;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
-
+@ExtendWith(MockitoExtension.class)
 public class EventServiceTests {
     @Mock
     private EventRepository eventRepository;
 
     @Mock
-    private EventMapper eventMapper;
-
-    @Mock
     private CategoryService categoryService;
 
     @Mock
-    private OrganisationService organisationService;
+    private EventMapper eventMapper;
+
+    @Mock
+    private EventUpdater eventUpdater;
 
     @Mock
     private CategoryToEventService categoryToEventService;
 
     @Mock
-    private ShiftService shiftService;
+    private OrganisationService organisationService;
+
+    @Mock
+    private ShiftToUserRepository shiftToUserRepository;
+
+    @Mock
+    private EmailUtil emailUtil;
 
     @InjectMocks
     private EventService eventService;
 
+    private Event.EventBuilder eventBuilder;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        var shift = new Shift();
+        shift.setId(1L);
+        eventBuilder = Event.builder();
+        eventBuilder.id(1L)
+                    .namePL("Test Event")
+                .shifts(List.of(shift));
     }
 
 
     @Test
-    void testGetEventById() {
+    public void testGetEventById() {
         Long eventId = 1L;
-        Event mockEvent = new Event();
-        mockEvent.setId(eventId);
-        when(eventRepository.findById(eventId)).thenReturn(Optional.of(mockEvent));
+        Event expectedEvent = new Event();
+        when(eventRepository.findById(eventId)).thenReturn(Optional.of(expectedEvent));
 
-        Event result = eventService.getEventById(eventId);
+        Event actualEvent = eventService.getEventById(eventId);
 
-        assertNotNull(result);
-        assertEquals(eventId, result.getId());
+        assertNotNull(actualEvent);
+        assertEquals(expectedEvent, actualEvent);
     }
 
     @Test
@@ -102,7 +124,7 @@ public class EventServiceTests {
 
     @Test
     void testGetTheyNeedYouList_EventsFound() {
-        var thresholdDate = LocalDate.now().minusDays(5);
+        var thresholdDate = LocalDate.now().plusDays(5);
         List<Event> expectedEvents = new ArrayList<>();
         expectedEvents.add(new Event());
         when(eventRepository.findEventsForTheyNeedYou(any(LocalDate.class))).thenReturn(expectedEvents);
@@ -129,5 +151,97 @@ public class EventServiceTests {
 
         assertEquals(nearestEvents.size(), result.size());
         verify(eventRepository, times(1)).findNearestEventsSortedByDate(PageRequest.of(0, 5));
+    }
+
+    @Test
+    public void testCreateEvent() {
+        var translation = new EventTranslationResponse();
+        var eventDto = EventRequestDto.builder()
+                .categories(List.of(1L))
+                .organisationId(1L)
+                .build();
+        var shift = new ShiftRequestDto();
+        eventDto.setShifts(List.of(shift));
+        var shiftBuilder = Shift.builder()
+                .event(eventBuilder.build());
+        var organisation = Organisation.builder()
+                        .id(1L)
+                        .build();
+        var category = Category.builder()
+                        .id(1L)
+                        .build();
+        when(eventMapper.toEvent(any(), any())).thenReturn(eventBuilder);
+        when(eventMapper.toShift(any(), any(), any())).thenReturn(shiftBuilder);
+        when(organisationService.getOrganisationById(anyLong())).thenReturn(organisation);
+        when(categoryService.getCategoryById(anyLong())).thenReturn(category);
+
+        eventService.createEvent(translation, eventDto);
+
+        verify(eventRepository, times(1)).save(any(Event.class));
+        verify(categoryToEventService, times(eventDto.getCategories().size())).createCategoryToEvent(any(CategoryToEvent.class));
+    }
+
+    @Test
+    public void testUpdateEvent() {
+        EventEditRequestDto eventDto = new EventEditRequestDto();
+        Long eventId = 1L;
+        Boolean sendMail = true;
+        eventService.updateEvent(eventDto, eventId, sendMail);
+
+        verify(eventUpdater, times(1)).update(eventDto, eventId, sendMail);
+    }
+
+    @Test
+    void testDeleteEvent_FutureDate() throws MessagingException {
+        long eventId = 1L;
+        Event event = new Event();
+        event.setDate(LocalDate.now().plusDays(1));
+
+        CategoryToEvent category = new CategoryToEvent();
+        category.setId(123L);
+        event.setCategories(Collections.singletonList(category));
+        var user = User.builder().email("email").build();
+        var stu = new ShiftToUser();
+        stu.setUser(user);
+        var shift = Shift.builder().shiftToUsers(List.of(stu)).build();
+        event.setShifts(List.of(shift));
+
+        when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+        doNothing().when(emailUtil).sendDeleteEventMessage(anyString(), anyLong());
+        doNothing().when(shiftToUserRepository).delete(any());
+
+        eventService.deleteEvent(eventId);
+
+        verify(eventRepository, times(1)).findById(eventId);
+        verify(categoryToEventService, times(event.getCategories().size())).deleteCategoryToEvent(category.getId());
+        verify(emailUtil, times(event.getShifts().size())).sendDeleteEventMessage(anyString(), anyLong());
+        verify(shiftToUserRepository, times(event.getShifts().size())).delete(any());
+        verify(eventRepository, times(1)).deleteById(eventId);
+    }
+    @Test
+    void testDeleteEvent_PastDate() throws MessagingException {
+        Long eventId = 1L;
+        Event event = new Event();
+        event.setDate(LocalDate.now().minusDays(1)); // Past date
+        when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+
+        eventService.deleteEvent(eventId);
+
+        verify(eventRepository, times(1)).findById(eventId);
+        verify(categoryToEventService, never()).deleteCategoryToEvent(anyLong());
+        verify(emailUtil, never()).sendDeleteEventMessage(anyString(), eq(eventId));
+        verify(shiftToUserRepository, never()).delete(any());
+        verify(eventRepository, never()).deleteById(eventId);
+    }
+
+    @Test
+    void testDeleteEvent_EventNotFound() {
+        Long eventId = 1L;
+        when(eventRepository.findById(eventId)).thenReturn(Optional.empty());
+
+        eventService.deleteEvent(eventId);
+
+        verify(eventRepository, times(1)).findById(eventId);
+        verifyNoMoreInteractions(categoryToEventService, shiftToUserRepository, emailUtil, eventRepository);
     }
 }

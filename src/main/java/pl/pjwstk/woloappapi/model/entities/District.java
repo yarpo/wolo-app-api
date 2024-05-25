@@ -33,4 +33,13 @@ public class District {
 
     @OneToMany(mappedBy = "district", cascade = CascadeType.ALL)
     private List<Address> addresses;
+
+    @Override
+    public String toString() {
+        return "District{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", cityId=" + (city != null ? city.getId() : "null") +
+                '}';
+    }
 }

@@ -30,6 +30,11 @@ public class EventUpdater {
         Event event = eventRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Event id not found!"));
+        var fieldsChanged = areEventFieldsChanged(event, eventDto);
+        var sendPeselMail = (event.isPeselVerificationRequired() != eventDto.isPeselVerificationRequired() &&
+                eventDto.isPeselVerificationRequired());
+        var sendAgreementMail = (event.isAgreementNeeded() != eventDto.isAgreementNeeded() &&
+                eventDto.isAgreementNeeded());
         event.setNamePL(eventDto.getNamePL());
         event.setNameEN(eventDto.getNameEN());
         event.setNameUA(eventDto.getNameUA());
@@ -44,19 +49,17 @@ public class EventUpdater {
         event.setImageUrl(eventDto.getImageUrl());
         event.setCity(city);
 
-        if (event.isPeselVerificationRequired() != eventDto.isPeselVerificationRequired() &&
-                eventDto.isPeselVerificationRequired()) {
+        if (sendPeselMail) {
             sendEmailsForPeselVerificationRequired(event);
             deleteShiftToUsersForPeselVerification(event);
         }
 
-        if (event.isAgreementNeeded() != eventDto.isAgreementNeeded() &&
-                eventDto.isAgreementNeeded()) {
+        if (sendAgreementMail) {
             sendEmailsForAgreementNeeded(event);
             deleteShiftToUsersForAgreementNeeded(event);
         }
 
-        if (areEventFieldsChanged(event, eventDto) && sendMail) {
+        if (fieldsChanged && sendMail) {
             event.getShifts().stream()
                     .flatMap(shift -> shift.getShiftToUsers().stream())
                     .map(ShiftToUser::getUser)
@@ -212,7 +215,7 @@ public class EventUpdater {
     }
 
     private void updateShiftFields(Shift shift, Shift newShift, Boolean sendMail) {
-
+        boolean fieldsChanged = areShiftFieldsChanged(shift, newShift);
         shift.setStartTime(newShift.getStartTime());
         shift.setEndTime(newShift.getEndTime());
         shift.setLeaderRequired(newShift.isLeaderRequired());
@@ -224,7 +227,7 @@ public class EventUpdater {
         shift.setShiftDirectionsRU(newShift.getShiftDirectionsRU());
         updateShiftAddress(shift, newShift);
 
-        if (areShiftFieldsChanged(shift, newShift) && sendMail) {
+        if (fieldsChanged && sendMail) {
             shift.getShiftToUsers().forEach(stu -> {
                 try {
                     emailUtil.sendEditEventMail(stu.getUser().getEmail(), shift.getEvent().getId());
@@ -276,7 +279,7 @@ public class EventUpdater {
 
     private void updateShiftAddress(Shift shift, Shift newShift) {
         var address = shift.getAddress();
-        var newAddress =newShift.getAddress();
+        var newAddress = newShift.getAddress();
         address.setDistrict(newAddress.getDistrict());
         address.setStreet(newAddress.getStreet());
         address.setHomeNum(newAddress.getHomeNum());

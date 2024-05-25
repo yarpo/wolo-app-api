@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
 import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
+import pl.pjwstk.woloappapi.model.admin.OrganisationResponseAdminDto;
 import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationResponce;
 import pl.pjwstk.woloappapi.model.entities.Address;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(MockitoExtension.class)
 public class OrganisationMapperTests {
 
-    OrganisationMapper organisationMapper = new OrganisationMapper();
+    private final OrganisationMapper organisationMapper = new OrganisationMapper();
 
     @Test
     public void testToOrganisationResponseDto() {
@@ -33,27 +34,63 @@ public class OrganisationMapperTests {
         address.setStreet("Test Street");
         address.setHomeNum("123");
         organisation.setAddress(address);
-        organisation.setLogoUrl("http://example.com/logo");
+        organisation.setLogoUrl("https://example.com/logo");
 
         OrganisationResponseDto responseDto = organisationMapper.toOrganisationResponseDto(organisation);
 
         assertEquals("Test Organisation", responseDto.getName());
         assertEquals("Test Description pl", responseDto.getDescriptionPL());
+        assertEquals("Test Description en", responseDto.getDescriptionEN());
+        assertEquals("Test Description ua", responseDto.getDescriptionUA());
+        assertEquals("Test Description ru", responseDto.getDescriptionRU());
         assertEquals("test@example.com", responseDto.getEmail());
         assertEquals("123456789", responseDto.getPhoneNumber());
         assertEquals("Test Street", responseDto.getStreet());
         assertEquals("123", responseDto.getHomeNum());
-        assertEquals("http://example.com/logo", responseDto.getLogoUrl());
+        assertEquals("https://example.com/logo", responseDto.getLogoUrl());
+    }
+
+    @Test
+    public void testOrganisationResponseAdminDto() {
+        Organisation organisation = new Organisation();
+        organisation.setId(1L);
+        organisation.setName("Sample Organisation");
+        organisation.setDescriptionPL("Description PL");
+        organisation.setDescriptionEN("Description EN");
+        organisation.setDescriptionUA("Description UA");
+        organisation.setDescriptionRU("Description RU");
+        organisation.setEmail("sample@example.com");
+        organisation.setPhoneNumber("123456789");
+        Address address = new Address();
+        address.setStreet("Sample Street");
+        address.setHomeNum("123");
+        organisation.setAddress(address);
+        organisation.setLogoUrl("https://example.com/logo");
+        organisation.setApproved(true);
+
+        OrganisationResponseAdminDto responseAdminDto = organisationMapper.organisationResponseAdminDto(organisation);
+
+        assertEquals(1L, responseAdminDto.getId());
+        assertEquals("Sample Organisation", responseAdminDto.getName());
+        assertEquals("Description PL", responseAdminDto.getDescriptionPL());
+        assertEquals("Description EN", responseAdminDto.getDescriptionEN());
+        assertEquals("Description UA", responseAdminDto.getDescriptionUA());
+        assertEquals("Description RU", responseAdminDto.getDescriptionRU());
+        assertEquals("sample@example.com", responseAdminDto.getEmail());
+        assertEquals("123456789", responseAdminDto.getPhoneNumber());
+        assertEquals("Sample Street", responseAdminDto.getStreet());
+        assertEquals("123", responseAdminDto.getHomeNum());
+        assertEquals("https://example.com/logo", responseAdminDto.getLogoUrl());
+        assertTrue(responseAdminDto.isApproved());
     }
 
     @Test
     public void testToOrganisation() {
         OrganisationRequestDto requestDto = new OrganisationRequestDto();
         requestDto.setName("Test Organisation");
-        requestDto.setDescription("Test Description");
         requestDto.setEmail("test@example.com");
         requestDto.setPhoneNumber("123456789");
-        requestDto.setLogoUrl("http://example.com/logo");
+        requestDto.setLogoUrl("https://example.com/logo");
 
         var translationResponce = new OrganisationTranslationResponce();
         translationResponce.setDescriptionPL("Test Description pl");
@@ -65,12 +102,14 @@ public class OrganisationMapperTests {
 
         assertEquals("Test Organisation", organisation.getName());
         assertEquals("Test Description pl", organisation.getDescriptionPL());
+        assertEquals("Test Description en", organisation.getDescriptionEN());
+        assertEquals("Test Description ua", organisation.getDescriptionUA());
+        assertEquals("Test Description ru", organisation.getDescriptionRU());
         assertEquals("test@example.com", organisation.getEmail());
         assertEquals("123456789", organisation.getPhoneNumber());
         assertTrue(organisation.isApproved());
-        assertEquals("http://example.com/logo", organisation.getLogoUrl());
+        assertEquals("https://example.com/logo", organisation.getLogoUrl());
     }
-
 
     @Test
     public void testToAddress() {

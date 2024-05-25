@@ -7,17 +7,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.entities.Address;
+import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.repository.ShiftRepository;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +41,20 @@ public class ShiftServiceTests {
         Shift retrievedShift = shiftService.getShiftById(1L);
 
         assertEquals(shift.getId(), retrievedShift.getId());
+        verify(shiftRepository, times(1)).findById(shift.getId());
+    }
+
+    @Test
+    void testGetShiftById_NotFound() {
+        long shiftId = 1L;
+        when(shiftRepository.findById(shiftId)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(NotFoundException.class, () -> {
+            shiftService.getShiftById(shiftId);
+        });
+
+        assertEquals("Event id not found!", exception.getMessage());
+        verify(shiftRepository, times(1)).findById(shiftId);
     }
 
     @Test
@@ -78,14 +95,43 @@ public class ShiftServiceTests {
     }
 
     @Test
-    public void testDelete(){
-        Shift shift = new Shift();
+    void testDelete_ShiftInFuture() {
+        long shiftId = 1L;
+        var event = Event.builder()
+                .date(LocalDate.now().plusDays(1))
+                .build();
+        var shift = Shift.builder()
+                .id(shiftId)
+                .event(event)
+                .build();
 
-        when(shiftRepository.findById(1L)).thenReturn(Optional.of(shift));
+        when(shiftRepository.findById(shiftId)).thenReturn(Optional.of(shift));
 
-        shiftService.delete(1L);
+        shiftService.delete(shiftId);
 
-        verify(shiftRepository, times(1)).findById(1L);
-        verify(shiftRepository, times(1)).deleteById(1L);
+        verify(shiftRepository, times(1)).deleteById(shiftId);
     }
+
+
+    @Test
+    void testDelete_ShiftInPast() {
+        long shiftId = 1L;
+        var event = Event.builder()
+                .date(LocalDate.now().minusDays(1))
+                .build();
+        var shift = Shift.builder()
+                .id(shiftId)
+                .event(event)
+                .build();
+
+        when(shiftRepository.findById(shiftId)).thenReturn(Optional.of(shift));
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            shiftService.delete(shiftId);
+        });
+
+        assertEquals("Can't delete shift: it has a past or today's date", exception.getMessage());
+        verify(shiftRepository, times(0)).deleteById(shiftId);
+    }
+
 }
