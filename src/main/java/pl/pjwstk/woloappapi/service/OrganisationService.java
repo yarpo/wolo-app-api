@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.OrganisationEditRequestDto;
 import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
-import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationResponce;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
+import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationResponce;
 import pl.pjwstk.woloappapi.repository.AddressRepository;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
@@ -45,9 +45,9 @@ public class OrganisationService {
         var district = districtService.getDistrictById(organisationDto.getDistrictId());
         var user = userRepository.findById(organisationDto.getModeratorId())
                 .orElseThrow(()-> new NotFoundException("User id not found!"));
-        var address = addressRepository.save(organisationMapper.toAddress(organisationDto)
-                .district(district)
-                .build());
+        var mapAddress = organisationMapper.toAddress(organisationDto).build();
+        var address = addressRepository.save(mapAddress);
+        address.setDistrict(district);
         var organisation = organisationMapper.toOrganisation(organisationDto, translation)
                 .moderator(user)
                 .address(address)

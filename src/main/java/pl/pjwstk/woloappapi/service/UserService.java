@@ -1,6 +1,5 @@
 package pl.pjwstk.woloappapi.service;
 
-import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -139,6 +138,8 @@ public class UserService {
             return "You can't join this shift because PESEL verification is required";
         }else if(shift.getEvent().isAgreementNeeded() && !user.isAgreementSigned()){
             return "You can't join this shift because volunteers agreement is required";
+        }else if(shift.getEvent().getDate().isBefore(LocalDate.now())){
+            throw new IllegalArgumentException("Can't join  event that has already taken place");
         }else{
             return "OK";
         }
@@ -149,19 +150,14 @@ public class UserService {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         var shift = shiftService.getShiftById(shiftId);
-        if (shift.getEvent().getDate().isAfter(LocalDate.now())) {
-            if (shift.getCapacity() > shift.getRegisteredUsers()) {
-                var shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift, isReserve));
-                shift.getShiftToUsers().add(shiftToUser);
-                shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
-                shiftService.editShift(shift);
-            } else {
-                throw new IllegalArgumentException("The event is fully booked");
-            }
-        }else{
-            throw new IllegalArgumentException("Can't join  event that has already taken place");
+        if (shift.getCapacity() > shift.getRegisteredUsers()) {
+            var shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift, isReserve));
+            shift.getShiftToUsers().add(shiftToUser);
+            shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
+            shiftService.editShift(shift);
+        } else {
+            throw new IllegalArgumentException("The event is fully booked");
         }
-
     }
 
     @Transactional
@@ -192,7 +188,6 @@ public class UserService {
         user.setOrganisation(null);
         user.getRoles().removeIf(r -> r.getName().equals("MODERATOR"));
         userRepository.save(user);
-
     }
 
     public void refuse(Long userId, Long shiftId) {

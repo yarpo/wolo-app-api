@@ -26,7 +26,7 @@ public class Role {
     private Long id;
 
     @Column(name = "name", nullable = false)
-    private String name;
+   private String name;
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
     private List<User> userEntities;
@@ -51,16 +51,9 @@ public class Role {
 
     @Override
     public String toString() {
-        String userEntitiesString = "{" +
-                userEntities.stream()
-                        .map(user -> String.valueOf(user.getId()))
-                        .collect(Collectors.joining(", ")) +
-                "}";
-
         return "Role{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", userEntities=" + userEntitiesString +
                 ", privileges=" + privileges +
                 '}';
     }

@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -100,11 +99,6 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-        var organisationString =(organisation != null) ? String.valueOf(organisation.getId()) : "null";
-        var roleNames = roles.stream()
-                .map(Role::getName)
-                .collect(Collectors.joining(", "));
-
         return "User{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
@@ -112,7 +106,6 @@ public class User implements UserDetails {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", password='" + password + '\'' +
-                ", roles=" + roleNames +
                 '}';
     }
 }

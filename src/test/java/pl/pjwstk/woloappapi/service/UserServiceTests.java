@@ -6,11 +6,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.pjwstk.woloappapi.model.UserRequestDto;
+import org.springframework.security.core.Authentication;
 import pl.pjwstk.woloappapi.model.entities.*;
+import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +31,9 @@ public class UserServiceTests {
 
     @Mock
     private OrganisationService organisationService;
+
+    @Mock
+    private OrganisationRepository organisationRepository;
 
     @Mock
     private ShiftToUserRepository shiftToUserRepository;
@@ -47,6 +54,7 @@ public class UserServiceTests {
         List<User> actualUsers = userService.getAllUsers();
 
         assertEquals(2, actualUsers.size());
+        verify(userRepository, times(1)).findAll();
     }
 
     @Test
@@ -58,21 +66,45 @@ public class UserServiceTests {
         User retrievedUser = userService.getUserById(1L);
 
         assertEquals(user.getId(), retrievedUser.getId());
+        verify(userRepository, times(1)).findById(user.getId());
+    }
+
+    @Test
+    void testGetUsersOnlyWithUserRole() {
+        var roleUser = Role.builder().name("USER").build();
+        var roleModerator = Role.builder().name("MODERATOR").build();
+        ArrayList<Role> list1 = new ArrayList<>();
+        list1.add(roleUser);
+        ArrayList<Role> list2 = new ArrayList<>();
+        list2.add(roleModerator);
+        list2.add(roleUser);
+        var userWithUserRole = User.builder().roles(list1).build();
+        var userWithModeratorRole = User.builder().roles(list2).build();
+        List<User> users = List.of(userWithModeratorRole, userWithUserRole);
+        when(userRepository.findUsersByRole("USER")).thenReturn(users);
+
+        List<User> result = userService.getUsersOnlyWithUserRole();
+
+        assertEquals(1, result.size());
+        assertEquals(userWithUserRole, result.get(0));
+        verify(userRepository, times(1)).findUsersByRole("USER");
     }
 
     @Test
     public void testDeleteUserWhenModeratorOfOrganisation() {
-        User user = new User();
-        user.setId(1L);
-        Organisation organisation = new Organisation();
-        organisation.setName("Test Organisation");
-        user.setOrganisation(organisation);
+        var organisation = Organisation.builder()
+                .id(1L)
+                .name("Test Organisation")
+                .build();
+        var user =User.builder()
+                .id(1L)
+                .organisation(organisation)
+                .build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            userService.deleteUser(1L);
-        });
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+                userService.deleteUser(1L));
 
         assertTrue(thrown.getMessage().contains("firstly assign new moderator to organisation"));
 
@@ -81,20 +113,19 @@ public class UserServiceTests {
 
     @Test
     public void testDeleteUserWhenOnlyAdmin() {
-        User user = new User();
-        user.setId(1L);
-        Role adminRole = new Role();
-        adminRole.setName("ADMIN");
-        user.setRoles(Collections.singletonList(adminRole));
+        var roleAdmin = Role.builder().name("ADMIN").build();
+        var user = User.builder()
+                .id(1L)
+                .roles(List.of(roleAdmin))
+                .build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(roleService.getRoleByName("ADMIN")).thenReturn(adminRole);
+        when(roleService.getRoleByName("ADMIN")).thenReturn(roleAdmin);
         when(userRepository.findUsersByRole("ADMIN")).thenReturn(Collections.singletonList(user));
 
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            userService.deleteUser(1L);
-        });
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+                userService.deleteUser(1L));
 
         assertTrue(thrown.getMessage().contains("to remove it, first create another administrator"));
 
@@ -102,47 +133,24 @@ public class UserServiceTests {
     }
 
     @Test
-    public void testDeleteUser() {
-        User user = new User();
-        user.setId(1L);
-        user.setRoles(new ArrayList<>());
+    void testDeleteUser_UserNotModerator_NoAdmins() {
+        var userId = 1L;
+        var roleUser = Role.builder().name("USER").build();
+        var roleAdmin = Role.builder().name("ADMIN").build();
+        var user = User.builder()
+                .id(userId)
+                .roles(List.of(roleUser))
+                .shifts(new ArrayList<>())
+                .build();
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(roleService.getRoleByName("ADMIN")).thenReturn(roleAdmin);
 
-        userService.deleteUser(1L);
+        assertDoesNotThrow(() -> userService.deleteUser(userId));
 
-        verify(userRepository, times(1)).deleteById(1L);
+        verify(userRepository, times(1)).findById(userId);
+        verify(userRepository, times(1)).deleteById(userId);
     }
-
-    /*
-    @Test
-    public void testUpdateUser() {
-        UserRequestDto userDto = new UserRequestDto();
-        userDto.setFirstName("Test Firstname");
-        userDto.setLastName("Test Lastname");
-        userDto.setEmail("test@example.com");
-        userDto.setPhoneNumber("123456789");
-        userDto.setPeselVerified(true);
-        userDto.setAgreementSigned(true);
-        userDto.setAdult(true);
-
-        User user = new User();
-        user.setId(1L);
-        user.setFirstName("Firstname Test");
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
-        userService.updateUser(userDto, 1L);
-
-        verify(userRepository, times(1)).findById(1L);
-        assertEquals("Test Firstname", user.getFirstName());
-        assertEquals(userDto.getFirstName(), user.getFirstName());
-        assertEquals(userDto.getEmail(), user.getEmail());
-        assertEquals(userDto.getPhoneNumber(), user.getPhoneNumber());
-        assertEquals(userDto.isPeselVerified(), user.isPeselVerified());
-        assertEquals(userDto.isAgreementSigned(), user.isAgreementSigned());
-        assertEquals(userDto.isAdult(), user.isAdult());
-    }*/
 
     @Test
     public void testUpdateUserRoles(){
@@ -180,13 +188,15 @@ public class UserServiceTests {
 
     @Test
     public void testJoinEvent() {
-        User user = new User();
-        user.setId(1L);
-        Shift shift = new Shift();
-        shift.setId(1L);
-        shift.setCapacity(10);
-        shift.setRegisteredUsers(5);
-        shift.setShiftToUsers(new ArrayList<>());
+        var user = User.builder()
+                .id(1L)
+                .build();
+        var shift = Shift.builder()
+                .id(1L)
+                .capacity(10)
+                .registeredUsers(5)
+                .shiftToUsers(new ArrayList<>())
+                .build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(shiftService.getShiftById(1L)).thenReturn(shift);
@@ -261,7 +271,6 @@ public class UserServiceTests {
         when(organisationService.getOrganisationById(1L)).thenReturn(organisation);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        // When
         userService.assignOrganisation(1L, 1L);
 
         assertEquals(organisation, user.getOrganisation());
@@ -285,6 +294,7 @@ public class UserServiceTests {
         user.setRoles(new ArrayList<>(List.of(moderatorRole)));
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(organisationRepository.save(any(Organisation.class))).thenReturn(organisation);
 
         userService.revokeOrganisation(1L);
 
@@ -294,16 +304,23 @@ public class UserServiceTests {
 
     @Test
     public void testRefuse() {
-        User user1 = new User();
-        user1.setId(1L);
+        var event = Event.builder()
+                .date(LocalDate.now().plusDays(1))
+                .build();
+        var user = User.builder()
+                .id(1L)
+                .build();
+        var shift = Shift.builder()
+                .id(1L)
+                .event(event)
+                .build();
+        var shiftToUser = new ShiftToUser(user, shift, false);
+        shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser)));
 
-        Shift shift = new Shift();
-        shift.setId(1L);
-
-        ShiftToUser shiftToUser1 = new ShiftToUser(user1, shift, false);
+        ShiftToUser shiftToUser1 = new ShiftToUser(user, shift, false);
         shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser1)));
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(shiftService.getShiftById(1L)).thenReturn(shift);
         doNothing().when(shiftToUserRepository).delete(any());
 
@@ -315,11 +332,18 @@ public class UserServiceTests {
 
     @Test
     public void testRefuse_EventAlreadyPassed() {
-        User user = new User();
-        user.setId(1L);
-
-        Shift shift = new Shift();
-        shift.setId(1L);
+        var event = Event.builder()
+                .date(LocalDate.now().minusDays(1))
+                .build();
+        var user = User.builder()
+                .id(1L)
+                .build();
+        var shift = Shift.builder()
+                .id(1L)
+                .event(event)
+                .build();
+        var shiftToUser = new ShiftToUser(user, shift);
+        shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser)));
 
         ShiftToUser shiftToUser1 = new ShiftToUser(user, shift, false);
         shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser1)));
@@ -327,9 +351,8 @@ public class UserServiceTests {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(shiftService.getShiftById(1L)).thenReturn(shift);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.refuse(1L, 1L);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                userService.refuse(1L, 1L));
 
         assertEquals("Can't refuse take part in event that has already taken place", exception.getMessage());
         verifyNoInteractions(shiftToUserRepository);
@@ -353,5 +376,181 @@ public class UserServiceTests {
         assertEquals(users.get(1).getId(), result.get(1).getId());
 
         verify(userRepository, times(1)).findAllByShiftId(1L);
+    }
+
+    @Test
+    public void testGetCurrentUser_UserExists() {
+        var user = User.builder()
+                .email("test@example.com")
+                .build();
+
+        Authentication authentication = mock(Authentication.class);
+
+        when(authentication.getName()).thenReturn("test@example.com");
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
+
+        User result = userService.getCurrentUser(authentication);
+
+        assertEquals("test@example.com", result.getEmail());
+        verify(authentication, times(1)).getName();
+        verify(userRepository, times(1)).findByEmail("test@example.com");
+    }
+
+    @Test
+    void testCheckJoin_CollidingShifts() {
+        var userId = 1L;
+        var shiftId = 2L;
+        var event = Event.builder()
+                .id(1L)
+                .date(LocalDate.now().plusDays(1))
+                .build();
+        var shift = Shift.builder()
+                .id(shiftId)
+                .event(event)
+                .startTime(LocalTime.parse("09:00:00"))
+                .endTime(LocalTime.parse("12:00:00"))
+                .build();
+        var existingEvent = Event.builder()
+                .id(2L)
+                .date(LocalDate.now().plusDays(1))
+                .build();
+
+        var existingShift = Shift.builder()
+                .id(3L)
+                .event(existingEvent)
+                .startTime(LocalTime.parse("10:15:00"))
+                .endTime(LocalTime.parse("14:15:00"))
+                .build();
+        var user = User.builder()
+                .id(userId)
+                .shifts(new ArrayList<>())
+                .build();
+
+        var shiftToUser = new ShiftToUser(user, existingShift);
+
+        user.getShifts().add(shiftToUser);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(shiftService.getShiftById(shiftId)).thenReturn(shift);
+
+        String result = userService.checkJoin(userId, shiftId);
+
+        assertEquals("You have colliding shifts: 3", result);
+    }
+
+    @Test
+    void testCheckJoin_Underage() {
+        var userId = 1L;
+        var shiftId = 2L;
+        var shift = new Shift();
+        shift.setId(shiftId);
+        shift.setRequiredMinAge(18);
+        shift.setEvent(new Event());
+
+        var user = new User();
+        user.setId(userId);
+        user.setShifts(new ArrayList<>());
+        user.setAdult(false);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(shiftService.getShiftById(shiftId)).thenReturn(shift);
+
+        String result = userService.checkJoin(userId, shiftId);
+
+        assertEquals("You can't join this shift because minimal required age is 18 and you are not adult", result);
+    }
+
+    @Test
+    void testCheckJoin_PeselVerificationRequired() {
+        var userId = 1L;
+        var shiftId = 2L;
+        var event = new Event();
+        event.setPeselVerificationRequired(true);
+        var shift = new Shift();
+        shift.setId(shiftId);
+        shift.setEvent(event);
+
+        var user = new User();
+        user.setId(userId);
+        user.setShifts(new ArrayList<>());
+        user.setPeselVerified(false);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(shiftService.getShiftById(shiftId)).thenReturn(shift);
+
+        String result = userService.checkJoin(userId, shiftId);
+
+        assertEquals("You can't join this shift because PESEL verification is required", result);
+    }
+
+    @Test
+    void testCheckJoin_AgreementNeeded() {
+        var userId = 1L;
+        var shiftId = 2L;
+        var event = new Event();
+        event.setAgreementNeeded(true);
+        Shift shift = new Shift();
+        shift.setId(shiftId);
+        shift.setEvent(event);
+
+        var user = new User();
+        user.setId(userId);
+        user.setShifts(new ArrayList<>());
+        user.setAgreementSigned(false);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(shiftService.getShiftById(shiftId)).thenReturn(shift);
+
+        String result = userService.checkJoin(userId, shiftId);
+
+        assertEquals("You can't join this shift because volunteers agreement is required", result);
+    }
+
+    @Test
+    void testCheckJoin_EventAlreadyPassed() {
+        var userId = 1L;
+        var shiftId = 2L;
+        var event = new Event();
+        event.setDate(LocalDate.now().minusDays(1));
+        var shift = new Shift();
+        shift.setId(shiftId);
+        shift.setEvent(event);
+
+        var user = new User();
+        user.setId(userId);
+        user.setShifts(new ArrayList<>());
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(shiftService.getShiftById(shiftId)).thenReturn(shift);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                userService.checkJoin(userId, shiftId));
+
+        assertEquals("Can't join  event that has already taken place", exception.getMessage());
+    }
+
+    @Test
+    void testCheckJoin_NoIssues() {
+        var userId = 1L;
+        var shiftId = 2L;
+        var event = new Event();
+        event.setDate(LocalDate.now().plusDays(1));
+        var shift = new Shift();
+        shift.setId(shiftId);
+        shift.setEvent(event);
+
+        var user = new User();
+        user.setId(userId);
+        user.setShifts(new ArrayList<>());
+        user.setAdult(true);
+        user.setPeselVerified(true);
+        user.setAgreementSigned(true);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(shiftService.getShiftById(shiftId)).thenReturn(shift);
+
+        String result = userService.checkJoin(userId, shiftId);
+
+        assertEquals("OK", result);
     }
 }

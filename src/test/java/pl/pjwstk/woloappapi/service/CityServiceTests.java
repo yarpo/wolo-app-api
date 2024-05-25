@@ -2,123 +2,173 @@ package pl.pjwstk.woloappapi.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.CityDto;
 import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.model.entities.District;
 import pl.pjwstk.woloappapi.repository.CityRepository;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class CityServiceTests {
     @Mock
     private CityRepository cityRepository;
-    @Mock
-    private DistrictService districtService;
 
     @Mock
     private DictionariesMapper dictionariesMapper;
 
+    @Mock
+    private DistrictService districtService;
+
     @InjectMocks
     private CityService cityService;
 
+    private City city;
+    private CityDto cityDto;
+    private City.CityBuilder cityBuilder;
+    private District district1, district2;
+
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        city = new City();
+        city.setId(1L);
+        city.setName("Test City");
+        city.setOld(false);
+        city.setDistricts(new ArrayList<District>());
+
+        cityDto = new CityDto();
+        cityDto.setId(1L);
+        cityDto.setName("Test City DTO");
+        var list = new ArrayList<String>();
+        list.add("District1");
+        list.add("District2");
+        cityDto.setDistricts(list);
+
+        cityBuilder = City.builder()
+                .id(cityDto.getId())
+                .name(cityDto.getName());
+
+        district1 = new District();
+        district1.setId(1L);
+        district1.setName("District1");
+        district1.setCity(city);
+
+        district2 = new District();
+        district2.setId(2L);
+        district2.setName("District2");
+        district2.setCity(city);
     }
 
     @Test
     public void testGetAllCities() {
-        List<City> cities = List.of(
-                new City(1L, "City1",false, new ArrayList<>(){}, new ArrayList<>()),
-                new City(2L, "City2",false, new ArrayList<>(){}, new ArrayList<>()));
-        when(cityRepository.findAll()).thenReturn(cities);
+        when(cityRepository.findAll()).thenReturn(List.of(city));
 
-        var result = cityService.getAllCities();
+        List<City> result = cityService.getAllCities();
 
-        assertEquals(2, result.size());
-        assertEquals("City1", result.get(0).getName());
-        assertEquals("City2", result.get(1).getName());
+        assertEquals(1, result.size());
+        assertEquals(city, result.get(0));
+        verify(cityRepository, times(1)).findAll();
     }
 
     @Test
-    public void testGetCityById() {
-        Long cityId = 1L;
-        City city = new City(cityId, "City1", false, new ArrayList<>(){}, new ArrayList<>());
-        when(cityRepository.findById(cityId)).thenReturn(Optional.of(city));
+    public void testGetActualAllCities() {
+        when(cityRepository.getAllActualCities()).thenReturn(List.of(city));
 
-        City result = cityService.getCityById(cityId);
+        List<City> result = cityService.getActualAllCities();
 
-        assertEquals(cityId, result.getId());
-        assertEquals("City1", result.getName());
+        assertEquals(1, result.size());
+        assertEquals(city, result.get(0));
+        verify(cityRepository, times(1)).getAllActualCities();
     }
 
-    /*
+    @Test
+    public void testGetCityById_CityExists() {
+        when(cityRepository.findById(1L)).thenReturn(Optional.of(city));
+
+        City result = cityService.getCityById(1L);
+
+        assertEquals(city, result);
+        verify(cityRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testGetCityById_CityNotExists() {
+        when(cityRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> {
+            cityService.getCityById(1L);
+        });
+
+        verify(cityRepository, times(1)).findById(1L);
+    }
+
     @Test
     public void testCreateCity() {
-        var cityDto = new CityDto(null, "New City", List.of("District1", "District2"));
-
-        when(dictionariesMapper.toCity(cityDto)).thenReturn(
-                City.builder()
-                        .name(cityDto.getName())
-                        .isOld(false)
-        );
-        when(districtService.getDistrictByName("District1"))
-                .thenReturn(new District(1L, "District1", false, null, null));
-        when(districtService.getDistrictByName("District2"))
-                .thenReturn(new District(2L, "District2", false, null, null));
+        when(dictionariesMapper.toCity(cityDto)).thenReturn(cityBuilder);
 
         cityService.createCity(cityDto);
 
-        verify(cityRepository, times(1)).save(any(City.class));
+        verify(cityRepository, times(1)).save(cityBuilder.build());
+        verify(dictionariesMapper, times(1)).toCity(cityDto);
     }
 
     @Test
-    public void testUpdateCity() {
-        var cityId = 1L;
-        var cityDto = new CityDto(cityId, "Updated City", List.of("District1", "District2"));
+    public void testDeleteCity_CityExists() {
+        when(cityRepository.findById(1L)).thenReturn(Optional.of(city));
 
-        City existingCity = new City(cityId, "City1", false, new ArrayList<>(), null);
-        existingCity.getDistricts().add(new District(1L, "District1", false, existingCity, null));
-        existingCity.getDistricts().add(new District(2L, "District2", false, existingCity, null));
-
-        when(cityRepository.findById(cityId)).thenReturn(Optional.of(existingCity));
-        var updatedCity = City.builder()
-                .id(cityId)
-                .name(cityDto.getName())
-                .isOld(false);
-
-        when(dictionariesMapper.toCity(cityDto)).thenReturn(updatedCity);
-
-        cityService.updateCity(cityDto);
-
-        assertEquals("Updated City", existingCity.getName());
-        assertEquals(2, existingCity.getDistricts().size());
-        verify(cityRepository, times(1)).save(existingCity);
-    }
-
-
-
-    @Test
-    public void testDeleteCity() {
-        Long cityId = 1L;
-        City city = new City(cityId, "City1", false, null, null);
-        when(cityRepository.findById(cityId)).thenReturn(Optional.of(city));
-
-        cityService.deleteCity(cityId);
+        cityService.deleteCity(1L);
 
         assertTrue(city.isOld());
         verify(cityRepository, times(1)).save(city);
+        verify(cityRepository, times(1)).findById(1L);
     }
-    */
+
+    @Test
+    public void testDeleteCity_CityNotExists() {
+        when(cityRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> {
+            cityService.deleteCity(1L);
+        });
+
+        verify(cityRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testUpdateCity_CityExists() {
+        when(cityRepository.findById(1L)).thenReturn(Optional.of(city));
+        when(districtService.getDistrictByName("District1")).thenReturn(district1);
+        when(districtService.getDistrictByName("District2")).thenReturn(district2);
+
+        cityService.updateCity(cityDto);
+
+        assertEquals(cityDto.getName(), city.getName());
+        verify(cityRepository, times(1)).save(city);
+        verify(cityRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testUpdateCity_CityNotExists() {
+        when(cityRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            cityService.updateCity(cityDto);
+        });
+
+        verify(cityRepository, times(1)).findById(1L);
+    }
+
 }
 
