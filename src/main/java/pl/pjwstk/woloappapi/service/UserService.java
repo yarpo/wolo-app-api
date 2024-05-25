@@ -1,5 +1,6 @@
 package pl.pjwstk.woloappapi.service;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
+import pl.pjwstk.woloappapi.utils.EmailUtil;
 import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
@@ -29,6 +31,8 @@ public class UserService {
     private final OrganisationService organisationService;
     private final OrganisationRepository organisationRepository;
     private final ShiftService shiftService;
+
+    private final EmailUtil emailUtil;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -202,7 +206,12 @@ public class UserService {
                         .findFirst()
                         .orElseThrow();
                 if(!shiftToUser.isOnReserveList()) {
-                    var assigned = assignFromReserve(shift);
+                    boolean assigned = false;
+                    try {
+                        assigned = assignFromReserve(shift);
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }
                     if(!assigned) {
                         shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
                     }
@@ -219,15 +228,20 @@ public class UserService {
         }
     }
 
-    private boolean assignFromReserve(Shift shift) {
+    private boolean assignFromReserve(Shift shift) throws MessagingException {
         var reserveShiftToUser = shift.getShiftToUsers().stream()
                 .filter(ShiftToUser::isOnReserveList)
                 .findFirst();
-        reserveShiftToUser.ifPresent(stu -> {
+        if (reserveShiftToUser.isPresent()) {
+            ShiftToUser stu = reserveShiftToUser.get();
             stu.setOnReserveList(false);
             shiftToUserRepository.save(stu);
-        });
-        return false;
+            shift.getShiftToUsers().add(stu);
+            emailUtil.sendJoinEventMail(stu.getUser().getEmail(), shift);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public List<User> getUsersByShift(Long shift) {
