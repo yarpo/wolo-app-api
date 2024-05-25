@@ -10,6 +10,7 @@ import pl.pjwstk.woloappapi.model.entities.*;
 import pl.pjwstk.woloappapi.model.translation.EventTranslationRequest;
 import pl.pjwstk.woloappapi.model.translation.EventTranslationResponse;
 import pl.pjwstk.woloappapi.model.translation.ReportTranslationResponce;
+import pl.pjwstk.woloappapi.model.translation.ShiftTranslation;
 import pl.pjwstk.woloappapi.service.CityService;
 import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
