@@ -63,7 +63,9 @@ public class SecurityConfig {
                     auth.requestMatchers(GET, "/events").permitAll();
                     auth.requestMatchers(GET, "/events/**").permitAll();
                     auth.requestMatchers( "/events/join").hasAuthority("JOIN_EVENT");
+                    auth.requestMatchers( "/events/join/check").hasAuthority("JOIN_EVENT");
                     auth.requestMatchers("/events/refuse").hasAuthority("JOIN_EVENT");
+                    auth.requestMatchers(OPTIONS, "/events/add").hasAuthority("CREATE_EVENT");
                     auth.requestMatchers("/events/add").hasAuthority("CREATE_EVENT");
                     auth.requestMatchers(PUT, "/events/**").hasAuthority("EDIT_EVENT");
                     auth.requestMatchers(DELETE, "/events/**").hasAuthority("DELETE_EVENT");
@@ -72,6 +74,8 @@ public class SecurityConfig {
                     auth.requestMatchers("events/admin**").permitAll();
 
                     auth.requestMatchers(OPTIONS, "/reports/**").permitAll();
+                    auth.requestMatchers(OPTIONS, "/reports/publish/**").permitAll();
+                    auth.requestMatchers(OPTIONS, "/reports/unpublish/**").permitAll();
                     auth.requestMatchers(GET, "/reports/public/**").permitAll();
                     auth.requestMatchers("/reports/event/**").hasAuthority("READ_REPORTS");
                     auth.requestMatchers(POST, "/reports/**").hasAuthority("CREATE_REPORT");
@@ -96,12 +100,11 @@ public class SecurityConfig {
 
                     auth.requestMatchers(OPTIONS,"/users/**").permitAll();
                     auth.requestMatchers(GET, "/users/*/shifts").hasAuthority("READ_USERS_SHIFTS");
-                    auth.requestMatchers(OPTIONS, "/users/currentEvents/**").permitAll();
-                    auth.requestMatchers(OPTIONS, "/users/pastEvents/**").permitAll();
                     auth.requestMatchers(GET, "/users/shifts/**").hasAuthority("READ_USERS_EVENTS");
                     auth.requestMatchers(GET, "/users").hasAuthority("READ_USERS");
                     auth.requestMatchers(GET, "/users/**").hasAuthority("READ_USERS");
-                    auth.requestMatchers(PUT, "/users/**").hasAuthority("EDIT_USERS");
+                    auth.requestMatchers(PUT, "/users/*/edit").hasAuthority("EDIT_USERS");
+                    auth.requestMatchers(PUT, "/users/edit").permitAll();
                     auth.requestMatchers(DELETE, "/users/**").hasAuthority("DELETE_USERS");
                     auth.requestMatchers(DELETE, "/users/assign").hasAuthority("ASSIGN_ORGANISATION_TO_USER");
                     auth.requestMatchers(DELETE, "/users/revoke").hasAuthority("ASSIGN_ORGANISATION_TO_USER");

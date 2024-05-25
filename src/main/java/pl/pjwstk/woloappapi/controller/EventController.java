@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import pl.pjwstk.woloappapi.model.*;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.User;
+import pl.pjwstk.woloappapi.model.translation.EventTranslationResponse;
 import pl.pjwstk.woloappapi.service.EventService;
 import pl.pjwstk.woloappapi.service.PDFGenerationService;
 import pl.pjwstk.woloappapi.service.UserService;
@@ -66,6 +67,14 @@ public class EventController {
         var userId = userService.getCurrentUser(authentication).getId();
         userService.joinEvent(userId, shiftId, isReserve);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/join/check")
+    public ResponseEntity<String> checkJoinEvent(@RequestParam(value = "shift") Long shift){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userId = userService.getCurrentUser(authentication).getId();
+        String check = userService.checkJoin(userId, shift);
+        return new ResponseEntity<>(check, HttpStatus.OK);
     }
 
     @PostMapping("/refuse")
@@ -147,8 +156,9 @@ public class EventController {
     }
 
     @PostMapping("/admin/add")
-    public ResponseEntity<HttpStatus> addEventByAdmin(@Valid @RequestBody EventRequestDto dtoEvent,
-                                                      @RequestParam String language) {
+    public ResponseEntity<HttpStatus> addEventByAdmin(
+            @Valid @RequestBody EventRequestDto dtoEvent,
+            @RequestParam String language) {
         var translationDto = eventMapper.toEventTranslationDto(dtoEvent, language);
         var localClient = WebClient.create("http://host.docker.internal:5000/");
         localClient.post()
@@ -182,22 +192,24 @@ public class EventController {
 
     @PutMapping("/admin/edit/{id}")
     public ResponseEntity<HttpStatus> editEventByAdmin(
-            @Valid @RequestBody EventRequestDto eventRequestDto,
+            @Valid @RequestBody EventEditRequestDto eventEditRequestDto,
             @PathVariable Long id,
-            @RequestParam String language) {
-        return sendRequestToTranslator(eventRequestDto, id, language);
+            @RequestParam Boolean mailSend) {
+        eventService.updateEvent(eventEditRequestDto, id, mailSend);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<HttpStatus> editEvent(
-            @Valid @RequestBody EventRequestDto eventRequestDto,
+            @Valid @RequestBody EventEditRequestDto eventRequestDto,
             @PathVariable Long id,
-            @RequestParam String language) {
+            @RequestParam Boolean mailSend) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var organisationId = userService.getCurrentUser(authentication).getOrganisation().getId();
         var event = eventService.getEventById(id);
         if(Objects.equals(organisationId, event.getOrganisation().getId())) {
-            return sendRequestToTranslator(eventRequestDto, id, language);
+            eventService.updateEvent(eventRequestDto, id, mailSend);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }else{
             throw new IllegalArgumentException("You can edit events only for your organisation");
         }
@@ -237,16 +249,4 @@ public class EventController {
         }
     }
 
-    private ResponseEntity<HttpStatus> sendRequestToTranslator(@RequestBody @Valid EventRequestDto eventRequestDto, @PathVariable Long id, @RequestParam String language) {
-        var translationDto = eventMapper.toEventTranslationDto(eventRequestDto, language);
-        var localClient = WebClient.create("http://host.docker.internal:5000/");
-        localClient.post()
-                .uri("/event-create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(translationDto)
-                .retrieve()
-                .bodyToMono(EventTranslationResponse.class)
-                .subscribe(translated -> eventService.updateEvent(eventRequestDto, id, translated));
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 }

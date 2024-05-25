@@ -15,4 +15,9 @@ public class CategoryToEventService {
     public void createCategoryToEvent(CategoryToEvent categoryToEvent) {
         categoryToEventRepository.save(categoryToEvent);
     }
+
+    @Transactional
+    public void deleteCategoryToEvent(Long id){
+        categoryToEventRepository.deleteById(id);
+    }
 }

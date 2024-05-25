@@ -1,18 +1,21 @@
 package pl.pjwstk.woloappapi.utils;
 
 import org.springframework.stereotype.Component;
-import pl.pjwstk.woloappapi.model.OrganisationResponseAdminDto;
+import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.admin.OrganisationResponseAdminDto;
 import pl.pjwstk.woloappapi.model.entities.Address;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
-import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
-import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
+import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationResponce;
 
 @Component
 public class OrganisationMapper {
     public OrganisationResponseDto toOrganisationResponseDto(Organisation organisation) {
         return OrganisationResponseDto.builder()
                 .name(organisation.getName())
-                .description(organisation.getDescription())
+                .descriptionPL(organisation.getDescriptionPL())
+                .descriptionEN(organisation.getDescriptionEN())
+                .descriptionUA(organisation.getDescriptionUA())
+                .descriptionRU(organisation.getDescriptionRU())
                 .email(organisation.getEmail())
                 .phoneNumber(organisation.getPhoneNumber())
                 .street(organisation.getAddress().getStreet())
@@ -25,7 +28,10 @@ public class OrganisationMapper {
         return OrganisationResponseAdminDto.builder()
                 .id(organisation.getId())
                 .name(organisation.getName())
-                .description(organisation.getDescription())
+                .descriptionPL(organisation.getDescriptionPL())
+                .descriptionEN(organisation.getDescriptionEN())
+                .descriptionUA(organisation.getDescriptionUA())
+                .descriptionRU(organisation.getDescriptionRU())
                 .email(organisation.getEmail())
                 .phoneNumber(organisation.getPhoneNumber())
                 .street(organisation.getAddress().getStreet())
@@ -35,10 +41,14 @@ public class OrganisationMapper {
                 .build();
     }
 
-    public Organisation.OrganisationBuilder toOrganisation(OrganisationRequestDto organisationRequestDto){
+    public Organisation.OrganisationBuilder toOrganisation(OrganisationRequestDto organisationRequestDto,
+                                                           OrganisationTranslationResponce translation){
         return Organisation.builder()
                 .name(organisationRequestDto.getName())
-                .description(organisationRequestDto.getDescription())
+                .descriptionPL(translation.getDescriptionPL())
+                .descriptionEN(translation.getDescriptionEN())
+                .descriptionUA(translation.getDescriptionUA())
+                .descriptionRU(translation.getDescriptionRU())
                 .email(organisationRequestDto.getEmail())
                 .phoneNumber(organisationRequestDto.getPhoneNumber())
                 .isApproved(true)
@@ -50,4 +60,5 @@ public class OrganisationMapper {
                 .street(organisationRequestDto.getStreet())
                 .homeNum(organisationRequestDto.getHomeNum());
     }
+
 }

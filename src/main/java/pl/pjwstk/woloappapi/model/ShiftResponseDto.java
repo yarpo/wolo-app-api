@@ -51,4 +51,6 @@ public class ShiftResponseDto {
     private String shiftDirectionsUA;
 
     private String shiftDirectionsRU;
+
+    private String city;
 }

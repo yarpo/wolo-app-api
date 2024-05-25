@@ -1,5 +1,11 @@
 version: '3.1'
 services:
+  mail:
+    container_name: smtp
+    image: bytemark/smtp
+    restart: always
+    ports:
+      - "25:587"
   backend:
     container_name: wolo-app-api
     build:

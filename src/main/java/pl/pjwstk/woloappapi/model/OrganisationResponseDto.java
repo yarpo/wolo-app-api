@@ -1,7 +1,5 @@
 package pl.pjwstk.woloappapi.model;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
@@ -13,8 +11,13 @@ public class OrganisationResponseDto {
 
     private String name;
 
-    @NotBlank(message = "Description is required")
-    private String description;
+    private String descriptionPL;
+
+    private String descriptionEN;
+
+    private String descriptionUA;
+
+    private String descriptionRU;
 
     private String email;
 
@@ -24,6 +27,5 @@ public class OrganisationResponseDto {
 
     private String homeNum;
 
-    @Size(max = 255, message = "Logo Url cannot exceed 255 characters")
     private String logoUrl;
 }

@@ -3,6 +3,8 @@ package pl.pjwstk.woloappapi.utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.*;
+import pl.pjwstk.woloappapi.model.admin.CityResponseAdminDto;
+import pl.pjwstk.woloappapi.model.admin.DistrictResponseAdminDto;
 import pl.pjwstk.woloappapi.model.entities.Category;
 import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.model.entities.District;

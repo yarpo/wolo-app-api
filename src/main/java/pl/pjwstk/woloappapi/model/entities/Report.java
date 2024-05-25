@@ -18,8 +18,17 @@ public class Report {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "report", nullable = false)
-    private String report;
+    @Column(name = "report_pl", nullable = false)
+    private String reportPL;
+
+    @Column(name = "report_en", nullable = false)
+    private String reportEN;
+
+    @Column(name = "report_ua", nullable = false)
+    private String reportUA;
+
+    @Column(name = "report_ru", nullable = false)
+    private String reportRU;
 
     @Column(name = "published")
     private boolean published;

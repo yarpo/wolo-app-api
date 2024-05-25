@@ -97,6 +97,44 @@ paths:
                 $ref: '#/components/schemas/AuthenticationRespons'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
+  /auth/forgot-password:
+    put:
+      tags:
+        - Authentication
+      summary: Send mail to set new password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgePasswordMailRequest'
+      responses:
+        '202':
+          $ref: '#/components/responses/AcceptedResponse'
+  /auth/set-password:
+    put:
+      summary: Set a new password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+  /change-password:
+    put:
+      summary: Change user password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        '202':
+          $ref: '#/components/responses/AcceptedResponse'
   /categories:
     get:
       tags:
@@ -678,7 +716,6 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-
   /events/add:
     post:
       tags:
@@ -707,7 +744,6 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/Created'
-
   /events/admin/add:
     post:
       tags:
@@ -736,7 +772,6 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/Created'
-
   /events/join:
     post:
       tags:
@@ -759,7 +794,28 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-
+  /events/join/check:
+    post:
+      tags:
+        - Event
+      summary: We check whether the user has changes during the shift to which wants to be assigned
+      operationId: checkJoinEvent
+      parameters:
+        - name: shift
+          in: query
+          description: Id of the shift user wants to join
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
   /events/refuse:
     post:
       tags:
@@ -793,7 +849,7 @@ paths:
           in: query
           description: event object with changes
           schema:
-            $ref: '#/components/schemas/EventRequestDto'
+            $ref: '#/components/schemas/EventEditRequestDto'
         - name: id
           in: path
           description: event id
@@ -802,13 +858,12 @@ paths:
             type: integer
             format: int64
           example: 1
-        - name: language
+        - name: mailSend
           in: query
-          description: language of eventDto
+          description: do you want to send mails with information about event changes to users
           required: true
           schema:
-            type: string
-            example: EN
+            type: boolean
       requestBody:
         content:
           application/json:
@@ -835,7 +890,7 @@ paths:
           in: query
           description: event object with changes
           schema:
-            $ref: '#/components/schemas/EventRequestDto'
+            $ref: '#/components/schemas/EventEditRequestDto'
         - name: id
           in: path
           description: event id
@@ -844,18 +899,17 @@ paths:
             type: integer
             format: int64
           example: 1
-        - name: language
+        - name: mailSend
           in: query
-          description: language of eventDto
+          description: do you want to send mails with information about event changes to users
           required: true
           schema:
-            type: string
-            example: EN
+            type: boolean
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EventRequestDto'
+              $ref: '#/components/schemas/EventEditRequestDto'
         required: true
       responses:
         '204':
@@ -983,7 +1037,7 @@ paths:
                   $ref: '#/components/schemas/EventResponseDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /organisations//events/current/{id}:
+  /organisations/events/current/{id}:
     get:
       tags:
         - Organisations
@@ -1039,6 +1093,12 @@ paths:
       description: id = null
       operationId: addOrganisation
       parameters:
+        - name: language
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "PL"
         - name: organisationDto
           in: query
           description: Organisation object to create
@@ -1095,7 +1155,7 @@ paths:
           $ref: '#/components/responses/OK'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /organisations/{id}/edit:
+  /organisations/edit:
     put:
       tags:
         - Organisations
@@ -1107,7 +1167,33 @@ paths:
           in: query
           description: Organisation object with changes
           schema:
-            $ref: '#/components/schemas/OrganisationRequestDto'
+            $ref: '#/components/schemas/OrganisationEditRequestDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganisationEditRequestDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /organisations/admin/{id}/edit:
+    put:
+      tags:
+        - Organisations
+      summary: Edit organisation
+      description: Organisation must exist
+      operationId: editOrganisation
+      parameters:
+        - name: organisation
+          in: query
+          description: Organisation object with changes
+          schema:
+            $ref: '#/components/schemas/OrganisationEditRequestDto'
         - name: id
           in: path
           required: true
@@ -1118,7 +1204,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrganisationRequestDto'
+              $ref: '#/components/schemas/OrganisationEditRequestDto'
         required: true
       responses:
         '204':
@@ -1261,7 +1347,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ReportDto'
+                  $ref: '#/components/schemas/ReportResponceDto'
 
   /reports/public/{id}:
     get:
@@ -1285,7 +1371,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReportDto'
+                $ref: '#/components/schemas/ReportResponceDto'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
@@ -1297,16 +1383,23 @@ paths:
       description: id = null
       operationId: addReport
       parameters:
+        - name: language
+          in: query
+          description: Language of ReportDto object
+          required: true
+          schema:
+            type: string
+          example: "PL"
         - name: report
           in: query
           description: Report object to create
           schema:
-            $ref: '#/components/schemas/ReportDto'
+            $ref: '#/components/schemas/ReportRequestDto'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReportDto'
+              $ref: '#/components/schemas/ReportRequestDto'
         required: true
       responses:
         '201':
@@ -1323,12 +1416,38 @@ paths:
           in: query
           description: Report object with changes
           schema:
-            $ref: '#/components/schemas/ReportDto'
+            $ref: '#/components/schemas/ReportEditRequestDto'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReportDto'
+              $ref: '#/components/schemas/ReportEditRequestDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/admin/edit:
+    put:
+      tags:
+        - Reports
+      summary: Edit report
+      description: Report must exist
+      operationId: editReportByAdmin
+      parameters:
+        - name: report
+          in: query
+          description: Report object with changes
+          schema:
+            $ref: '#/components/schemas/ReportEditRequestDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportEditRequestDto'
         required: true
       responses:
         '204':
@@ -1355,6 +1474,94 @@ paths:
       responses:
         '204':
           $ref: '#/components/responses/NoContentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/publish/{id}:
+    post:
+      tags:
+        - Reports
+      summary: Publish report
+      operationId: publishReport
+      parameters:
+        - name: id
+          in: path
+          description: Report id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/admin/publish/{id}:
+    post:
+      tags:
+        - Reports
+      summary: Publish report for admin
+      operationId: publishReportByAdmin
+      parameters:
+        - name: id
+          in: path
+          description: Report id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/unpublish/{id}:
+    post:
+      tags:
+        - Reports
+      summary: Unpublish report
+      operationId: unpublishReport
+      parameters:
+        - name: id
+          in: path
+          description: Report id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /reports/admin/unpublish/{id}:
+    post:
+      tags:
+        - Reports
+      summary: Unpublish report for admin
+      operationId: unpublishReportByAdmin
+      parameters:
+        - name: id
+          in: path
+          description: Report id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '404':
@@ -1589,19 +1796,43 @@ paths:
           $ref: '#/components/responses/OK'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /users/{id}/edit:
+  /users/edit:
     put:
       tags:
         - Users
       summary: Edit user
-      description: User must exist
+      description: User must be logged
       operationId: editUser
       parameters:
         - name: user
           in: query
           description: User object with changes
           schema:
-            $ref: '#/components/schemas/UserRequestDto'
+            $ref: '#/components/schemas/UserEditRequestDto'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserEditRequestDto'
+        required: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/{id}/edit:
+    put:
+      tags:
+        - Users
+      summary: Edit user
+      description: User must exist
+      operationId: editUserByAdmin
+      parameters:
+        - name: user
+          in: query
+          description: User object with changes
+          schema:
+            $ref: '#/components/schemas/UserEditRequestAdminDto'
         - name: id
           in: path
           description: User id
@@ -1614,7 +1845,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRequestDto'
+              $ref: '#/components/schemas/UserEditRequestAdminDto'
         required: true
       responses:
         '204':
@@ -1664,6 +1895,15 @@ components:
             example: Created
             enum:
               - 201 CREATED
+    AcceptedResponse:
+      description: Accepted
+      content:
+        application/hal+json:
+          schema:
+            type: string
+            example: Accepted
+            enum:
+              - 202 ACCEPTED
     NoContentResponse:
       description: No content
       content:
@@ -1896,6 +2136,77 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ShiftRequestDto'
+        cityId:
+          type: integer
+          format: int64
+          example: 1
+    EventEditRequestDto:
+      required:
+        - namePL
+        - nameEN
+        - nameUA
+        - nameRU
+        - descriptionPL
+        - descriptionEN
+        - descriptionUA
+        - descriptionRU
+        - organisationId
+        - categories
+        - shifts
+        - date
+      type: object
+      properties:
+        namePL:
+          maxLength: 250
+          minLength: 0
+          type: string
+        nameEN:
+          maxLength: 250
+          minLength: 0
+          type: string
+        nameUA:
+          maxLength: 250
+          minLength: 0
+          type: string
+        nameRU:
+          maxLength: 250
+          minLength: 0
+          type: string
+        descriptionPL:
+          type: string
+        descriptionEN:
+            type: string
+        descriptionUA:
+          type: string
+        descriptionRU:
+          type: string
+        organisationId:
+          type: integer
+          format: int64
+          example: 1
+        categories:
+          type: array
+          items:
+            type: integer
+            format: int64
+            example: 1
+        isPeselVerificationRequired:
+          type: boolean
+        isAgreementNeeded:
+          type: boolean
+        imageUrl:
+          maxLength: 255
+          minLength: 0
+          type: string
+        date:
+          type: string
+          format: date
+        shifts:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftEditRequestDto'
         cityId:
           type: integer
           format: int64
@@ -2138,6 +2449,69 @@ components:
           minLength: 0
           type: string
           example: https://example.com/image.jpg
+    OrganisationEditRequestDto:
+      required:
+        - name
+        - descriptionPL
+        - descriptionEN
+        - descriptionUA
+        - descriptionRU
+        - email
+        - phoneNumber
+        - street
+        - homeNum
+        - districtId
+        - cityId
+        - moderatorId
+      type: object
+      properties:
+        name:
+          maxLength: 250
+          minLength: 0
+          type: string
+          example: Animal Helpers
+        descriptionPL:
+          type: string
+        descriptionEN:
+          type: string
+        descriptionUA:
+          type: string
+        descriptionRU:
+          type: string
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        street:
+          maxLength: 50
+          minLength: 0
+          type: string
+        homeNum:
+          maxLength: 10
+          minLength: 0
+          type: string
+        districtId:
+          type: integer
+          format: int64
+          example: 1
+        cityId:
+          type: integer
+          format: int64
+          example: 1
+        moderatorId:
+          type: integer
+          format: int64
+          example: 1
+        logoUrl:
+          maxLength: 255
+          minLength: 0
+          type: string
+          example: https://example.com/image.jpg
     OrganisationResponseAdminDto:
       type: object
       properties:
@@ -2150,7 +2524,7 @@ components:
           minLength: 0
           type: string
           example: Animal Helpers
-        description:
+        descriptionPL:
           type: string
           example: >-
             Are you passionate about making a positive impact on the lives of
@@ -2176,6 +2550,12 @@ components:
                 - Community Outreach: Participate in events and educational programs to promote animal welfare.
 
             Join us today and make a difference in the lives of animals in need!
+        descriptionEN:
+          type: string
+        descriptionUA:
+          type: string
+        descriptionRU:
+          type: string
         email:
           maxLength: 50
           minLength: 0
@@ -2210,7 +2590,7 @@ components:
           minLength: 0
           type: string
           example: Animal Helpers
-        description:
+        descriptionPL:
           type: string
           example: >-
             Are you passionate about making a positive impact on the lives of
@@ -2236,6 +2616,12 @@ components:
                 - Community Outreach: Participate in events and educational programs to promote animal welfare.
 
             Join us today and make a difference in the lives of animals in need!
+        descriptionEN:
+          type: string
+        descriptionUA:
+          type: string
+        descriptionRU:
+          type: string
         email:
           maxLength: 50
           minLength: 0
@@ -2260,10 +2646,12 @@ components:
           minLength: 0
           type: string
           example: https://example.com/image.jpg
-    ReportDto:
+
+    ReportRequestDto:
       required:
         - report
         - event
+        - published
       properties:
         id:
           type: integer
@@ -2277,6 +2665,28 @@ components:
           type: integer
           format: int64
           example: 1
+
+    ReportResponceDto:
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        reportPL:
+          type: string
+        reportEN:
+          type: string
+        reportUA:
+          type: string
+        reportRU:
+          type: string
+        published:
+          type: boolean
+        event:
+          type: integer
+          format: int64
+          example: 1
+
     RegistrationRequest:
       required:
         - firstName
@@ -2312,6 +2722,7 @@ components:
           minLength: 0
           type: string
           example: password
+
     RoleDto:
       required:
         - name
@@ -2397,7 +2808,55 @@ components:
           type: integer
           format: int64
           example: 1
-
+    ShiftEditRequestDto:
+      required:
+        - startTime
+        - endTime
+        - date
+        - capacity
+        - street
+        - homeNum
+        - districtId
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        startTime:
+          $ref: '#/components/schemas/LocalTime'
+        endTime:
+          $ref: '#/components/schemas/LocalTime'
+        capacity:
+          type: integer
+          format: int32
+        isLeaderRequired:
+          type: boolean
+        requiredMinAge:
+          type: integer
+          format: int32
+        shiftDirectionsPL:
+          type: string
+        shiftDirectionsEN:
+            type: string
+        shiftDirectionsUA:
+          type: string
+        shiftDirectionsRU:
+          type: string
+        street:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Broadway
+        homeNum:
+          maxLength: 10
+          minLength: 0
+          type: string
+          example: 123
+        districtId:
+          type: integer
+          format: int64
+          example: 1
     ShiftResponseDto:
       type: object
       properties:
@@ -2420,7 +2879,7 @@ components:
           example: Помічники тварин
         eventNameRU:
           type: string
-          example: Помощники для животных
+          example: Помощники для животны
         date:
           type: string
           format: date
@@ -2463,6 +2922,67 @@ components:
         shiftDirectionsRU:
           type: string
           example: Левая сторона здания
+        city:
+          type: string
+          example: New York
+    UserEditRequestDto:
+      required:
+        - firstName
+        - lastName
+        - phoneNumber
+      type: object
+      properties:
+        firstName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: John
+        lastName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Doe
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        isAdult:
+          type: boolean
+    UserEditRequestAdminDto:
+      required:
+        - firstName
+        - lastName
+        - email
+        - phoneNumber
+      type: object
+      properties:
+        firstName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: John
+        lastName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: Doe
+        email:
+          maxLength: 50
+          minLength: 0
+          type: string
+          example: example@mail.com
+        phoneNumber:
+          maxLength: 9
+          minLength: 9
+          pattern: '[0-9]{9}'
+          type: string
+        isPeselVerified:
+          type: boolean
+        isAgreementSigned:
+          type: boolean
+        isAdult:
+          type: boolean
     UserRequestDto:
       required:
         - firstName
@@ -2584,6 +3104,38 @@ components:
           minLength: 9
           pattern: '[0-9]{9}'
           type: string
+    ForgotPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email of the user
+        password:
+          type: string
+          description: New password for the user
+      required:
+        - email
+        - password
+    ForgePasswordMailRequest:
+      type: object
+      properties:
+        mail:
+          type: string
+          description: Email of the user
+      required:
+        - mail
+    ChangePasswordRequest:
+      type: object
+      properties:
+        oldPassword:
+          type: string
+          description: current password
+        newPassword:
+          type: string
+          description: New password of the user
+      required:
+        - oldPassword
+        - newPassword
     LocalTime:
       type: object
       properties:

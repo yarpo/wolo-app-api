@@ -4,7 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import pl.pjwstk.woloappapi.model.UserRequestDto;
+import pl.pjwstk.woloappapi.model.UserEditRequestAdminDto;
+import pl.pjwstk.woloappapi.model.UserEditRequestDto;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
 import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
@@ -12,12 +13,12 @@ import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
-import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,15 +49,14 @@ public class UserService {
     }
     @Transactional
         public void deleteUser(Long userId) {
-            Optional<User> userOptional = userRepository.findById(userId);
-            if (userOptional.isPresent()) {
-                Organisation organisation = userOptional.get().getOrganisation();
+            userRepository.findById(userId).ifPresent(user -> {
+                Organisation organisation = user.getOrganisation();
                 if(organisation != null){
                     throw new IllegalArgumentException("User with ID " + userId
                             + " is moderator of "+ organisation.getName()
                             + "firstly assign new moderator to organisation");
                 }
-                if(userOptional.get().getRoles().stream().anyMatch(r ->
+                if(user.getRoles().stream().anyMatch(r ->
                         r.getName().equals(roleService.getRoleByName("ADMIN").getName()))){
                     List<User> admins = userRepository.findUsersByRole("ADMIN");
                     if(admins.size() == 1){
@@ -64,14 +64,30 @@ public class UserService {
                         + "  is the only administrator of the application, to remove it, first create another administrator");
                     }
                 }
+                user.getShifts().forEach(stu -> {
+                    var shift = stu.getShift();
+                    stu.getShift().setRegisteredUsers(shift.getRegisteredUsers() - 1);
+                    shiftToUserRepository.delete(stu);
+                });
                 userRepository.deleteById(userId);
-            }
+            });
         }
 
 
     @Transactional
-    public void updateUser(UserRequestDto userDto, Long id) {
+    public void updateUser(UserEditRequestDto userDto, Long id) {
          User user = userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException( "User with ID " + id + " does not exist"));
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setAdult(userDto.isAdult());
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateUserByAdmin(UserEditRequestAdminDto userDto, Long id) {
+        User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException( "User with ID " + id + " does not exist"));
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
@@ -97,6 +113,31 @@ public class UserService {
                                 roleId.equals(rtu.getId())))
                 .map(roleService::getRoleById)
                 .forEach(user.getRoles()::add);
+    }
+
+    public String checkJoin(Long userId, Long shiftId){
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+        var shift = shiftService.getShiftById(shiftId);
+        List<Long> collidingShifts = user.getShifts().stream()
+                .map(ShiftToUser::getShift)
+                .filter(existingShift -> checkConflict(existingShift, shift))
+                .map(Shift::getId)
+                .toList();
+        if(!collidingShifts.isEmpty()) {
+            return "You have colliding shifts: " + collidingShifts.stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", "));
+        } else if(shift.getRequiredMinAge()>=18 && !user.isAdult()){
+            return "You can't join this shift because minimal required age is "
+                    + shift.getRequiredMinAge() + " and you are not adult";
+        }else if(shift.getEvent().isPeselVerificationRequired() && !user.isPeselVerified()){
+            return "You can't join this shift because PESEL verification is required";
+        }else if(shift.getEvent().isAgreementNeeded() && !user.isAgreementSigned()){
+            return "You can't join this shift because volunteers agreement is required";
+        }else{
+            return "OK";
+        }
     }
 
     @Transactional
@@ -197,5 +238,19 @@ public class UserService {
         var email = authentication.getName();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found"));
+    }
+
+    private boolean checkConflict(Shift existingShift, Shift newShift) {
+        if (existingShift.getEvent().getDate().isEqual(newShift.getEvent().getDate())) {
+            if (existingShift.getStartTime().isBefore(newShift.getStartTime()) &&
+                    existingShift.getEndTime().isAfter(newShift.getStartTime())) {
+                return true;
+            }
+            else if (existingShift.getStartTime().isAfter(newShift.getStartTime()) &&
+                    existingShift.getStartTime().isBefore(newShift.getEndTime())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
