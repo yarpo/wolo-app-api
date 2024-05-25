@@ -2755,10 +2755,6 @@ components:
           type: integer
           format: int64
           example: 1
-        moderatorId:
-          type: integer
-          format: int64
-          example: 1
         logoUrl:
           maxLength: 255
           minLength: 0
@@ -2893,6 +2889,14 @@ components:
           minLength: 0
           type: string
           example: 123
+        cityId:
+          type: integer
+          format: int64
+          example: 1
+        districtId:
+          type: integer
+          format: int64
+          example: 1
         logoUrl:
           maxLength: 255
           minLength: 0

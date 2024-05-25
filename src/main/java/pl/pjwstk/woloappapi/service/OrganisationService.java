@@ -83,6 +83,7 @@ public class OrganisationService {
         organisationRepository.save(organisation);
     }
 
+
     public List<Event> getEventsByOrganisation(Long id) {
         return organisationRepository
                 .findById(id)

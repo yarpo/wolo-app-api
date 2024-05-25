@@ -20,6 +20,8 @@ public class OrganisationMapper {
                 .phoneNumber(organisation.getPhoneNumber())
                 .street(organisation.getAddress().getStreet())
                 .homeNum(organisation.getAddress().getHomeNum())
+                .cityId(organisation.getAddress().getDistrict().getCity().getId())
+                .districtId(organisation.getAddress().getDistrict().getId())
                 .logoUrl(organisation.getLogoUrl())
                 .build();
     }
@@ -36,6 +38,8 @@ public class OrganisationMapper {
                 .phoneNumber(organisation.getPhoneNumber())
                 .street(organisation.getAddress().getStreet())
                 .homeNum(organisation.getAddress().getHomeNum())
+                .cityId(organisation.getAddress().getDistrict().getCity().getId())
+                .districtId(organisation.getAddress().getDistrict().getId())
                 .logoUrl(organisation.getLogoUrl())
                 .isApproved(organisation.isApproved())
                 .build();
