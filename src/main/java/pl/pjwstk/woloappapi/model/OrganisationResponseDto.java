@@ -27,5 +27,9 @@ public class OrganisationResponseDto {
 
     private String homeNum;
 
+    private Long cityId;
+
+    private Long districtId;
+
     private String logoUrl;
 }

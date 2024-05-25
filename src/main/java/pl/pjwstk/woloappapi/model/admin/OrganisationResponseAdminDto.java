@@ -29,6 +29,10 @@ public class OrganisationResponseAdminDto {
 
     private String homeNum;
 
+    private Long cityId;
+
+    private Long districtId;
+
     private String logoUrl;
 
     private boolean isApproved;
