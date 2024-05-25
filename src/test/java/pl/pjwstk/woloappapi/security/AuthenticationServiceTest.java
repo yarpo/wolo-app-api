@@ -5,6 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.pjwstk.woloappapi.model.entities.Role;
 import pl.pjwstk.woloappapi.model.entities.User;
@@ -12,6 +15,8 @@ import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.service.RoleService;
 import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.UserMapper;
+
+import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -33,6 +38,9 @@ public class AuthenticationServiceTest {
 
     @Mock
     private JwtService jwtService;
+
+    @Mock
+    private AuthenticationManager authenticationManager;
 
     @InjectMocks
     private AuthenticationService authenticationService;
@@ -78,7 +86,57 @@ public class AuthenticationServiceTest {
         when(userRepository.findByEmail(request.getEmail())).thenReturn(java.util.Optional.of(user));
         when(jwtService.generateToken(user)).thenReturn("accessToken");
         when(jwtService.generateRefreshToken(user)).thenReturn("refreshToken");
+        when(authenticationManager.authenticate(any())).thenReturn(new Authentication() {
+            @Override
+            public boolean equals(Object another) {
+                return false;
+            }
 
+            @Override
+            public String toString() {
+                return null;
+            }
+
+            @Override
+            public int hashCode() {
+                return 0;
+            }
+
+            @Override
+            public String getName() {
+                return null;
+            }
+
+            @Override
+            public Collection<? extends GrantedAuthority> getAuthorities() {
+                return null;
+            }
+
+            @Override
+            public Object getCredentials() {
+                return null;
+            }
+
+            @Override
+            public Object getDetails() {
+                return null;
+            }
+
+            @Override
+            public Object getPrincipal() {
+                return null;
+            }
+
+            @Override
+            public boolean isAuthenticated() {
+                return false;
+            }
+
+            @Override
+            public void setAuthenticated(boolean isAuthenticated) throws java.lang.IllegalArgumentException {
+
+            }
+        });
         AuthenticationResponse response = authenticationService.authenticate(request);
 
         assertNotNull(response.getAccessToken());

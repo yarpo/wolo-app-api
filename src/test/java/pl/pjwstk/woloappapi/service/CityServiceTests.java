@@ -11,8 +11,10 @@ import pl.pjwstk.woloappapi.model.entities.City;
 import pl.pjwstk.woloappapi.model.entities.District;
 import pl.pjwstk.woloappapi.repository.CityRepository;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,12 +46,15 @@ public class CityServiceTests {
         city.setId(1L);
         city.setName("Test City");
         city.setOld(false);
-        city.setDistricts(List.of());
+        city.setDistricts(new ArrayList<District>());
 
         cityDto = new CityDto();
         cityDto.setId(1L);
         cityDto.setName("Test City DTO");
-        cityDto.setDistricts(List.of("District1", "District2"));
+        var list = new ArrayList<String>();
+        list.add("District1");
+        list.add("District2");
+        cityDto.setDistricts(list);
 
         cityBuilder = City.builder()
                 .id(cityDto.getId())

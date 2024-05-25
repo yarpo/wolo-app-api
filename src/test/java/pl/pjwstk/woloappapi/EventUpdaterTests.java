@@ -11,6 +11,8 @@ import pl.pjwstk.woloappapi.model.EventEditRequestDto;
 import pl.pjwstk.woloappapi.model.ShiftEditRequestDto;
 import pl.pjwstk.woloappapi.model.entities.*;
 import pl.pjwstk.woloappapi.repository.EventRepository;
+import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
+import pl.pjwstk.woloappapi.service.CategoryService;
 import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.EmailUtil;
 import pl.pjwstk.woloappapi.utils.EventMapper;
@@ -31,7 +33,13 @@ public class EventUpdaterTests {
     private EventRepository eventRepository;
 
     @Mock
+    private CategoryService categoryService;
+
+    @Mock
     private DistrictService districtService;
+
+    @Mock
+    private ShiftToUserRepository shiftToUserRepository;
 
     @Mock
     private EmailUtil emailUtil;
@@ -106,14 +114,18 @@ public class EventUpdaterTests {
         shiftDto.setDistrictId(1L);
         eventEditRequestDto.setShifts(List.of(shiftDto));
 
-
     }
 
     @Test
     public void testUpdateEvent() throws MessagingException {
-
+        var category = Category.builder()
+                        .id(2L)
+                        .name("category name")
+                        .build();
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
         when(eventMapper.toShift(any(ShiftEditRequestDto.class))).thenReturn(shift.builder());
+        when(categoryService.getCategoryById(anyLong())).thenReturn(category);
+        doNothing().when(shiftToUserRepository).delete(any());
 
         eventUpdater.update(eventEditRequestDto, 1L, true);
 

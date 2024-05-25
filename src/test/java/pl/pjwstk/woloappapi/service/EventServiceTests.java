@@ -35,6 +35,9 @@ public class EventServiceTests {
     private EventRepository eventRepository;
 
     @Mock
+    private CategoryService categoryService;
+
+    @Mock
     private EventMapper eventMapper;
 
     @Mock
@@ -42,6 +45,9 @@ public class EventServiceTests {
 
     @Mock
     private CategoryToEventService categoryToEventService;
+
+    @Mock
+    private OrganisationService organisationService;
 
     @Mock
     private ShiftToUserRepository shiftToUserRepository;
@@ -151,14 +157,24 @@ public class EventServiceTests {
     public void testCreateEvent() {
         var translation = new EventTranslationResponse();
         var eventDto = EventRequestDto.builder()
-                .categories(List.of(1L, 2L))
+                .categories(List.of(1L))
+                .organisationId(1L)
                 .build();
         var shift = new ShiftRequestDto();
         eventDto.setShifts(List.of(shift));
         var shiftBuilder = Shift.builder()
                 .event(eventBuilder.build());
+        var organisation = Organisation.builder()
+                        .id(1L)
+                        .build();
+        var category = Category.builder()
+                        .id(1L)
+                        .build();
         when(eventMapper.toEvent(any(), any())).thenReturn(eventBuilder);
         when(eventMapper.toShift(any(), any(), any())).thenReturn(shiftBuilder);
+        when(organisationService.getOrganisationById(anyLong())).thenReturn(organisation);
+        when(categoryService.getCategoryById(anyLong())).thenReturn(category);
+
         eventService.createEvent(translation, eventDto);
 
         verify(eventRepository, times(1)).save(any(Event.class));

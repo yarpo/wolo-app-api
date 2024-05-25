@@ -38,6 +38,9 @@ public class OrganisationServiceTests {
     private DistrictService districtService;
 
     @Mock
+    private RoleService roleService;
+
+    @Mock
     private UserRepository userRepository;
 
     @Mock
@@ -89,17 +92,16 @@ public class OrganisationServiceTests {
         translationResponce.setDescriptionUA("Test Description ua");
         translationResponce.setDescriptionRU("Test Description ru");
 
-        District district = new District();
-        district.setId(1L);
-        when(districtService.getDistrictById(1L)).thenReturn(district);
-
+        var district = District.builder().id(1L).build();
+        var role = Role.builder().id(1L).name("MODERATOR").build();
         var address = Address.builder()
                 .street(organisationRequestDto.getStreet())
                 .homeNum(organisationRequestDto.getHomeNum())
                 .build();
         when(addressRepository.save(any())).thenReturn(address);
-
+        when(districtService.getDistrictById(1L)).thenReturn(district);
         when(organisationMapper.toAddress(organisationRequestDto)).thenReturn(address.builder());
+        when(roleService.getRoleByName(anyString())).thenReturn(role);
         when(organisationMapper.toOrganisation(organisationRequestDto, translationResponce)).thenReturn(Organisation.builder()
                 .name(organisationRequestDto.getName())
                 .descriptionPL(translationResponce.getDescriptionPL())

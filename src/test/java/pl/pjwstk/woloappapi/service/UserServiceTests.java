@@ -399,8 +399,8 @@ public class UserServiceTests {
         var shift = Shift.builder()
                 .id(shiftId)
                 .event(event)
-                .startTime(LocalTime.now())
-                .endTime(LocalTime.now().plusHours(3))
+                .startTime(LocalTime.parse("09:00:00"))
+                .endTime(LocalTime.parse("12:00:00"))
                 .build();
         var existingEvent = Event.builder()
                 .id(2L)
@@ -410,8 +410,8 @@ public class UserServiceTests {
         var existingShift = Shift.builder()
                 .id(3L)
                 .event(existingEvent)
-                .startTime(LocalTime.now().plusHours(1))
-                .endTime(LocalTime.now().plusHours(5))
+                .startTime(LocalTime.parse("10:15:00"))
+                .endTime(LocalTime.parse("14:15:00"))
                 .build();
         var user = User.builder()
                 .id(userId)
