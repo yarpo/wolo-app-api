@@ -123,7 +123,7 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/OK'
-  /change-password:
+  /auth/change-password:
     put:
       summary: Change user password
       requestBody:
@@ -2480,8 +2480,6 @@ components:
         imageUrl:
           type: string
           example: https://example.com/image.jpg
-        alt:
-          type: string
         shifts:
           maxItems: 2147483647
           minItems: 1

@@ -19,7 +19,7 @@ public class EmailUtil {
     public void sendResetPasswordEmail(String email) throws MessagingException {
         String message = String.format("""
         <div>
-          <a href="http://localhost:8080/reset-password?email=%s" target="_blank">click link to set password</a>
+          <a href="http://localhost:3000/reset-password?email=%s" target="_blank">click link to set password</a>
         </div>
         """, email);
         mailSender(email, "Set Password", message, true);
