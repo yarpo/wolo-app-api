@@ -6,6 +6,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.OrganisationRequestDto;
 import pl.pjwstk.woloappapi.model.OrganisationResponseDto;
 import pl.pjwstk.woloappapi.model.admin.OrganisationResponseAdminDto;
+import pl.pjwstk.woloappapi.model.entities.City;
+import pl.pjwstk.woloappapi.model.entities.District;
 import pl.pjwstk.woloappapi.model.translation.OrganisationTranslationResponce;
 import pl.pjwstk.woloappapi.model.entities.Address;
 import pl.pjwstk.woloappapi.model.entities.Organisation;
@@ -30,9 +32,16 @@ public class OrganisationMapperTests {
         organisation.setDescriptionRU("Test Description ru");
         organisation.setEmail("test@example.com");
         organisation.setPhoneNumber("123456789");
-        Address address = new Address();
-        address.setStreet("Test Street");
-        address.setHomeNum("123");
+        var city = City.builder().id(1L).build();
+        var district = District.builder()
+                .id(1L)
+                .city(city)
+                .build();
+        var address = Address.builder()
+                .street("Test Street")
+                .homeNum("123")
+                .district(district)
+                .build();
         organisation.setAddress(address);
         organisation.setLogoUrl("https://example.com/logo");
 
@@ -61,9 +70,16 @@ public class OrganisationMapperTests {
         organisation.setDescriptionRU("Description RU");
         organisation.setEmail("sample@example.com");
         organisation.setPhoneNumber("123456789");
-        Address address = new Address();
-        address.setStreet("Sample Street");
-        address.setHomeNum("123");
+        var city = City.builder().id(1L).build();
+        var district = District.builder()
+                .id(1L)
+                .city(city)
+                .build();
+        var address = Address.builder()
+                .street("Test Street")
+                .homeNum("123")
+                .district(district)
+                .build();
         organisation.setAddress(address);
         organisation.setLogoUrl("https://example.com/logo");
         organisation.setApproved(true);
@@ -78,7 +94,7 @@ public class OrganisationMapperTests {
         assertEquals("Description RU", responseAdminDto.getDescriptionRU());
         assertEquals("sample@example.com", responseAdminDto.getEmail());
         assertEquals("123456789", responseAdminDto.getPhoneNumber());
-        assertEquals("Sample Street", responseAdminDto.getStreet());
+        assertEquals("Test Street", responseAdminDto.getStreet());
         assertEquals("123", responseAdminDto.getHomeNum());
         assertEquals("https://example.com/logo", responseAdminDto.getLogoUrl());
         assertTrue(responseAdminDto.isApproved());

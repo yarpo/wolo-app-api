@@ -6,6 +6,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import pl.pjwstk.woloappapi.model.entities.Event;
+import pl.pjwstk.woloappapi.model.entities.Shift;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 
 @Component
@@ -85,5 +86,14 @@ public class EmailUtil {
         mimeMessageHelper.setSubject(subject);
         mimeMessageHelper.setText(message, isHtml);
         javaMailSender.send(mimeMessage);
+    }
+
+    public void sendJoinEventMail(String email, Shift shift) throws MessagingException {
+        String message = String.format("Нou are automatically registered for the %s because you were on the reserve list. " +
+                "If you are no longer interested in this event, please log in to your account and unsubscribe from the event.",
+                eventRepository
+                        .findById(shift.getEvent().getId()).map(Event::getNameEN)
+                        .orElse("event"));
+        mailSender(email, "You are registered for the event!", message, false);
     }
 }

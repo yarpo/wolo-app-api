@@ -33,7 +33,7 @@ public class EventMapper {
                 .isLeaderRequired(shiftDto.getIsLeaderRequired())
                 .capacity(shiftDto.getCapacity())
                 .requiredMinAge(shiftDto.getRequiredMinAge())
-                .shiftDirectionsPL(translation.getAddressDescriptionPl())
+                .shiftDirectionsPL(translation.getAddressDescriptionPL())
                 .shiftDirectionsEN(translation.getAddressDescriptionEN())
                 .shiftDirectionsUA(translation.getAddressDescriptionUA())
                 .shiftDirectionsRU(translation.getAddressDescriptionRU());
