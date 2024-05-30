@@ -58,4 +58,10 @@ public class ShiftService {
         shiftRepository.save(shift);
     }
 
+    public List<ShiftToUser> getReserveEventsByUser(Long id) {
+        return shiftToUserRepository.findShiftToUsersByUserId(id)
+                .stream()
+                .filter(ShiftToUser::isOnReserveList)
+                .toList();
+    }
 }
