@@ -2,6 +2,7 @@ package pl.pjwstk.woloappapi.controller;
 
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -61,10 +62,11 @@ public class EventController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<HttpStatus> joinEvent(@RequestParam(value = "shift") Long shiftId){
+    public ResponseEntity<HttpStatus> joinEvent(@RequestParam(value = "shift") Long shiftId,
+                                                @RequestParam(value = "reserve") Boolean isReserve){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userId = userService.getCurrentUser(authentication).getId();
-        userService.joinEvent(userId, shiftId);
+        userService.joinEvent(userId, shiftId, isReserve);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -77,7 +79,7 @@ public class EventController {
     }
 
     @PostMapping("/refuse")
-    public ResponseEntity<HttpStatus> refuseParticipateInEvent(@RequestParam(value = "shift") Long shiftId){
+    public ResponseEntity<HttpStatus> refuseParticipateInEvent(@RequestParam(value = "shift") Long shiftId) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userId = userService.getCurrentUser(authentication).getId();
         userService.refuse(userId, shiftId);

@@ -787,6 +787,12 @@ paths:
             type: integer
             format: int64
           example: 1
+        - name: reserve
+          in: query
+          description: is this user added on the reserve list
+          required: true
+          schema:
+            type: boolean
       responses:
         '200':
           $ref: '#/components/responses/OK'

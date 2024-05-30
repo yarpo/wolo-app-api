@@ -201,7 +201,7 @@ public class UserServiceTests {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(shiftService.getShiftById(1L)).thenReturn(shift);
 
-        userService.joinEvent(1L, 1L);
+        userService.joinEvent(1L, 1L, false);
 
         assertEquals(6, shift.getRegisteredUsers());
         assertEquals(1, shift.getShiftToUsers().size());
@@ -221,8 +221,9 @@ public class UserServiceTests {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(shiftService.getShiftById(1L)).thenReturn(shift);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                userService.joinEvent(1L, 1L));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.joinEvent(1L, 1L, false);
+        });
 
         assertEquals("The event is fully booked", exception.getMessage());
         assertEquals(5, shift.getRegisteredUsers());
@@ -270,7 +271,6 @@ public class UserServiceTests {
         when(organisationService.getOrganisationById(1L)).thenReturn(organisation);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        // When
         userService.assignOrganisation(1L, 1L);
 
         assertEquals(organisation, user.getOrganisation());
@@ -314,8 +314,11 @@ public class UserServiceTests {
                 .id(1L)
                 .event(event)
                 .build();
-        var shiftToUser = new ShiftToUser(user, shift);
+        var shiftToUser = new ShiftToUser(user, shift, false);
         shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser)));
+
+        ShiftToUser shiftToUser1 = new ShiftToUser(user, shift, false);
+        shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser1)));
 
         when(shiftService.getShiftById(1L)).thenReturn(shift);
         doNothing().when(shiftToUserRepository).delete(any());
@@ -338,8 +341,11 @@ public class UserServiceTests {
                 .id(1L)
                 .event(event)
                 .build();
-        var shiftToUser = new ShiftToUser(user, shift);
+        var shiftToUser = new ShiftToUser(user, shift, false);
         shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser)));
+
+        ShiftToUser shiftToUser1 = new ShiftToUser(user, shift, false);
+        shift.setShiftToUsers(new ArrayList<>(List.of(shiftToUser1)));
 
         when(shiftService.getShiftById(1L)).thenReturn(shift);
 
@@ -418,7 +424,7 @@ public class UserServiceTests {
                 .shifts(new ArrayList<>())
                 .build();
 
-        var shiftToUser = new ShiftToUser(user, existingShift);
+        var shiftToUser = new ShiftToUser(user, existingShift, false);
 
         user.getShifts().add(shiftToUser);
 

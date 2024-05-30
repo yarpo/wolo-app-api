@@ -1,5 +1,6 @@
 package pl.pjwstk.woloappapi.service;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.OrganisationRepository;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.repository.UserRepository;
+import pl.pjwstk.woloappapi.utils.EmailUtil;
 import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
@@ -29,6 +31,8 @@ public class UserService {
     private final OrganisationService organisationService;
     private final OrganisationRepository organisationRepository;
     private final ShiftService shiftService;
+
+    private final EmailUtil emailUtil;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -143,12 +147,12 @@ public class UserService {
     }
 
     @Transactional
-    public void joinEvent(Long userId, Long shiftId) {
+    public void joinEvent(Long userId, Long shiftId, Boolean isReserve) {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         var shift = shiftService.getShiftById(shiftId);
         if (shift.getCapacity() > shift.getRegisteredUsers()) {
-            var shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift));
+            var shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift, isReserve));
             shift.getShiftToUsers().add(shiftToUser);
             shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
             shiftService.editShift(shift);
@@ -197,16 +201,42 @@ public class UserService {
                         .filter(stu -> stu.getUser().getId().equals(userId))
                         .findFirst()
                         .orElseThrow();
-
+                if(!shiftToUser.isOnReserveList()) {
+                    boolean assigned = false;
+                    try {
+                        assigned = assignFromReserve(shift);
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if(!assigned) {
+                        shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
+                    }
+                }
                 shift.getShiftToUsers().remove(shiftToUser);
-                shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
                 shiftService.editShift(shift);
                 shiftToUserRepository.delete(shiftToUser);
+
             }else {
                 throw new IllegalArgumentException("This user is not assigned to shift with id " + shiftId);
             }
         }else{
             throw new IllegalArgumentException("Can't refuse take part in event that has already taken place");
+        }
+    }
+
+    private boolean assignFromReserve(Shift shift) throws MessagingException {
+        var reserveShiftToUser = shift.getShiftToUsers().stream()
+                .filter(ShiftToUser::isOnReserveList)
+                .findFirst();
+        if (reserveShiftToUser.isPresent()) {
+            ShiftToUser stu = reserveShiftToUser.get();
+            stu.setOnReserveList(false);
+            shiftToUserRepository.save(stu);
+            shift.getShiftToUsers().add(stu);
+            emailUtil.sendJoinEventMail(stu.getUser().getEmail(), shift);
+            return true;
+        } else {
+            return false;
         }
     }
 
