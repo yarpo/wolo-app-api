@@ -220,8 +220,8 @@ public class EventServiceTests {
     }
     @Test
     void testDeleteEvent_PastDate() throws MessagingException {
-        Long eventId = 1L;
-        Event event = new Event();
+        var eventId = 1L;
+        var event = new Event();
         event.setDate(LocalDate.now().minusDays(1)); // Past date
         when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
 
@@ -236,7 +236,7 @@ public class EventServiceTests {
 
     @Test
     void testDeleteEvent_EventNotFound() {
-        Long eventId = 1L;
+        var eventId = 1L;
         when(eventRepository.findById(eventId)).thenReturn(Optional.empty());
 
         eventService.deleteEvent(eventId);
