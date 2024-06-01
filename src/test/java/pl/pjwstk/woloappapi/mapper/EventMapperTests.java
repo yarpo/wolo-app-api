@@ -147,7 +147,7 @@ public class EventMapperTests {
         assertEquals("Test Name RU", eventResponseDto.getNameRU());
         assertEquals("Test Organisation", eventResponseDto.getOrganisation());
         assertEquals(java.time.LocalDate.now(), eventResponseDto.getDate());
-        assertTrue(eventResponseDto.isPeselVerificationRequired());
+        assertTrue(eventResponseDto.getIsPeselVerificationRequired());
         assertEquals("Test City", eventResponseDto.getCity());
         assertEquals("https://example.com/image.jpg", eventResponseDto.getImageUrl());
         assertEquals(shifts.size(), eventResponseDto.getShifts().size());
@@ -282,7 +282,7 @@ public class EventMapperTests {
         assertEquals(1L, eventResponseDetailsDto.getOrganisationId());
         assertEquals("Test Organisation", eventResponseDetailsDto.getOrganisationName());
         assertEquals(java.time.LocalDate.now(), eventResponseDetailsDto.getDate());
-        assertTrue(eventResponseDetailsDto.isPeselVerificationRequired());
+        assertTrue(eventResponseDetailsDto.getIsPeselVerificationRequired());
         assertEquals("https://example.com/image.jpg", eventResponseDetailsDto.getImageUrl());
         assertEquals(shifts.size(), eventResponseDetailsDto.getShifts().size());
         assertEquals(categories.size(), eventResponseDetailsDto.getCategories().size());
@@ -452,7 +452,6 @@ public class EventMapperTests {
 
         assertEquals(dtoEvent.getName(), translation.getName());
         assertEquals(dtoEvent.getDescription(), translation.getDescription());
-        assertEquals(dtoEvent.getImageUrl(), translation.getImageUrl());
         assertEquals(shiftDto.getShiftDirections(), translation.getShiftDirections().get(0));
         assertEquals(language, translation.getLanguage());
     }

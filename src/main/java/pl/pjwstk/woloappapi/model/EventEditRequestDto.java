@@ -77,4 +77,6 @@ public class EventEditRequestDto {
 
     private Long cityId;
 
+    private Boolean mailSend;
+
 }

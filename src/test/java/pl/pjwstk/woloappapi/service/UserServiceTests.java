@@ -209,28 +209,6 @@ public class UserServiceTests {
     }
 
     @Test
-    public void testJoinEvent_ShiftFull() {
-        User user = new User();
-        user.setId(1L);
-        Shift shift = new Shift();
-        shift.setId(1L);
-        shift.setCapacity(5);
-        shift.setRegisteredUsers(5);
-        shift.setShiftToUsers(new ArrayList<>());
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(shiftService.getShiftById(1L)).thenReturn(shift);
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.joinEvent(1L, 1L, false);
-        });
-
-        assertEquals("The event is fully booked", exception.getMessage());
-        assertEquals(5, shift.getRegisteredUsers());
-        assertEquals(0, shift.getShiftToUsers().size());
-    }
-
-    @Test
     public void testAssignOrganisation_WithModerator() {
         Organisation organisation = new Organisation();
         organisation.setId(1L);

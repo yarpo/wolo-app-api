@@ -151,14 +151,12 @@ public class UserService {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         var shift = shiftService.getShiftById(shiftId);
-        if (shift.getCapacity() > shift.getRegisteredUsers()) {
-            var shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift, isReserve));
-            shift.getShiftToUsers().add(shiftToUser);
+        var shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift, isReserve));
+        shift.getShiftToUsers().add(shiftToUser);
+        if (!isReserve) {
             shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
-            shiftService.editShift(shift);
-        } else {
-            throw new IllegalArgumentException("The event is fully booked");
         }
+        shiftService.editShift(shift);
     }
 
     @Transactional
