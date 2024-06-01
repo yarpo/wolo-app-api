@@ -153,7 +153,9 @@ public class UserService {
         var shift = shiftService.getShiftById(shiftId);
         var shiftToUser = shiftToUserRepository.save(new ShiftToUser(user, shift, isReserve));
         shift.getShiftToUsers().add(shiftToUser);
-        shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
+        if (!isReserve) {
+            shift.setRegisteredUsers(shift.getRegisteredUsers() + 1);
+        }
         shiftService.editShift(shift);
     }
 
