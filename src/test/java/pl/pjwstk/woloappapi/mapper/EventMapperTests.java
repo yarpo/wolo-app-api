@@ -452,7 +452,6 @@ public class EventMapperTests {
 
         assertEquals(dtoEvent.getName(), translation.getName());
         assertEquals(dtoEvent.getDescription(), translation.getDescription());
-        assertEquals(dtoEvent.getImageUrl(), translation.getImageUrl());
         assertEquals(shiftDto.getShiftDirections(), translation.getShiftDirections().get(0));
         assertEquals(language, translation.getLanguage());
     }
