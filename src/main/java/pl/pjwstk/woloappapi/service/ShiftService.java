@@ -50,6 +50,7 @@ public class ShiftService {
         return shiftToUserRepository.findShiftToUsersByUserId(id)
                 .stream()
                 .filter(shiftToUser -> !shiftToUser.getShift().getEvent().getDate().isBefore(LocalDate.now()))
+                .filter(shiftToUser -> !shiftToUser.isOnReserveList())
                 .toList();
     }
 
@@ -58,4 +59,10 @@ public class ShiftService {
         shiftRepository.save(shift);
     }
 
+    public List<ShiftToUser> getReserveEventsByUser(Long id) {
+        return shiftToUserRepository.findShiftToUsersByUserId(id)
+                .stream()
+                .filter(ShiftToUser::isOnReserveList)
+                .toList();
+    }
 }

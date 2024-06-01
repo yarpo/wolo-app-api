@@ -24,7 +24,9 @@ public class EventResponseDto {
 
     private String organisation;
 
-    private boolean isPeselVerificationRequired;
+    private Boolean isPeselVerificationRequired;
+
+    private Boolean isAgreementNeeded;
 
     private List<String> categories;
 

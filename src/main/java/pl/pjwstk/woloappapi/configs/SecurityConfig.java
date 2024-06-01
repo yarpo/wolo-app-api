@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/").permitAll();
                     auth.requestMatchers("/error").permitAll();
+                    auth.requestMatchers(OPTIONS, "/auth/**").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers(OPTIONS, "/auth/**").permitAll();
                     auth.requestMatchers("/openapi.yaml").permitAll();
