@@ -26,9 +26,9 @@ public class EventResponseDetailsDto {
 
     private String organisationName;
 
-    private boolean isPeselVerificationRequired;
+    private Boolean isPeselVerificationRequired;
 
-    private boolean isAgreementNeeded;
+    private Boolean isAgreementNeeded;
 
     private LocalDate date;
 

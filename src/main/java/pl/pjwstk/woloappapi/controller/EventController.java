@@ -149,7 +149,12 @@ public class EventController {
                     .bodyValue(translationDto)
                     .retrieve()
                     .bodyToMono(EventTranslationResponse.class)
-                    .subscribe(translated -> eventService.createEvent(translated, dtoEvent));
+                    .subscribe(translated -> {
+                        System.out.println(dtoEvent.isPeselVerificationRequired());
+                        System.out.println(dtoEvent.isAgreementNeeded());
+                        System.out.println("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
+                        eventService.createEvent(translated, dtoEvent);
+                    });
             return new ResponseEntity<>(HttpStatus.CREATED);
         }else{
             throw new IllegalArgumentException("You can create events only for your organisation");
