@@ -70,8 +70,8 @@ public class EventService {
     }
 
     @Transactional
-    public void updateEvent(EventEditRequestDto eventDto, Long id, Boolean sendMail) {
-        eventUpdater.update(eventDto, id, sendMail);
+    public void updateEvent(EventEditRequestDto eventDto, Long id) {
+        eventUpdater.update(eventDto, id);
     }
 
     @Transactional

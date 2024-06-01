@@ -25,7 +25,7 @@ public class EventUpdater {
     private final ShiftToUserRepository shiftToUserRepository;
 
     @Transactional
-    public void update(EventEditRequestDto eventDto, Long id, Boolean sendMail) {
+    public void update(EventEditRequestDto eventDto, Long id) {
         var city = districtService.getDistrictById(eventDto.getShifts().get(0).getDistrictId()).getCity();
         Event event = eventRepository
                 .findById(id)
@@ -59,7 +59,7 @@ public class EventUpdater {
             deleteShiftToUsersForAgreementNeeded(event);
         }
 
-        if (fieldsChanged && sendMail) {
+        if (fieldsChanged && eventDto.getMailSend()) {
             event.getShifts().stream()
                     .flatMap(shift -> shift.getShiftToUsers().stream())
                     .map(ShiftToUser::getUser)
@@ -75,7 +75,7 @@ public class EventUpdater {
         }
 
         updateEventCategories(event, eventDto);
-        updateEventShifts(event, eventDto, sendMail);
+        updateEventShifts(event, eventDto);
 
         eventRepository.save(event);
     }
@@ -173,7 +173,7 @@ public class EventUpdater {
                 .forEach(event.getCategories()::add);
     }
 
-    private void updateEventShifts(Event event, EventEditRequestDto eventDto, Boolean sendMail) {
+    private void updateEventShifts(Event event, EventEditRequestDto eventDto) {
         List<Shift> newShifts = eventDto.getShifts().stream()
                 .map(s -> eventMapper.toShift(s)
                         .event(event)
@@ -183,7 +183,7 @@ public class EventUpdater {
         List<Long> newShiftIds = newShifts.stream().map(Shift::getId).toList();
 
         removeObsoleteShifts(event, newShiftIds);
-        updateExistingShifts(event, newShifts, sendMail);
+        updateExistingShifts(event, newShifts, eventDto.getMailSend());
         addNewShifts(event, newShifts);
     }
 

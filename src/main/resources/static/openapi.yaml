@@ -792,7 +792,8 @@ paths:
           description: is this user added on the reserve list
           required: true
           schema:
-            type: boolean
+            type: string
+            example: true
       responses:
         '200':
           $ref: '#/components/responses/OK'
@@ -864,12 +865,6 @@ paths:
             type: integer
             format: int64
           example: 1
-        - name: mailSend
-          in: query
-          description: do you want to send mails with information about event changes to users
-          required: true
-          schema:
-            type: boolean
       requestBody:
         content:
           application/json:
@@ -905,12 +900,6 @@ paths:
             type: integer
             format: int64
           example: 1
-        - name: mailSend
-          in: query
-          description: do you want to send mails with information about event changes to users
-          required: true
-          schema:
-            type: boolean
       requestBody:
         content:
           application/json:
@@ -2271,6 +2260,8 @@ components:
         - categories
         - shifts
         - date
+        - cityId
+        - mailSend
       type: object
       properties:
         namePL:
@@ -2328,6 +2319,9 @@ components:
           type: integer
           format: int64
           example: 1
+        mailSend:
+          type: boolean
+          example: true
     EventResponseDetailsDto:
       type: object
       properties:

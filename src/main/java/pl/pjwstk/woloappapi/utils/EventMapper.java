@@ -80,6 +80,7 @@ public class EventMapper {
                 .organisation(event.getOrganisation().getName())
                 .date(event.getDate())
                 .isPeselVerificationRequired(event.isPeselVerificationRequired())
+                .isAgreementNeeded(event.isAgreementNeeded())
                 .city(event.getCity().getName())
                 .imageUrl(event.getImageUrl())
                 .shifts(shifts)
@@ -126,6 +127,7 @@ public class EventMapper {
                 .organisationName(event.getOrganisation().getName())
                 .date(event.getDate())
                 .isPeselVerificationRequired(event.isPeselVerificationRequired())
+                .isAgreementNeeded(event.isAgreementNeeded())
                 .descriptionPL(event.getDescriptionPL())
                 .descriptionEN(event.getDescriptionEN())
                 .descriptionUA(event.getDescriptionUA())
@@ -210,7 +212,6 @@ public class EventMapper {
         var translation = new EventTranslationRequest();
         translation.setName(dtoEvent.getName());
         translation.setDescription(dtoEvent.getDescription());
-        translation.setImageUrl(dtoEvent.getImageUrl());
         translation.setShiftDirections(directions);
         translation.setLanguage(language);
 

@@ -10,8 +10,6 @@ public class EventTranslationRequest {
 
     private List<String> shiftDirections;
 
-    private String imageUrl;
-
     private String language;
 
     public EventTranslationRequest() {
@@ -39,14 +37,6 @@ public class EventTranslationRequest {
 
     public void setShiftDirections(List<String> shiftDirections) {
         this.shiftDirections = shiftDirections;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public String getLanguage() {
