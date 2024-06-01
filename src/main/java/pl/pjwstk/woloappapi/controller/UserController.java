@@ -89,6 +89,17 @@ public class UserController {
         return new ResponseEntity<>(shifts, HttpStatus.OK);
     }
 
+    @GetMapping("/shifts/reserve")
+    public ResponseEntity<List<ShiftResponseDto>> getUserReserveShifts() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userId = userService.getCurrentUser(authentication).getId();
+        List<ShiftToUser> shiftToUsers = shiftService.getReserveEventsByUser(userId);
+        List<ShiftResponseDto> shifts = shiftToUsers.stream()
+                .map(stu -> eventMapper.toShiftResponseDto(stu.getShift()))
+                .toList();
+        return new ResponseEntity<>(shifts, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}/shifts")
     public ResponseEntity<List<ShiftResponseDto>> getUserShifts(@PathVariable Long id){
         List<ShiftToUser> shiftToUsers = shiftToUserRepository.findShiftToUsersByUserId(id);
