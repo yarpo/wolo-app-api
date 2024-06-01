@@ -19,6 +19,7 @@ import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
 import pl.pjwstk.woloappapi.utils.EmailUtil;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 import pl.pjwstk.woloappapi.utils.EventUpdater;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,8 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class EventServiceTests {
@@ -84,6 +84,15 @@ public class EventServiceTests {
     }
 
     @Test
+    public void testGetEventByIdEventNotExists() {
+        when(eventRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> eventService.getEventById(1L));
+
+        verify(eventRepository, times(1)).findById(1L);
+    }
+
+    @Test
     void testGetAllEvents() {
         List<Event> mockEvents = new ArrayList<>();
         mockEvents.add(new Event());
@@ -123,7 +132,7 @@ public class EventServiceTests {
 
 
     @Test
-    void testGetTheyNeedYouList_EventsFound() {
+    void testGetTheyNeedYouListEventsFound() {
         var thresholdDate = LocalDate.now().plusDays(5);
         List<Event> expectedEvents = new ArrayList<>();
         expectedEvents.add(new Event());
@@ -137,7 +146,7 @@ public class EventServiceTests {
 }
 
     @Test
-    void testGetTheyNeedYouList_NoEventsFound() {
+    void testGetTheyNeedYouListNoEventsFound() {
         List<Event> nearestEvents = new ArrayList<>();
         nearestEvents.add(new Event());
         nearestEvents.add(new Event());
@@ -147,7 +156,7 @@ public class EventServiceTests {
         when(eventRepository.findNearestEventsSortedByDate(any(Pageable.class)))
                 .thenReturn(nearestEvents);
 
-        List<Event> result = eventService.getTheyNeedYouList();
+        var result = eventService.getTheyNeedYouList();
 
         assertEquals(nearestEvents.size(), result.size());
         verify(eventRepository, times(1)).findNearestEventsSortedByDate(PageRequest.of(0, 5));

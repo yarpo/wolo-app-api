@@ -12,6 +12,7 @@ import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.repository.CategoryToEventRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,5 +46,14 @@ public class CategoryToEventServiceTests {
         assertEquals(1L, capturedCategoryToEvent.getCategory().getId());
         assertEquals(1L, capturedCategoryToEvent.getEvent().getId());
 
+    }
+
+    @Test
+    public void testDeleteCategoryToEvent() {
+        Long categoryToEventId = 1L;
+
+        categoryToEventService.deleteCategoryToEvent(categoryToEventId);
+
+        verify(categoryToEventRepository, times(1)).deleteById(categoryToEventId);
     }
 }
