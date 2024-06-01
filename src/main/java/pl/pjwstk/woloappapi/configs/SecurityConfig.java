@@ -31,6 +31,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/").permitAll();
                     auth.requestMatchers("/error").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
+                    auth.requestMatchers(OPTIONS, "/auth/**").permitAll();
                     auth.requestMatchers("/openapi.yaml").permitAll();
                     auth.requestMatchers("/api-docs/**").permitAll();
                     auth.requestMatchers("/swagger-ui/**").permitAll();
@@ -71,7 +72,7 @@ public class SecurityConfig {
                     auth.requestMatchers(DELETE, "/events/**").hasAuthority("DELETE_EVENT");
                     auth.requestMatchers("/events/users**").hasAuthority("READ_USERS_BY_SHIFT");
                     auth.requestMatchers("/events/users/pdf").hasAuthority("USERS_LIST_PDF");
-                    auth.requestMatchers("events/admin**").permitAll();
+                    auth.requestMatchers("events/admin/**").permitAll();
 
                     auth.requestMatchers(OPTIONS, "/faq/**").permitAll();
                     auth.requestMatchers(GET, "/faq").permitAll();

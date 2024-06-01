@@ -210,7 +210,6 @@ public class EventMapper {
         var translation = new EventTranslationRequest();
         translation.setName(dtoEvent.getName());
         translation.setDescription(dtoEvent.getDescription());
-        translation.setImageUrl(dtoEvent.getImageUrl());
         translation.setShiftDirections(directions);
         translation.setLanguage(language);
 

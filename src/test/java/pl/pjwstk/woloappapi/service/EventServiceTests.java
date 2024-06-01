@@ -185,10 +185,10 @@ public class EventServiceTests {
     public void testUpdateEvent() {
         EventEditRequestDto eventDto = new EventEditRequestDto();
         Long eventId = 1L;
-        Boolean sendMail = true;
-        eventService.updateEvent(eventDto, eventId, sendMail);
+        eventDto.setMailSend(true);
+        eventService.updateEvent(eventDto, eventId);
 
-        verify(eventUpdater, times(1)).update(eventDto, eventId, sendMail);
+        verify(eventUpdater, times(1)).update(eventDto, eventId);
     }
 
     @Test

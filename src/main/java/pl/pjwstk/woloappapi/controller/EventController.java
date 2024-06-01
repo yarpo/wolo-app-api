@@ -2,7 +2,6 @@ package pl.pjwstk.woloappapi.controller;
 
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -63,7 +62,8 @@ public class EventController {
 
     @PostMapping("/join")
     public ResponseEntity<HttpStatus> joinEvent(@RequestParam(value = "shift") Long shiftId,
-                                                @RequestParam(value = "reserve") Boolean isReserve){
+                                                @RequestParam(value = "reserve") String reserve){
+        Boolean isReserve = Boolean.valueOf(reserve);
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userId = userService.getCurrentUser(authentication).getId();
         userService.joinEvent(userId, shiftId, isReserve);
@@ -137,7 +137,7 @@ public class EventController {
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addEvent(@Valid @RequestBody EventRequestDto dtoEvent,
-                                               @RequestParam String language) {
+                                               @RequestParam(name = "language") String language) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var organisationId = userService.getCurrentUser(authentication).getOrganisation().getId();
         if(Objects.equals(organisationId, dtoEvent.getOrganisationId())) {
@@ -194,22 +194,20 @@ public class EventController {
     @PutMapping("/admin/edit/{id}")
     public ResponseEntity<HttpStatus> editEventByAdmin(
             @Valid @RequestBody EventEditRequestDto eventEditRequestDto,
-            @PathVariable Long id,
-            @RequestParam Boolean mailSend) {
-        eventService.updateEvent(eventEditRequestDto, id, mailSend);
+            @PathVariable Long id) {
+        eventService.updateEvent(eventEditRequestDto, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<HttpStatus> editEvent(
             @Valid @RequestBody EventEditRequestDto eventRequestDto,
-            @PathVariable Long id,
-            @RequestParam Boolean mailSend) {
+            @PathVariable Long id) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var organisationId = userService.getCurrentUser(authentication).getOrganisation().getId();
         var event = eventService.getEventById(id);
         if(Objects.equals(organisationId, event.getOrganisation().getId())) {
-            eventService.updateEvent(eventRequestDto, id, mailSend);
+            eventService.updateEvent(eventRequestDto, id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }else{
             throw new IllegalArgumentException("You can edit events only for your organisation");

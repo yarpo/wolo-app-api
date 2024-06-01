@@ -118,6 +118,7 @@ public class EventUpdaterTests {
 
     @Test
     public void testUpdateEvent() throws MessagingException {
+        eventEditRequestDto.setMailSend(true);
         var category = Category.builder()
                         .id(2L)
                         .name("category name")
@@ -127,7 +128,7 @@ public class EventUpdaterTests {
         when(categoryService.getCategoryById(anyLong())).thenReturn(category);
         doNothing().when(shiftToUserRepository).delete(any());
 
-        eventUpdater.update(eventEditRequestDto, 1L, true);
+        eventUpdater.update(eventEditRequestDto, 1L);
 
         verify(emailUtil, times(1)).sendEditEventMail(anyString(), anyLong());
         verify(eventRepository, times(1)).findById(1L);
@@ -136,11 +137,10 @@ public class EventUpdaterTests {
 
     @Test
     public void testUpdateEventWithNonExistentId() throws MessagingException {
+        eventEditRequestDto.setMailSend(true);
         when(eventRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> {
-            eventUpdater.update(eventEditRequestDto, 1L, true);
-        });
+        assertThrows(NotFoundException.class, () -> eventUpdater.update(eventEditRequestDto, 1L));
 
         verify(eventRepository, times(1)).findById(1L);
         verify(eventRepository, never()).save(any(Event.class));
@@ -151,10 +151,11 @@ public class EventUpdaterTests {
     @Test
     public void testUpdateEventWithPeselVerificationRequired() throws MessagingException {
         eventEditRequestDto.setPeselVerificationRequired(true);
+        eventEditRequestDto.setMailSend(true);
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
         when(eventMapper.toShift(any(ShiftEditRequestDto.class)))
                 .thenReturn(Shift.builder().event(event));
-        eventUpdater.update(eventEditRequestDto, 1L, true);
+        eventUpdater.update(eventEditRequestDto, 1L);
 
 
         verify(eventRepository, times(1)).findById(1L);
@@ -165,9 +166,10 @@ public class EventUpdaterTests {
     @Test
     public void testUpdateEventWithAgreementNeeded() throws MessagingException {
         eventEditRequestDto.setAgreementNeeded(true);
+        eventEditRequestDto.setMailSend(true);
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
         when(eventMapper.toShift(any())).thenReturn(shift.builder());
-        eventUpdater.update(eventEditRequestDto, 1L, true);
+        eventUpdater.update(eventEditRequestDto, 1L);
 
         verify(eventRepository, times(1)).findById(1L);
         verify(eventRepository, times(1)).save(event);
@@ -177,13 +179,14 @@ public class EventUpdaterTests {
     @Test
     public void testUpdateEventWithShiftUpdates() throws MessagingException {
         ShiftEditRequestDto shiftDto = new ShiftEditRequestDto();
+        eventEditRequestDto.setMailSend(true);
         shiftDto.setDistrictId(1L);
         eventEditRequestDto.setShifts(List.of(shiftDto));
 
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
         when(eventMapper.toShift(any(ShiftEditRequestDto.class))).thenReturn(Shift.builder());
 
-        eventUpdater.update(eventEditRequestDto, 1L, true);
+        eventUpdater.update(eventEditRequestDto, 1L);
 
         verify(eventRepository, times(1)).findById(1L);
         verify(eventRepository, times(1)).save(event);
