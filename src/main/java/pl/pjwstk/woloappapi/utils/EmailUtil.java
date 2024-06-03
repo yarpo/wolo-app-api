@@ -15,6 +15,15 @@ public class EmailUtil {
     private final JavaMailSender javaMailSender;
     private final EventRepository eventRepository;
 
+    public void sendOtpMail(String email, String otp) throws MessagingException{
+        String message = String.format("""
+        <div>
+          <a href="http://localhost:8080/verify-account?email=%s&otp=%s" target="_blank">click link to verify mail</a>
+        </div>
+        """, email,otp);
+        mailSender(email, "Set Password", message, true);
+
+    }
 
     public void sendResetPasswordEmail(String email) throws MessagingException {
         String message = String.format("""

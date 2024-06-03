@@ -1,4 +1,4 @@
-package pl.pjwstk.woloappapi.security;
+package pl.pjwstk.woloappapi.service.security;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
@@ -26,13 +26,18 @@ public class AuthenticationController {
     private final UserMapper userMapper;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid RegistrationRequest request){
+    public ResponseEntity<String> register(@RequestBody @Valid RegistrationRequest request){
         return new ResponseEntity<>(authenticationService.register(request), HttpStatus.OK);
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest request){
         return new ResponseEntity<>(authenticationService.authenticate(request), HttpStatus.OK);
+    }
+
+    @PutMapping("/verify-account")
+    public ResponseEntity<String> verifyAccount(@RequestParam String email, @RequestParam String otp){
+        return new ResponseEntity<>(authenticationService.verifyAccount(email, otp), HttpStatus.OK);
     }
 
     @PostMapping("/refresh")
@@ -70,5 +75,10 @@ public class AuthenticationController {
         var user = userService.getCurrentUser(authentication);
         authenticationService.changePassword(request, user);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/regenerate-otp")
+    public ResponseEntity<String> regenerateOtp(@RequestParam String email){
+        return new ResponseEntity<>(authenticationService.regenerateOtp(email), HttpStatus.OK);
     }
 }
