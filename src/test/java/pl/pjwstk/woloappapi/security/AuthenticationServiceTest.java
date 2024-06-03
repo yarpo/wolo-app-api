@@ -1,5 +1,6 @@
 package pl.pjwstk.woloappapi.security;
 
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,13 +15,14 @@ import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.service.RoleService;
 import pl.pjwstk.woloappapi.service.security.*;
+import pl.pjwstk.woloappapi.utils.EmailUtil;
 import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
+import pl.pjwstk.woloappapi.utils.OtpUtil;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,30 +45,14 @@ public class AuthenticationServiceTest {
     @Mock
     private AuthenticationManager authenticationManager;
 
+    @Mock
+    private OtpUtil otpUtil;
+
+    @Mock
+    private EmailUtil emailUtil;
+
     @InjectMocks
     private AuthenticationService authenticationService;
-
-    @Test
-    void testRegister_NewUser_Success() {
-        var request = RegistrationRequest.builder()
-                .email("test@example.com")
-                .password("password")
-                .build();
-        var role = Role.builder()
-                .id(1L)
-                .name("USER")
-                .build();
-        var user = User.builder();
-        when(userMapper.toUser(request)).thenReturn(user);
-        when(roleService.getRoleByName("USER")).thenReturn(role);
-        when(passwordEncoder.encode(request.getPassword())).thenReturn("encodedPassword");
-        when(userRepository.existsByEmail(request.getEmail())).thenReturn(false);
-
-        authenticationService.register(request);
-
-        verify(jwtService, times(1)).generateToken(user.build());
-        verify(jwtService, times(1)).generateRefreshToken(user.build());
-    }
 
     @Test
     void testRegister_UserAlreadyExists_ExceptionThrown() {
@@ -74,9 +60,54 @@ public class AuthenticationServiceTest {
                 .email("test@example.com")
                 .password("password")
                 .build();
+
         when(userRepository.existsByEmail(request.getEmail())).thenReturn(true);
 
-        assertThrows(IllegalArgumentException.class, () -> authenticationService.register(request));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> authenticationService.register(request));
+        assertEquals("There is an account with that email address: test@example.com", exception.getMessage());
+    }
+
+    @Test
+    void testRegister_NewUser_Success() throws MessagingException {
+        var request = RegistrationRequest.builder()
+                .email("test@example.com")
+                .password("password")
+                .build();
+        var role = Role.builder().id(1L).name("USER").build();
+        var otp = "123456";
+
+        when(userRepository.existsByEmail(request.getEmail())).thenReturn(false);
+        when(otpUtil.generateOtp()).thenReturn(otp);
+        when(roleService.getRoleByName("USER")).thenReturn(role);
+        when(passwordEncoder.encode(request.getPassword())).thenReturn("encodedPassword");
+        when(userMapper.toUser(request)).thenReturn(User.builder().email(request.getEmail()));
+
+        doNothing().when(emailUtil).sendOtpMail(request.getEmail(), otp);
+
+        String response = authenticationService.register(request);
+
+        assertEquals("Account successfully has been created. For account verification use link sent to you in email", response);
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    void testRegister_EmailSendingFailure_RuntimeExceptionThrown() throws MessagingException {
+        var request = RegistrationRequest.builder()
+                .email("test@example.com")
+                .password("password")
+                .build();
+        var otp = "123456";
+
+        when(userRepository.existsByEmail(request.getEmail())).thenReturn(false);
+        when(otpUtil.generateOtp()).thenReturn(otp);
+
+        doThrow(new MessagingException("Email send failure")).when(emailUtil).sendOtpMail(request.getEmail(), otp);
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> authenticationService.register(request));
+        assertEquals("Unable to send email", exception.getMessage());
+
         verify(userRepository, never()).save(any());
     }
 
