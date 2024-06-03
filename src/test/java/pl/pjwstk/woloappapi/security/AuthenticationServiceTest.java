@@ -1,5 +1,6 @@
 package pl.pjwstk.woloappapi.security;
 
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,13 +14,14 @@ import pl.pjwstk.woloappapi.model.entities.Role;
 import pl.pjwstk.woloappapi.model.entities.User;
 import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.service.RoleService;
+import pl.pjwstk.woloappapi.utils.EmailUtil;
 import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 import pl.pjwstk.woloappapi.utils.UserMapper;
 
 import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +43,9 @@ public class AuthenticationServiceTest {
 
     @Mock
     private AuthenticationManager authenticationManager;
+
+    @Mock
+    private EmailUtil emailUtil;
 
     @InjectMocks
     private AuthenticationService authenticationService;
@@ -143,6 +148,72 @@ public class AuthenticationServiceTest {
         assertNotNull(response.getRefreshToken());
         verify(jwtService, times(1)).generateToken(user);
         verify(jwtService, times(1)).generateRefreshToken(user);
+    }
+
+    @Test
+    void testForgotPassword_EmailSent_Success() throws MessagingException {
+        var email = "test@example.com";
+
+        authenticationService.forgotPassword(email);
+
+        verify(emailUtil, times(1)).sendResetPasswordEmail(email);
+    }
+
+    @Test
+    void testSetPassword_UserExists_Success() {
+        var email = "test@example.com";
+        var newPassword = "newPassword";
+        var request = new ForgotPasswordRequest(email, newPassword);
+        var user = User.builder().email(email).build();
+
+        when(userRepository.findByEmail(email)).thenReturn(java.util.Optional.of(user));
+        when(passwordEncoder.encode(newPassword)).thenReturn("encodedNewPassword");
+
+        authenticationService.setPassword(request);
+
+        assertEquals("encodedNewPassword", user.getPassword());
+        verify(userRepository, times(1)).save(user);
+    }
+
+    @Test
+    void testSetPassword_UserNotFound_ExceptionThrown() {
+        var email = "test@example.com";
+        var newPassword = "newPassword";
+        var request = new ForgotPasswordRequest(email, newPassword);
+
+        when(userRepository.findByEmail(email)).thenReturn(java.util.Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> authenticationService.setPassword(request));
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void testChangePassword_OldPasswordMatches_Success() {
+        var oldPassword = "oldPassword";
+        var newPassword = "newPassword";
+        var request = new ChangePasswordRequest(oldPassword, newPassword);
+        var user = User.builder().password("encodedOldPassword").build();
+
+        when(passwordEncoder.matches(oldPassword, user.getPassword())).thenReturn(true);
+        when(passwordEncoder.encode(newPassword)).thenReturn("encodedNewPassword");
+
+        authenticationService.changePassword(request, user);
+
+        assertEquals("encodedNewPassword", user.getPassword());
+        verify(userRepository, times(1)).save(user);
+    }
+
+    @Test
+    void testChangePassword_OldPasswordNotMatches_ExceptionThrown() {
+        var oldPassword = "oldPassword";
+        var newPassword = "newPassword";
+        var request = new ChangePasswordRequest(oldPassword, newPassword);
+        var user = User.builder().password("encodedOldPassword").build();
+
+        when(passwordEncoder.matches(oldPassword, user.getPassword())).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class, () -> authenticationService.changePassword(request, user));
+        verify(userRepository, never()).save(any());
     }
 
 }
