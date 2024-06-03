@@ -8,12 +8,18 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.CategoryDto;
 import pl.pjwstk.woloappapi.model.entities.Category;
+import pl.pjwstk.woloappapi.model.entities.CategoryToEvent;
 import pl.pjwstk.woloappapi.repository.CategoryRepository;
 import pl.pjwstk.woloappapi.utils.DictionariesMapper;
+import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
+import pl.pjwstk.woloappapi.utils.NotFoundException;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +47,27 @@ public class CategoryServiceTests {
     }
 
     @Test
-    public void testGetByCategoryId(){
+    public void testGetCategoryById_CategoryNotFound() {
+        var categoryId = 1L;
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
+
+        var exception = assertThrows(NotFoundException.class,
+                () ->  categoryService.getCategoryById(categoryId));
+        assertEquals("Category id not found!", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateCategory_CategoryNotFound() {
+        var categoryDto = new CategoryDto(1L, "Updated Category");
+        when(categoryRepository.findById(1L)).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () ->categoryService.updateCategory(categoryDto));
+        assertEquals("Category with ID " + categoryDto.getId() + " does not exist", exception.getMessage());
+    }
+
+    @Test
+    public void testGetCategoryById(){
         Category category = new Category();
         category.setId(1L);
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
@@ -94,16 +120,22 @@ public class CategoryServiceTests {
 
     @Test
     public void testDeleteCategory() {
-        Category category = new Category();
-        category.setId(1L);
-        category.setCategoryToEventList(new ArrayList<>());
-
+        var category = Category.builder().id(1L).name("sample").build();
+        var basicCategory = Category.builder().id(5L).name("Podstawowa").build();
+        var categoryToEvent1 = new CategoryToEvent();
+        categoryToEvent1.setCategory(category);
+        var categoryToEvent2 = new CategoryToEvent();
+        categoryToEvent2.setCategory(category);
+        category.setCategoryToEventList(Arrays.asList(categoryToEvent1, categoryToEvent2));
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
+        when(categoryRepository.findByName("Podstawowa")).thenReturn(Optional.of(basicCategory));
 
         categoryService.deleteCategory(1L);
 
         verify(categoryRepository, times(1)).findById(1L);
         verify(categoryRepository, times(1)).deleteById(1L);
+        assertEquals("Podstawowa", categoryToEvent1.getCategory().getName());
+        assertEquals("Podstawowa", categoryToEvent2.getCategory().getName());
     }
 
 }

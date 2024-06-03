@@ -263,6 +263,4 @@ public class OrganisationServiceTests {
         assertFalse(organisation.isApproved());
         verify(organisationRepository, times(1)).findById(1L);
     }
-
-
 }

@@ -51,7 +51,7 @@ public class FAQServiceTest {
     }
 
     @Test
-    public void testGetFaqById_NotFound() {
+    public void testGetFaqByIdNotFound() {
         when(faqRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> faqService.getFaqById(1L));
@@ -77,7 +77,7 @@ public class FAQServiceTest {
     }
 
     @Test
-    public void testUpdateFAQ_NotFound() {
+    public void testUpdateFAQNotFound() {
         FAQ faq = new FAQ();
         faq.setId(1L);
         when(faqRepository.findById(1L)).thenReturn(Optional.empty());

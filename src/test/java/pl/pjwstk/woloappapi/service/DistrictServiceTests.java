@@ -70,7 +70,7 @@ public class DistrictServiceTests {
     public void testGetAllDistricts() {
         when(districtRepository.findAll()).thenReturn(List.of(district));
 
-        List<District> result = districtService.getAllDistricts();
+        var result = districtService.getAllDistricts();
 
         assertEquals(1, result.size());
         assertEquals(district, result.get(0));
@@ -81,7 +81,7 @@ public class DistrictServiceTests {
     public void testGetAllActualDistricts() {
         when(districtRepository.getAllActualDistricts()).thenReturn(List.of(district));
 
-        List<District> result = districtService.getAllActualDistricts();
+        var result = districtService.getAllActualDistricts();
 
         assertEquals(1, result.size());
         assertEquals(district, result.get(0));
@@ -89,28 +89,26 @@ public class DistrictServiceTests {
     }
 
     @Test
-    public void testGetDistrictById_DistrictExists() {
+    public void testGetDistrictByIdDistrictExists() {
         when(districtRepository.findById(1L)).thenReturn(Optional.of(district));
 
-        District result = districtService.getDistrictById(1L);
+        var result = districtService.getDistrictById(1L);
 
         assertEquals(district, result);
         verify(districtRepository, times(1)).findById(1L);
     }
 
     @Test
-    public void testGetDistrictById_DistrictNotExists() {
+    public void testGetDistrictByIdDistrictNotExists() {
         when(districtRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> {
-            districtService.getDistrictById(1L);
-        });
+        assertThrows(NotFoundException.class, () -> districtService.getDistrictById(1L));
 
         verify(districtRepository, times(1)).findById(1L);
     }
 
     @Test
-    public void testGetDistrictByName_DistrictExists() {
+    public void testGetDistrictByNameDistrictExists() {
         when(districtRepository.findByName("Test District")).thenReturn(Optional.of(district));
 
         District result = districtService.getDistrictByName("Test District");
@@ -120,12 +118,10 @@ public class DistrictServiceTests {
     }
 
     @Test
-    public void testGetDistrictByName_DistrictNotExists() {
+    public void testGetDistrictByNameDistrictNotExists() {
         when(districtRepository.findByName("Test District")).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> {
-            districtService.getDistrictByName("Test District");
-        });
+        assertThrows(NotFoundException.class, () -> districtService.getDistrictByName("Test District"));
 
         verify(districtRepository, times(1)).findByName("Test District");
     }
@@ -142,18 +138,16 @@ public class DistrictServiceTests {
     }
 
     @Test
-    public void testCreateDistrict_CityNotExists() {
+    public void testCreateDistrictCityNotExists() {
         when(cityRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            districtService.createDistrict(districtRequestDto);
-        });
+        assertThrows(IllegalArgumentException.class, () -> districtService.createDistrict(districtRequestDto));
 
         verify(cityRepository, times(1)).findById(1L);
     }
 
     @Test
-    public void testDeleteDistrict_DistrictExists() {
+    public void testDeleteDistrictDistrictExists() {
         when(districtRepository.findById(1L)).thenReturn(Optional.of(district));
 
         districtService.deleteDistrict(1L);
@@ -163,36 +157,50 @@ public class DistrictServiceTests {
     }
 
     @Test
-    public void testDeleteDistrict_DistrictNotExists() {
+    public void testDeleteDistrictDistrictNotExists() {
         when(districtRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> {
-            districtService.deleteDistrict(1L);
-        });
+        assertThrows(NotFoundException.class, () -> districtService.deleteDistrict(1L));
 
         verify(districtRepository, times(1)).findById(1L);
     }
-
     @Test
-    public void testUpdateDistrict_DistrictExists() {
-        when(cityRepository.findById(1L)).thenReturn(Optional.of(city));
-        when(districtRepository.findById(1L)).thenReturn(Optional.of(district));
+    public void testUpdateDistrictDistrictAndCityExist() {
+        when(cityRepository.findById(anyLong())).thenReturn(Optional.of(city));
+        when(districtRepository.findById(anyLong())).thenReturn(Optional.of(district));
 
         districtService.updateDistrict(districtRequestDto);
 
-        assertEquals(districtRequestDto.getName(), district.getName());
-        assertEquals(city, district.getCity());
+        verify(cityRepository, times(1)).findById(1L);
+        verify(districtRepository, times(1)).findById(1L);
         verify(districtRepository, times(1)).save(district);
+        assertEquals("Test District DTO", district.getName());
+        assertEquals(city, district.getCity());
     }
 
     @Test
-    public void testUpdateDistrict_CityNotExists() {
+    public void testUpdateDistrictCityNotFound() {
+
         when(cityRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            districtService.updateDistrict(districtRequestDto);
-        });
-
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> districtService.updateDistrict(districtRequestDto));
+        assertEquals("City with ID " + 1L + " does not exist", exception.getMessage());
         verify(cityRepository, times(1)).findById(1L);
+        verify(districtRepository, never()).findById(any());
+        verify(districtRepository, never()).save(any());
+    }
+
+    @Test
+    public void testUpdateDistrictDistrictNotFound() {
+        when(cityRepository.findById(1L)).thenReturn(Optional.of(city));
+        when(districtRepository.findById(1L)).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> districtService.updateDistrict(districtRequestDto));
+        assertEquals("District with ID " + 1L + " does not exist", exception.getMessage());
+        verify(cityRepository, times(1)).findById(1L);
+        verify(districtRepository, times(1)).findById(1L);
+        verify(districtRepository, never()).save(any());
     }
 }
