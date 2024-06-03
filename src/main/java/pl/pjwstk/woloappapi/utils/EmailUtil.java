@@ -18,7 +18,7 @@ public class EmailUtil {
     public void sendOtpMail(String email, String otp) throws MessagingException{
         String message = String.format("""
         <div>
-          <a href="http://localhost:8080/verify-account?email=%s&otp=%s" target="_blank">click link to verify mail</a>
+          <a href="http://localhost:8080/auth/verify-account?email=%s&otp=%s" target="_blank">click link to verify mail</a>
         </div>
         """, email,otp);
         mailSender(email, "Set Password", message, true);
