@@ -61,7 +61,10 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User email not found!"));
-         return AuthenticationResponse.builder()
+        if(!user.isActive()){
+            throw new RuntimeException("Your account is not verified");
+        }
+        return AuthenticationResponse.builder()
                 .accessToken(jwtService.generateToken(user))
                 .refreshToken(jwtService.generateRefreshToken(user))
                 .build();
