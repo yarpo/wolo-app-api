@@ -15,16 +15,14 @@ import pl.pjwstk.woloappapi.service.CityService;
 import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.EventMapper;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @ExtendWith(MockitoExtension.class)
 public class EventMapperTests {
 
@@ -39,106 +37,183 @@ public class EventMapperTests {
 
     @Test
     public void testToShiftByShiftRequestDto() {
-        // Given
-        ShiftRequestDto shiftDto = new ShiftRequestDto();
-        shiftDto.setStartTime(LocalTime.of(9, 0));
-        shiftDto.setEndTime(LocalTime.of(17, 0));
-        shiftDto.setIsLeaderRequired(true);
-        shiftDto.setCapacity(10);
-        shiftDto.setRequiredMinAge(18);
-        shiftDto.setDistrictId(1L);
+        var shiftDto = ShiftRequestDto.builder()
+                .startTime(LocalTime.of(9, 0))
+                .endTime(LocalTime.of(17, 0))
+                .isLeaderRequired(true)
+                .shiftDirections("text")
+                .capacity(10)
+                .requiredMinAge(18)
+                .districtId(1L)
+                .street("street")
+                .homeNum("1")
+                .build();
+        var eventDto = EventRequestDto.builder()
+                .name("event name")
+                .description("event description")
+                .organisationId(1L)
+                .categories(List.of(1L))
+                .isPeselVerificationRequired(true)
+                .isAgreementNeeded(true)
+                .date(LocalDate.now())
+                .imageUrl("url")
+                .shifts(List.of(shiftDto))
+                .build();
 
-        EventRequestDto eventDto = new EventRequestDto();
-        eventDto.setShifts(List.of(shiftDto));
+        var translateShift = new ShiftTranslation();
+        translateShift.setAddressDescriptionEN("AddressDescriptionEN");
+        translateShift.setAddressDescriptionPL("AddressDescriptionPL");
+        translateShift.setAddressDescriptionUA("AddressDescriptionUA");
+        translateShift.setAddressDescriptionRU("AddressDescriptionRU");
 
-        EventTranslationResponse translate = new EventTranslationResponse();
-        translate.setShiftTranslations(List.of(new ShiftTranslation()));
+        var translate = new EventTranslationResponse();
+        translate.setNamePL("namePL");
+        translate.setNameEN("nameEN");
+        translate.setNameUA("nameUA");
+        translate.setNameRU("nameRU");
+        translate.setDescriptionPL("descriptionPL");
+        translate.setDescriptionEN("descriptionEN");
+        translate.setDescriptionUA("descriptionUA");
+        translate.setDescriptionRU("descriptionRU");
+        translate.setShiftTranslations(List.of(translateShift));
 
-        Shift.ShiftBuilder shiftBuilder = eventMapper.toShift(shiftDto, eventDto, translate);
+        var shift= eventMapper.toShift(shiftDto, eventDto, translate).build();
 
-        Shift shift = shiftBuilder.build();
         assertEquals(LocalTime.of(9, 0), shift.getStartTime());
         assertEquals(LocalTime.of(17, 0), shift.getEndTime());
+        assertEquals("street", shift.getAddress().getStreet());
+        assertEquals("1", shift.getAddress().getHomeNum());
         assertTrue(shift.isLeaderRequired());
         assertEquals(10, shift.getCapacity());
         assertEquals(18, shift.getRequiredMinAge());
+        assertEquals("AddressDescriptionPL", shift.getShiftDirectionsPL());
+        assertEquals("AddressDescriptionEN", shift.getShiftDirectionsEN());
+        assertEquals("AddressDescriptionUA", shift.getShiftDirectionsUA());
+        assertEquals("AddressDescriptionRU", shift.getShiftDirectionsRU());
     }
 
     @Test
     public void testToShiftByShiftEditRequestDto() {
-        ShiftEditRequestDto shiftDto = new ShiftEditRequestDto();
+        var shiftDto = new ShiftEditRequestDto();
         shiftDto.setStartTime(LocalTime.of(9, 0));
         shiftDto.setEndTime(LocalTime.of(17, 0));
         shiftDto.setIsLeaderRequired(true);
         shiftDto.setCapacity(10);
         shiftDto.setRequiredMinAge(18);
         shiftDto.setDistrictId(1L);
+        shiftDto.setShiftDirectionsPL("directionsPL");
+        shiftDto.setShiftDirectionsEN("directionsEN");
+        shiftDto.setShiftDirectionsUA("directionsUA");
+        shiftDto.setShiftDirectionsRU("directionsRU");
+        shiftDto.setStreet("Test Street");
+        shiftDto.setHomeNum("123");
 
-        Shift.ShiftBuilder shiftBuilder = eventMapper.toShift(shiftDto);
+        var shift = eventMapper.toShift(shiftDto).build();
 
-        Shift shift = shiftBuilder.build();
         assertEquals(LocalTime.of(9, 0), shift.getStartTime());
         assertEquals(LocalTime.of(17, 0), shift.getEndTime());
         assertTrue(shift.isLeaderRequired());
         assertEquals(10, shift.getCapacity());
         assertEquals(18, shift.getRequiredMinAge());
+        assertEquals("directionsPL", shift.getShiftDirectionsPL());
+        assertEquals("directionsEN", shift.getShiftDirectionsEN());
+        assertEquals("directionsUA", shift.getShiftDirectionsUA());
+        assertEquals("directionsRU", shift.getShiftDirectionsRU());
     }
 
     @Test
-    public void testTotoAddressByShiftRequestDto() {
-        ShiftRequestDto shiftDto = new ShiftRequestDto();
-        shiftDto.setStreet("Test Street");
-        shiftDto.setHomeNum("123");
+    public void testToAddressByShiftRequestDto() {
+        var shiftDto = ShiftRequestDto.builder()
+                .startTime(LocalTime.of(9, 0))
+                .endTime(LocalTime.of(17, 0))
+                .isLeaderRequired(true)
+                .shiftDirections("text")
+                .capacity(10)
+                .requiredMinAge(18)
+                .districtId(1L)
+                .street("street")
+                .homeNum("1")
+                .build();
 
-        Address.AddressBuilder addressBuilder = eventMapper.toAddress(shiftDto);
+        var address = eventMapper.toAddress(shiftDto).build();
 
-        Address address = addressBuilder.build();
-        assertEquals("Test Street", address.getStreet());
-        assertEquals("123", address.getHomeNum());
+        assertEquals("street", address.getStreet());
+        assertEquals("1", address.getHomeNum());
     }
 
     @Test
-    public void testTotoAddressByShiftEditRequestDto() {
-        ShiftEditRequestDto shiftDto = new ShiftEditRequestDto();
+    public void testToAddressByShiftEditRequestDto() {
+        var shiftDto = new ShiftEditRequestDto();
+        shiftDto.setStartTime(LocalTime.of(9, 0));
+        shiftDto.setEndTime(LocalTime.of(17, 0));
+        shiftDto.setIsLeaderRequired(true);
+        shiftDto.setCapacity(10);
+        shiftDto.setRequiredMinAge(18);
+        shiftDto.setDistrictId(1L);
+        shiftDto.setShiftDirectionsPL("directionsPL");
+        shiftDto.setShiftDirectionsEN("directionsEN");
+        shiftDto.setShiftDirectionsUA("directionsUA");
+        shiftDto.setShiftDirectionsRU("directionsRU");
         shiftDto.setStreet("Test Street");
         shiftDto.setHomeNum("123");
 
-        Address.AddressBuilder addressBuilder = eventMapper.toAddress(shiftDto);
+        var address = eventMapper.toAddress(shiftDto).build();
 
-        Address address = addressBuilder.build();
         assertEquals("Test Street", address.getStreet());
         assertEquals("123", address.getHomeNum());
     }
 
     @Test
     public void testToEventResponseDto() {
-        Event event = new Event();
-        event.setId(1L);
-        event.setNamePL("Test Name PL");
-        event.setNameEN("Test Name EN");
-        event.setNameUA("Test Name UA");
-        event.setNameRU("Test Name RU");
-        event.setPeselVerificationRequired(true);
+        var organisation = Organisation.builder().name("Test Organisation").build();
+        var city = City.builder().name("Test City").build();
+        var district = District.builder().id(1L).name("district").build();
+        var category = Category.builder().name("basic").build();
+        var ctu = CategoryToEvent.builder().category(category).build();
+        var address = Address.builder()
+                .id(1L)
+                .street("street")
+                .homeNum("123")
+                .district(district)
+                .build();
 
-        Organisation organisation = new Organisation();
-        organisation.setName("Test Organisation");
-        event.setOrganisation(organisation);
+        var shift = Shift.builder()
+                .id(1L)
+                .startTime(LocalTime.of(9, 0))
+                .endTime(LocalTime.of(17, 0))
+                .isLeaderRequired(true)
+                .shiftDirectionsPL("PL")
+                .shiftDirectionsEN("EN")
+                .shiftDirectionsUA("UA")
+                .shiftDirectionsRU("RU")
+                .capacity(10)
+                .requiredMinAge(18)
+                .registeredUsers(5)
+                .address(address)
+                .build();
+        var event = Event.builder()
+                .id(1L)
+                .namePL("Test Name PL")
+                .nameEN("Test Name EN")
+                .nameUA("Test Name UA")
+                .nameRU("Test Name RU")
+                .descriptionPL("descriptionPL")
+                .descriptionEN("descriptionEN")
+                .descriptionUA("descriptionUA")
+                .descriptionRU("descriptionRU")
+                .isPeselVerificationRequired(true)
+                .isAgreementNeeded(true)
+                .organisation(organisation)
+                .city(city)
+                .categories(List.of(ctu))
+                .date(LocalDate.now())
+                .imageUrl("https://example.com/image.jpg")
+                .shifts(List.of(shift))
+                .build();
+        shift.setEvent(event);
 
-        event.setDate(java.time.LocalDate.now());
 
-        City city = new City();
-        city.setName("Test City");
-        event.setCity(city);
-
-        event.setImageUrl("https://example.com/image.jpg");
-
-        List<Shift> shifts = new ArrayList<>();
-        event.setShifts(shifts);
-
-        List<CategoryToEvent> categories = new ArrayList<>();
-        event.setCategories(categories);
-
-        EventResponseDto eventResponseDto = eventMapper.toEventResponseDto(event);
+        var eventResponseDto = eventMapper.toEventResponseDto(event);
 
         assertEquals(1L, eventResponseDto.getId());
         assertEquals("Test Name PL", eventResponseDto.getNamePL());
@@ -148,73 +223,77 @@ public class EventMapperTests {
         assertEquals("Test Organisation", eventResponseDto.getOrganisation());
         assertEquals(java.time.LocalDate.now(), eventResponseDto.getDate());
         assertTrue(eventResponseDto.getIsPeselVerificationRequired());
+        assertTrue(eventResponseDto.getIsAgreementNeeded());
         assertEquals("Test City", eventResponseDto.getCity());
         assertEquals("https://example.com/image.jpg", eventResponseDto.getImageUrl());
-        assertEquals(shifts.size(), eventResponseDto.getShifts().size());
-        assertEquals(categories.size(), eventResponseDto.getCategories().size());
-    }
+        assertEquals(1, eventResponseDto.getShifts().size());
+        assertEquals(1, eventResponseDto.getCategories().size());
+        assertEquals("basic", eventResponseDto.getCategories().get(0));
+        assertEquals(1L, eventResponseDto.getShifts().get(0).getEventId());
+        assertEquals("Test Name PL", eventResponseDto.getShifts().get(0).getEventNamePL());
+        assertEquals("Test Name EN", eventResponseDto.getShifts().get(0).getEventNameEN());
+        assertEquals("Test Name UA", eventResponseDto.getShifts().get(0).getEventNameUA());
+        assertEquals("Test Name RU", eventResponseDto.getShifts().get(0).getEventNameRU());
+        assertEquals(LocalDate.now(),eventResponseDto.getShifts().get(0).getDate());
+        assertEquals(LocalTime.of(9, 0), eventResponseDto.getShifts().get(0).getStartTime());
+        assertEquals(LocalTime.of(17, 0), eventResponseDto.getShifts().get(0).getEndTime());
+        assertEquals(10, eventResponseDto.getShifts().get(0).getCapacity());
+        assertTrue(eventResponseDto.getShifts().get(0).isLeaderRequired());
+        assertEquals(18, eventResponseDto.getShifts().get(0).getRequiredMinAge());
+        assertEquals(5, eventResponseDto.getShifts().get(0).getRegisteredUsers());
+        assertEquals("district", eventResponseDto.getShifts().get(0).getDistrict());
+        assertEquals("street", eventResponseDto.getShifts().get(0).getStreet());
+        assertEquals("123", eventResponseDto.getShifts().get(0).getHomeNum());
+        assertEquals("Test City", eventResponseDto.getShifts().get(0).getCity());
+        assertEquals("PL", eventResponseDto.getShifts().get(0).getShiftDirectionsPL());
 
-    @Test
-    public void testMapShiftListToShiftDtoList() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        List<Shift> shifts = new ArrayList<>();
-        Method method = EventMapper.class.getDeclaredMethod("mapShiftListToShiftDtoList", List.class);
-        method.setAccessible(true);
-
-        City city = new City();
-        city.setId(1L);
-
-        Event event = new Event();
-        event.setId(1L);
-        event.setCity(city);
-
-        District district = new District();
-        district.setId(1L);
-
-        Address address = new Address();
-        address.setId(1L);
-        address.setDistrict(district);
-
-        Shift shift1 = new Shift();
-        shift1.setEvent(event);
-        shift1.setAddress(address);
-        Shift shift2 = new Shift();
-        shift2.setEvent(event);
-        shift2.setAddress(address);
-        shifts.add(shift1);
-        shifts.add(shift2);
-
-        @SuppressWarnings("unchecked")
-        List<ShiftRequestDto> shiftResponseDtos = (List<ShiftRequestDto>) method.invoke(eventMapper, shifts);
-
-        assertEquals(shifts.size(), shiftResponseDtos.size());
     }
 
     @Test
     public void testToShiftInfoRespons() {
-        Shift shift = new Shift();
-        shift.setId(1L);
-        shift.setStartTime(LocalTime.of(9, 0));
-        shift.setEndTime(LocalTime.of(17, 0));
-        shift.setShiftDirectionsPL("Directions PL");
-        shift.setShiftDirectionsEN("Directions EN");
-        shift.setShiftDirectionsUA("Directions UA");
-        shift.setShiftDirectionsRU("Directions RU");
+        var category = Category.builder().name("basic").build();
+        var ctu = CategoryToEvent.builder().category(category).build();
+        var address = Address.builder()
+                .id(1L)
+                .street("street")
+                .homeNum("123")
+                .build();
 
-        Event event = new Event();
-        event.setId(2L);
-        event.setNamePL("Event Name PL");
-        event.setNameEN("Event Name EN");
-        event.setNameUA("Event Name UA");
-        event.setNameRU("Event Name RU");
-        event.setDate(LocalDate.now());
+        var shift = Shift.builder()
+                .id(1L)
+                .startTime(LocalTime.of(9, 0))
+                .endTime(LocalTime.of(17, 0))
+                .isLeaderRequired(true)
+                .shiftDirectionsPL("PL")
+                .shiftDirectionsEN("EN")
+                .shiftDirectionsUA("UA")
+                .shiftDirectionsRU("RU")
+                .capacity(10)
+                .requiredMinAge(18)
+                .registeredUsers(5)
+                .address(address)
+                .build();
+        var event = Event.builder()
+                .id(1L)
+                .namePL("Test Name PL")
+                .nameEN("Test Name EN")
+                .nameUA("Test Name UA")
+                .nameRU("Test Name RU")
+                .descriptionPL("descriptionPL")
+                .descriptionEN("descriptionEN")
+                .descriptionUA("descriptionUA")
+                .descriptionRU("descriptionRU")
+                .isPeselVerificationRequired(true)
+                .isAgreementNeeded(true)
+                .categories(List.of(ctu))
+                .date(LocalDate.now())
+                .imageUrl("https://example.com/image.jpg")
+                .shifts(List.of(shift))
+                .build();
         shift.setEvent(event);
 
-        Address address = new Address();
-        address.setStreet("Test Street");
-        address.setHomeNum("123");
-        shift.setAddress(address);
 
-        ShiftInfoRespons shiftInfoRespons = eventMapper.toShiftInfoRespons(shift);
+        var shiftInfoRespons = eventMapper.toShiftInfoRespons(shift);
 
         assertEquals(shift.getId(), shiftInfoRespons.getId());
         assertEquals(shift.getEvent().getDate(), shiftInfoRespons.getDate());
@@ -229,69 +308,98 @@ public class EventMapperTests {
         assertEquals(shift.getEvent().getNameEN(), shiftInfoRespons.getEventNameEN());
         assertEquals(shift.getEvent().getNameUA(), shiftInfoRespons.getEventNameUA());
         assertEquals(shift.getEvent().getNameRU(), shiftInfoRespons.getEventNameRU());
-        assertEquals(shift.getAddress().getStreet() + " " + shift.getAddress().getHomeNum(), shiftInfoRespons.getAddress());
+        assertEquals(shift.getAddress().getStreet() + " " + shift.getAddress().getHomeNum(),
+                shiftInfoRespons.getAddress());
     }
 
     @Test
     public void testToEventResponseDetailsDto() {
-        // Given
-        Event event = new Event();
-        event.setId(1L);
-        event.setNamePL("Test Name PL");
-        event.setNameEN("Test Name EN");
-        event.setNameUA("Test Name UA");
-        event.setNameRU("Test Name RU");
-        event.setDescriptionPL("Test Description PL");
-        event.setDescriptionEN("Test Description EN");
-        event.setDescriptionUA("Test Description UA");
-        event.setDescriptionRU("Test Description RU");
-        event.setPeselVerificationRequired(true);
+        var organisation = Organisation.builder().id(1L).name("Test Organisation").build();
+        var city = City.builder().name("Test City").build();
+        var district = District.builder().id(1L).name("district").build();
+        var category = Category.builder().name("basic").build();
+        var ctu = CategoryToEvent.builder().category(category).build();
+        var address = Address.builder()
+                .id(1L)
+                .street("street")
+                .homeNum("123")
+                .district(district)
+                .build();
 
-        Organisation organisation = new Organisation();
-        organisation.setId(1L);
-        organisation.setName("Test Organisation");
-        event.setOrganisation(organisation);
+        var shift = Shift.builder()
+                .id(1L)
+                .startTime(LocalTime.of(9, 0))
+                .endTime(LocalTime.of(17, 0))
+                .isLeaderRequired(true)
+                .shiftDirectionsPL("PL")
+                .shiftDirectionsEN("EN")
+                .shiftDirectionsUA("UA")
+                .shiftDirectionsRU("RU")
+                .capacity(10)
+                .requiredMinAge(18)
+                .registeredUsers(5)
+                .address(address)
+                .build();
+        var event = Event.builder()
+                .id(1L)
+                .namePL("Test Name PL")
+                .nameEN("Test Name EN")
+                .nameUA("Test Name UA")
+                .nameRU("Test Name RU")
+                .descriptionPL("descriptionPL")
+                .descriptionEN("descriptionEN")
+                .descriptionUA("descriptionUA")
+                .descriptionRU("descriptionRU")
+                .isPeselVerificationRequired(true)
+                .isAgreementNeeded(true)
+                .organisation(organisation)
+                .city(city)
+                .categories(List.of(ctu))
+                .date(LocalDate.now())
+                .imageUrl("https://example.com/image.jpg")
+                .shifts(List.of(shift))
+                .build();
+        shift.setEvent(event);
 
-        event.setDate(java.time.LocalDate.now());
 
-        City city = new City();
-        city.setName("Test City");
-        event.setCity(city);
+        var eventResponseDetailsDto = eventMapper.toEventResponseDetailsDto(event);
 
-        event.setImageUrl("https://example.com/image.jpg");
-
-        List<Shift> shifts = new ArrayList<>();
-        event.setShifts(shifts);
-
-        List<CategoryToEvent> categories = new ArrayList<>();
-        event.setCategories(categories);
-
-        // When
-        EventResponseDetailsDto eventResponseDetailsDto = eventMapper.toEventResponseDetailsDto(event);
-
-        // Then
         assertEquals(1L, eventResponseDetailsDto.getId());
         assertEquals("Test Name PL", eventResponseDetailsDto.getNamePL());
         assertEquals("Test Name EN", eventResponseDetailsDto.getNameEN());
         assertEquals("Test Name UA", eventResponseDetailsDto.getNameUA());
         assertEquals("Test Name RU", eventResponseDetailsDto.getNameRU());
-        assertEquals("Test Description PL", eventResponseDetailsDto.getDescriptionPL());
-        assertEquals("Test Description EN", eventResponseDetailsDto.getDescriptionEN());
-        assertEquals("Test Description UA", eventResponseDetailsDto.getDescriptionUA());
-        assertEquals("Test Description RU", eventResponseDetailsDto.getDescriptionRU());
+        assertEquals("descriptionPL", eventResponseDetailsDto.getDescriptionPL());
+        assertEquals("descriptionEN", eventResponseDetailsDto.getDescriptionEN());
+        assertEquals("descriptionUA", eventResponseDetailsDto.getDescriptionUA());
+        assertEquals("descriptionRU", eventResponseDetailsDto.getDescriptionRU());
         assertEquals(1L, eventResponseDetailsDto.getOrganisationId());
         assertEquals("Test Organisation", eventResponseDetailsDto.getOrganisationName());
+        assertEquals(1L, eventResponseDetailsDto.getOrganisationId());
         assertEquals(java.time.LocalDate.now(), eventResponseDetailsDto.getDate());
         assertTrue(eventResponseDetailsDto.getIsPeselVerificationRequired());
+        assertTrue(eventResponseDetailsDto.getIsAgreementNeeded());
+        assertEquals("basic", eventResponseDetailsDto.getCategories().get(0));
         assertEquals("https://example.com/image.jpg", eventResponseDetailsDto.getImageUrl());
-        assertEquals(shifts.size(), eventResponseDetailsDto.getShifts().size());
-        assertEquals(categories.size(), eventResponseDetailsDto.getCategories().size());
+        assertEquals(1, eventResponseDetailsDto.getShifts().size());
+        assertEquals(1, eventResponseDetailsDto.getCategories().size());
         assertEquals("Test City", eventResponseDetailsDto.getCity());
+        assertEquals(LocalDate.now(),eventResponseDetailsDto.getShifts().get(0).getDate());
+        assertEquals(LocalTime.of(9, 0), eventResponseDetailsDto.getShifts().get(0).getStartTime());
+        assertEquals(LocalTime.of(17, 0), eventResponseDetailsDto.getShifts().get(0).getEndTime());
+        assertEquals(10, eventResponseDetailsDto.getShifts().get(0).getCapacity());
+        assertTrue(eventResponseDetailsDto.getShifts().get(0).isLeaderRequired());
+        assertEquals(18, eventResponseDetailsDto.getShifts().get(0).getRequiredMinAge());
+        assertEquals(5, eventResponseDetailsDto.getShifts().get(0).getRegisteredUsers());
+        assertEquals("district", eventResponseDetailsDto.getShifts().get(0).getDistrict());
+        assertEquals("street", eventResponseDetailsDto.getShifts().get(0).getStreet());
+        assertEquals("123", eventResponseDetailsDto.getShifts().get(0).getHomeNum());
+        assertEquals("Test City", eventResponseDetailsDto.getShifts().get(0).getCity());
+        assertEquals("PL", eventResponseDetailsDto.getShifts().get(0).getShiftDirectionsPL());
     }
 
     @Test
     public void testToShiftResponseDto() {
-        // Given
         Shift shift = new Shift();
         shift.setId(1L);
         shift.setStartTime(LocalTime.of(9, 0));
@@ -328,7 +436,7 @@ public class EventMapperTests {
         city.setName("Test City");
         event.setCity(city);
 
-        ShiftResponseDto shiftResponseDto = eventMapper.toShiftResponseDto(shift);
+        var shiftResponseDto = eventMapper.toShiftResponseDto(shift);
 
         assertEquals(shift.getId(), shiftResponseDto.getShiftId());
         assertEquals(shift.getEvent().getId(), shiftResponseDto.getEventId());
