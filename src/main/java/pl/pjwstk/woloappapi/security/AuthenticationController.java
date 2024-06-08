@@ -49,7 +49,7 @@ public class AuthenticationController {
     }
 
     @PutMapping("/forgot-password")
-    public ResponseEntity<HttpStatus> forgotPassword(@RequestBody ForgePasswordMailRequest request){
+    public ResponseEntity<HttpStatus> forgotPassword(@RequestBody ForgotPasswordMailRequest request){
         try {
             authenticationService.forgotPassword(request.getMail());
         } catch (MessagingException e) {

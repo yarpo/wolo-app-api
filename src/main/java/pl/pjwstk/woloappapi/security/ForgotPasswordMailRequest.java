@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForgePasswordMailRequest {
+public class ForgotPasswordMailRequest {
     private String mail;
 }
