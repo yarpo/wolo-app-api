@@ -116,7 +116,7 @@ public class AuthenticationServiceTest {
     @Test
     void testAuthenticate_ValidCredentials_Success() {
         var request = new AuthenticationRequest("test@example.com", "password");
-        var user = new User();
+        var user = User.builder().active(true).build();
         when(userRepository.findByEmail(request.getEmail())).thenReturn(java.util.Optional.of(user));
         when(jwtService.generateToken(user)).thenReturn("accessToken");
         when(jwtService.generateRefreshToken(user)).thenReturn("refreshToken");
