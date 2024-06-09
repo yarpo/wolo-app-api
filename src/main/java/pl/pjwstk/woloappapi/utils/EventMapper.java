@@ -44,6 +44,7 @@ public class EventMapper {
                 .district(districtService.getDistrictById(shiftDto.getDistrictId()))
                 .build();
         return Shift.builder()
+                .id(shiftDto.getId())
                 .startTime(shiftDto.getStartTime())
                 .endTime(shiftDto.getEndTime())
                 .address(address)
