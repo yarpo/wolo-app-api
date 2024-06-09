@@ -1,4 +1,4 @@
-package pl.pjwstk.woloappapi.security;
+package pl.pjwstk.woloappapi.service.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,4 +1,4 @@
-package pl.pjwstk.woloappapi.security;
+package pl.pjwstk.woloappapi.service.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
