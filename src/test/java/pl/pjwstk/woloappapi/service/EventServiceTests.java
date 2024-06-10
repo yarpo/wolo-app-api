@@ -22,10 +22,8 @@ import pl.pjwstk.woloappapi.utils.EventUpdater;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -252,5 +250,20 @@ public class EventServiceTests {
 
         verify(eventRepository, times(1)).findById(eventId);
         verifyNoMoreInteractions(categoryToEventService, shiftToUserRepository, emailUtil, eventRepository);
+    }
+
+    @Test
+    public void testDeleteReserveUserToShiftAfterEvent() {
+        var now = LocalDateTime.now();
+        var pastEvent = new Event();
+        pastEvent.setDate(LocalDate.from(now.minusDays(5)));
+
+        var pastEvents = Arrays.asList(pastEvent);
+
+        when(eventRepository.findAll()).thenReturn(pastEvents);
+
+        eventService.deleteReserveUserToShiftAfterEvent();
+
+        verify(shiftToUserRepository, times(1)).deleteByShiftEventAndIsReserveTrue(pastEvent);
     }
 }

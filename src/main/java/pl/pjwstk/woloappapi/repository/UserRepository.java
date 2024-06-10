@@ -2,12 +2,11 @@ package pl.pjwstk.woloappapi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
 import org.springframework.data.repository.query.Param;
-
 import org.springframework.stereotype.Repository;
 import pl.pjwstk.woloappapi.model.entities.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,4 +32,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "LEFT JOIN FETCH u.roles "+
             "WHERE u.email = :email")
     Optional<User> findUserWithRolesByEmail(@Param("email") String email);
+
+    List<User> findByActiveFalseAndOtpGeneratedTimeBefore(LocalDateTime dateTime);
+    void deleteByActiveFalseAndOtpGeneratedTimeBefore(LocalDateTime dateTime);
 }

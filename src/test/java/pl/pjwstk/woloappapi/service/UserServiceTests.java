@@ -14,7 +14,9 @@ import pl.pjwstk.woloappapi.repository.UserRepository;
 import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -528,5 +530,23 @@ public class UserServiceTests {
         String result = userService.checkJoin(userId, shiftId);
 
         assertEquals("OK", result);
+    }
+
+    @Test
+    public void testDeleteInactiveUsers() {
+        var oneMonthAgo = LocalDateTime.now().minus(1, ChronoUnit.MONTHS);
+        var inactiveUser = new User();
+        inactiveUser.setActive(false);
+        inactiveUser.setOtpGeneratedTime(oneMonthAgo.minusDays(1));
+
+        var inactiveUsers = Arrays.asList(inactiveUser);
+
+        when(userRepository.findByActiveFalseAndOtpGeneratedTimeBefore(any(LocalDateTime.class)))
+                .thenReturn(inactiveUsers);
+
+        userService.deleteInactiveUsers();
+
+        verify(userRepository, times(1))
+                .deleteByActiveFalseAndOtpGeneratedTimeBefore(any(LocalDateTime.class));
     }
 }
