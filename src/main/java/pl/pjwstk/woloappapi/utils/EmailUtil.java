@@ -18,7 +18,7 @@ public class EmailUtil {
     public void sendOtpMail(String email, String otp) throws MessagingException{
         String message = String.format("""
         <div>
-          <a href="http://localhost:3000/auth/verify-account?email=%s&otp=%s" target="_blank">click link to verify mail</a>
+          <a href="http://localhost:3000/verify-account?email=%s&otp=%s" target="_blank">click link to verify mail</a>
         </div>
         """, email,otp);
         mailSender(email, "WoloApp verify account", message, true);
