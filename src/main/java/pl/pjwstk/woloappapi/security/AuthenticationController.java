@@ -1,4 +1,4 @@
-package pl.pjwstk.woloappapi.service.security;
+package pl.pjwstk.woloappapi.security;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;

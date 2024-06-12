@@ -1,4 +1,4 @@
-package pl.pjwstk.woloappapi.service.security;
+package pl.pjwstk.woloappapi.security;
 
 
 import jakarta.servlet.FilterChain;

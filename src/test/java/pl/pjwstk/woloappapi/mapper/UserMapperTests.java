@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pjwstk.woloappapi.model.UserResponseDto;
 import pl.pjwstk.woloappapi.model.UserShortResponse;
 import pl.pjwstk.woloappapi.model.entities.*;
-import pl.pjwstk.woloappapi.service.security.RegistrationRequest;
+import pl.pjwstk.woloappapi.security.RegistrationRequest;
 import pl.pjwstk.woloappapi.service.CityService;
 import pl.pjwstk.woloappapi.service.DistrictService;
 import pl.pjwstk.woloappapi.utils.EventMapper;

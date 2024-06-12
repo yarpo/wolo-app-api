@@ -6,7 +6,7 @@ import pl.pjwstk.woloappapi.model.UserResponseDto;
 import pl.pjwstk.woloappapi.model.UserShortResponse;
 import pl.pjwstk.woloappapi.model.entities.Role;
 import pl.pjwstk.woloappapi.model.entities.User;
-import pl.pjwstk.woloappapi.service.security.RegistrationRequest;
+import pl.pjwstk.woloappapi.security.RegistrationRequest;
 
 import java.util.stream.Collectors;
 

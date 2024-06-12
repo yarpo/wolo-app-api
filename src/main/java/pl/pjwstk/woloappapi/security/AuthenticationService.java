@@ -1,4 +1,4 @@
-package pl.pjwstk.woloappapi.service.security;
+package pl.pjwstk.woloappapi.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
@@ -115,9 +115,9 @@ public class AuthenticationService {
                 LocalDateTime.now()).getSeconds() < (30 * 60)) {
             user.setActive(true);
             userRepository.save(user);
-            return "Account verified you can login";
+            return "OK";
         }
-        return "Verification link was expired";
+        return "Expired";
     }
 
     public String regenerateOtp(String email) {
