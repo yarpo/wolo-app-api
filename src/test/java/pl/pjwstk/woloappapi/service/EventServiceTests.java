@@ -264,6 +264,6 @@ public class EventServiceTests {
 
         eventService.deleteReserveUserToShiftAfterEvent();
 
-        verify(shiftToUserRepository, times(1)).deleteByShiftEventAndIsReserveTrue(pastEvent);
+        verify(shiftToUserRepository, times(1)).deleteByShiftEventAndIsOnReserveListTrue(pastEvent);
     }
 }

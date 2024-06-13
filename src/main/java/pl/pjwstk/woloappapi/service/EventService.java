@@ -144,6 +144,6 @@ public class EventService {
                 .filter(event -> event.getDate().isBefore(ChronoLocalDate.from(date)))
                 .toList();
 
-        pastEvents.forEach(shiftToUserRepository::deleteByShiftEventAndIsReserveTrue);
+        pastEvents.forEach(shiftToUserRepository::deleteByShiftEventAndIsOnReserveListTrue);
     }
 }
