@@ -27,11 +27,30 @@ public class EmailUtil {
 
     public void sendResetPasswordEmail(String email) throws MessagingException {
         String message = String.format("""
-        <div>
-          <a href="http://localhost:3000/reset-password?email=%s" target="_blank">click link to set password</a>
-        </div>
-        """, email);
-        mailSender(email, "Set Password", message, true);
+                <html>
+                <body style="font-family: 'Open Sans', sans-serif; margin: 20px;">
+                    <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+                        <a href="http://localhost:3000/" style="text-decoration: none;" target="_blank">
+                            <h2 style="font-size: 64px; color: #3769cb;">WoloApp</h2>
+                        </a>
+                        <h3 style="display: inline;">[EN] Forgot Password?</h3>
+                        <p style="font-size: 16px; color: #666666; margin: 20px 30px;">User with your email has asked to change the password. Click the 'reset' button below to reset your password.</p>
+                        <h3 style="display: inline;">[PL] Nie pamiętasz hasła?</h3>
+                        <p style="font-size: 16px; color: #666666; margin: 20px 30px;">Użytkownik z Twoim adresem e-mail poprosił o zmianę hasła. Kliknij przycisk 'reset' poniżej, aby zresetować hasło.</p>
+                        <h3 style="display: inline;">[RU] Забыли пароль?</h3>
+                        <p style="font-size: 16px; color: #666666; margin: 20px 30px;">Пользователь с вашим адресом электронной почты запросил изменение пароля. Пожалуйста, нажмите кнопку 'reset', чтобы сбросить пароль.</p>
+                        <h3 style="display: inline;">[UK] Забули пароль?</h3>
+                        <p style="font-size: 16px; color: #666666; margin: 20px 30px;">Користувач з вашою електронною адресою попросив змінити пароль. Натисніть кнопку 'reset', щоб скинути пароль.</p>
+                        <a href="http://localhost:3000/reset-password?email=%s" target="_blank" style="display: inline-block; background-color: #3769cb; color: #FFFFFF; font-size: 16px; font-weight: bold; text-align: center; text-decoration: none; padding: 10px 60px; border-radius: 4px; margin: 10px 0;">Reset</a>
+                        <p style="font-size: 16px; color: #666666; margin: 10px;">If you did not request to reset your password, please ignore this email.</p>
+                        <p style="font-size: 16px; color: #666666; margin: 10px;">Jeśli nie prosiłeś/aś o zresetowanie hasła, zignoruj tę wiadomość.</p>
+                        <p style="font-size: 16px; color: #666666; margin: 10px;">Если вы не запрашивали сброс пароля, пожалуйста, проигнорируйте это сообщение.</p>
+                        <p style="font-size: 16px; color: #666666; margin: 0 0 40px;">Якщо ви не запитували скидання пароля, будь ласка, проігноруйте цей лист.</p>
+                    </div>
+                </body>
+                </html>
+                """, email);
+        mailSender(email, "[WoloApp] Forgot password?/Nie pamiętasz hasła?/Забыли пароль?/Забули пароль?", message, true);
     }
 
     public void sendDeleteEventMessage(String email, Long id) throws MessagingException{
@@ -90,7 +109,7 @@ public class EmailUtil {
 
     public void mailSender(String email, String subject, String message, boolean isHtml) throws MessagingException{
         var mimeMessage = javaMailSender.createMimeMessage();
-        var mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        var mimeMessageHelper = new MimeMessageHelper(mimeMessage, "UTF-8");
         mimeMessageHelper.setTo(email);
         mimeMessageHelper.setSubject(subject);
         mimeMessageHelper.setText(message, isHtml);
