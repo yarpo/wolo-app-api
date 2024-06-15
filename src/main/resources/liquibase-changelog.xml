@@ -132,9 +132,22 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
     </changeSet>
 
     <changeSet author="woloapp" id="023" >
-        <sqlFile path="sql_mockup/023-insert-new-base-data.sql"
+        <sqlFile path="sql_mockup/023-insert-organisations.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
+        <sqlFile path="sql_mockup/023-insert-events.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/023-insert-shifts.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/023-insert-reports.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/023-insert-users.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+
     </changeSet>
 
 </databaseChangeLog >
