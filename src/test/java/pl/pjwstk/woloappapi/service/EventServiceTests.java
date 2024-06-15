@@ -253,4 +253,6 @@ public class EventServiceTests {
         verify(eventRepository, times(1)).findById(eventId);
         verifyNoMoreInteractions(categoryToEventService, shiftToUserRepository, emailUtil, eventRepository);
     }
+
+
 }

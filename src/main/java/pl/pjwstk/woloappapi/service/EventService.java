@@ -3,6 +3,7 @@ package pl.pjwstk.woloappapi.service;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pjwstk.woloappapi.model.EventEditRequestDto;
@@ -10,6 +11,7 @@ import pl.pjwstk.woloappapi.model.EventRequestDto;
 import pl.pjwstk.woloappapi.model.entities.CategoryToEvent;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Shift;
+import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.model.translation.EventTranslationResponse;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
@@ -19,6 +21,7 @@ import pl.pjwstk.woloappapi.utils.EventUpdater;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,5 +134,19 @@ public class EventService {
             var pageable = PageRequest.of(0, 5);
             return eventRepository.findNearestEventsSortedByDate(pageable);
         }
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * ?") // every day at 00:00
+    public void deleteReserveUserToShiftAfterEvent() {
+        var date = LocalDate.from(LocalDateTime.now().minusDays(1));
+        var reserveUsersToDelete = eventRepository.findAll().stream()
+                .filter(event -> event.getDate().isBefore(date))
+                .flatMap(event -> event.getShifts().stream())
+                .flatMap(shift -> shift.getShiftToUsers().stream())
+                .filter(ShiftToUser::isOnReserveList)
+                .toList();
+
+        shiftToUserRepository.deleteAll(reserveUsersToDelete);
     }
 }

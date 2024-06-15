@@ -529,4 +529,5 @@ public class UserServiceTests {
 
         assertEquals("OK", result);
     }
+
 }

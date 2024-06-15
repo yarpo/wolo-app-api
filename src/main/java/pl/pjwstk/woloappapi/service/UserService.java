@@ -3,6 +3,7 @@ package pl.pjwstk.woloappapi.service;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import pl.pjwstk.woloappapi.model.UserEditRequestAdminDto;
@@ -19,6 +20,8 @@ import pl.pjwstk.woloappapi.utils.IllegalArgumentException;
 import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -260,5 +263,16 @@ public class UserService {
             }
         }
         return false;
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * ?") // every day at о 00:00
+    public void deleteInactiveUsers() {
+        var oneMonthAgo = LocalDateTime.now().minus(1, ChronoUnit.MONTHS);
+        var inactiveUsers = userRepository.findByActiveFalseAndOtpGeneratedTimeBefore(oneMonthAgo);
+
+        if (!inactiveUsers.isEmpty()) {
+            userRepository.deleteAll(inactiveUsers);
+        }
     }
 }
