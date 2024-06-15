@@ -11,6 +11,7 @@ import pl.pjwstk.woloappapi.model.EventRequestDto;
 import pl.pjwstk.woloappapi.model.entities.CategoryToEvent;
 import pl.pjwstk.woloappapi.model.entities.Event;
 import pl.pjwstk.woloappapi.model.entities.Shift;
+import pl.pjwstk.woloappapi.model.entities.ShiftToUser;
 import pl.pjwstk.woloappapi.model.translation.EventTranslationResponse;
 import pl.pjwstk.woloappapi.repository.EventRepository;
 import pl.pjwstk.woloappapi.repository.ShiftToUserRepository;
@@ -21,7 +22,6 @@ import pl.pjwstk.woloappapi.utils.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,10 +140,13 @@ public class EventService {
     @Scheduled(cron = "0 0 0 * * ?") // every day at 00:00
     public void deleteReserveUserToShiftAfterEvent() {
         var date = LocalDate.from(LocalDateTime.now().minusDays(1));
-        var pastEvents = eventRepository.findAll().stream()
-                .filter(event -> event.getDate().isBefore(ChronoLocalDate.from(date)))
+        var reserveUsersToDelete = eventRepository.findAll().stream()
+                .filter(event -> event.getDate().isBefore(date))
+                .flatMap(event -> event.getShifts().stream())
+                .flatMap(shift -> shift.getShiftToUsers().stream())
+                .filter(ShiftToUser::isOnReserveList)
                 .toList();
 
-        pastEvents.forEach(shiftToUserRepository::deleteByShiftEventAndIsOnReserveListTrue);
+        shiftToUserRepository.deleteAll(reserveUsersToDelete);
     }
 }

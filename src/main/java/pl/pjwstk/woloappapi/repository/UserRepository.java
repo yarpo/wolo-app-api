@@ -34,5 +34,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserWithRolesByEmail(@Param("email") String email);
 
     List<User> findByActiveFalseAndOtpGeneratedTimeBefore(LocalDateTime dateTime);
-    void deleteByActiveFalseAndOtpGeneratedTimeBefore(LocalDateTime dateTime);
+
 }

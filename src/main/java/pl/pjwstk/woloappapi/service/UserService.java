@@ -272,7 +272,7 @@ public class UserService {
         var inactiveUsers = userRepository.findByActiveFalseAndOtpGeneratedTimeBefore(oneMonthAgo);
 
         if (!inactiveUsers.isEmpty()) {
-            userRepository.deleteByActiveFalseAndOtpGeneratedTimeBefore(oneMonthAgo);
+            userRepository.deleteAll(inactiveUsers);
         }
     }
 }
