@@ -5,6 +5,4 @@
 INSERT INTO city ("name")VALUES
                              ('Gdańsk'),
                              ('Warszawa'),
-                             ('Kraków'),
-                             ('Wrocław'),
                              ('Poznań');
