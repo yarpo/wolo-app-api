@@ -24,16 +24,20 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
             "AND e.approved = true ")
     List<Event> findAllNotBeforeNow();
 
-    @Query("SELECT e FROM Event e " +
+    @Query("SELECT DISTINCT e FROM Event e " +
+            "JOIN e.shifts s " +
             "WHERE e.date < :thresholdDate " +
             "AND e.date > CURRENT_DATE " +
             "AND e.approved = true " +
+            "AND s.registeredUsers < s.capacity " +
             "ORDER BY e.date ASC")
     List<Event> findEventsForTheyNeedYou(LocalDate thresholdDate);
 
-    @Query("SELECT e FROM Event e " +
+    @Query("SELECT DISTINCT e FROM Event e " +
+            "JOIN e.shifts s " +
             "WHERE e.date > CURRENT_DATE " +
             "AND e.approved = true " +
+            "AND s.registeredUsers < s.capacity " +
             "ORDER BY e.date ASC")
     List<Event> findNearestEventsSortedByDate(Pageable pageable);
 }
