@@ -44,7 +44,7 @@ INSERT INTO faq (question_pl, answer_pl, question_en, answer_en, question_ua, an
 
 
 INSERT INTO faq (question_pl, answer_pl, question_en, answer_en, question_ua, answer_ua, question_ru, answer_ru) VALUES
-    ('Jako przedstawiciel organizacji, jak moge zarejestrowac organizacje do platformy?',
+    ('Jako przedstawiciel organizacji, jak moge zarejestrować organizacje do platformy?',
      'Aby zarejestrować organizacje, organizator musi się zgłosić do administratora z potrzebnymi danymi. Administrator wtedy utworzy organizację na platformie i dopisze użytkownika jako moderatora. Email do kontaktu: woloappinfo@gmail.com',
      'As a representative of an organization, how can I register an organization on the platform?',
      'To register an organization, the organizer must contact the administrator with the necessary data. The administrator will then create an organization on the platform and add the user as a moderator. Email for contact: woloappinfo@gmail.com',
