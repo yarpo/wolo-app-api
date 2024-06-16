@@ -3,7 +3,7 @@
 --changeset woloapp:023
 
 INSERT INTO faq (question_pl, answer_pl, question_en, answer_en, question_ua, answer_ua, question_ru, answer_ru) VALUES
-    ('Czym jest weryfikacja PESEL i jak mogę ją uzyskać ?',
+    ('Czym jest weryfikacja PESEL i jak mogę ją uzyskać?',
      'Aby uzyskać weryfikację PESEL, należy skontaktować się z administratorem platformy, który przeprowadzi proces weryfikacji.',
      'What is PESEL verification and how can I get it?',
      'To obtain PESEL verification, you must contact the platform administrator, who will conduct the verification process.',
