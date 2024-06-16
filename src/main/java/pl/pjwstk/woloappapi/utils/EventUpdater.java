@@ -261,18 +261,21 @@ public class EventUpdater {
     private void updateCapacity(Shift shift, int capacity) {
         if(shift.getCapacity() > capacity) {
             var quantity = shift.getCapacity() - capacity;
-            var shiftToUsersToRemove = shift.getShiftToUsers()
-                    .subList(shift.getShiftToUsers().size() - quantity, shift.getShiftToUsers().size());
-            shiftToUsersToRemove.forEach(stu -> {
-                try {
-                    emailUtil.sendUpdateCapacityEmail(stu.getUser().getEmail(), stu.getShift().getEvent().getId());
-                } catch (MessagingException ex) {
-                    throw new RuntimeException(ex);
-                }
-                shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
-            });
+            var registeredQuantity = shift.getShiftToUsers().size();
+            if(registeredQuantity > quantity) {
+                var shiftToUsersToRemove = shift.getShiftToUsers()
+                        .subList(registeredQuantity - quantity, registeredQuantity);
+                shiftToUsersToRemove.forEach(stu -> {
+                    try {
+                        emailUtil.sendUpdateCapacityEmail(stu.getUser().getEmail(), stu.getShift().getEvent().getId());
+                    } catch (MessagingException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    shift.setRegisteredUsers(shift.getRegisteredUsers() - 1);
+                });
 
-            shift.getShiftToUsers().removeAll(shiftToUsersToRemove);
+                shift.getShiftToUsers().removeAll(shiftToUsersToRemove);
+            }
         }
         shift.setCapacity(capacity);
     }
