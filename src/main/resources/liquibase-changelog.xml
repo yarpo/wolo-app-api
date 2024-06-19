@@ -23,22 +23,11 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
-    <changeSet author="woloapp" id="003">
-        <sqlFile path="sql_mockup/003-insert-event_shift_address.sql"
-                 relativeToChangelogFile="true"
-                 stripComments="true"/>
-    </changeSet>
 
     <changeSet author="woloapp" id="004">
         <sqlFile path="sql_inserts/004-insert-base_admin.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
-        <sqlFile path="sql_mockup/004-insert-example_user.sql"
-                 relativeToChangelogFile="true"
-                 stripComments="true"/>
-        <sqlFile path="sql_mockup/004-insert-shift.sql"
-        relativeToChangelogFile="true"
-        stripComments="true"/>
     </changeSet>
 
     <changeSet author="woloapp" id="005">
@@ -56,20 +45,11 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
-    <changeSet author="woloapp" id="007">
-        <sqlFile path="sql_mockup/007-insert-more_example_users.sql"
-                 relativeToChangelogFile="true"
-                 stripComments="true"/>
-    </changeSet>
-
     <changeSet author="woloapp" id="008">
         <sqlFile path="sql_scripts/008-create-city-table.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
         <sqlFile path="sql_inserts/008-insert-city.sql"
-                 relativeToChangelogFile="true"
-                 stripComments="true"/>
-        <sqlFile path="sql_mockup/008-update-inserts.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
     </changeSet>
@@ -80,11 +60,6 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
-    <changeSet author="woloapp" id="010">
-        <sqlFile path="sql_mockup/010-insert-category-to-event.sql"
-                 relativeToChangelogFile="true"
-                 stripComments="true"/>
-    </changeSet>
 
     <changeSet author="woloapp" id="011">
         <sqlFile path="sql_inserts/011-insert-city-privileges.sql"
@@ -98,21 +73,11 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
                  stripComments="true"/>
     </changeSet>
 
-    <changeSet author="woloapp" id="013">
-        <sqlFile path="sql_mockup/013-insert-users-with-user-role-only.sql"
-                 relativeToChangelogFile="true"
-                 stripComments="true"/>
-    </changeSet>
-
-
     <changeSet author="woloapp" id="015">
         <sqlFile path="sql_scripts/015-update-report-table.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
 
-        <sqlFile path="sql_mockup/015-insert-example-reports.sql"
-                 relativeToChangelogFile="true"
-                 stripComments="true"/>
     </changeSet>
 
     <changeSet author="woloapp" id="014">
@@ -122,31 +87,16 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
         <sqlFile path="sql_scripts/014-update-shift.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
-        <sqlFile path="sql_mockup/014-insert-to-updated-event.sql"
-                 relativeToChangelogFile="true"
-                 stripComments="true"/>
-        <sqlFile path="sql_mockup/014-insert-to-updated-shift.sql"
-                 relativeToChangelogFile="true"
-                 stripComments="true"/>
     </changeSet>
 
     <changeSet author="woloapp"  id="016">
         <sqlFile path="sql_inserts/016-insert-district.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
-        <sqlFile path="sql_mockup/016-update-city-id-in-event.sql"
-                 relativeToChangelogFile="true"
-                 stripComments="true"/>
-        <sqlFile path="sql_mockup/016-update-is-old-field-in-district-and-city.sql"
-                 relativeToChangelogFile="true"
-                 stripComments="true"/>
     </changeSet>
 
     <changeSet author="woloapp" id="017">
         <sqlFile path="sql_scripts/017-update-organisation-table.sql"
-                 relativeToChangelogFile="true"
-                 stripComments="true"/>
-        <sqlFile path="sql_mockup/017-update-description-for-organisation.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
         <sqlFile path="sql_inserts/017-insert-read-privilege.sql"
@@ -179,6 +129,28 @@ https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd" >
         <sqlFile path="sql_scripts/022-remove-image_alt.sql"
                  relativeToChangelogFile="true"
                  stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="woloapp" id="023" >
+        <sqlFile path="sql_mockup/023-insert-addresses.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/023-insert-organisations.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/023-insert-users.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/023-insert-events.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/023-insert-shifts.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+        <sqlFile path="sql_mockup/023-insert-reports.sql"
+                 relativeToChangelogFile="true"
+                 stripComments="true"/>
+
     </changeSet>
 
 </databaseChangeLog >

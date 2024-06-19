@@ -2,11 +2,11 @@
 
 --changeset woloapp:014
 INSERT INTO district ("name", city_id) VALUES
-                                          ('Stare Miasto', 5),
-                                          ('Jeżyce', 5),
-                                          ('Grunwald', 5),
-                                          ('Wilda', 5),
-                                          ('Nowe Miasto', 5);
+                                          ('Stare Miasto', 3),
+                                          ('Jeżyce', 3),
+                                          ('Grunwald', 3),
+                                          ('Wilda', 3),
+                                          ('Nowe Miasto', 3);
 
 
 INSERT INTO district ("name", city_id) VALUES
@@ -15,3 +15,19 @@ INSERT INTO district ("name", city_id) VALUES
                                           ('Praga-Południe', 2),
                                           ('Wola', 2),
                                           ('Ursynów', 2);
+
+INSERT INTO district ("name", city_id) VALUES
+                                         ( 'Centrum', 2),
+                                         ( 'Wrzeszcz', 1),
+                                         ( 'Śródmieście', 1),
+                                         ( 'Oliwa', 1),
+                                         ( 'Aniołki', 1),
+                                         ( 'Morena', 1),
+                                         ( 'Orunia', 1),
+                                         ( 'Jelitkowo', 1),
+                                         ( 'Przymorze', 1),
+                                         ( 'Zaspa', 1),
+                                         ( 'Ujeścisko-Łostowice', 1),
+                                         ( 'Siedlce', 1),
+                                         ( 'Nowy Port', 1),
+                                         ( 'Żoliborz', 2);
